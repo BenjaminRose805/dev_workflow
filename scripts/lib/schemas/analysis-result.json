@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Analysis Result Schema",
+  "description": "Schema for validating deep analysis agent output",
+  "type": "object",
+  "required": ["question", "recommendation", "confidence", "pros", "cons"],
+  "properties": {
+    "question": {
+      "type": "string",
+      "description": "The question or problem being analyzed",
+      "minLength": 1
+    },
+    "recommendation": {
+      "type": "string",
+      "description": "Primary recommendation based on the analysis",
+      "minLength": 1
+    },
+    "confidence": {
+      "type": "number",
+      "description": "Confidence level of the recommendation (0-100)",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "pros": {
+      "type": "array",
+      "description": "Advantages or benefits of the recommendation",
+      "minItems": 0,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "cons": {
+      "type": "array",
+      "description": "Disadvantages or drawbacks of the recommendation",
+      "minItems": 0,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "description": "Supporting evidence for the analysis and recommendation",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "alternatives": {
+      "type": "array",
+      "description": "Alternative approaches or solutions considered",
+      "items": {
+        "type": "object",
+        "required": ["name", "description", "tradeoffs"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the alternative approach",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the alternative",
+            "minLength": 1
+          },
+          "tradeoffs": {
+            "type": "string",
+            "description": "Key tradeoffs of this alternative compared to the recommendation",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "implementation_notes": {
+      "type": "string",
+      "description": "Additional notes or considerations for implementing the recommendation"
+    }
+  }
+}

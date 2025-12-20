@@ -1,0 +1,359 @@
+{
+  "planPath": "docs/plans/output-separation-implementation.md",
+  "planName": "Implementation Plan: Output Separation Implementation",
+  "createdAt": "2025-12-18T23:02:51.609Z",
+  "lastUpdatedAt": "2025-12-18T23:57:42.232Z",
+  "currentPhase": "Phase 0: Foundation (No dependencies)",
+  "tasks": [
+    {
+      "id": "0.1",
+      "phase": "Phase 0: Foundation (No dependencies)",
+      "description": "0.1 Create `docs/plan-outputs/` directory",
+      "status": "pending"
+    },
+    {
+      "id": "0.2",
+      "phase": "Phase 0: Foundation (No dependencies)",
+      "description": "0.2 Define `status.json` schema in `scripts/lib/schemas/plan-status.json`",
+      "status": "pending"
+    },
+    {
+      "id": "0.3",
+      "phase": "Phase 0: Foundation (No dependencies)",
+      "description": "0.3 Create `scripts/lib/plan-output-utils.js` (depends on 0.2)",
+      "status": "pending"
+    },
+    {
+      "id": "0.4",
+      "phase": "Phase 0: Foundation (No dependencies)",
+      "description": "0.4 Update `.gitignore` for output artifacts",
+      "status": "pending"
+    },
+    {
+      "id": "0.5",
+      "phase": "Phase 0: Foundation (No dependencies)",
+      "description": "**VERIFY 0**: Run `node scripts/scan-plans.js` - should not error",
+      "status": "pending"
+    },
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Status Tracking (Depends on Phase 0)",
+      "description": "1.1 Create `scripts/lib/status-manager.js` (depends on 0.2, 0.3)",
+      "status": "pending"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Status Tracking (Depends on Phase 0)",
+      "description": "1.2 Add `.claude/current-plan-output.txt` pointer",
+      "status": "pending"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Status Tracking (Depends on Phase 0)",
+      "description": "1.3 Update `scripts/scan-plans.js` to read status.json (depends on 1.1)",
+      "status": "pending"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Status Tracking (Depends on Phase 0)",
+      "description": "1.4 Update `/plan:status` command (depends on 1.1)",
+      "status": "pending"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Status Tracking (Depends on Phase 0)",
+      "description": "**VERIFY 1**: Create test status.json, verify `/plan:status` reads it correctly",
+      "status": "pending"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Output Separation (Depends on Phase 1)",
+      "description": "2.1 Update `/plan:create` to create output directory (depends on 0.3)",
+      "status": "pending"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Output Separation (Depends on Phase 1)",
+      "description": "2.2 Define findings output format (markdown in `findings/`)",
+      "status": "pending"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Output Separation (Depends on Phase 1)",
+      "description": "2.3 Update templates - remove inline placeholders, add output refs",
+      "status": "pending"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Output Separation (Depends on Phase 1)",
+      "description": "2.4 Add `timestamps/` subdirectory structure",
+      "status": "pending"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Output Separation (Depends on Phase 1)",
+      "description": "**VERIFY 2**: Run `/plan:create`, verify output directory created with correct structure",
+      "status": "pending"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Command Updates (Depends on Phases 1 & 2)",
+      "description": "3.1 Update `/plan:implement` (depends on 1.1, 2.2)",
+      "status": "completed",
+      "completedAt": "2025-12-18T23:32:03.748Z",
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/3-1.md"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Command Updates (Depends on Phases 1 & 2)",
+      "description": "3.2 Update `/plan:batch` (depends on 1.1, 2.2)",
+      "status": "completed",
+      "completedAt": "2025-12-18T23:32:03.752Z",
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/3-2.md"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Command Updates (Depends on Phases 1 & 2)",
+      "description": "3.3 Update `/plan:verify` (depends on 1.1)",
+      "status": "completed",
+      "completedAt": "2025-12-18T23:32:03.752Z",
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/3-3.md"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Command Updates (Depends on Phases 1 & 2)",
+      "description": "3.4 Update `/plan:set` (depends on 1.2)",
+      "status": "completed",
+      "completedAt": "2025-12-18T23:32:03.753Z",
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/3-4.md"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Command Updates (Depends on Phases 1 & 2)",
+      "description": "3.5 Update `/plan:explain` (depends on 0.3)",
+      "status": "completed",
+      "completedAt": "2025-12-18T23:32:03.753Z",
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/3-5.md"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Command Updates (Depends on Phases 1 & 2)",
+      "description": "**VERIFY 3**: Execute a simple task, verify status.json updated and findings written",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Migration & Compatibility (Depends on Phase 3)",
+      "description": "4.1 Create `/plan:migrate` command (depends on all Phase 3)",
+      "status": "completed",
+      "startedAt": "2025-12-18T23:39:05.812Z",
+      "completedAt": "2025-12-18T23:51:28.854Z",
+      "duration": 743042,
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/4-1.md"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Migration & Compatibility (Depends on Phase 3)",
+      "description": "4.2 Add fallback logic for backwards compatibility",
+      "status": "completed",
+      "startedAt": "2025-12-18T23:39:05.812Z",
+      "completedAt": "2025-12-18T23:51:28.855Z",
+      "duration": 743043,
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/4-2.md"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Migration & Compatibility (Depends on Phase 3)",
+      "description": "4.3 Handle existing `docs/completed plans/`",
+      "status": "completed",
+      "startedAt": "2025-12-18T23:39:05.812Z",
+      "completedAt": "2025-12-18T23:51:28.855Z",
+      "duration": 743043,
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/4-3.md"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Migration & Compatibility (Depends on Phase 3)",
+      "description": "4.4 Document migration process",
+      "status": "completed",
+      "startedAt": "2025-12-18T23:51:51.252Z",
+      "completedAt": "2025-12-18T23:51:51.252Z",
+      "duration": 0,
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/4-4.md"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Migration & Compatibility (Depends on Phase 3)",
+      "description": "**VERIFY 4**: Migrate existing plan with inline results, verify extraction works",
+      "status": "completed",
+      "startedAt": "2025-12-18T23:51:59.488Z",
+      "completedAt": "2025-12-18T23:53:36.602Z",
+      "duration": 97114,
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/4-5.md"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Verification (Depends on Phase 4)",
+      "description": "5.1 Test plan creation with output directory",
+      "status": "completed",
+      "startedAt": "2025-12-18T23:55:21.775Z",
+      "completedAt": "2025-12-18T23:56:09.363Z",
+      "duration": 47588,
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/5-1.md"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Verification (Depends on Phase 4)",
+      "description": "5.2 Test status tracking across sessions",
+      "status": "completed",
+      "startedAt": "2025-12-18T23:55:21.775Z",
+      "completedAt": "2025-12-18T23:56:09.364Z",
+      "duration": 47589,
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/5-2.md"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Verification (Depends on Phase 4)",
+      "description": "5.3 Test plan reuse (run same plan twice, verify separate outputs)",
+      "status": "completed",
+      "startedAt": "2025-12-18T23:56:09.366Z",
+      "completedAt": "2025-12-18T23:56:38.108Z",
+      "duration": 28742,
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/5-3.md"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Verification (Depends on Phase 4)",
+      "description": "5.4 Verify backwards compatibility (old plans still work)",
+      "status": "completed",
+      "startedAt": "2025-12-18T23:55:21.775Z",
+      "completedAt": "2025-12-18T23:56:09.365Z",
+      "duration": 47590,
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/5-4.md"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Verification (Depends on Phase 4)",
+      "description": "**VERIFY 5**: Full end-to-end test - create plan, execute, verify outputs, rerun",
+      "status": "completed",
+      "startedAt": "2025-12-18T23:56:38.108Z",
+      "completedAt": "2025-12-18T23:57:01.554Z",
+      "duration": 23446,
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/5-5.md"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: Verification (Depends on Phase 4)",
+      "description": "**Output Directory Created** - `/plan:create` generates `docs/plan-outputs/{plan-name}/` with `status.json`, `findings/`, `timestamps/`",
+      "status": "completed",
+      "startedAt": "2025-12-18T23:57:01.555Z",
+      "completedAt": "2025-12-18T23:57:23.883Z",
+      "duration": 22328,
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/5-6.md"
+    },
+    {
+      "id": "5.7",
+      "phase": "Phase 5: Verification (Depends on Phase 4)",
+      "description": "**Status Tracking Works** - `/plan:status` reads from `status.json` and displays correct progress",
+      "status": "completed",
+      "startedAt": "2025-12-18T23:57:01.555Z",
+      "completedAt": "2025-12-18T23:57:23.884Z",
+      "duration": 22329,
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/5-7.md"
+    },
+    {
+      "id": "5.8",
+      "phase": "Phase 5: Verification (Depends on Phase 4)",
+      "description": "**Plan Files Unchanged** - Plan markdown files are NOT modified during execution (no checkbox changes)",
+      "status": "completed",
+      "startedAt": "2025-12-18T23:57:01.555Z",
+      "completedAt": "2025-12-18T23:57:23.885Z",
+      "duration": 22330,
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/5-8.md"
+    },
+    {
+      "id": "5.9",
+      "phase": "Phase 5: Verification (Depends on Phase 4)",
+      "description": "**Findings Separated** - Analysis/validation results written to `findings/` folder, not inline",
+      "status": "completed",
+      "startedAt": "2025-12-18T23:57:01.556Z",
+      "completedAt": "2025-12-18T23:57:23.885Z",
+      "duration": 22329,
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/5-9.md"
+    },
+    {
+      "id": "5.10",
+      "phase": "Phase 5: Verification (Depends on Phase 4)",
+      "description": "**Reusability Proven** - Same plan can be executed twice, creating separate timestamped outputs",
+      "status": "completed",
+      "startedAt": "2025-12-18T23:57:01.556Z",
+      "completedAt": "2025-12-18T23:57:23.885Z",
+      "duration": 22329,
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/5-10.md"
+    },
+    {
+      "id": "5.11",
+      "phase": "Phase 5: Verification (Depends on Phase 4)",
+      "description": "**Backwards Compatible** - Existing plans without output directories still function",
+      "status": "completed",
+      "startedAt": "2025-12-18T23:57:01.556Z",
+      "completedAt": "2025-12-18T23:57:23.886Z",
+      "duration": 22330,
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/5-11.md"
+    },
+    {
+      "id": "5.12",
+      "phase": "Phase 5: Verification (Depends on Phase 4)",
+      "description": "**All Commands Updated** - `/plan:implement`, `/plan:batch`, `/plan:verify`, `/plan:status`, `/plan:set` work with new system",
+      "status": "completed",
+      "startedAt": "2025-12-18T23:57:01.556Z",
+      "completedAt": "2025-12-18T23:57:42.227Z",
+      "duration": 40671,
+      "findingsPath": "docs/plan-outputs/output-separation-implementation/findings/5-12.md"
+    }
+  ],
+  "runs": [
+    {
+      "runId": "run-1766101145809",
+      "startedAt": "2025-12-18T23:39:05.809Z",
+      "tasksCompleted": 5,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-18T23:53:36.604Z"
+    },
+    {
+      "runId": "run-1766102121773",
+      "startedAt": "2025-12-18T23:55:21.773Z",
+      "tasksCompleted": 12,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-18T23:57:42.232Z"
+    },
+    {
+      "runId": "run-1766102191259",
+      "startedAt": "2025-12-18T23:56:31.259Z",
+      "tasksCompleted": 0,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-18T23:56:31.260Z"
+    },
+    {
+      "runId": "run-1766102191261",
+      "startedAt": "2025-12-18T23:56:31.261Z",
+      "tasksCompleted": 0,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-18T23:56:31.261Z"
+    },
+    {
+      "runId": "run-1766102214923",
+      "startedAt": "2025-12-18T23:56:54.923Z",
+      "tasksCompleted": 0,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-18T23:56:54.924Z"
+    }
+  ],
+  "summary": {
+    "totalTasks": 38,
+    "completed": 22,
+    "pending": 16,
+    "failed": 0,
+    "skipped": 0
+  }
+}

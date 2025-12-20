@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Research Result Schema",
+  "description": "Schema for validating research agent output",
+  "type": "object",
+  "required": ["findings", "confidence"],
+  "properties": {
+    "findings": {
+      "type": "array",
+      "description": "List of research findings discovered during analysis",
+      "minItems": 0,
+      "items": {
+        "type": "object",
+        "required": ["type", "description"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Category of the finding",
+            "enum": ["file", "pattern", "dependency", "issue"]
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the finding",
+            "minLength": 1
+          },
+          "location": {
+            "type": "string",
+            "description": "File path, line number, or location identifier"
+          },
+          "evidence": {
+            "type": "array",
+            "description": "Supporting evidence for this finding",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "confidence": {
+      "type": "number",
+      "description": "Confidence level of the research results (0-100)",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "summary": {
+      "type": "string",
+      "description": "High-level summary of all findings"
+    },
+    "recommendations": {
+      "type": "array",
+      "description": "Actionable recommendations based on findings",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}
