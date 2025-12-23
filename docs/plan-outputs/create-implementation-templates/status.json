@@ -1,0 +1,413 @@
+{
+  "planPath": "docs/plans/create-implementation-templates.md",
+  "planName": "Plan: Create Implementation Templates",
+  "createdAt": "2025-12-22T19:34:27.826Z",
+  "lastUpdatedAt": "2025-12-23T00:45:00.000Z",
+  "currentPhase": "Success Criteria",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: P0 Templates (MVP)",
+      "description": "Create `implement-artifact-registry.md` from `findings/9-1-artifact-discovery.md`, `findings/2-4-missing-artifacts.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T20:15:00.000Z"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: P0 Templates (MVP)",
+      "description": "Create `implement-workflow-branching.md` from `findings/9-5-conditional-branching.md`, `findings/2-5-workflow-limitations.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T20:15:00.000Z"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: P0 Templates (MVP)",
+      "description": "Create `implement-explore-command.md` from `findings/4-2-explore-command.md`, `findings/4-5-subcommands-catalog.md`, `findings/4-6-artifact-schemas.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T20:15:00.000Z"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: P0 Templates (MVP)",
+      "description": "Create `implement-clarify-command.md` from `findings/4-1-clarify-command.md`, `findings/4-5-subcommands-catalog.md`, `findings/4-6-artifact-schemas.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T20:16:00.000Z"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: P0 Templates (MVP)",
+      "description": "Create `implement-test-command.md` from `findings/6-4-test-command.md`, `findings/6-7-artifact-schemas.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T20:16:00.000Z"
+    },
+    {
+      "id": "1.6",
+      "phase": "Phase 1: P0 Templates (MVP)",
+      "description": "Create `implement-validate-command.md` from `findings/6-5-validate-command.md`, `findings/6-7-artifact-schemas.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T20:16:00.000Z"
+    },
+    {
+      "id": "VERIFY-1",
+      "phase": "Phase 1: P0 Templates (MVP)",
+      "description": "VERIFY 1: All 6 P0 templates exist in `docs/plan-templates/`",
+      "status": "completed",
+      "completedAt": "2025-12-22T20:17:00.000Z"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: P1 Command Templates",
+      "description": "Create `implement-fix-command.md` from `findings/7-3-fix-command.md`, `findings/7-6-artifact-schemas.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T21:28:00.000Z"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: P1 Command Templates",
+      "description": "Create `implement-refactor-command.md` from `findings/7-2-refactor-command.md`, `findings/7-6-artifact-schemas.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T21:28:00.000Z"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: P1 Command Templates",
+      "description": "Create `implement-analyze-command.md` from `findings/6-1-analyze-command.md`, `findings/6-7-artifact-schemas.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T21:29:00.000Z"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: P1 Command Templates",
+      "description": "Create `implement-review-command.md` from `findings/6-3-review-command.md`, `findings/6-7-artifact-schemas.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T21:29:00.000Z"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: P1 Command Templates",
+      "description": "Create `implement-debug-command.md` from `findings/6-6-debug-command.md`, `findings/6-7-artifact-schemas.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T21:29:00.000Z"
+    },
+    {
+      "id": "VERIFY-2",
+      "phase": "Phase 2: P1 Command Templates",
+      "description": "VERIFY 2: All 5 P1 command templates exist",
+      "status": "completed",
+      "completedAt": "2025-12-22T21:30:00.000Z"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: P1 Infrastructure + P2 Design Commands",
+      "description": "Create `implement-workflow-loops.md` from `findings/9-6-iterative-loops.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T22:10:00.000Z"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: P1 Infrastructure + P2 Design Commands",
+      "description": "Create `implement-error-recovery-hooks.md` from `findings/10-5-error-recovery-hooks.md`, `findings/10-3-hook-integration.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T22:10:00.000Z"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: P1 Infrastructure + P2 Design Commands",
+      "description": "Create `implement-architect-command.md` from `findings/5-1-architect-command.md`, `findings/5-5-subcommands-catalog.md`, `findings/5-6-artifact-schemas.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T22:12:00.000Z"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: P1 Infrastructure + P2 Design Commands",
+      "description": "Create `implement-design-command.md` from `findings/5-2-design-command.md`, `findings/5-5-subcommands-catalog.md`, `findings/5-6-artifact-schemas.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T22:12:00.000Z"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: P1 Infrastructure + P2 Design Commands",
+      "description": "Create `implement-spec-command.md` from `findings/5-3-spec-command.md`, `findings/5-5-subcommands-catalog.md`, `findings/5-6-artifact-schemas.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T22:12:00.000Z"
+    },
+    {
+      "id": "VERIFY-3",
+      "phase": "Phase 3: P1 Infrastructure + P2 Design Commands",
+      "description": "VERIFY 3: All 5 templates (2 infra + 3 design) exist",
+      "status": "completed",
+      "completedAt": "2025-12-22T22:15:00.000Z"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: P2 Design + Documentation Commands",
+      "description": "Create `implement-research-command.md` from `findings/4-3-research-command.md`, `findings/4-5-subcommands-catalog.md`, `findings/4-6-artifact-schemas.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T22:45:00.000Z"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: P2 Design + Documentation Commands",
+      "description": "Create `implement-brainstorm-command.md` from `findings/4-4-brainstorm-command.md`, `findings/4-5-subcommands-catalog.md`, `findings/4-6-artifact-schemas.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T22:45:00.000Z"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: P2 Design + Documentation Commands",
+      "description": "Create `implement-model-command.md` from `findings/5-4-model-command.md`, `findings/5-5-subcommands-catalog.md`, `findings/5-6-artifact-schemas.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T22:45:00.000Z"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: P2 Design + Documentation Commands",
+      "description": "Create `implement-document-command.md` from `findings/7-4-document-command.md`, `findings/7-6-artifact-schemas.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T23:12:00.000Z"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: P2 Design + Documentation Commands",
+      "description": "Create `implement-explain-command.md` from `findings/7-5-explain-command.md`, `findings/7-6-artifact-schemas.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T23:12:00.000Z"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: P2 Design + Documentation Commands",
+      "description": "Create `implement-audit-command.md` from `findings/6-2-audit-command.md`, `findings/6-7-artifact-schemas.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T23:12:00.000Z"
+    },
+    {
+      "id": "VERIFY-4",
+      "phase": "Phase 4: P2 Design + Documentation Commands",
+      "description": "VERIFY 4: All 6 templates (3 design + 3 docs) exist",
+      "status": "completed",
+      "completedAt": "2025-12-22T23:15:00.000Z"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: P2 Infrastructure + P3 Operations Commands",
+      "description": "Create `implement-workflow-composition.md` from `findings/9-10-workflow-composition.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T23:45:00.000Z"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: P2 Infrastructure + P3 Operations Commands",
+      "description": "Create `implement-fan-in-fan-out.md` from `findings/9-7-fan-in-patterns.md`, `findings/9-8-fan-out-patterns.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T23:46:00.000Z"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: P2 Infrastructure + P3 Operations Commands",
+      "description": "Create `implement-deploy-command.md` from `findings/8-1-deploy-command.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T23:55:00.000Z"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: P2 Infrastructure + P3 Operations Commands",
+      "description": "Create `implement-migrate-command.md` from `findings/8-2-migrate-command.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T23:55:00.000Z"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: P2 Infrastructure + P3 Operations Commands",
+      "description": "Create `implement-release-command.md` from `findings/8-3-release-command.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T23:55:00.000Z"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: P2 Infrastructure + P3 Operations Commands",
+      "description": "Create `implement-workflow-command.md` from `findings/8-5-workflow-command.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T23:55:00.000Z"
+    },
+    {
+      "id": "5.7",
+      "phase": "Phase 5: P2 Infrastructure + P3 Operations Commands",
+      "description": "Create `implement-template-command.md` from `findings/8-6-template-command.md`",
+      "status": "completed",
+      "completedAt": "2025-12-22T23:55:00.000Z"
+    },
+    {
+      "id": "VERIFY-5",
+      "phase": "Phase 5: P2 Infrastructure + P3 Operations Commands",
+      "description": "VERIFY 5: All 7 templates (2 infra + 5 ops) exist",
+      "status": "completed",
+      "completedAt": "2025-12-22T23:56:00.000Z"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Agent Templates",
+      "description": "Create `implement-explore-agent.md` from `findings/10-1-agent-command-mapping.md`, `findings/10-2-agent-configurations.md`, `findings/4-2-explore-command.md`",
+      "status": "completed",
+      "completedAt": "2025-12-23T00:05:00.000Z"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Agent Templates",
+      "description": "Create `implement-analyze-agent.md` from `findings/10-1-agent-command-mapping.md`, `findings/10-2-agent-configurations.md`, `findings/6-1-analyze-command.md`",
+      "status": "completed",
+      "completedAt": "2025-12-23T00:05:00.000Z"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Agent Templates",
+      "description": "Create `implement-review-agent.md` from `findings/10-1-agent-command-mapping.md`, `findings/10-2-agent-configurations.md`, `findings/6-3-review-command.md`",
+      "status": "completed",
+      "completedAt": "2025-12-23T00:05:00.000Z"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Agent Templates",
+      "description": "Create `implement-debug-agent.md` from `findings/10-1-agent-command-mapping.md`, `findings/10-2-agent-configurations.md`, `findings/6-6-debug-command.md`",
+      "status": "completed",
+      "completedAt": "2025-12-23T00:05:00.000Z"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Agent Templates",
+      "description": "Create `implement-deploy-agent.md` from `findings/10-1-agent-command-mapping.md`, `findings/10-2-agent-configurations.md`, `findings/8-1-deploy-command.md`",
+      "status": "completed",
+      "completedAt": "2025-12-23T00:05:00.000Z"
+    },
+    {
+      "id": "VERIFY-6",
+      "phase": "Phase 6: Agent Templates",
+      "description": "VERIFY 6: All 5 agent templates exist",
+      "status": "completed",
+      "completedAt": "2025-12-23T00:05:00.000Z"
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Hook Templates + Implement Command",
+      "description": "Create `implement-context-loading-hook.md` from `findings/10-3-hook-integration.md`",
+      "status": "completed",
+      "completedAt": "2025-12-23T00:45:00.000Z"
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Hook Templates + Implement Command",
+      "description": "Create `implement-artifact-storage-hook.md` from `findings/10-3-hook-integration.md`",
+      "status": "completed",
+      "completedAt": "2025-12-23T00:45:00.000Z"
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: Hook Templates + Implement Command",
+      "description": "Create `implement-notification-hooks.md` from `findings/10-4-notification-hooks.md`",
+      "status": "completed",
+      "completedAt": "2025-12-23T00:45:00.000Z"
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: Hook Templates + Implement Command",
+      "description": "Create `implement-implement-command.md` from `findings/7-1-implement-command.md`, `findings/7-6-artifact-schemas.md`",
+      "status": "completed",
+      "completedAt": "2025-12-23T00:45:00.000Z"
+    },
+    {
+      "id": "VERIFY-7",
+      "phase": "Phase 7: Hook Templates + Implement Command",
+      "description": "VERIFY 7: All 4 templates (3 hooks + 1 command) exist",
+      "status": "completed",
+      "completedAt": "2025-12-23T00:45:00.000Z"
+    },
+    {
+      "id": "SC-1",
+      "phase": "Success Criteria",
+      "description": "40 templates created in `docs/plan-templates/`",
+      "status": "pending"
+    },
+    {
+      "id": "SC-2",
+      "phase": "Success Criteria",
+      "description": "All templates follow format in `TEMPLATE.md`",
+      "status": "pending"
+    },
+    {
+      "id": "SC-3",
+      "phase": "Success Criteria",
+      "description": "Each template has phases, tasks, and verification checkpoints",
+      "status": "pending"
+    },
+    {
+      "id": "SC-4",
+      "phase": "Success Criteria",
+      "description": "Each template includes variables for customization",
+      "status": "pending"
+    }
+  ],
+  "runs": [
+    {
+      "runId": "batch-2025-12-22-001",
+      "startedAt": "2025-12-22T21:20:00.000Z",
+      "completedAt": "2025-12-22T21:30:00.000Z",
+      "tasksCompleted": 6,
+      "tasksFailed": 0,
+      "phase": "Phase 2: P1 Command Templates"
+    },
+    {
+      "runId": "batch-2025-12-22-002",
+      "startedAt": "2025-12-22T22:00:00.000Z",
+      "completedAt": "2025-12-22T22:15:00.000Z",
+      "tasksCompleted": 6,
+      "tasksFailed": 0,
+      "phase": "Phase 3: P1 Infrastructure + P2 Design Commands"
+    },
+    {
+      "runId": "batch-2025-12-22-003",
+      "startedAt": "2025-12-22T22:40:00.000Z",
+      "completedAt": "2025-12-22T22:45:00.000Z",
+      "tasksCompleted": 3,
+      "tasksFailed": 0,
+      "phase": "Phase 4: P2 Design + Documentation Commands"
+    },
+    {
+      "runId": "batch-2025-12-22-004",
+      "startedAt": "2025-12-22T23:10:00.000Z",
+      "completedAt": "2025-12-22T23:15:00.000Z",
+      "tasksCompleted": 4,
+      "tasksFailed": 0,
+      "phase": "Phase 4: P2 Design + Documentation Commands"
+    },
+    {
+      "runId": "batch-2025-12-22-005",
+      "startedAt": "2025-12-22T23:50:00.000Z",
+      "completedAt": "2025-12-22T23:56:00.000Z",
+      "tasksCompleted": 6,
+      "tasksFailed": 0,
+      "phase": "Phase 5: P2 Infrastructure + P3 Operations Commands"
+    },
+    {
+      "runId": "batch-2025-12-23-001",
+      "startedAt": "2025-12-23T00:00:00.000Z",
+      "completedAt": "2025-12-23T00:05:00.000Z",
+      "tasksCompleted": 6,
+      "tasksFailed": 0,
+      "phase": "Phase 6: Agent Templates"
+    },
+    {
+      "runId": "batch-2025-12-23-002",
+      "startedAt": "2025-12-23T00:40:00.000Z",
+      "completedAt": "2025-12-23T00:45:00.000Z",
+      "tasksCompleted": 5,
+      "tasksFailed": 0,
+      "phase": "Phase 7: Hook Templates + Implement Command"
+    }
+  ],
+  "summary": {
+    "totalTasks": 49,
+    "completed": 45,
+    "pending": 4,
+    "failed": 0,
+    "skipped": 0
+  }
+}
