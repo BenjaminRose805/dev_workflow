@@ -1,0 +1,502 @@
+# Implementation Plan: Implement Deploy Agent
+
+## Overview
+- **Goal:** Create a deployment orchestration agent for safe, observable deployments across multiple platforms with pre-flight checks, health verification, and rollback capabilities
+- **Priority:** P0
+- **Created:** {{date}}
+- **Output:** `docs/plan-outputs/implement-deploy-agent/`
+- **Model:** Sonnet (platform knowledge and orchestration)
+- **Category:** Operations & Meta
+
+> Implement the Deploy Agent for the /deploy command system. This agent orchestrates deployment workflows with a safety-first approach, providing platform-agnostic deployment support across Vercel, Netlify, AWS, Docker, and Kubernetes. It performs comprehensive pre-flight checks, executes deployments with real-time feedback, verifies health post-deployment, and maintains rollback readiness. The agent uses the AskUser tool for critical confirmations and bypassPermissions mode for deployment operations.
+
+## Phase 1: Agent Configuration & System Prompt
+
+- [ ] 1.1 Create agent configuration file at `.claude/agents/deploy.md`
+  - Set model to `claude-sonnet-4-5` for deployment orchestration
+  - Configure allowed tools: `Read`, `Glob`, `Grep`, `Bash`, `AskUser`
+  - Set permission_mode to `bypassPermissions` for deployment operations
+  - Define category as "operations"
+  - Set temperature to `0.0` for deterministic deployment logic
+- [ ] 1.2 Write agent system prompt with deployment focus
+  - Define role as deployment orchestration expert
+  - Include safety-first deployment philosophy
+  - Add platform knowledge (Vercel, Netlify, AWS, Docker, Kubernetes)
+  - Include pre-flight check requirements
+  - Add health verification protocols
+  - Include rollback procedures and decision criteria
+- [ ] 1.3 Configure agent behavior parameters
+  - Enable proactive pre-flight check execution
+  - Require user confirmation for production deployments
+  - Enable automatic health verification post-deployment
+  - Configure rollback trigger conditions (error rates, health check failures)
+  - Set deployment timeout parameters per platform
+- [ ] 1.4 Define agent output artifact structure
+  - Specify `deploy-notes.md` template requirements
+  - Define `deployment-config.json` schema
+  - Specify `health-check-report.md` structure
+  - Set artifact versioning strategy
+  - Define artifact storage locations
+- [ ] 1.5 Set up agent tool usage guidelines
+  - Read: Platform detection file scanning, config validation
+  - Grep: Search for environment variables, secrets detection
+  - Glob: Find deployment configuration files
+  - Bash: Execute deployment commands, run health checks
+  - AskUser: Production confirmation, rollback decisions, config validation
+- [ ] 1.6 Create agent metadata and frontmatter
+  - Set agent name: "deploy"
+  - Define description: "Deployment orchestration with safety checks"
+  - Add example invocations
+  - Include upstream/downstream command references
+  - Document integration points with /test, /validate, /release
+- [ ] **VERIFY 1**: Agent configuration file is valid, system prompt establishes clear deployment protocols, tool restrictions are appropriate for safe deployments
+
+## Phase 2: Platform Detection Implementation
+
+- [ ] 2.1 Implement Vercel platform detection
+  - Scan for `vercel.json` configuration file
+  - Check for `.vercel/` directory
+  - Detect `vercel` CLI availability
+  - Parse Vercel project settings
+  - Validate Vercel credentials/authentication
+- [ ] 2.2 Implement Netlify platform detection
+  - Scan for `netlify.toml` configuration file
+  - Check for `.netlify/` directory
+  - Detect `netlify` CLI availability
+  - Parse Netlify site settings
+  - Validate Netlify authentication
+- [ ] 2.3 Implement AWS platform detection
+  - Scan for `.aws/` directory
+  - Check for `cloudformation/` templates
+  - Detect `cdk.json` for AWS CDK projects
+  - Check for `serverless.yml` (Serverless Framework)
+  - Detect `sam-template.yaml` (AWS SAM)
+  - Validate AWS credentials and region configuration
+- [ ] 2.4 Implement Docker platform detection
+  - Scan for `Dockerfile` in root and subdirectories
+  - Check for `docker-compose.yml` or `docker-compose.yaml`
+  - Detect `.dockerignore` file
+  - Parse Docker build configuration
+  - Verify Docker daemon availability
+- [ ] 2.5 Implement Kubernetes platform detection
+  - Scan for `k8s/` or `kubernetes/` directories
+  - Check for `*.k8s.yaml` or `*.k8s.yml` files
+  - Detect `kustomization.yaml` (Kustomize)
+  - Check for Helm charts (`Chart.yaml`)
+  - Validate kubectl configuration and cluster access
+- [ ] 2.6 Create platform adapter factory
+  - Implement unified deployment interface across platforms
+  - Create platform-specific deployment strategies
+  - Build platform capabilities matrix (canary, blue-green support)
+  - Add platform-specific health check methods
+  - Implement platform-specific rollback procedures
+- [ ] 2.7 Handle multi-platform scenarios
+  - Detect multiple platform configurations
+  - Prompt user to select target platform
+  - Support platform priority configuration
+  - Warn about platform conflicts
+- [ ] **VERIFY 2**: All five platforms are correctly detected, platform adapter factory returns appropriate handlers, multi-platform scenarios are handled gracefully
+
+## Phase 3: Pre-Flight Checks System
+
+- [ ] 3.1 Implement test status validation
+  - Detect test framework (Jest, Vitest, Mocha, pytest, etc.)
+  - Execute test suite via Bash tool
+  - Parse test results for pass/fail status
+  - Capture test failure details for reporting
+  - Support `--skip-tests` flag for emergency deployments
+- [ ] 3.2 Implement build status validation
+  - Detect build system (npm, yarn, pnpm, webpack, vite, etc.)
+  - Execute build command via Bash tool
+  - Parse build output for errors and warnings
+  - Validate build artifacts exist
+  - Check build artifact sizes against thresholds
+- [ ] 3.3 Implement git status validation
+  - Check for uncommitted changes using `git status`
+  - Check for unpushed commits using `git log`
+  - Validate current branch matches deployment target
+  - For production: require clean working tree
+  - For preview/staging: allow uncommitted changes with warning
+- [ ] 3.4 Implement branch validation
+  - Read target environment configuration
+  - Validate current branch matches environment (main→prod, develop→staging)
+  - Support custom branch mapping configuration
+  - Check for branch protection rules
+  - Warn about deploying from feature branches
+- [ ] 3.5 Implement environment variables validation
+  - Read required environment variables from config
+  - Verify all required vars are set in target environment
+  - Detect missing environment variables
+  - Validate environment variable format (URLs, API keys)
+  - Mask sensitive values in logs and output
+  - Support `.env.example` as requirements source
+- [ ] 3.6 Create pre-flight check orchestrator
+  - Execute all checks in parallel for speed
+  - Aggregate check results (pass/fail/warning)
+  - Generate pre-flight summary report
+  - Implement blocking vs non-blocking check classification
+  - Add override mechanism for non-critical failures
+  - Use AskUser tool to confirm deployment with warnings
+- [ ] 3.7 Implement environment-specific check configuration
+  - Production: All checks required (strict mode)
+  - Staging: Most checks required, allow some warnings
+  - Preview: Minimal checks, fast iteration focus
+  - Support custom check configuration per environment
+- [ ] **VERIFY 3**: All pre-flight checks correctly identify issues, blocking checks prevent deployment, check orchestrator provides clear pass/fail reporting
+
+## Phase 4: Deployment Execution Workflow
+
+- [ ] 4.1 Implement deployment preparation
+  - Read deployment configuration from platform files
+  - Validate deployment target (environment, region, project)
+  - Generate deployment plan summary
+  - Use AskUser tool for production deployment confirmation
+  - Display deployment impact (what will change)
+- [ ] 4.2 Implement Vercel deployment execution
+  - Execute `vercel deploy` with appropriate flags
+  - Handle preview vs production deployments
+  - Capture deployment URL from output
+  - Parse deployment logs for errors
+  - Support Vercel environment variables
+  - Handle Vercel monorepo deployments
+- [ ] 4.3 Implement Netlify deployment execution
+  - Execute `netlify deploy` with appropriate flags
+  - Handle draft vs production deployments
+  - Capture deploy preview URL
+  - Parse deployment logs for build errors
+  - Support Netlify functions deployment
+  - Handle Netlify redirects and headers
+- [ ] 4.4 Implement AWS deployment execution
+  - Support AWS CDK deployments (`cdk deploy`)
+  - Support CloudFormation deployments
+  - Support Serverless Framework (`serverless deploy`)
+  - Support AWS SAM (`sam deploy`)
+  - Capture CloudFormation stack outputs
+  - Parse deployment events and status
+  - Handle multi-stack deployments
+- [ ] 4.5 Implement Docker deployment execution
+  - Build Docker image with proper tagging
+  - Push image to registry (Docker Hub, ECR, GCR)
+  - Execute container deployment (docker run, docker-compose up)
+  - Capture container IDs and ports
+  - Parse Docker build logs
+  - Handle multi-stage builds
+- [ ] 4.6 Implement Kubernetes deployment execution
+  - Apply Kubernetes manifests (`kubectl apply`)
+  - Handle Kustomize deployments
+  - Support Helm chart deployments (`helm upgrade --install`)
+  - Monitor rollout status (`kubectl rollout status`)
+  - Capture service endpoints and load balancer IPs
+  - Parse deployment events for errors
+- [ ] 4.7 Implement deployment progress tracking
+  - Display real-time deployment status
+  - Show deployment phase (building, deploying, health checks)
+  - Estimate time remaining based on platform
+  - Stream deployment logs for visibility
+  - Handle long-running deployments gracefully
+- [ ] 4.8 Implement deployment URL and endpoint capture
+  - Extract deployment URLs from platform output
+  - Capture API endpoints and service URLs
+  - Store URLs in deployment-config.json
+  - Display URLs prominently to user
+  - Generate shareable preview links
+- [ ] **VERIFY 4**: Deployments execute successfully on all platforms, deployment URLs are captured correctly, progress tracking provides clear feedback
+
+## Phase 5: Health Verification Implementation
+
+- [ ] 5.1 Implement HTTP endpoint health checks
+  - Execute HTTP GET requests to deployment URL
+  - Validate response status codes (200-299 = healthy)
+  - Check response time against baseline
+  - Validate response body contains expected content
+  - Support custom health check endpoints (e.g., `/health`, `/api/health`)
+  - Retry failed checks with exponential backoff
+- [ ] 5.2 Implement database connectivity verification
+  - Detect database type from configuration
+  - Execute simple connectivity check (ping, select 1)
+  - Validate connection pool settings
+  - Check for database migration status
+  - Parse connection errors for actionable messages
+  - Support multiple database connections
+- [ ] 5.3 Implement performance baseline checks
+  - Measure response times for key endpoints
+  - Compare against previous deployment baseline
+  - Detect performance regressions (>20% slower)
+  - Check resource utilization (CPU, memory, if available)
+  - Validate API rate limits and quotas
+- [ ] 5.4 Implement response validation
+  - Validate JSON/HTML structure in responses
+  - Check for error messages in response bodies
+  - Validate API contract compliance
+  - Detect broken links or 404 errors
+  - Check for console errors (if frontend)
+- [ ] 5.5 Generate health check report artifact
+  - Create `health-check-report.md` with all check results
+  - Include endpoint-by-endpoint status
+  - Add performance metrics table
+  - Document any errors or warnings
+  - Provide recommendations for issues
+  - Include timestamp and deployment version
+- [ ] 5.6 Implement health check failure handling
+  - Detect critical health check failures
+  - Use AskUser tool to ask about rollback decision
+  - Trigger automatic rollback on severe failures
+  - Log health check failures for debugging
+  - Send health check alerts (if configured)
+- [ ] **VERIFY 5**: Health checks accurately validate deployment, performance regressions are detected, health check report is comprehensive and actionable
+
+## Phase 6: Rollback Capability
+
+- [ ] 6.1 Implement deployment history retrieval
+  - Query platform for recent deployments
+  - Parse deployment history from platform API/CLI
+  - Store deployment history in local cache
+  - Display deployment history with versions and timestamps
+  - Support filtering by environment
+- [ ] 6.2 Implement rollback target selection
+  - Default to previous deployment (n-1)
+  - Support rollback to specific version
+  - Display deployment details for confirmation
+  - Validate rollback target is still available
+  - Use AskUser tool to confirm rollback
+- [ ] 6.3 Implement Vercel rollback
+  - Use `vercel rollback` command
+  - Promote specific deployment to production
+  - Capture rollback confirmation
+  - Verify rollback succeeded
+- [ ] 6.4 Implement Netlify rollback
+  - Restore previous deploy via Netlify API
+  - Lock deploy to prevent auto-publishing
+  - Capture rollback status
+- [ ] 6.5 Implement AWS rollback
+  - CloudFormation: Rollback stack update
+  - ECS: Update service to previous task definition
+  - Lambda: Update alias to previous version
+  - Support platform-specific rollback strategies
+- [ ] 6.6 Implement Docker rollback
+  - Stop current container
+  - Start previous container version
+  - Update load balancer/proxy configuration
+  - Validate container health post-rollback
+- [ ] 6.7 Implement Kubernetes rollback
+  - Execute `kubectl rollout undo`
+  - Monitor rollback progress
+  - Validate pods are healthy
+  - Capture rollback events
+- [ ] 6.8 Implement post-rollback verification
+  - Execute health checks on rolled-back deployment
+  - Verify rollback resolved the issue
+  - Generate rollback report
+  - Update deployment-config.json with rollback details
+- [ ] **VERIFY 6**: Rollback executes successfully on all platforms, rollback target selection is intuitive, post-rollback health verification confirms success
+
+## Phase 7: Artifact Generation
+
+- [ ] 7.1 Implement deploy-notes.md generation
+  - Create deployment summary section (version, environment, timestamp)
+  - Document pre-flight check results with pass/fail status
+  - List deployment steps executed with commands
+  - Include health check results summary
+  - Add rollback information (command to rollback)
+  - Include deployment metadata (commit hash, branch, author)
+  - Add links to deployment URLs and dashboards
+  - Follow project markdown conventions
+- [ ] 7.2 Implement deployment-config.json generation
+  - Define JSON schema for deployment configuration
+  - Capture deployment metadata (version, commit, timestamp, author)
+  - Store deployment details (platform, environment, region)
+  - Include pre-flight check results in structured format
+  - Store environment variables status (present/missing, not values)
+  - Include health check results with metrics
+  - Store rollback information (previous version, rollback command)
+  - Validate JSON before writing
+- [ ] 7.3 Implement health-check-report.md generation
+  - Create executive summary of health status
+  - Generate endpoint-by-endpoint health table
+  - Include performance metrics (response times, throughput)
+  - Document any errors or warnings with details
+  - Add database connectivity results
+  - Include resource utilization metrics
+  - Provide actionable recommendations for issues
+  - Compare against previous deployment baseline
+- [ ] 7.4 Implement artifact versioning and storage
+  - Store artifacts in `docs/deployments/YYYY-MM-DD-HH-MM-SS/`
+  - Support artifact retention policy (keep last N deployments)
+  - Create symlinks for latest deployment per environment
+  - Index deployments in `deployment-index.json`
+  - Support artifact cleanup for old deployments
+- [ ] 7.5 Add artifact validation
+  - Validate markdown formatting
+  - Validate JSON schema compliance
+  - Check for required sections/fields
+  - Ensure artifacts are complete before finalizing
+  - Add checksums for integrity verification
+- [ ] **VERIFY 7**: All three artifacts are generated correctly, artifacts contain comprehensive deployment information, validation prevents incomplete artifacts
+
+## Phase 8: Integration with /deploy Command
+
+- [ ] 8.1 Create command-to-agent binding
+  - Map `/deploy` command to deploy agent
+  - Map all sub-commands (app, config, rollback, status, verify, preview, promote, canary, blue-green)
+  - Configure agent invocation parameters per sub-command
+  - Set appropriate timeout per sub-command type
+  - Define fallback behavior if agent fails
+- [ ] 8.2 Implement context passing to agent
+  - Pass environment argument from command
+  - Pass deployment flags (--dry-run, --skip-tests, --force)
+  - Pass platform override if specified
+  - Pass deployment configuration from project
+  - Include git context (branch, commit, author)
+- [ ] 8.3 Implement agent response handling
+  - Parse agent output for deployment status
+  - Extract deployment URLs from agent response
+  - Capture artifact paths for display
+  - Handle agent errors gracefully
+  - Display agent progress in real-time
+- [ ] 8.4 Add agent confirmation workflows
+  - Use AskUser for production deployment confirmation
+  - Show deployment plan before execution
+  - Confirm destructive operations (rollback, blue-green switch)
+  - Allow abort at confirmation prompts
+  - Remember user preferences (--yes flag to skip confirmations)
+- [ ] 8.5 Implement dry-run mode
+  - Execute pre-flight checks only
+  - Generate deployment plan without executing
+  - Show what would be deployed
+  - Validate configuration without side effects
+  - Support `--dry-run` flag
+- [ ] **VERIFY 8**: Agent is correctly invoked by /deploy command, context is passed properly, confirmation workflows are user-friendly
+
+## Phase 9: Advanced Deployment Strategies
+
+- [ ] 9.1 Implement canary deployment support
+  - Detect platform canary support (Kubernetes, AWS ECS)
+  - Configure gradual traffic shifting (1%, 10%, 50%, 100%)
+  - Monitor canary metrics during rollout
+  - Implement automatic rollback on error threshold (>5% error rate)
+  - Use AskUser to confirm manual progression steps
+  - Generate canary comparison report
+- [ ] 9.2 Implement blue-green deployment support
+  - Detect platform blue-green support (Kubernetes, AWS, Docker)
+  - Provision green environment alongside blue
+  - Execute health checks on green before traffic switch
+  - Implement instant traffic switch mechanism
+  - Maintain blue environment for instant rollback
+  - Cleanup old environment after validation period
+- [ ] 9.3 Implement preview deployment workflow
+  - Create branch-based preview deployments
+  - Generate unique preview URLs
+  - Isolate preview environments from production
+  - Implement preview lifecycle management (auto-cleanup after N days)
+  - Support preview sharing with stakeholders
+- [ ] 9.4 Implement promote workflow
+  - Validate staging deployment before promotion
+  - Execute production pre-flight checks
+  - Use AskUser for promotion confirmation
+  - Promote staging to production atomically
+  - Implement rollback-on-failure after promotion
+  - Update deployment tracking
+- [ ] **VERIFY 9**: Advanced deployment strategies work on supported platforms, canary rollbacks are automatic, blue-green switching is instant
+
+## Phase 10: Testing & Validation
+
+- [ ] 10.1 Test platform detection on real projects
+  - Test Vercel detection with vercel.json projects
+  - Test Netlify detection with netlify.toml projects
+  - Test AWS detection with CDK/CloudFormation projects
+  - Test Docker detection with Dockerfile projects
+  - Test Kubernetes detection with k8s manifest projects
+  - Test multi-platform detection and selection
+- [ ] 10.2 Test pre-flight checks with real scenarios
+  - Test with failing tests (should block)
+  - Test with build errors (should block)
+  - Test with uncommitted changes (should warn/block per environment)
+  - Test with wrong branch (should block)
+  - Test with missing environment variables (should block)
+  - Test override mechanisms for non-critical checks
+- [ ] 10.3 Test deployment execution on all platforms
+  - Deploy sample app to Vercel (preview and production)
+  - Deploy sample app to Netlify (draft and production)
+  - Deploy sample app to AWS (CloudFormation/CDK)
+  - Deploy sample app to Docker (build and run)
+  - Deploy sample app to Kubernetes (apply manifests)
+  - Verify deployment URLs are captured correctly
+- [ ] 10.4 Test health verification workflows
+  - Test HTTP health checks with healthy deployment
+  - Test HTTP health checks with failing deployment
+  - Test database connectivity checks
+  - Test performance baseline comparisons
+  - Test health check report generation
+  - Test automatic rollback on health check failure
+- [ ] 10.5 Test rollback functionality
+  - Test rollback to previous version on each platform
+  - Test rollback to specific version
+  - Test rollback with user confirmation
+  - Test automatic rollback triggers
+  - Test post-rollback health verification
+- [ ] 10.6 Test artifact generation
+  - Validate deploy-notes.md completeness
+  - Validate deployment-config.json schema compliance
+  - Validate health-check-report.md accuracy
+  - Test artifact versioning and storage
+  - Test artifact retention and cleanup
+- [ ] 10.7 Test agent configuration and tool usage
+  - Verify agent uses only allowed tools
+  - Test bypassPermissions mode for deployments
+  - Test AskUser confirmations work correctly
+  - Verify agent system prompt guides behavior appropriately
+  - Test agent error handling and recovery
+- [ ] **VERIFY 10**: All platforms deploy successfully, health checks work reliably, rollback functionality is robust, artifacts are accurate and complete
+
+## Phase 11: Documentation & Examples
+
+- [ ] 11.1 Create agent configuration documentation
+  - Document agent purpose and capabilities
+  - Explain tool restrictions and rationale
+  - Document bypassPermissions mode usage
+  - Explain platform support matrix
+  - Provide agent customization guidelines
+- [ ] 11.2 Create deployment workflow documentation
+  - Document pre-flight checks and their requirements
+  - Explain deployment strategies (canary, blue-green, preview)
+  - Document health verification process
+  - Explain rollback procedures
+  - Provide troubleshooting guide for common issues
+- [ ] 11.3 Create platform-specific guides
+  - Vercel deployment guide with example vercel.json
+  - Netlify deployment guide with example netlify.toml
+  - AWS deployment guide (CDK, CloudFormation, Serverless)
+  - Docker deployment guide with example Dockerfile
+  - Kubernetes deployment guide with example manifests
+- [ ] 11.4 Create example artifacts
+  - Example deploy-notes.md for successful deployment
+  - Example deployment-config.json with all sections
+  - Example health-check-report.md with metrics
+  - Example rollback scenario documentation
+- [ ] 11.5 Create integration examples
+  - Example workflow: /test → /deploy (CI/CD)
+  - Example workflow: /deploy:preview → review → /deploy:promote
+  - Example workflow: deployment failure → /deploy:rollback
+  - Example workflow: /validate → /deploy:app → /deploy:verify
+- [ ] **VERIFY 11**: Documentation is comprehensive, examples are realistic and helpful, platform-specific guides enable successful deployments
+
+## Success Criteria
+
+- [ ] Deploy agent configuration file exists at `.claude/agents/deploy.md` with proper YAML frontmatter
+- [ ] Agent uses Sonnet model with bypassPermissions mode for deployment operations
+- [ ] Agent has access to Read, Glob, Grep, Bash, and AskUser tools (read-mostly with deployment execution)
+- [ ] Platform detection correctly identifies Vercel, Netlify, AWS, Docker, and Kubernetes
+- [ ] Pre-flight checks validate tests, build, git status, branch, and environment variables
+- [ ] Deployments execute successfully on all five supported platforms
+- [ ] Health verification includes HTTP checks, database connectivity, performance baselines
+- [ ] Rollback capability works on all platforms with user confirmation
+- [ ] Three artifacts are generated: deploy-notes.md, deployment-config.json, health-check-report.md
+- [ ] Agent uses AskUser tool for production confirmations and rollback decisions
+- [ ] Advanced strategies (canary, blue-green, preview, promote) work on supported platforms
+- [ ] Agent integrates seamlessly with /deploy command and all sub-commands
+- [ ] Dry-run mode allows validation without deployment
+- [ ] All tests pass with successful deployments on real projects
+- [ ] Documentation covers agent configuration, workflows, and platform-specific guides
+- [ ] Agent provides clear progress feedback and actionable error messages
+- [ ] Deployment artifacts are comprehensive and enable audit trail
+- [ ] Agent follows safety-first philosophy with appropriate confirmations

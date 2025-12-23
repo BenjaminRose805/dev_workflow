@@ -1,0 +1,496 @@
+# Implementation Plan: Implement /analyze Command
+
+## Overview
+- **Goal:** Create a comprehensive analysis command with 7 sub-commands for security, performance, quality, dependencies, architecture, accessibility, and test analysis
+- **Priority:** P0
+- **Created:** {{date}}
+- **Output:** `docs/plan-outputs/implement-analyze-command/`
+
+> Implement the /analyze command system that provides comprehensive static and dynamic code analysis capabilities. Supports security vulnerability detection (OWASP Top 10, CWE patterns), performance bottleneck identification, code quality metrics, dependency analysis, architecture conformance, accessibility compliance, and test quality assessment. Generates structured artifacts including findings.json, metrics.json, analysis reports, and prioritized recommendations.
+
+## Phase 1: Core Infrastructure
+
+- [ ] 1.1 Create base command YAML at `.claude/commands/analyze.md`
+  - Set model to `claude-sonnet-4-5`
+  - Configure temperature to `0.0` for deterministic analysis
+  - Configure allowed tools: `Read`, `Glob`, `Grep`, `Bash`
+  - Define category as "Analysis & Quality"
+  - Set up sub-command structure for 7 sub-commands
+- [ ] 1.2 Create universal findings schema (findings.json)
+  - Define JSON schema with: metadata{}, summary{}, findings[]
+  - Include severity levels: critical, high, medium, low, info
+  - Add location fields: file, line, column
+  - Include reference fields: cwe_id, owasp_category, cvss_score
+  - Add recommendation structure with summary and code_example
+  - Include schema version metadata (1.0)
+- [ ] 1.3 Create metrics schema (metrics.json)
+  - Define complexity metrics: average_cyclomatic, max_cyclomatic, cognitive_complexity
+  - Define duplication metrics: percentage, duplicated_lines, duplicated_blocks
+  - Define test coverage metrics: line_coverage, branch_coverage, statement_coverage
+  - Add maintainability_index calculation
+  - Include technical_debt_hours estimation
+- [ ] 1.4 Create base system prompt template
+  - Define role as analysis expert with security/performance/quality knowledge
+  - Include context for severity classification guidelines
+  - Add instructions for evidence-based findings
+  - Include artifact generation requirements
+  - Add baseline comparison logic
+- [ ] 1.5 Set up output directory structure
+  - Create `docs/plan-outputs/implement-analyze-command/` directory
+  - Set up subdirectories: `artifacts/`, `findings/`, `verification/`
+  - Initialize `status.json` tracking file
+  - Create schema validation utilities
+- [ ] 1.6 Implement depth level framework
+  - Create Quick mode (~30s): Pattern matching, critical issues only
+  - Create Standard mode (~2-5min): Comprehensive single-file analysis
+  - Create Deep mode (~10-30min): Cross-file analysis, architectural patterns
+  - Add timeout and scope controls per depth level
+- [ ] **VERIFY 1**: Base YAML structure is valid, schemas validate correctly, depth level framework differentiates analysis scope appropriately
+
+## Phase 2: P0 Sub-Commands - Security Analysis
+
+- [ ] 2.1 Implement `analyze:security` sub-command structure
+  - Create command YAML with security-specific parameters
+  - Add scope filtering (file patterns, directories)
+  - Configure depth level support (quick/standard/deep)
+  - Set output artifacts: security-findings.json, security-report.md, threat-model.md, remediation-plan.md
+- [ ] 2.2 Implement OWASP Top 10 detection logic
+  - A01: Broken Access Control detection patterns
+  - A02: Cryptographic Failures detection patterns
+  - A03: Injection (SQL, NoSQL, Command, XSS, XXE) detection
+  - A04: Insecure Design pattern recognition
+  - A05: Security Misconfiguration detection
+  - A06: Vulnerable and Outdated Components scanning
+  - A07: Identification and Authentication Failures
+  - A08: Software and Data Integrity Failures
+  - A09: Security Logging and Monitoring Failures
+  - A10: Server-Side Request Forgery (SSRF)
+- [ ] 2.3 Implement CWE pattern detection
+  - Map common CWEs to detection patterns (CWE-89, CWE-79, CWE-798, etc.)
+  - Create regex and AST-based detection strategies
+  - Add context analysis for false positive reduction
+  - Include CWE references in findings
+- [ ] 2.4 Implement credential exposure detection
+  - Detect hardcoded passwords, API keys, tokens
+  - Identify secrets in environment variables
+  - Check for exposed connection strings
+  - Detect private keys and certificates
+  - Add entropy-based secret detection
+- [ ] 2.5 Implement authentication/authorization analysis
+  - Detect missing authentication checks
+  - Identify authorization bypass vulnerabilities
+  - Check for weak session management
+  - Analyze JWT implementation security
+  - Detect privilege escalation risks
+- [ ] 2.6 Generate security artifacts
+  - Generate security-findings.json with CWE/OWASP mappings
+  - Generate security-report.md with executive summary
+  - Generate threat-model.md with attack vectors
+  - Generate remediation-plan.md with prioritized fixes
+- [ ] **VERIFY 2**: Security analysis detects known vulnerabilities in test projects, generates valid artifacts, provides actionable remediation guidance
+
+## Phase 3: P0 Sub-Commands - Performance Analysis
+
+- [ ] 3.1 Implement `analyze:performance` sub-command structure
+  - Create command YAML with performance-specific parameters
+  - Add profiling data integration support
+  - Configure depth level support
+  - Set output artifacts: performance-findings.json, performance-report.md, bottlenecks.md, optimization-plan.md
+- [ ] 3.2 Implement algorithmic complexity analysis
+  - Detect O(n²), O(n³), O(2ⁿ) time complexity patterns
+  - Identify nested loops and recursive calls
+  - Analyze sorting and searching algorithm efficiency
+  - Calculate cyclomatic complexity as performance proxy
+  - Generate Big O notation estimates
+- [ ] 3.3 Implement N+1 query detection
+  - Detect database queries in loops
+  - Identify missing eager loading (ORM patterns)
+  - Analyze GraphQL resolver N+1 issues
+  - Check for sequential HTTP requests
+  - Suggest batching and caching strategies
+- [ ] 3.4 Implement database query efficiency analysis
+  - Detect full table scans (missing indexes)
+  - Identify inefficient JOIN patterns
+  - Analyze query complexity
+  - Check for missing query limits/pagination
+  - Detect excessive data fetching
+- [ ] 3.5 Implement frontend performance analysis
+  - Detect unnecessary re-renders (React, Vue, Angular)
+  - Identify missing memoization opportunities
+  - Analyze bundle size and code splitting gaps
+  - Check for unoptimized images and assets
+  - Detect synchronous blocking operations
+- [ ] 3.6 Implement memory leak detection
+  - Identify missing cleanup in lifecycle hooks
+  - Detect event listener leaks
+  - Check for circular references
+  - Analyze closure memory retention
+  - Identify large object accumulation
+- [ ] 3.7 Generate performance artifacts
+  - Generate performance-findings.json with severity and impact
+  - Generate performance-report.md with benchmarks
+  - Generate bottlenecks.md with prioritized issues
+  - Generate optimization-plan.md with effort estimates
+- [ ] **VERIFY 3**: Performance analysis identifies known bottlenecks, provides accurate Big O estimates, generates actionable optimization plans
+
+## Phase 4: P0 Sub-Commands - Quality Analysis
+
+- [ ] 4.1 Implement `analyze:quality` sub-command structure
+  - Create command YAML with quality-specific parameters
+  - Add configurable quality thresholds
+  - Configure depth level support
+  - Set output artifacts: quality-metrics.json, quality-report.md, code-smells.md, refactoring-candidates.md, tech-debt-assessment.md
+- [ ] 4.2 Implement cyclomatic complexity calculation
+  - Calculate McCabe cyclomatic complexity per function
+  - Identify functions exceeding thresholds (>10 = warning, >20 = critical)
+  - Generate complexity distribution histogram
+  - Correlate complexity with bug density
+- [ ] 4.3 Implement cognitive complexity calculation
+  - Calculate cognitive complexity (nested control flow weight)
+  - Identify functions with high cognitive load
+  - Compare cyclomatic vs cognitive complexity
+  - Prioritize refactoring by cognitive impact
+- [ ] 4.4 Implement code duplication detection
+  - Detect exact duplicates (copy-paste)
+  - Identify structural duplicates (similar patterns)
+  - Calculate duplication percentage
+  - Group duplicates by similarity
+  - Suggest abstraction opportunities
+- [ ] 4.5 Implement code smell detection
+  - Long Method (>50 lines)
+  - Large Class (>500 lines, >20 methods)
+  - Long Parameter List (>5 parameters)
+  - God Class (excessive responsibilities)
+  - Feature Envy (method uses another class heavily)
+  - Data Clumps (repeated parameter groups)
+  - Primitive Obsession (missing domain types)
+  - Switch Statements (missing polymorphism)
+  - Divergent Change (class changes for multiple reasons)
+  - Shotgun Surgery (change requires many edits)
+- [ ] 4.6 Implement naming and readability analysis
+  - Check naming conventions consistency
+  - Identify unclear variable names (a, x, tmp, etc.)
+  - Analyze comment density and quality
+  - Detect commented-out code
+  - Check for magic numbers and strings
+- [ ] 4.7 Implement maintainability index calculation
+  - Calculate Halstead Volume
+  - Calculate Maintainability Index (0-100 scale)
+  - Classify files: Good (>65), Moderate (20-65), Difficult (<20)
+  - Correlate with complexity metrics
+- [ ] 4.8 Implement technical debt estimation
+  - Estimate remediation time per issue
+  - Calculate total technical debt hours
+  - Classify debt: design, defect, documentation, test
+  - Prioritize debt by interest rate (impact × probability)
+- [ ] 4.9 Generate quality artifacts
+  - Generate quality-metrics.json with all calculated metrics
+  - Generate quality-report.md with grades and trends
+  - Generate code-smells.md categorized by type
+  - Generate refactoring-candidates.md prioritized by impact
+  - Generate tech-debt-assessment.md with business impact
+- [ ] **VERIFY 4**: Quality analysis calculates accurate metrics, detects common code smells, provides realistic technical debt estimates
+
+## Phase 5: P1 Sub-Commands - Dependencies
+
+- [ ] 5.1 Implement `analyze:dependencies` sub-command structure
+  - Create command YAML with dependency-specific parameters
+  - Add package manager detection (npm, yarn, pnpm, pip, maven, etc.)
+  - Configure depth level support
+  - Set output artifacts: dependency-report.json, dependency-analysis.md, vulnerabilities.json, upgrade-plan.md, license-report.md
+- [ ] 5.2 Implement CVE vulnerability detection
+  - Integrate with npm audit / yarn audit
+  - Parse vulnerability databases (NVD, OSV)
+  - Map CVEs to CVSS scores
+  - Identify transitive dependency vulnerabilities
+  - Calculate exploitability and impact
+- [ ] 5.3 Implement outdated package detection
+  - Compare installed vs latest versions
+  - Identify major/minor/patch version gaps
+  - Check for deprecated packages
+  - Analyze update breaking change risk
+  - Generate safe upgrade path
+- [ ] 5.4 Implement unused dependency detection
+  - Scan codebase for import/require statements
+  - Compare with package.json dependencies
+  - Identify unused dev dependencies
+  - Detect zombie dependencies (removed from code)
+  - Calculate potential bundle size reduction
+- [ ] 5.5 Implement license compliance analysis
+  - Extract license information from packages
+  - Identify license compatibility issues
+  - Detect copyleft licenses (GPL, AGPL)
+  - Check for missing licenses
+  - Generate SPDX/CycloneDX SBOM
+- [ ] 5.6 Implement supply chain risk assessment
+  - Analyze dependency popularity and maintenance
+  - Detect typosquatting risks
+  - Identify abandoned packages (no updates >2 years)
+  - Check for single maintainer risks
+  - Analyze transitive dependency depth
+- [ ] 5.7 Generate dependency artifacts
+  - Generate dependency-report.json with full dependency tree
+  - Generate dependency-analysis.md with risk assessment
+  - Generate vulnerabilities.json with CVE details
+  - Generate upgrade-plan.md with prioritized updates
+  - Generate license-report.md with compliance status
+- [ ] **VERIFY 5**: Dependency analysis detects known CVEs, identifies outdated packages, provides safe upgrade paths
+
+## Phase 6: P1 Sub-Commands - Architecture
+
+- [ ] 6.1 Implement `analyze:architecture` sub-command structure
+  - Create command YAML with architecture-specific parameters
+  - Add architecture pattern detection (MVC, layered, microservices, etc.)
+  - Configure depth level support
+  - Set output artifacts: architecture-analysis.md, violations.json, dependency-graph.json, architecture-score.json, improvement-roadmap.md
+- [ ] 6.2 Implement layer violation detection
+  - Define layer hierarchy (presentation → business → data)
+  - Detect upward dependencies (data → presentation)
+  - Identify layer bypass (presentation → data directly)
+  - Analyze package/module boundaries
+  - Check for circular layer dependencies
+- [ ] 6.3 Implement circular dependency detection
+  - Build module dependency graph
+  - Detect circular references (A → B → A)
+  - Identify strongly connected components
+  - Calculate cycle depth and complexity
+  - Suggest decoupling strategies
+- [ ] 6.4 Implement SOLID principle analysis
+  - Single Responsibility: Detect classes with multiple concerns
+  - Open/Closed: Identify modification vs extension patterns
+  - Liskov Substitution: Detect inheritance violations
+  - Interface Segregation: Identify fat interfaces
+  - Dependency Inversion: Check for concrete dependencies
+- [ ] 6.5 Implement coupling and cohesion metrics
+  - Calculate afferent coupling (incoming dependencies)
+  - Calculate efferent coupling (outgoing dependencies)
+  - Calculate instability (Ce / (Ca + Ce))
+  - Measure cohesion (LCOM - Lack of Cohesion of Methods)
+  - Identify high coupling, low cohesion modules
+- [ ] 6.6 Implement component boundary analysis
+  - Detect feature envy across boundaries
+  - Identify shared mutable state
+  - Analyze cross-cutting concerns
+  - Check for missing abstraction layers
+  - Detect boundary leakage (internal types exposed)
+- [ ] 6.7 Generate architecture artifacts
+  - Generate architecture-analysis.md with patterns and violations
+  - Generate violations.json with severity and locations
+  - Generate dependency-graph.json (nodes and edges)
+  - Generate architecture-score.json with metrics
+  - Generate improvement-roadmap.md with refactoring steps
+- [ ] **VERIFY 6**: Architecture analysis detects layer violations, identifies circular dependencies, provides SOLID compliance assessment
+
+## Phase 7: P1 Sub-Commands - Accessibility & Test
+
+- [ ] 7.1 Implement `analyze:accessibility` sub-command structure
+  - Create command YAML with accessibility-specific parameters
+  - Add framework detection (React, Vue, Angular, HTML)
+  - Configure depth level support
+  - Set output artifacts: accessibility-report.md, violations.json, wcag-checklist.md, remediation-guide.md
+- [ ] 7.2 Implement WCAG 2.1 compliance checking
+  - Level A: Essential accessibility (12 criteria)
+  - Level AA: Ideal accessibility (20 criteria)
+  - Level AAA: Specialized accessibility (28 criteria)
+  - Check perceivable, operable, understandable, robust principles
+  - Generate compliance percentage per level
+- [ ] 7.3 Implement ARIA usage analysis
+  - Detect missing ARIA labels on interactive elements
+  - Identify incorrect ARIA roles
+  - Check for ARIA state misuse
+  - Detect redundant ARIA (native semantics exist)
+  - Validate ARIA landmark structure
+- [ ] 7.4 Implement keyboard navigation analysis
+  - Detect missing tabindex on interactive elements
+  - Identify keyboard traps
+  - Check for skip links
+  - Analyze focus management
+  - Detect missing keyboard event handlers
+- [ ] 7.5 Implement color contrast analysis
+  - Check text/background contrast ratios
+  - Detect WCAG AA failures (<4.5:1 normal, <3:1 large)
+  - Detect WCAG AAA failures (<7:1 normal, <4.5:1 large)
+  - Identify color-only information conveyance
+  - Suggest accessible color alternatives
+- [ ] 7.6 Generate accessibility artifacts
+  - Generate accessibility-report.md with WCAG scores
+  - Generate violations.json with WCAG reference numbers
+  - Generate wcag-checklist.md with pass/fail status
+  - Generate remediation-guide.md with code examples
+- [ ] 7.7 Implement `analyze:test` sub-command structure
+  - Create command YAML with test-specific parameters
+  - Add test framework detection (Jest, Vitest, Mocha, etc.)
+  - Configure depth level support
+  - Set output artifacts: test-analysis.md, coverage-gaps.json, test-smells.md, flaky-tests.json, test-improvement-plan.md
+- [ ] 7.8 Implement test quality analysis
+  - Detect test smells (unclear names, magic values, excessive setup)
+  - Identify missing assertions (empty tests)
+  - Check for test interdependencies
+  - Analyze test/code ratio
+  - Detect overly complex tests
+- [ ] 7.9 Implement coverage gap analysis
+  - Parse coverage reports (lcov, istanbul, c8)
+  - Identify uncovered critical paths
+  - Detect missing edge case tests
+  - Prioritize gaps by code complexity
+  - Calculate risk-weighted coverage
+- [ ] 7.10 Implement flaky test detection
+  - Analyze test execution history
+  - Detect time-dependent tests
+  - Identify race conditions in tests
+  - Check for shared mutable state
+  - Detect environment-dependent tests
+- [ ] 7.11 Generate test artifacts
+  - Generate test-analysis.md with quality assessment
+  - Generate coverage-gaps.json with prioritized gaps
+  - Generate test-smells.md categorized by type
+  - Generate flaky-tests.json with root causes
+  - Generate test-improvement-plan.md with recommendations
+- [ ] **VERIFY 7**: Accessibility analysis detects WCAG violations, test analysis identifies quality issues and flaky tests
+
+## Phase 8: Artifact Generation & Reports
+
+- [ ] 8.1 Implement universal findings.json generator
+  - Aggregate findings from all sub-commands
+  - Apply consistent severity classification
+  - Add CWE, OWASP, CVSS references
+  - Include location information (file, line, column)
+  - Generate recommendation structure
+  - Validate against findings.json schema
+- [ ] 8.2 Implement universal metrics.json generator
+  - Aggregate metrics from quality analysis
+  - Calculate composite metrics
+  - Add trend indicators (vs baseline)
+  - Include thresholds and pass/fail status
+  - Validate against metrics.json schema
+- [ ] 8.3 Implement analysis-report.md generator
+  - Create executive summary section
+  - Add findings breakdown by severity
+  - Include metrics visualization (ASCII charts)
+  - Add top issues section with details
+  - Include methodology and scope
+  - Add timestamp and analysis metadata
+- [ ] 8.4 Implement recommendations.md generator
+  - Prioritize findings by severity × impact
+  - Group recommendations by category
+  - Add effort estimates (low/medium/high)
+  - Include code examples for fixes
+  - Create phased remediation plan
+  - Add quick wins section
+- [ ] 8.5 Implement artifact validation logic
+  - Validate JSON schemas before writing
+  - Check markdown formatting
+  - Ensure required fields are present
+  - Verify schema version compatibility
+  - Add checksums for integrity
+- [ ] 8.6 Add output formatting options
+  - Support JSON output for CI/CD integration
+  - Support markdown for human review
+  - Support GitHub annotations format
+  - Support SARIF format for security tools
+  - Support JUnit XML for test integration
+- [ ] **VERIFY 8**: All artifacts validate against schemas, contain accurate aggregated data, provide actionable insights
+
+## Phase 9: Baseline Comparison & Trends
+
+- [ ] 9.1 Implement baseline storage mechanism
+  - Store findings.json and metrics.json as baseline
+  - Support git branch-based baselines
+  - Support tag-based baselines
+  - Support custom baseline files
+  - Add baseline metadata (commit, date, author)
+- [ ] 9.2 Implement delta calculation logic
+  - Compare current findings vs baseline findings
+  - Identify new findings (regressions)
+  - Identify fixed findings (improvements)
+  - Calculate metric deltas (complexity, coverage, etc.)
+  - Determine overall trend (improving/degrading)
+- [ ] 9.3 Implement trend visualization
+  - Generate trend charts (ASCII or embedded)
+  - Show severity distribution changes
+  - Display metric changes over time
+  - Highlight significant regressions
+  - Show improvement areas
+- [ ] 9.4 Implement fail conditions
+  - Support `--fail-on=critical,high` severity thresholds
+  - Add metric threshold gates (max complexity, min coverage)
+  - Support regression blocking (any new critical issue)
+  - Add customizable quality gates
+  - Generate exit codes for CI/CD integration
+- [ ] 9.5 Add baseline comparison to artifacts
+  - Add baseline comparison section to analysis-report.md
+  - Include delta metrics in metrics.json
+  - Mark new/fixed findings in findings.json
+  - Add trend summary to recommendations.md
+- [ ] **VERIFY 9**: Baseline comparison accurately identifies regressions and improvements, fail conditions work correctly in CI/CD
+
+## Phase 10: Integration & Testing
+
+- [ ] 10.1 Test all sub-commands with real projects
+  - Test analyze:security on vulnerable code samples (OWASP WebGoat, Juice Shop)
+  - Test analyze:performance on known bottleneck projects
+  - Test analyze:quality on high/low quality codebases
+  - Test analyze:dependencies on projects with CVEs
+  - Test analyze:architecture on layered/microservices projects
+  - Test analyze:accessibility on web applications
+  - Test analyze:test on projects with test suites
+- [ ] 10.2 Validate artifact accuracy
+  - Verify findings.json contains accurate CWE/OWASP mappings
+  - Verify metrics.json calculations match manual verification
+  - Verify analysis-report.md presents findings clearly
+  - Verify recommendations.md provides actionable guidance
+  - Check all JSON artifacts validate against schemas
+- [ ] 10.3 Test depth levels
+  - Verify Quick mode completes in ~30s
+  - Verify Standard mode completes in 2-5min
+  - Verify Deep mode provides comprehensive analysis in 10-30min
+  - Validate depth level affects scope appropriately
+  - Check timeout handling
+- [ ] 10.4 Test CI/CD integration
+  - Create GitHub Actions workflow example
+  - Test GitLab CI pipeline integration
+  - Verify exit codes work correctly
+  - Test annotation format output
+  - Validate baseline comparison in PR workflows
+- [ ] 10.5 Performance optimization
+  - Measure analysis time per sub-command
+  - Optimize file system operations (batch reads)
+  - Cache parsed ASTs when possible
+  - Parallelize independent analyses
+  - Add progress indicators for long operations
+- [ ] 10.6 Create comprehensive documentation
+  - Write command reference for all 7 sub-commands
+  - Document all artifact schemas with examples
+  - Add troubleshooting section
+  - Create best practices guide
+  - Document depth levels and when to use them
+  - Add baseline comparison workflow guide
+  - Include CI/CD integration examples
+- [ ] 10.7 Create example artifacts
+  - Generate sample findings.json for each sub-command
+  - Generate sample metrics.json
+  - Generate sample analysis-report.md
+  - Generate sample recommendations.md
+  - Include baseline comparison examples
+- [ ] **VERIFY 10**: All sub-commands work on real projects, artifacts are accurate, documentation is complete, performance is acceptable
+
+## Success Criteria
+
+- [ ] Base /analyze command YAML is valid and registers all 7 sub-commands
+- [ ] Universal findings.json and metrics.json schemas are well-defined and validate correctly
+- [ ] analyze:security detects OWASP Top 10 vulnerabilities, CWE patterns, and credential exposure
+- [ ] analyze:performance identifies algorithmic complexity, N+1 queries, and memory leaks
+- [ ] analyze:quality calculates cyclomatic/cognitive complexity, detects code smells, estimates technical debt
+- [ ] analyze:dependencies detects CVEs, identifies outdated packages, analyzes license compliance
+- [ ] analyze:architecture detects layer violations, circular dependencies, SOLID violations
+- [ ] analyze:accessibility checks WCAG 2.1 compliance, ARIA usage, keyboard navigation
+- [ ] analyze:test analyzes test quality, identifies coverage gaps, detects flaky tests
+- [ ] All 4 universal artifacts (findings.json, metrics.json, analysis-report.md, recommendations.md) generate correctly
+- [ ] Depth levels (Quick/Standard/Deep) provide appropriate trade-offs between speed and thoroughness
+- [ ] Baseline comparison accurately identifies regressions and improvements
+- [ ] Fail conditions work correctly for CI/CD integration
+- [ ] All artifacts validate against defined schemas
+- [ ] Command works correctly with at least 5 different real-world project structures
+- [ ] Documentation covers all features with working examples
+- [ ] Performance is acceptable: Quick <30s, Standard <5min, Deep <30min for typical projects
+- [ ] CI/CD integration examples work in GitHub Actions, GitLab CI, and other platforms
