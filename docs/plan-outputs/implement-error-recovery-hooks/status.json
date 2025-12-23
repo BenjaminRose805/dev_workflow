@@ -1,0 +1,737 @@
+{
+  "planPath": "docs/plans/implement-error-recovery-hooks.md",
+  "planName": "Implementation Plan: Error Recovery Hooks",
+  "createdAt": "2025-12-23T03:12:13.942Z",
+  "lastUpdatedAt": "2025-12-23T03:12:13.942Z",
+  "currentPhase": "Phase 1: Error Classification System",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Error Classification System",
+      "description": "1.1 Create error classification types enum with five categories: recoverable_transient, recoverable_validation, partial_failure, non_recoverable, user_intervention",
+      "status": "pending"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Error Classification System",
+      "description": "1.2 Implement error classifier function that analyzes error messages, exit codes, and tool types to assign categories",
+      "status": "pending"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Error Classification System",
+      "description": "1.3 Design error context data structure with fields: error_id, timestamp, category, tool_name, error_message, stack_trace, context_snapshot, recovery_attempts, recovery_history",
+      "status": "pending"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Error Classification System",
+      "description": "1.4 Create error context serialization to JSON format for persistence across recovery attempts",
+      "status": "pending"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Error Classification System",
+      "description": "1.5 Implement error registry/store to track errors during workflow execution",
+      "status": "pending"
+    },
+    {
+      "id": "1.6",
+      "phase": "Phase 1: Error Classification System",
+      "description": "1.6 Add error classification rules configuration file for customizing classification logic",
+      "status": "pending"
+    },
+    {
+      "id": "1.7",
+      "phase": "Phase 1: Error Classification System",
+      "description": "1.7 Create unit tests for error classification across different error types and scenarios",
+      "status": "pending"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Automatic Retry with Exponential Backoff",
+      "description": "2.1 Create retry configuration schema with fields: max_attempts, initial_delay_ms, max_delay_ms, backoff_multiplier, jitter_enabled",
+      "status": "pending"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Automatic Retry with Exponential Backoff",
+      "description": "2.2 Implement exponential backoff calculator that computes delay based on attempt number and configuration",
+      "status": "pending"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Automatic Retry with Exponential Backoff",
+      "description": "2.3 Add jitter randomization to prevent thundering herd problems in distributed scenarios",
+      "status": "pending"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Automatic Retry with Exponential Backoff",
+      "description": "2.4 Create retry executor that wraps tool execution with automatic retry logic",
+      "status": "pending"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Automatic Retry with Exponential Backoff",
+      "description": "2.5 Implement retry condition evaluator that determines if error is retry-eligible based on classification",
+      "status": "pending"
+    },
+    {
+      "id": "2.6",
+      "phase": "Phase 2: Automatic Retry with Exponential Backoff",
+      "description": "2.6 Add retry tracking to error context to record all retry attempts with timestamps and outcomes",
+      "status": "pending"
+    },
+    {
+      "id": "2.7",
+      "phase": "Phase 2: Automatic Retry with Exponential Backoff",
+      "description": "2.7 Create configurable retry policies per tool type (e.g., network operations vs. file operations)",
+      "status": "pending"
+    },
+    {
+      "id": "2.8",
+      "phase": "Phase 2: Automatic Retry with Exponential Backoff",
+      "description": "2.8 Implement retry circuit breaker to prevent infinite retry loops when system is degraded",
+      "status": "pending"
+    },
+    {
+      "id": "2.9",
+      "phase": "Phase 2: Automatic Retry with Exponential Backoff",
+      "description": "2.9 Add logging and telemetry for retry attempts with duration, outcome, and backoff delay",
+      "status": "pending"
+    },
+    {
+      "id": "2.10",
+      "phase": "Phase 2: Automatic Retry with Exponential Backoff",
+      "description": "2.10 Create tests for retry logic including success after N attempts, max attempts exceeded, and backoff timing",
+      "status": "pending"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Checkpoint and Resume Capability",
+      "description": "3.1 Design checkpoint data structure with fields: checkpoint_id, workflow_id, timestamp, completed_tasks, pending_tasks, state_snapshot, artifacts_created",
+      "status": "pending"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Checkpoint and Resume Capability",
+      "description": "3.2 Create checkpoint storage interface (file-based initially, extensible for other backends)",
+      "status": "pending"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Checkpoint and Resume Capability",
+      "description": "3.3 Implement checkpoint writer that serializes workflow state to disk at designated savepoints",
+      "status": "pending"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Checkpoint and Resume Capability",
+      "description": "3.4 Add automatic checkpoint creation after each successful tool execution in batch operations",
+      "status": "pending"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Checkpoint and Resume Capability",
+      "description": "3.5 Create checkpoint reader that deserializes saved state for resume operations",
+      "status": "pending"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Checkpoint and Resume Capability",
+      "description": "3.6 Implement resume logic that reconstructs workflow state and continues from last checkpoint",
+      "status": "pending"
+    },
+    {
+      "id": "3.7",
+      "phase": "Phase 3: Checkpoint and Resume Capability",
+      "description": "3.7 Add checkpoint cleanup mechanism to remove old checkpoints after successful completion",
+      "status": "pending"
+    },
+    {
+      "id": "3.8",
+      "phase": "Phase 3: Checkpoint and Resume Capability",
+      "description": "3.8 Create checkpoint validation to ensure integrity before resume (checksum verification)",
+      "status": "pending"
+    },
+    {
+      "id": "3.9",
+      "phase": "Phase 3: Checkpoint and Resume Capability",
+      "description": "3.9 Implement manual checkpoint triggers via hook configuration for critical operations",
+      "status": "pending"
+    },
+    {
+      "id": "3.10",
+      "phase": "Phase 3: Checkpoint and Resume Capability",
+      "description": "3.10 Add checkpoint metadata index for quick lookup and recovery point selection",
+      "status": "pending"
+    },
+    {
+      "id": "3.11",
+      "phase": "Phase 3: Checkpoint and Resume Capability",
+      "description": "3.11 Create tests for checkpoint save/restore cycle, partial completion resume, and corrupted checkpoint handling",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Rollback Mechanisms",
+      "description": "4.1 Design rollback transaction log structure with fields: operation_id, tool_name, action_type, original_state, new_state, rollback_script",
+      "status": "pending"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Rollback Mechanisms",
+      "description": "4.2 Create transaction logger that records reversible operations during tool execution",
+      "status": "pending"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Rollback Mechanisms",
+      "description": "4.3 Implement rollback generators for common operations: file edits, file creation, directory operations, git operations",
+      "status": "pending"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Rollback Mechanisms",
+      "description": "4.4 Add rollback executor that applies inverse operations in reverse chronological order",
+      "status": "pending"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Rollback Mechanisms",
+      "description": "4.5 Create rollback verification to confirm state has been restored to pre-operation condition",
+      "status": "pending"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Rollback Mechanisms",
+      "description": "4.6 Implement partial rollback for operations that partially succeeded before failure",
+      "status": "pending"
+    },
+    {
+      "id": "4.7",
+      "phase": "Phase 4: Rollback Mechanisms",
+      "description": "4.7 Add rollback safety checks to prevent data loss (e.g., confirm before deleting created files)",
+      "status": "pending"
+    },
+    {
+      "id": "4.8",
+      "phase": "Phase 4: Rollback Mechanisms",
+      "description": "4.8 Create rollback strategy configuration to define which operations support automatic rollback",
+      "status": "pending"
+    },
+    {
+      "id": "4.9",
+      "phase": "Phase 4: Rollback Mechanisms",
+      "description": "4.9 Implement rollback conflict detection when original state has changed since operation began",
+      "status": "pending"
+    },
+    {
+      "id": "4.10",
+      "phase": "Phase 4: Rollback Mechanisms",
+      "description": "4.10 Add rollback reporting to show what was undone and final system state",
+      "status": "pending"
+    },
+    {
+      "id": "4.11",
+      "phase": "Phase 4: Rollback Mechanisms",
+      "description": "4.11 Create tests for full rollback, partial rollback, and rollback failure scenarios",
+      "status": "pending"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Manual Intervention Prompts",
+      "description": "5.1 Design intervention prompt data structure with fields: prompt_id, error_context, suggested_actions, user_options, timeout_behavior",
+      "status": "pending"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Manual Intervention Prompts",
+      "description": "5.2 Create intervention prompt generator that formats error information into user-friendly prompts",
+      "status": "pending"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Manual Intervention Prompts",
+      "description": "5.3 Implement intervention handler that displays prompt and waits for user input",
+      "status": "pending"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Manual Intervention Prompts",
+      "description": "5.4 Add pre-defined intervention templates for common scenarios: authentication failures, missing dependencies, permission errors, resource conflicts",
+      "status": "pending"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Manual Intervention Prompts",
+      "description": "5.5 Create user response parser that interprets intervention choices (retry, skip, abort, manual_fix_complete)",
+      "status": "pending"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: Manual Intervention Prompts",
+      "description": "5.6 Implement intervention timeout mechanism with configurable default actions",
+      "status": "pending"
+    },
+    {
+      "id": "5.7",
+      "phase": "Phase 5: Manual Intervention Prompts",
+      "description": "5.7 Add intervention logging to track user decisions and outcomes for future learning",
+      "status": "pending"
+    },
+    {
+      "id": "5.8",
+      "phase": "Phase 5: Manual Intervention Prompts",
+      "description": "5.8 Create intervention approval gates for high-risk operations requiring explicit user consent",
+      "status": "pending"
+    },
+    {
+      "id": "5.9",
+      "phase": "Phase 5: Manual Intervention Prompts",
+      "description": "5.9 Implement intervention escalation when automated recovery fails after N attempts",
+      "status": "pending"
+    },
+    {
+      "id": "5.10",
+      "phase": "Phase 5: Manual Intervention Prompts",
+      "description": "5.10 Add intervention context preservation so users have full error history when making decisions",
+      "status": "pending"
+    },
+    {
+      "id": "5.11",
+      "phase": "Phase 5: Manual Intervention Prompts",
+      "description": "5.11 Create tests for intervention flow including user confirmation, timeout behavior, and retry after manual fix",
+      "status": "pending"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Hook Configuration and Integration",
+      "description": "6.1 Extend .claude/settings.json schema to include error_recovery section with global configuration",
+      "status": "pending"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Hook Configuration and Integration",
+      "description": "6.2 Create hook configuration options: recovery_enabled, auto_retry_enabled, checkpoint_enabled, rollback_enabled, intervention_enabled",
+      "status": "pending"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Hook Configuration and Integration",
+      "description": "6.3 Implement PostToolUse hook integration to intercept tool failures and trigger recovery logic",
+      "status": "pending"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Hook Configuration and Integration",
+      "description": "6.4 Add PreToolUse hook integration for pre-validation and environment setup before risky operations",
+      "status": "pending"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Hook Configuration and Integration",
+      "description": "6.5 Create per-tool recovery policy configuration to override global settings for specific tools",
+      "status": "pending"
+    },
+    {
+      "id": "6.6",
+      "phase": "Phase 6: Hook Configuration and Integration",
+      "description": "6.6 Implement hook exit code mapping: 0 (success, continue), 1 (non-blocking warning), 2 (blocking error, trigger recovery)",
+      "status": "pending"
+    },
+    {
+      "id": "6.7",
+      "phase": "Phase 6: Hook Configuration and Integration",
+      "description": "6.7 Add recovery strategy selection logic based on error category and configuration",
+      "status": "pending"
+    },
+    {
+      "id": "6.8",
+      "phase": "Phase 6: Hook Configuration and Integration",
+      "description": "6.8 Create dependency failure propagation handling for batch operations (fail-fast vs. continue-on-error)",
+      "status": "pending"
+    },
+    {
+      "id": "6.9",
+      "phase": "Phase 6: Hook Configuration and Integration",
+      "description": "6.9 Implement SessionStart hook integration to load previous checkpoints for session resume",
+      "status": "pending"
+    },
+    {
+      "id": "6.10",
+      "phase": "Phase 6: Hook Configuration and Integration",
+      "description": "6.10 Add SessionEnd hook integration to clean up recovery state and generate recovery reports",
+      "status": "pending"
+    },
+    {
+      "id": "6.11",
+      "phase": "Phase 6: Hook Configuration and Integration",
+      "description": "6.11 Create hook configuration validation to ensure recovery settings are valid and compatible",
+      "status": "pending"
+    },
+    {
+      "id": "6.12",
+      "phase": "Phase 6: Hook Configuration and Integration",
+      "description": "6.12 Implement recovery metrics collection for monitoring (recovery success rate, average retry count, checkpoint usage)",
+      "status": "pending"
+    },
+    {
+      "id": "6.13",
+      "phase": "Phase 6: Hook Configuration and Integration",
+      "description": "6.13 Create configuration migration tool to update existing .claude/settings.json files with recovery defaults",
+      "status": "pending"
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Workflow Integration Patterns",
+      "description": "7.1 Create batch operation recovery orchestrator that manages recovery for multiple sequential tasks",
+      "status": "pending"
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Workflow Integration Patterns",
+      "description": "7.2 Implement dependency graph analysis to determine impact of task failures on downstream tasks",
+      "status": "pending"
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: Workflow Integration Patterns",
+      "description": "7.3 Add dependency failure propagation modes: fail_all_dependents, continue_independent, user_decide",
+      "status": "pending"
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: Workflow Integration Patterns",
+      "description": "7.4 Create parallel task recovery coordination to handle concurrent failures",
+      "status": "pending"
+    },
+    {
+      "id": "7.5",
+      "phase": "Phase 7: Workflow Integration Patterns",
+      "description": "7.5 Implement resume-from-failure-point logic for batch operations using checkpoints",
+      "status": "pending"
+    },
+    {
+      "id": "7.6",
+      "phase": "Phase 7: Workflow Integration Patterns",
+      "description": "7.6 Add task skipping capability when dependencies fail but downstream tasks can continue",
+      "status": "pending"
+    },
+    {
+      "id": "7.7",
+      "phase": "Phase 7: Workflow Integration Patterns",
+      "description": "7.7 Create recovery priority ordering for when multiple failures occur simultaneously",
+      "status": "pending"
+    },
+    {
+      "id": "7.8",
+      "phase": "Phase 7: Workflow Integration Patterns",
+      "description": "7.8 Implement cascading rollback for dependent task chains when parent task fails",
+      "status": "pending"
+    },
+    {
+      "id": "7.9",
+      "phase": "Phase 7: Workflow Integration Patterns",
+      "description": "7.9 Add workflow-level recovery policy configuration (aggressive retry vs. cautious intervention)",
+      "status": "pending"
+    },
+    {
+      "id": "7.10",
+      "phase": "Phase 7: Workflow Integration Patterns",
+      "description": "7.10 Create recovery report generator that summarizes all recovery actions taken during workflow",
+      "status": "pending"
+    },
+    {
+      "id": "7.11",
+      "phase": "Phase 7: Workflow Integration Patterns",
+      "description": "7.11 Implement tests for batch operation recovery, dependency failure scenarios, and complex workflows",
+      "status": "pending"
+    },
+    {
+      "id": "8.1",
+      "phase": "Phase 8: Advanced Recovery Patterns (P2)",
+      "description": "8.1 Create circuit breaker state machine with states: closed, open, half_open",
+      "status": "pending"
+    },
+    {
+      "id": "8.2",
+      "phase": "Phase 8: Advanced Recovery Patterns (P2)",
+      "description": "8.2 Implement circuit breaker failure threshold tracking (e.g., open after 5 failures in 60 seconds)",
+      "status": "pending"
+    },
+    {
+      "id": "8.3",
+      "phase": "Phase 8: Advanced Recovery Patterns (P2)",
+      "description": "8.3 Add circuit breaker automatic recovery attempt after cooldown period (half_open state)",
+      "status": "pending"
+    },
+    {
+      "id": "8.4",
+      "phase": "Phase 8: Advanced Recovery Patterns (P2)",
+      "description": "8.4 Create circuit breaker configuration per tool or system-wide",
+      "status": "pending"
+    },
+    {
+      "id": "8.5",
+      "phase": "Phase 8: Advanced Recovery Patterns (P2)",
+      "description": "8.5 Implement webhook notification system for recovery events (failure, success, intervention_required)",
+      "status": "pending"
+    },
+    {
+      "id": "8.6",
+      "phase": "Phase 8: Advanced Recovery Patterns (P2)",
+      "description": "8.6 Add webhook configuration schema with URL, auth, retry policy, event filters",
+      "status": "pending"
+    },
+    {
+      "id": "8.7",
+      "phase": "Phase 8: Advanced Recovery Patterns (P2)",
+      "description": "8.7 Create webhook payload templates with error context and recovery status",
+      "status": "pending"
+    },
+    {
+      "id": "8.8",
+      "phase": "Phase 8: Advanced Recovery Patterns (P2)",
+      "description": "8.8 Implement full workflow rollback that undoes all changes from workflow start to failure point",
+      "status": "pending"
+    },
+    {
+      "id": "8.9",
+      "phase": "Phase 8: Advanced Recovery Patterns (P2)",
+      "description": "8.9 Add recovery command interfaces for manual triggering: /recover, /retry, /rollback, /resume",
+      "status": "pending"
+    },
+    {
+      "id": "8.10",
+      "phase": "Phase 8: Advanced Recovery Patterns (P2)",
+      "description": "8.10 Create recovery dashboard data export for monitoring and analytics",
+      "status": "pending"
+    },
+    {
+      "id": "8.11",
+      "phase": "Phase 8: Advanced Recovery Patterns (P2)",
+      "description": "8.11 Implement tests for circuit breaker state transitions, webhook delivery, and full rollback scenarios",
+      "status": "pending"
+    },
+    {
+      "id": "9.1",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.1 Create unit tests for error classifier with 30+ test cases covering all error categories",
+      "status": "pending"
+    },
+    {
+      "id": "9.2",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.2 Implement integration tests for retry logic with simulated transient failures",
+      "status": "pending"
+    },
+    {
+      "id": "9.3",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.3 Add checkpoint/resume integration tests with interrupted workflows of varying complexity",
+      "status": "pending"
+    },
+    {
+      "id": "9.4",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.4 Create rollback integration tests for file operations, git operations, and multi-step transactions",
+      "status": "pending"
+    },
+    {
+      "id": "9.5",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.5 Implement intervention prompt tests with automated user input simulation",
+      "status": "pending"
+    },
+    {
+      "id": "9.6",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.6 Add hook integration tests verifying PostToolUse and PreToolUse recovery triggers",
+      "status": "pending"
+    },
+    {
+      "id": "9.7",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.7 Create end-to-end workflow tests combining multiple recovery strategies",
+      "status": "pending"
+    },
+    {
+      "id": "9.8",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.8 Implement failure injection framework for systematic chaos testing",
+      "status": "pending"
+    },
+    {
+      "id": "9.9",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.9 Add performance tests to ensure recovery overhead is acceptable (< 50ms for classification)",
+      "status": "pending"
+    },
+    {
+      "id": "9.10",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.10 Create edge case tests: concurrent failures, cascading failures, recovery during recovery",
+      "status": "pending"
+    },
+    {
+      "id": "9.11",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.11 Implement configuration validation tests for all .claude/settings.json recovery options",
+      "status": "pending"
+    },
+    {
+      "id": "9.12",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.12 Add regression tests for previously discovered recovery bugs",
+      "status": "pending"
+    },
+    {
+      "id": "9.13",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.13 Create documentation tests to verify all examples in docs work correctly",
+      "status": "pending"
+    },
+    {
+      "id": "10.1",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "10.1 Write architecture documentation explaining error recovery design and components",
+      "status": "pending"
+    },
+    {
+      "id": "10.2",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "10.2 Create configuration guide for .claude/settings.json recovery settings with all options explained",
+      "status": "pending"
+    },
+    {
+      "id": "10.3",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "10.3 Write user guide for understanding recovery behavior and intervention prompts",
+      "status": "pending"
+    },
+    {
+      "id": "10.4",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "10.4 Create recovery strategy selection guide (when to use retry vs. checkpoint vs. rollback)",
+      "status": "pending"
+    },
+    {
+      "id": "10.5",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "10.5 Add example configurations for common scenarios: web scraping, file processing, API integration",
+      "status": "pending"
+    },
+    {
+      "id": "10.6",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "10.6 Write troubleshooting guide for recovery issues with common problems and solutions",
+      "status": "pending"
+    },
+    {
+      "id": "10.7",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "10.7 Create recovery metrics and monitoring guide for production usage",
+      "status": "pending"
+    },
+    {
+      "id": "10.8",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "10.8 Add API reference documentation for recovery hooks and interfaces",
+      "status": "pending"
+    },
+    {
+      "id": "10.9",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "10.9 Write migration guide for adding recovery to existing workflows",
+      "status": "pending"
+    },
+    {
+      "id": "10.10",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "10.10 Create video/tutorial walkthrough of recovery features with real examples",
+      "status": "pending"
+    },
+    {
+      "id": "10.11",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Error classification system accurately categorizes errors into five defined categories with 95%+ accuracy on test dataset",
+      "status": "pending"
+    },
+    {
+      "id": "10.12",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Automatic retry with exponential backoff successfully recovers from transient failures within configured attempts",
+      "status": "pending"
+    },
+    {
+      "id": "10.13",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Checkpoint/resume capability enables long-running workflows to resume from failure point without re-executing completed tasks",
+      "status": "pending"
+    },
+    {
+      "id": "10.14",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Rollback mechanism successfully reverses partial changes when recovery is not possible, verified through state comparison",
+      "status": "pending"
+    },
+    {
+      "id": "10.15",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Manual intervention prompts appear for user_intervention category errors and correctly process user responses",
+      "status": "pending"
+    },
+    {
+      "id": "10.16",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "PostToolUse and PreToolUse hooks integrate seamlessly with recovery framework using configuration in .claude/settings.json",
+      "status": "pending"
+    },
+    {
+      "id": "10.17",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Batch operations with dependencies correctly propagate failures and apply appropriate recovery strategies",
+      "status": "pending"
+    },
+    {
+      "id": "10.18",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "All recovery components have 85%+ test coverage with passing integration and end-to-end tests",
+      "status": "pending"
+    },
+    {
+      "id": "10.19",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Recovery overhead adds less than 100ms latency to normal tool execution (when no errors occur)",
+      "status": "pending"
+    },
+    {
+      "id": "10.20",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Documentation provides clear guidance for configuring and using all recovery features with working examples",
+      "status": "pending"
+    },
+    {
+      "id": "10.21",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Circuit breaker prevents cascading failures and automatically recovers after cooldown period",
+      "status": "pending"
+    },
+    {
+      "id": "10.22",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Recovery metrics and logging provide visibility into system behavior for monitoring and debugging",
+      "status": "pending"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 120,
+    "completed": 0,
+    "pending": 120,
+    "failed": 0,
+    "skipped": 0
+  }
+}

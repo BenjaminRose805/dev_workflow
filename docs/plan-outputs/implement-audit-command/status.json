@@ -1,0 +1,665 @@
+{
+  "planPath": "docs/plans/implement-audit-command.md",
+  "planName": "Implementation Plan: /audit Command",
+  "createdAt": "2025-12-23T04:58:02.369Z",
+  "lastUpdatedAt": "2025-12-23T04:58:02.369Z",
+  "currentPhase": "Phase 1: Core Command Setup",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.1 Create `/audit` command file at `.claude/commands/audit.md`",
+      "status": "pending"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.2 Add YAML frontmatter with configuration:",
+      "status": "pending"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.3 Write base command prompt with sections:",
+      "status": "pending"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.4 Define default parameters:",
+      "status": "pending"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.5 Create output directory structure: `docs/audits/`",
+      "status": "pending"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Audit Workflow Implementation",
+      "description": "2.1 Implement Audit Parameters phase:",
+      "status": "pending"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Audit Workflow Implementation",
+      "description": "2.2 Implement Evidence Collection phase:",
+      "status": "pending"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Audit Workflow Implementation",
+      "description": "2.3 Implement Analysis phase:",
+      "status": "pending"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Audit Workflow Implementation",
+      "description": "2.4 Implement Reporting phase:",
+      "status": "pending"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Audit Workflow Implementation",
+      "description": "2.5 Implement Risk Prioritization:",
+      "status": "pending"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Sub-Command Implementation (Security)",
+      "description": "3.1.1 Create `/audit:security` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Sub-Command Implementation (Security)",
+      "description": "3.1.2 Implement OWASP Top 10 checks:",
+      "status": "pending"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Sub-Command Implementation (Security)",
+      "description": "3.1.3 Implement CWE pattern detection:",
+      "status": "pending"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Sub-Command Implementation (Security)",
+      "description": "3.1.4 Generate specialized artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Sub-Command Implementation (Security)",
+      "description": "3.2.1 Create `/audit:secrets` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Sub-Command Implementation (Security)",
+      "description": "3.2.2 Implement secret detection:",
+      "status": "pending"
+    },
+    {
+      "id": "3.7",
+      "phase": "Phase 3: Sub-Command Implementation (Security)",
+      "description": "3.2.3 Implement secret management assessment:",
+      "status": "pending"
+    },
+    {
+      "id": "3.8",
+      "phase": "Phase 3: Sub-Command Implementation (Security)",
+      "description": "3.2.4 Generate specialized artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.9",
+      "phase": "Phase 3: Sub-Command Implementation (Security)",
+      "description": "3.3.1 Create `/audit:dependencies` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.10",
+      "phase": "Phase 3: Sub-Command Implementation (Security)",
+      "description": "3.3.2 Implement vulnerability scanning:",
+      "status": "pending"
+    },
+    {
+      "id": "3.11",
+      "phase": "Phase 3: Sub-Command Implementation (Security)",
+      "description": "3.3.3 Implement supply chain assessment:",
+      "status": "pending"
+    },
+    {
+      "id": "3.12",
+      "phase": "Phase 3: Sub-Command Implementation (Security)",
+      "description": "3.3.4 Generate specialized artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Sub-Command Implementation (Compliance)",
+      "description": "4.1.1 Create `/audit:compliance` command file",
+      "status": "pending"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Sub-Command Implementation (Compliance)",
+      "description": "4.1.2 Implement SOC2 Type II checks:",
+      "status": "pending"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Sub-Command Implementation (Compliance)",
+      "description": "4.1.3 Implement GDPR checks:",
+      "status": "pending"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Sub-Command Implementation (Compliance)",
+      "description": "4.1.4 Implement HIPAA checks:",
+      "status": "pending"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Sub-Command Implementation (Compliance)",
+      "description": "4.1.5 Implement PCI-DSS checks:",
+      "status": "pending"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Sub-Command Implementation (Compliance)",
+      "description": "4.1.6 Generate specialized artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "4.7",
+      "phase": "Phase 4: Sub-Command Implementation (Compliance)",
+      "description": "4.2.1 Create `/audit:access` command file",
+      "status": "pending"
+    },
+    {
+      "id": "4.8",
+      "phase": "Phase 4: Sub-Command Implementation (Compliance)",
+      "description": "4.2.2 Implement access control analysis:",
+      "status": "pending"
+    },
+    {
+      "id": "4.9",
+      "phase": "Phase 4: Sub-Command Implementation (Compliance)",
+      "description": "4.2.3 Implement privilege escalation detection:",
+      "status": "pending"
+    },
+    {
+      "id": "4.10",
+      "phase": "Phase 4: Sub-Command Implementation (Compliance)",
+      "description": "4.2.4 Generate specialized artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "4.11",
+      "phase": "Phase 4: Sub-Command Implementation (Compliance)",
+      "description": "4.3.1 Create `/audit:privacy` command file",
+      "status": "pending"
+    },
+    {
+      "id": "4.12",
+      "phase": "Phase 4: Sub-Command Implementation (Compliance)",
+      "description": "4.3.2 Implement PII/PHI detection:",
+      "status": "pending"
+    },
+    {
+      "id": "4.13",
+      "phase": "Phase 4: Sub-Command Implementation (Compliance)",
+      "description": "4.3.3 Implement privacy control assessment:",
+      "status": "pending"
+    },
+    {
+      "id": "4.14",
+      "phase": "Phase 4: Sub-Command Implementation (Compliance)",
+      "description": "4.3.4 Generate specialized artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Sub-Command Implementation (Infrastructure)",
+      "description": "5.1.1 Create `/audit:infrastructure` command file",
+      "status": "pending"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Sub-Command Implementation (Infrastructure)",
+      "description": "5.1.2 Implement IaC security scanning:",
+      "status": "pending"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Sub-Command Implementation (Infrastructure)",
+      "description": "5.1.3 Implement container security:",
+      "status": "pending"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Sub-Command Implementation (Infrastructure)",
+      "description": "5.1.4 Implement cloud configuration:",
+      "status": "pending"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Sub-Command Implementation (Infrastructure)",
+      "description": "5.1.5 Generate specialized artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: Sub-Command Implementation (Infrastructure)",
+      "description": "5.2.1 Create `/audit:licenses` command file",
+      "status": "pending"
+    },
+    {
+      "id": "5.7",
+      "phase": "Phase 5: Sub-Command Implementation (Infrastructure)",
+      "description": "5.2.2 Implement license detection:",
+      "status": "pending"
+    },
+    {
+      "id": "5.8",
+      "phase": "Phase 5: Sub-Command Implementation (Infrastructure)",
+      "description": "5.2.3 Implement compliance verification:",
+      "status": "pending"
+    },
+    {
+      "id": "5.9",
+      "phase": "Phase 5: Sub-Command Implementation (Infrastructure)",
+      "description": "5.2.4 Generate specialized artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Artifact Schemas & Quality Standards",
+      "description": "6.1.1 Implement security-audit-report.md schema:",
+      "status": "pending"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Artifact Schemas & Quality Standards",
+      "description": "6.1.2 Implement compliance-audit-report.md schema:",
+      "status": "pending"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Artifact Schemas & Quality Standards",
+      "description": "6.1.3 Implement vulnerability JSON schema:",
+      "status": "pending"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Artifact Schemas & Quality Standards",
+      "description": "6.2.1 Implement severity classification:",
+      "status": "pending"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Artifact Schemas & Quality Standards",
+      "description": "6.2.2 Implement CVSS scoring:",
+      "status": "pending"
+    },
+    {
+      "id": "6.6",
+      "phase": "Phase 6: Artifact Schemas & Quality Standards",
+      "description": "6.3.1 Require evidence for all findings:",
+      "status": "pending"
+    },
+    {
+      "id": "6.7",
+      "phase": "Phase 6: Artifact Schemas & Quality Standards",
+      "description": "6.3.2 Implement source citations:",
+      "status": "pending"
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Remediation Guidance",
+      "description": "7.1.1 Implement prioritized remediation:",
+      "status": "pending"
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Remediation Guidance",
+      "description": "7.1.2 Provide code examples:",
+      "status": "pending"
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: Remediation Guidance",
+      "description": "7.1.3 Include prevention guidance:",
+      "status": "pending"
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: Remediation Guidance",
+      "description": "7.2.1 Integrate with /fix command:",
+      "status": "pending"
+    },
+    {
+      "id": "7.5",
+      "phase": "Phase 7: Remediation Guidance",
+      "description": "7.2.2 Support bulk remediation:",
+      "status": "pending"
+    },
+    {
+      "id": "8.1",
+      "phase": "Phase 8: Audit Cadence & Automation",
+      "description": "8.1.1 Document audit frequency:",
+      "status": "pending"
+    },
+    {
+      "id": "8.2",
+      "phase": "Phase 8: Audit Cadence & Automation",
+      "description": "8.1.2 Define trigger events:",
+      "status": "pending"
+    },
+    {
+      "id": "8.3",
+      "phase": "Phase 8: Audit Cadence & Automation",
+      "description": "8.2.1 Generate CI/CD snippets:",
+      "status": "pending"
+    },
+    {
+      "id": "8.4",
+      "phase": "Phase 8: Audit Cadence & Automation",
+      "description": "8.2.2 Support quality gates:",
+      "status": "pending"
+    },
+    {
+      "id": "8.5",
+      "phase": "Phase 8: Audit Cadence & Automation",
+      "description": "8.2.3 Produce machine-readable output:",
+      "status": "pending"
+    },
+    {
+      "id": "9.1",
+      "phase": "Phase 9: Testing & Validation",
+      "description": "9.1.1 Test /audit:security:",
+      "status": "pending"
+    },
+    {
+      "id": "9.2",
+      "phase": "Phase 9: Testing & Validation",
+      "description": "9.1.2 Test /audit:compliance:",
+      "status": "pending"
+    },
+    {
+      "id": "9.3",
+      "phase": "Phase 9: Testing & Validation",
+      "description": "9.1.3 Test /audit:secrets:",
+      "status": "pending"
+    },
+    {
+      "id": "9.4",
+      "phase": "Phase 9: Testing & Validation",
+      "description": "9.2.1 Test false positive rate (target <10%)",
+      "status": "pending"
+    },
+    {
+      "id": "9.5",
+      "phase": "Phase 9: Testing & Validation",
+      "description": "9.2.2 Test false negative rate (target <5% for critical)",
+      "status": "pending"
+    },
+    {
+      "id": "9.6",
+      "phase": "Phase 9: Testing & Validation",
+      "description": "9.2.3 Verify severity classifications",
+      "status": "pending"
+    },
+    {
+      "id": "9.7",
+      "phase": "Phase 9: Testing & Validation",
+      "description": "9.2.4 Validate remediation accuracy",
+      "status": "pending"
+    },
+    {
+      "id": "9.8",
+      "phase": "Phase 9: Testing & Validation",
+      "description": "9.3.1 Test framework coverage (OWASP, SOC2, etc.)",
+      "status": "pending"
+    },
+    {
+      "id": "9.9",
+      "phase": "Phase 9: Testing & Validation",
+      "description": "9.3.2 Test language coverage (JS, TS, Python, Go)",
+      "status": "pending"
+    },
+    {
+      "id": "9.10",
+      "phase": "Phase 9: Testing & Validation",
+      "description": "9.3.3 Test IaC coverage (Terraform, K8s, Docker)",
+      "status": "pending"
+    },
+    {
+      "id": "9.11",
+      "phase": "Phase 9: Testing & Validation",
+      "description": "9.4.1 Test with clean codebase (no findings)",
+      "status": "pending"
+    },
+    {
+      "id": "9.12",
+      "phase": "Phase 9: Testing & Validation",
+      "description": "9.4.2 Test with heavily vulnerable codebase",
+      "status": "pending"
+    },
+    {
+      "id": "9.13",
+      "phase": "Phase 9: Testing & Validation",
+      "description": "9.4.3 Test with mixed language project",
+      "status": "pending"
+    },
+    {
+      "id": "9.14",
+      "phase": "Phase 9: Testing & Validation",
+      "description": "9.4.4 Test with large monorepo",
+      "status": "pending"
+    },
+    {
+      "id": "10.1",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "10.1 Create command documentation:",
+      "status": "pending"
+    },
+    {
+      "id": "10.2",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "10.2 Document audit methodology:",
+      "status": "pending"
+    },
+    {
+      "id": "10.3",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "10.3 Create user guides:",
+      "status": "pending"
+    },
+    {
+      "id": "10.4",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "10.4 Add inline help:",
+      "status": "pending"
+    },
+    {
+      "id": "10.5",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "10.5 Polish output formatting:",
+      "status": "pending"
+    },
+    {
+      "id": "10.6",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "10.6 Create example outputs:",
+      "status": "pending"
+    },
+    {
+      "id": "10.7",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "Base /audit command performs security scan and generates security-audit-report.md",
+      "status": "pending"
+    },
+    {
+      "id": "10.8",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "All 8 sub-commands (security, compliance, access, secrets, licenses, privacy, dependencies, infrastructure) work correctly",
+      "status": "pending"
+    },
+    {
+      "id": "10.9",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "All findings include evidence and remediation guidance",
+      "status": "pending"
+    },
+    {
+      "id": "10.10",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "Machine-readable JSON output for automation",
+      "status": "pending"
+    },
+    {
+      "id": "10.11",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "Support for major compliance frameworks (OWASP, SOC2, GDPR, HIPAA, PCI-DSS)",
+      "status": "pending"
+    },
+    {
+      "id": "10.12",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "Evidence-based findings with file:line references",
+      "status": "pending"
+    },
+    {
+      "id": "10.13",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "CVSS scoring for security findings",
+      "status": "pending"
+    },
+    {
+      "id": "10.14",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "CWE/CVE/OWASP mapping where applicable",
+      "status": "pending"
+    },
+    {
+      "id": "10.15",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "Actionable remediation with code examples",
+      "status": "pending"
+    },
+    {
+      "id": "10.16",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "Risk-prioritized output",
+      "status": "pending"
+    },
+    {
+      "id": "10.17",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "False positive rate <10%",
+      "status": "pending"
+    },
+    {
+      "id": "10.18",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "False negative rate <5% for critical findings",
+      "status": "pending"
+    },
+    {
+      "id": "10.19",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "Correct severity classification",
+      "status": "pending"
+    },
+    {
+      "id": "10.20",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "Accurate framework mapping",
+      "status": "pending"
+    },
+    {
+      "id": "10.21",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "Clear progress indicators during scanning",
+      "status": "pending"
+    },
+    {
+      "id": "10.22",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "Helpful error messages for edge cases",
+      "status": "pending"
+    },
+    {
+      "id": "10.23",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "Executive summary for stakeholders",
+      "status": "pending"
+    },
+    {
+      "id": "10.24",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "Technical detail for developers",
+      "status": "pending"
+    },
+    {
+      "id": "10.25",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "CI/CD integration support (SARIF, JUnit)",
+      "status": "pending"
+    },
+    {
+      "id": "10.26",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "Quality gate configuration",
+      "status": "pending"
+    },
+    {
+      "id": "10.27",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "Integration with /fix command for remediation",
+      "status": "pending"
+    },
+    {
+      "id": "10.28",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "Machine-readable output for automation",
+      "status": "pending"
+    },
+    {
+      "id": "10.29",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "All sub-commands tested with representative codebases",
+      "status": "pending"
+    },
+    {
+      "id": "10.30",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "Accuracy validated against known vulnerabilities",
+      "status": "pending"
+    },
+    {
+      "id": "10.31",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "Edge cases handled gracefully",
+      "status": "pending"
+    },
+    {
+      "id": "10.32",
+      "phase": "Phase 10: Documentation & Polish",
+      "description": "Framework coverage validated",
+      "status": "pending"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 108,
+    "completed": 0,
+    "pending": 108,
+    "failed": 0,
+    "skipped": 0
+  }
+}

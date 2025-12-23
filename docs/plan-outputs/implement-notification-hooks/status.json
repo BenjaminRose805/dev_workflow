@@ -1,0 +1,629 @@
+{
+  "planPath": "docs/plans/implement-notification-hooks.md",
+  "planName": "Implementation Plan: Notification Hooks System",
+  "createdAt": "2025-12-23T05:54:22.711Z",
+  "lastUpdatedAt": "2025-12-23T05:54:22.711Z",
+  "currentPhase": "Phase 1: Notification Type Definitions and Schemas",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Notification Type Definitions and Schemas",
+      "description": "1.1 Create `src/hooks/notifications/types.ts` with notification type enums (Success, Error, Progress, Warning)",
+      "status": "pending"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Notification Type Definitions and Schemas",
+      "description": "1.2 Define notification severity levels (Info, Warning, Error, Fatal for errors; Normal, Verbose, Debug for general)",
+      "status": "pending"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Notification Type Definitions and Schemas",
+      "description": "1.3 Create notification payload interface with common fields (timestamp, type, severity, message, context, metadata)",
+      "status": "pending"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Notification Type Definitions and Schemas",
+      "description": "1.4 Define success notification schema with completion levels (task, operation, milestone)",
+      "status": "pending"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Notification Type Definitions and Schemas",
+      "description": "1.5 Define error notification schema with severity levels (fatal, error, recoverable) and actionable context",
+      "status": "pending"
+    },
+    {
+      "id": "1.6",
+      "phase": "Phase 1: Notification Type Definitions and Schemas",
+      "description": "1.6 Define progress notification schema with stages (started, in_progress, nearing_completion, completed) and percentage",
+      "status": "pending"
+    },
+    {
+      "id": "1.7",
+      "phase": "Phase 1: Notification Type Definitions and Schemas",
+      "description": "1.7 Define warning notification schema with categories (deprecation, performance, security, best_practice)",
+      "status": "pending"
+    },
+    {
+      "id": "1.8",
+      "phase": "Phase 1: Notification Type Definitions and Schemas",
+      "description": "1.8 Create notification event interface with event name, trigger conditions, and payload",
+      "status": "pending"
+    },
+    {
+      "id": "1.9",
+      "phase": "Phase 1: Notification Type Definitions and Schemas",
+      "description": "1.9 Add TypeScript type guards for notification validation",
+      "status": "pending"
+    },
+    {
+      "id": "1.10",
+      "phase": "Phase 1: Notification Type Definitions and Schemas",
+      "description": "1.10 Document notification schemas with examples in JSDoc comments",
+      "status": "pending"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Terminal Output Channel Implementation",
+      "description": "2.1 Create `src/hooks/notifications/channels/terminal.ts` with TerminalChannel class",
+      "status": "pending"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Terminal Output Channel Implementation",
+      "description": "2.2 Implement verbosity level filtering (quiet, normal, verbose, debug)",
+      "status": "pending"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Terminal Output Channel Implementation",
+      "description": "2.3 Add color support using chalk or similar library for different notification types",
+      "status": "pending"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Terminal Output Channel Implementation",
+      "description": "2.4 Implement formatting for success messages (green checkmark, completion level)",
+      "status": "pending"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Terminal Output Channel Implementation",
+      "description": "2.5 Implement formatting for error messages (red X, severity, actionable context)",
+      "status": "pending"
+    },
+    {
+      "id": "2.6",
+      "phase": "Phase 2: Terminal Output Channel Implementation",
+      "description": "2.6 Implement formatting for progress messages (blue arrow, percentage, stage)",
+      "status": "pending"
+    },
+    {
+      "id": "2.7",
+      "phase": "Phase 2: Terminal Output Channel Implementation",
+      "description": "2.7 Implement formatting for warning messages (yellow warning symbol, category)",
+      "status": "pending"
+    },
+    {
+      "id": "2.8",
+      "phase": "Phase 2: Terminal Output Channel Implementation",
+      "description": "2.8 Add progress bar support for long-running operations",
+      "status": "pending"
+    },
+    {
+      "id": "2.9",
+      "phase": "Phase 2: Terminal Output Channel Implementation",
+      "description": "2.9 Implement message truncation and wrapping for terminal width",
+      "status": "pending"
+    },
+    {
+      "id": "2.10",
+      "phase": "Phase 2: Terminal Output Channel Implementation",
+      "description": "2.10 Add configuration options for disabling colors, progress bars, and emoji symbols",
+      "status": "pending"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Status File Channel Implementation",
+      "description": "3.1 Create `src/hooks/notifications/channels/status-file.ts` with StatusFileChannel class",
+      "status": "pending"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Status File Channel Implementation",
+      "description": "3.2 Implement atomic file writing using temporary files and rename operations",
+      "status": "pending"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Status File Channel Implementation",
+      "description": "3.3 Add status.json schema with current status, notifications array, last updated timestamp",
+      "status": "pending"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Status File Channel Implementation",
+      "description": "3.4 Implement append-only notification tracking with configurable max entries",
+      "status": "pending"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Status File Channel Implementation",
+      "description": "3.5 Add status aggregation (overall status: success, in_progress, warning, error, failed)",
+      "status": "pending"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Status File Channel Implementation",
+      "description": "3.6 Implement file locking mechanism to prevent concurrent write conflicts",
+      "status": "pending"
+    },
+    {
+      "id": "3.7",
+      "phase": "Phase 3: Status File Channel Implementation",
+      "description": "3.7 Add error handling for file system errors (permissions, disk full, path not found)",
+      "status": "pending"
+    },
+    {
+      "id": "3.8",
+      "phase": "Phase 3: Status File Channel Implementation",
+      "description": "3.8 Implement status file rotation when size exceeds threshold",
+      "status": "pending"
+    },
+    {
+      "id": "3.9",
+      "phase": "Phase 3: Status File Channel Implementation",
+      "description": "3.9 Add configuration for status file path, max size, and max notification entries",
+      "status": "pending"
+    },
+    {
+      "id": "3.10",
+      "phase": "Phase 3: Status File Channel Implementation",
+      "description": "3.10 Create utility functions to read and parse status files for external consumers",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Log File Channel with Rotation",
+      "description": "4.1 Create `src/hooks/notifications/channels/log-file.ts` with LogFileChannel class",
+      "status": "pending"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Log File Channel with Rotation",
+      "description": "4.2 Implement JSON line-delimited (JSONL) log format for easy parsing",
+      "status": "pending"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Log File Channel with Rotation",
+      "description": "4.3 Add log rotation based on file size threshold (default 10MB)",
+      "status": "pending"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Log File Channel with Rotation",
+      "description": "4.4 Implement log rotation based on time intervals (daily, weekly)",
+      "status": "pending"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Log File Channel with Rotation",
+      "description": "4.5 Add log file naming scheme with timestamps (e.g., notifications-2025-12-22.log)",
+      "status": "pending"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Log File Channel with Rotation",
+      "description": "4.6 Implement keeping N most recent log files and auto-deletion of old logs",
+      "status": "pending"
+    },
+    {
+      "id": "4.7",
+      "phase": "Phase 4: Log File Channel with Rotation",
+      "description": "4.7 Add log level filtering separate from terminal verbosity",
+      "status": "pending"
+    },
+    {
+      "id": "4.8",
+      "phase": "Phase 4: Log File Channel with Rotation",
+      "description": "4.8 Implement asynchronous writing with queue to prevent blocking",
+      "status": "pending"
+    },
+    {
+      "id": "4.9",
+      "phase": "Phase 4: Log File Channel with Rotation",
+      "description": "4.9 Add error handling for write failures with retry mechanism",
+      "status": "pending"
+    },
+    {
+      "id": "4.10",
+      "phase": "Phase 4: Log File Channel with Rotation",
+      "description": "4.10 Create log parsing utilities for reading and filtering log files",
+      "status": "pending"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: External Webhook Channel",
+      "description": "5.1 Create `src/hooks/notifications/channels/webhook.ts` with WebhookChannel class",
+      "status": "pending"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: External Webhook Channel",
+      "description": "5.2 Implement HTTP POST requests to configured webhook URLs",
+      "status": "pending"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: External Webhook Channel",
+      "description": "5.3 Add authentication support (Bearer token, Basic auth, custom headers)",
+      "status": "pending"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: External Webhook Channel",
+      "description": "5.4 Implement notification filtering per webhook (type, severity, pattern matching)",
+      "status": "pending"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: External Webhook Channel",
+      "description": "5.5 Add retry logic with exponential backoff for failed webhook deliveries",
+      "status": "pending"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: External Webhook Channel",
+      "description": "5.6 Implement webhook timeout configuration (default 5 seconds)",
+      "status": "pending"
+    },
+    {
+      "id": "5.7",
+      "phase": "Phase 5: External Webhook Channel",
+      "description": "5.7 Add Slack-specific message transformation (format as Slack blocks/attachments)",
+      "status": "pending"
+    },
+    {
+      "id": "5.8",
+      "phase": "Phase 5: External Webhook Channel",
+      "description": "5.8 Implement webhook payload templates for custom formatting",
+      "status": "pending"
+    },
+    {
+      "id": "5.9",
+      "phase": "Phase 5: External Webhook Channel",
+      "description": "5.9 Add webhook delivery tracking and failure logging",
+      "status": "pending"
+    },
+    {
+      "id": "5.10",
+      "phase": "Phase 5: External Webhook Channel",
+      "description": "5.10 Create webhook testing utilities for validating configurations",
+      "status": "pending"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Trigger Configuration and Event Routing",
+      "description": "6.1 Create `src/hooks/notifications/trigger-config.ts` with trigger configuration schema",
+      "status": "pending"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Trigger Configuration and Event Routing",
+      "description": "6.2 Implement event pattern matching (exact match, wildcard, regex support)",
+      "status": "pending"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Trigger Configuration and Event Routing",
+      "description": "6.3 Add channel selection per trigger (array of channel names)",
+      "status": "pending"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Trigger Configuration and Event Routing",
+      "description": "6.4 Implement verbosity override per trigger",
+      "status": "pending"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Trigger Configuration and Event Routing",
+      "description": "6.5 Create event router that matches events to triggers and dispatches to channels",
+      "status": "pending"
+    },
+    {
+      "id": "6.6",
+      "phase": "Phase 6: Trigger Configuration and Event Routing",
+      "description": "6.6 Add default trigger configurations for common events (task:completed, task:failed, phase:completed)",
+      "status": "pending"
+    },
+    {
+      "id": "6.7",
+      "phase": "Phase 6: Trigger Configuration and Event Routing",
+      "description": "6.7 Implement trigger configuration loading from file and runtime overrides",
+      "status": "pending"
+    },
+    {
+      "id": "6.8",
+      "phase": "Phase 6: Trigger Configuration and Event Routing",
+      "description": "6.8 Add trigger priority system for ordering when multiple triggers match",
+      "status": "pending"
+    },
+    {
+      "id": "6.9",
+      "phase": "Phase 6: Trigger Configuration and Event Routing",
+      "description": "6.9 Implement trigger conditions (only fire if certain context values match)",
+      "status": "pending"
+    },
+    {
+      "id": "6.10",
+      "phase": "Phase 6: Trigger Configuration and Event Routing",
+      "description": "6.10 Create configuration validation with helpful error messages",
+      "status": "pending"
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Batching and Rate Limiting",
+      "description": "7.1 Create `src/hooks/notifications/batching.ts` with batching manager",
+      "status": "pending"
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Batching and Rate Limiting",
+      "description": "7.2 Implement time-based batching (flush every N seconds, default 5s)",
+      "status": "pending"
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: Batching and Rate Limiting",
+      "description": "7.3 Implement count-based batching (flush after N notifications, default 10)",
+      "status": "pending"
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: Batching and Rate Limiting",
+      "description": "7.4 Add threshold-based batching for progress updates (only send if change >= 10%)",
+      "status": "pending"
+    },
+    {
+      "id": "7.5",
+      "phase": "Phase 7: Batching and Rate Limiting",
+      "description": "7.5 Implement immediate flush for high-priority notifications (errors, critical warnings)",
+      "status": "pending"
+    },
+    {
+      "id": "7.6",
+      "phase": "Phase 7: Batching and Rate Limiting",
+      "description": "7.6 Create rate limiter to cap notifications per channel per time window",
+      "status": "pending"
+    },
+    {
+      "id": "7.7",
+      "phase": "Phase 7: Batching and Rate Limiting",
+      "description": "7.7 Add grouping for related notifications (same task, same operation)",
+      "status": "pending"
+    },
+    {
+      "id": "7.8",
+      "phase": "Phase 7: Batching and Rate Limiting",
+      "description": "7.8 Implement batch summarization for terminal output (e.g., \"5 tasks completed\")",
+      "status": "pending"
+    },
+    {
+      "id": "7.9",
+      "phase": "Phase 7: Batching and Rate Limiting",
+      "description": "7.9 Add configuration for batching intervals, thresholds, and rate limits",
+      "status": "pending"
+    },
+    {
+      "id": "7.10",
+      "phase": "Phase 7: Batching and Rate Limiting",
+      "description": "7.10 Create bypass mechanism for critical notifications that skip batching",
+      "status": "pending"
+    },
+    {
+      "id": "8.1",
+      "phase": "Phase 8: Hook Integration (PostToolUse, SessionEnd)",
+      "description": "8.1 Create `src/hooks/notifications/notification-hook.ts` with NotificationHook class implementing Hook interface",
+      "status": "pending"
+    },
+    {
+      "id": "8.2",
+      "phase": "Phase 8: Hook Integration (PostToolUse, SessionEnd)",
+      "description": "8.2 Implement PostToolUse hook to send notifications after tool execution",
+      "status": "pending"
+    },
+    {
+      "id": "8.3",
+      "phase": "Phase 8: Hook Integration (PostToolUse, SessionEnd)",
+      "description": "8.3 Add SessionEnd hook to send final summary notification",
+      "status": "pending"
+    },
+    {
+      "id": "8.4",
+      "phase": "Phase 8: Hook Integration (PostToolUse, SessionEnd)",
+      "description": "8.4 Create notification factory functions for common events (tool success, tool error, session summary)",
+      "status": "pending"
+    },
+    {
+      "id": "8.5",
+      "phase": "Phase 8: Hook Integration (PostToolUse, SessionEnd)",
+      "description": "8.5 Implement context extraction from ToolUseBlock and SessionEndPayload",
+      "status": "pending"
+    },
+    {
+      "id": "8.6",
+      "phase": "Phase 8: Hook Integration (PostToolUse, SessionEnd)",
+      "description": "8.6 Add automatic error notification generation from caught exceptions",
+      "status": "pending"
+    },
+    {
+      "id": "8.7",
+      "phase": "Phase 8: Hook Integration (PostToolUse, SessionEnd)",
+      "description": "8.7 Implement progress notification tracking across multi-step operations",
+      "status": "pending"
+    },
+    {
+      "id": "8.8",
+      "phase": "Phase 8: Hook Integration (PostToolUse, SessionEnd)",
+      "description": "8.8 Create milestone detection for long-running operations (25%, 50%, 75%, 100%)",
+      "status": "pending"
+    },
+    {
+      "id": "8.9",
+      "phase": "Phase 8: Hook Integration (PostToolUse, SessionEnd)",
+      "description": "8.9 Add session statistics aggregation for summary notifications",
+      "status": "pending"
+    },
+    {
+      "id": "8.10",
+      "phase": "Phase 8: Hook Integration (PostToolUse, SessionEnd)",
+      "description": "8.10 Implement graceful shutdown that flushes pending notifications",
+      "status": "pending"
+    },
+    {
+      "id": "9.1",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.1 Create unit tests for each notification type and schema validation",
+      "status": "pending"
+    },
+    {
+      "id": "9.2",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.2 Add unit tests for each channel implementation (terminal, status file, log file, webhook)",
+      "status": "pending"
+    },
+    {
+      "id": "9.3",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.3 Create integration tests for event routing and trigger matching",
+      "status": "pending"
+    },
+    {
+      "id": "9.4",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.4 Add tests for batching behavior (time-based, count-based, threshold-based)",
+      "status": "pending"
+    },
+    {
+      "id": "9.5",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.5 Create tests for rate limiting enforcement",
+      "status": "pending"
+    },
+    {
+      "id": "9.6",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.6 Add tests for webhook retry logic and failure handling",
+      "status": "pending"
+    },
+    {
+      "id": "9.7",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.7 Create end-to-end tests with mock SDK hooks",
+      "status": "pending"
+    },
+    {
+      "id": "9.8",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.8 Add performance tests for high-volume notification scenarios",
+      "status": "pending"
+    },
+    {
+      "id": "9.9",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.9 Create tests for concurrent access to status files and log files",
+      "status": "pending"
+    },
+    {
+      "id": "9.10",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.10 Add validation tests for configuration schema and error messages",
+      "status": "pending"
+    },
+    {
+      "id": "9.11",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "All notification types (Success, Error, Progress, Warning) implemented with proper schemas",
+      "status": "pending"
+    },
+    {
+      "id": "9.12",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "All channels (Terminal, Status File, Log File, Webhook) functional and configurable",
+      "status": "pending"
+    },
+    {
+      "id": "9.13",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "Trigger configuration system supports pattern matching and channel selection",
+      "status": "pending"
+    },
+    {
+      "id": "9.14",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "Batching and rate limiting reduce notification spam without losing critical information",
+      "status": "pending"
+    },
+    {
+      "id": "9.15",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "Integration with PostToolUse and SessionEnd hooks works correctly",
+      "status": "pending"
+    },
+    {
+      "id": "9.16",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "Webhook delivery includes retry logic and supports Slack formatting",
+      "status": "pending"
+    },
+    {
+      "id": "9.17",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "Status file updates atomically and provides accurate aggregation",
+      "status": "pending"
+    },
+    {
+      "id": "9.18",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "Log rotation works based on size and time thresholds",
+      "status": "pending"
+    },
+    {
+      "id": "9.19",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "Terminal output includes colors, progress bars, and proper formatting",
+      "status": "pending"
+    },
+    {
+      "id": "9.20",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "Test coverage >= 80% with passing integration tests",
+      "status": "pending"
+    },
+    {
+      "id": "9.21",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "Documentation includes configuration examples and best practices",
+      "status": "pending"
+    },
+    {
+      "id": "9.22",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "Performance acceptable (< 10ms overhead per notification, handles 1000+ notifications/second)",
+      "status": "pending"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 102,
+    "completed": 0,
+    "pending": 102,
+    "failed": 0,
+    "skipped": 0
+  }
+}

@@ -1,0 +1,533 @@
+{
+  "planPath": "docs/plans/implement-explore-command.md",
+  "planName": "Implementation Plan: /explore Command",
+  "createdAt": "2025-12-23T02:00:04.260Z",
+  "lastUpdatedAt": "2025-12-23T02:00:04.260Z",
+  "currentPhase": "Phase 1: Core Command Setup",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.1 Create `/explore` command file at `.claude/commands/explore.md`",
+      "status": "pending"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.2 Add YAML frontmatter with configuration:",
+      "status": "pending"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.3 Write base command prompt with sections:",
+      "status": "pending"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.4 Define default parameters:",
+      "status": "pending"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.5 Create output directory structure: `docs/artifacts/discovery/exploration/`",
+      "status": "pending"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Exploration Engine Implementation",
+      "description": "2.1 Implement Initial Assessment phase (5 seconds):",
+      "status": "pending"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Exploration Engine Implementation",
+      "description": "2.2 Implement Structure Analysis phase:",
+      "status": "pending"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Exploration Engine Implementation",
+      "description": "2.3 Implement depth-specific exploration logic:",
+      "status": "pending"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Exploration Engine Implementation",
+      "description": "2.4 Add time limiting and progress tracking:",
+      "status": "pending"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Exploration Engine Implementation",
+      "description": "2.5 Implement intelligent file selection:",
+      "status": "pending"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.1.1 Create `/explore:quick` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.1.2 Create `/explore:deep` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.2.1 Create `/explore:architecture` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.2.2 Implement specialized analysis:",
+      "status": "pending"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.2.3 Generate specialized artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.3.1 Create `/explore:patterns` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.7",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.3.2 Implement pattern detection:",
+      "status": "pending"
+    },
+    {
+      "id": "3.8",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.3.3 Generate artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.9",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.4.1 Create `/explore:dependencies` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.10",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.4.2 Implement dependency analysis:",
+      "status": "pending"
+    },
+    {
+      "id": "3.11",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.4.3 Generate artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.12",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.5.1 Create `/explore:flow` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.13",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.5.2 Implement flow tracing:",
+      "status": "pending"
+    },
+    {
+      "id": "3.14",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.5.3 Generate artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Artifact Generation & Schemas",
+      "description": "4.1.1 Implement `exploration-report.md` generation:",
+      "status": "pending"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Artifact Generation & Schemas",
+      "description": "4.1.2 Implement `codebase-map.json` generation:",
+      "status": "pending"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Artifact Generation & Schemas",
+      "description": "4.2.1 Implement `architecture-map.json` schema:",
+      "status": "pending"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Artifact Generation & Schemas",
+      "description": "4.2.2 Implement `dependency-graph.json` schema:",
+      "status": "pending"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Artifact Generation & Schemas",
+      "description": "4.2.3 Implement `conventions.json` schema:",
+      "status": "pending"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Artifact Generation & Schemas",
+      "description": "4.3.1 Define JSON schemas for all .json artifacts",
+      "status": "pending"
+    },
+    {
+      "id": "4.7",
+      "phase": "Phase 4: Artifact Generation & Schemas",
+      "description": "4.3.2 Add schema validation before artifact write",
+      "status": "pending"
+    },
+    {
+      "id": "4.8",
+      "phase": "Phase 4: Artifact Generation & Schemas",
+      "description": "4.3.3 Add schema $ref URLs in artifact metadata",
+      "status": "pending"
+    },
+    {
+      "id": "4.9",
+      "phase": "Phase 4: Artifact Generation & Schemas",
+      "description": "4.3.4 Create schema documentation in `docs/schemas/`",
+      "status": "pending"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Agent Integration",
+      "description": "5.1 Review existing Explore agent implementation:",
+      "status": "pending"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Agent Integration",
+      "description": "5.2 Implement agent delegation flow:",
+      "status": "pending"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Agent Integration",
+      "description": "5.3 Add agent context passing:",
+      "status": "pending"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Agent Integration",
+      "description": "5.4 Implement error handling:",
+      "status": "pending"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Agent Integration",
+      "description": "5.5 Add progress indicators:",
+      "status": "pending"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Command Integration & Workflows",
+      "description": "6.1 Define integration points:",
+      "status": "pending"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Command Integration & Workflows",
+      "description": "6.2 Add artifact cross-referencing:",
+      "status": "pending"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Command Integration & Workflows",
+      "description": "6.3 Implement artifact consumption:",
+      "status": "pending"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Command Integration & Workflows",
+      "description": "6.4 Test common workflows:",
+      "status": "pending"
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Testing & Validation",
+      "description": "7.1.1 Test depth level logic (quick vs standard vs deep)",
+      "status": "pending"
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Testing & Validation",
+      "description": "7.1.2 Test time limiting and timeout handling",
+      "status": "pending"
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: Testing & Validation",
+      "description": "7.1.3 Test file selection algorithms",
+      "status": "pending"
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: Testing & Validation",
+      "description": "7.1.4 Test artifact generation functions",
+      "status": "pending"
+    },
+    {
+      "id": "7.5",
+      "phase": "Phase 7: Testing & Validation",
+      "description": "7.1.5 Test schema validation",
+      "status": "pending"
+    },
+    {
+      "id": "7.6",
+      "phase": "Phase 7: Testing & Validation",
+      "description": "7.2.1 Test on small codebase (<100 files)",
+      "status": "pending"
+    },
+    {
+      "id": "7.7",
+      "phase": "Phase 7: Testing & Validation",
+      "description": "7.2.2 Test on medium codebase (100-500 files)",
+      "status": "pending"
+    },
+    {
+      "id": "7.8",
+      "phase": "Phase 7: Testing & Validation",
+      "description": "7.2.3 Test on large codebase (500+ files)",
+      "status": "pending"
+    },
+    {
+      "id": "7.9",
+      "phase": "Phase 7: Testing & Validation",
+      "description": "7.3.1 Test on TypeScript/JavaScript projects",
+      "status": "pending"
+    },
+    {
+      "id": "7.10",
+      "phase": "Phase 7: Testing & Validation",
+      "description": "7.3.2 Test on Python projects",
+      "status": "pending"
+    },
+    {
+      "id": "7.11",
+      "phase": "Phase 7: Testing & Validation",
+      "description": "7.3.3 Test on Go projects",
+      "status": "pending"
+    },
+    {
+      "id": "7.12",
+      "phase": "Phase 7: Testing & Validation",
+      "description": "7.3.4 Test on Java projects",
+      "status": "pending"
+    },
+    {
+      "id": "7.13",
+      "phase": "Phase 7: Testing & Validation",
+      "description": "7.3.5 Test on multi-language projects",
+      "status": "pending"
+    },
+    {
+      "id": "7.14",
+      "phase": "Phase 7: Testing & Validation",
+      "description": "7.4.1 Test each sub-command independently",
+      "status": "pending"
+    },
+    {
+      "id": "7.15",
+      "phase": "Phase 7: Testing & Validation",
+      "description": "7.4.2 Verify specialized artifacts are unique and valuable",
+      "status": "pending"
+    },
+    {
+      "id": "7.16",
+      "phase": "Phase 7: Testing & Validation",
+      "description": "7.4.3 Compare sub-command output to base explore output",
+      "status": "pending"
+    },
+    {
+      "id": "7.17",
+      "phase": "Phase 7: Testing & Validation",
+      "description": "7.4.4 Test sub-command argument handling",
+      "status": "pending"
+    },
+    {
+      "id": "8.1",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "8.1 Create command documentation:",
+      "status": "pending"
+    },
+    {
+      "id": "8.2",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "8.2 Document artifact schemas:",
+      "status": "pending"
+    },
+    {
+      "id": "8.3",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "8.3 Create user guides:",
+      "status": "pending"
+    },
+    {
+      "id": "8.4",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "8.4 Add inline help:",
+      "status": "pending"
+    },
+    {
+      "id": "8.5",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "8.5 Create example workflows:",
+      "status": "pending"
+    },
+    {
+      "id": "8.6",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "8.6 Polish output formatting:",
+      "status": "pending"
+    },
+    {
+      "id": "8.7",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "Base /explore command generates valid exploration-report.md and codebase-map.json",
+      "status": "pending"
+    },
+    {
+      "id": "8.8",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "All 6 sub-commands (architecture, patterns, dependencies, flow, quick, deep) work correctly",
+      "status": "pending"
+    },
+    {
+      "id": "8.9",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "Three depth levels (quick, standard, deep) respect time limits and produce proportional detail",
+      "status": "pending"
+    },
+    {
+      "id": "8.10",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "All artifacts validate against defined JSON schemas",
+      "status": "pending"
+    },
+    {
+      "id": "8.11",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "Command integrates properly with existing Explore agent",
+      "status": "pending"
+    },
+    {
+      "id": "8.12",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "Confidence score > 70% for standard depth explorations",
+      "status": "pending"
+    },
+    {
+      "id": "8.13",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "Coverage > 50% for standard depth, > 80% for deep depth",
+      "status": "pending"
+    },
+    {
+      "id": "8.14",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "Quick depth completes in < 30 seconds",
+      "status": "pending"
+    },
+    {
+      "id": "8.15",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "Standard depth completes in < 2 minutes",
+      "status": "pending"
+    },
+    {
+      "id": "8.16",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "Deep depth completes in < 5 minutes",
+      "status": "pending"
+    },
+    {
+      "id": "8.17",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "Clear progress indicators during long operations",
+      "status": "pending"
+    },
+    {
+      "id": "8.18",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "Helpful error messages with recovery suggestions",
+      "status": "pending"
+    },
+    {
+      "id": "8.19",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "Artifacts are human-readable and actionable",
+      "status": "pending"
+    },
+    {
+      "id": "8.20",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "Documentation explains when to use each variant",
+      "status": "pending"
+    },
+    {
+      "id": "8.21",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "Artifacts can be consumed by downstream commands (/analyze, /refactor, /document)",
+      "status": "pending"
+    },
+    {
+      "id": "8.22",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "Metadata includes related_artifacts cross-references",
+      "status": "pending"
+    },
+    {
+      "id": "8.23",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "Works seamlessly in common workflows (onboarding, refactoring, documentation)",
+      "status": "pending"
+    },
+    {
+      "id": "8.24",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "All unit tests pass",
+      "status": "pending"
+    },
+    {
+      "id": "8.25",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "Tested on small, medium, and large codebases",
+      "status": "pending"
+    },
+    {
+      "id": "8.26",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "Tested on TypeScript, Python, Go, and Java projects",
+      "status": "pending"
+    },
+    {
+      "id": "8.27",
+      "phase": "Phase 8: Documentation & Polish",
+      "description": "All sub-commands tested independently",
+      "status": "pending"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 86,
+    "completed": 0,
+    "pending": 86,
+    "failed": 0,
+    "skipped": 0
+  }
+}

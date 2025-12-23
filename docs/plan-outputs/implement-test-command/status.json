@@ -1,0 +1,365 @@
+{
+  "planPath": "docs/plans/implement-test-command.md",
+  "planName": "Implementation Plan: Implement /test Command",
+  "createdAt": "2025-12-23T02:04:14.657Z",
+  "lastUpdatedAt": "2025-12-23T02:04:14.657Z",
+  "currentPhase": "Phase 1: Core Command Setup",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.1 Create base command YAML at `.claude/commands/test.md`",
+      "status": "pending"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.2 Implement framework detection logic",
+      "status": "pending"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.3 Create base system prompt template",
+      "status": "pending"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.4 Set up output directory structure",
+      "status": "pending"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "**VERIFY 1**: Framework detection correctly identifies test frameworks from sample projects, base YAML structure is valid",
+      "status": "pending"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Test Generation Engine",
+      "description": "2.1 Implement unit test generation logic",
+      "status": "pending"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Test Generation Engine",
+      "description": "2.2 Implement integration test generation logic",
+      "status": "pending"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Test Generation Engine",
+      "description": "2.3 Implement E2E test generation logic",
+      "status": "pending"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Test Generation Engine",
+      "description": "2.4 Implement fixture generation",
+      "status": "pending"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Test Generation Engine",
+      "description": "2.5 Implement snapshot testing patterns",
+      "status": "pending"
+    },
+    {
+      "id": "2.6",
+      "phase": "Phase 2: Test Generation Engine",
+      "description": "**VERIFY 2**: Generated tests are syntactically valid, run successfully, and follow framework conventions",
+      "status": "pending"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Sub-Commands Implementation",
+      "description": "3.1 Implement `test:unit` sub-command",
+      "status": "pending"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Sub-Commands Implementation",
+      "description": "3.2 Implement `test:integration` sub-command",
+      "status": "pending"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Sub-Commands Implementation",
+      "description": "3.3 Implement `test:e2e` sub-command",
+      "status": "pending"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Sub-Commands Implementation",
+      "description": "3.4 Implement `test:plan` sub-command",
+      "status": "pending"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Sub-Commands Implementation",
+      "description": "3.5 Implement `test:coverage` sub-command",
+      "status": "pending"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Sub-Commands Implementation",
+      "description": "3.6 Implement `test:run` sub-command",
+      "status": "pending"
+    },
+    {
+      "id": "3.7",
+      "phase": "Phase 3: Sub-Commands Implementation",
+      "description": "3.7 Implement `test:fixture` sub-command",
+      "status": "pending"
+    },
+    {
+      "id": "3.8",
+      "phase": "Phase 3: Sub-Commands Implementation",
+      "description": "3.8 Implement `test:snapshot` sub-command",
+      "status": "pending"
+    },
+    {
+      "id": "3.9",
+      "phase": "Phase 3: Sub-Commands Implementation",
+      "description": "3.9 Implement `test:contract` sub-command",
+      "status": "pending"
+    },
+    {
+      "id": "3.10",
+      "phase": "Phase 3: Sub-Commands Implementation",
+      "description": "3.10 Implement `test:mutation` sub-command",
+      "status": "pending"
+    },
+    {
+      "id": "3.11",
+      "phase": "Phase 3: Sub-Commands Implementation",
+      "description": "**VERIFY 3**: All 10 sub-commands execute successfully with appropriate inputs and generate expected outputs",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Artifact Generation",
+      "description": "4.1 Implement test-plan.md artifact generator",
+      "status": "pending"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Artifact Generation",
+      "description": "4.2 Implement test-matrix.json artifact generator",
+      "status": "pending"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Artifact Generation",
+      "description": "4.3 Implement coverage-gaps.json artifact generator",
+      "status": "pending"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Artifact Generation",
+      "description": "4.4 Add artifact validation logic",
+      "status": "pending"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Artifact Generation",
+      "description": "**VERIFY 4**: All artifacts validate against schemas, contain accurate data, and are properly formatted",
+      "status": "pending"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Framework Integration",
+      "description": "5.1 Create Jest integration module",
+      "status": "pending"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Framework Integration",
+      "description": "5.2 Create Vitest integration module",
+      "status": "pending"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Framework Integration",
+      "description": "5.3 Create Playwright integration module",
+      "status": "pending"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Framework Integration",
+      "description": "5.4 Create Cypress integration module",
+      "status": "pending"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Framework Integration",
+      "description": "5.5 Create Mocha integration module",
+      "status": "pending"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: Framework Integration",
+      "description": "5.6 Create Pact integration module",
+      "status": "pending"
+    },
+    {
+      "id": "5.7",
+      "phase": "Phase 5: Framework Integration",
+      "description": "5.7 Implement framework-specific best practices",
+      "status": "pending"
+    },
+    {
+      "id": "5.8",
+      "phase": "Phase 5: Framework Integration",
+      "description": "**VERIFY 5**: Tests generated for each framework follow framework conventions and execute successfully",
+      "status": "pending"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: TDD/BDD Workflows",
+      "description": "6.1 Implement TDD workflow support",
+      "status": "pending"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: TDD/BDD Workflows",
+      "description": "6.2 Implement BDD workflow support",
+      "status": "pending"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: TDD/BDD Workflows",
+      "description": "6.3 Add specification-by-example patterns",
+      "status": "pending"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: TDD/BDD Workflows",
+      "description": "6.4 Implement test-first development guidance",
+      "status": "pending"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: TDD/BDD Workflows",
+      "description": "**VERIFY 6**: TDD/BDD workflows produce valid test-first development cycles with appropriate artifacts",
+      "status": "pending"
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Testing & Documentation",
+      "description": "7.1 Test command with real-world projects",
+      "status": "pending"
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Testing & Documentation",
+      "description": "7.2 Create comprehensive documentation",
+      "status": "pending"
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: Testing & Documentation",
+      "description": "7.3 Create example artifacts",
+      "status": "pending"
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: Testing & Documentation",
+      "description": "7.4 Add usage examples",
+      "status": "pending"
+    },
+    {
+      "id": "7.5",
+      "phase": "Phase 7: Testing & Documentation",
+      "description": "7.5 Performance optimization",
+      "status": "pending"
+    },
+    {
+      "id": "7.6",
+      "phase": "Phase 7: Testing & Documentation",
+      "description": "**VERIFY 7**: Documentation is complete, examples work as shown, command performs efficiently on large codebases",
+      "status": "pending"
+    },
+    {
+      "id": "7.7",
+      "phase": "Phase 7: Testing & Documentation",
+      "description": "Base /test command YAML is valid and registers all 10 sub-commands",
+      "status": "pending"
+    },
+    {
+      "id": "7.8",
+      "phase": "Phase 7: Testing & Documentation",
+      "description": "Framework detection accurately identifies Jest, Vitest, Playwright, Cypress, Mocha, and Pact",
+      "status": "pending"
+    },
+    {
+      "id": "7.9",
+      "phase": "Phase 7: Testing & Documentation",
+      "description": "All test generation engines produce syntactically valid, executable tests",
+      "status": "pending"
+    },
+    {
+      "id": "7.10",
+      "phase": "Phase 7: Testing & Documentation",
+      "description": "All 10 sub-commands (unit, integration, e2e, plan, coverage, run, fixture, snapshot, contract, mutation) execute successfully",
+      "status": "pending"
+    },
+    {
+      "id": "7.11",
+      "phase": "Phase 7: Testing & Documentation",
+      "description": "Artifacts (test-plan.md, test-matrix.json, coverage-gaps.json) validate against schemas",
+      "status": "pending"
+    },
+    {
+      "id": "7.12",
+      "phase": "Phase 7: Testing & Documentation",
+      "description": "Generated tests follow framework-specific conventions and best practices",
+      "status": "pending"
+    },
+    {
+      "id": "7.13",
+      "phase": "Phase 7: Testing & Documentation",
+      "description": "TDD/BDD workflows produce appropriate test-first development cycles",
+      "status": "pending"
+    },
+    {
+      "id": "7.14",
+      "phase": "Phase 7: Testing & Documentation",
+      "description": "Command works correctly with at least 5 different real-world project structures",
+      "status": "pending"
+    },
+    {
+      "id": "7.15",
+      "phase": "Phase 7: Testing & Documentation",
+      "description": "Documentation covers all features with working examples",
+      "status": "pending"
+    },
+    {
+      "id": "7.16",
+      "phase": "Phase 7: Testing & Documentation",
+      "description": "Performance is acceptable (<5s for typical test generation, <10s for complex analysis)",
+      "status": "pending"
+    },
+    {
+      "id": "7.17",
+      "phase": "Phase 7: Testing & Documentation",
+      "description": "Coverage analysis correctly identifies gaps and provides actionable recommendations",
+      "status": "pending"
+    },
+    {
+      "id": "7.18",
+      "phase": "Phase 7: Testing & Documentation",
+      "description": "Integration with CI/CD pipelines is documented and tested",
+      "status": "pending"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 58,
+    "completed": 0,
+    "pending": 58,
+    "failed": 0,
+    "skipped": 0
+  }
+}

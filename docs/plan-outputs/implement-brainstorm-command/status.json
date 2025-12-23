@@ -1,0 +1,617 @@
+{
+  "planPath": "docs/plans/implement-brainstorm-command.md",
+  "planName": "Implementation Plan: /brainstorm Command",
+  "createdAt": "2025-12-23T04:47:05.487Z",
+  "lastUpdatedAt": "2025-12-23T04:47:05.487Z",
+  "currentPhase": "Phase 1: Core Command Setup",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.1 Create `/brainstorm` command file at `.claude/commands/brainstorm.md`",
+      "status": "pending"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.2 Add YAML frontmatter with configuration:",
+      "status": "pending"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.3 Write base command prompt with:",
+      "status": "pending"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.4 Define session parameters:",
+      "status": "pending"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.5 Create output directory structure: `docs/brainstorm/`",
+      "status": "pending"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Creative Prompting Techniques",
+      "description": "2.1 Implement Constraint Relaxation technique:",
+      "status": "pending"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Creative Prompting Techniques",
+      "description": "2.2 Implement Perspective Shifting technique:",
+      "status": "pending"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Creative Prompting Techniques",
+      "description": "2.3 Implement Analogical Thinking technique:",
+      "status": "pending"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Creative Prompting Techniques",
+      "description": "2.4 Implement Reverse Thinking technique:",
+      "status": "pending"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Creative Prompting Techniques",
+      "description": "2.5 Implement SCAMPER Framework:",
+      "status": "pending"
+    },
+    {
+      "id": "2.6",
+      "phase": "Phase 2: Creative Prompting Techniques",
+      "description": "2.6 Create technique selection logic:",
+      "status": "pending"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.1.1 Create `/brainstorm:solutions` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.1.2 Implement solution generation framework:",
+      "status": "pending"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.1.3 Generate artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.1.4 Include per-solution analysis:",
+      "status": "pending"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.2.1 Create `/brainstorm:architecture` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.2.2 Implement architecture exploration:",
+      "status": "pending"
+    },
+    {
+      "id": "3.7",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.2.3 Generate artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.8",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.2.4 Include for each option:",
+      "status": "pending"
+    },
+    {
+      "id": "3.9",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.3.1 Create `/brainstorm:names` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.10",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.3.2 Implement naming categories:",
+      "status": "pending"
+    },
+    {
+      "id": "3.11",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.3.3 Generate artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.12",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.3.4 Include context awareness:",
+      "status": "pending"
+    },
+    {
+      "id": "3.13",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.4.1 Create `/brainstorm:features` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.14",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.4.2 Implement feature ideation:",
+      "status": "pending"
+    },
+    {
+      "id": "3.15",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.4.3 Generate artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.16",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.4.4 Include for each feature:",
+      "status": "pending"
+    },
+    {
+      "id": "3.17",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.5.1 Create `/brainstorm:apis` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.18",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.5.2 Implement API design ideation:",
+      "status": "pending"
+    },
+    {
+      "id": "3.19",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.5.3 Generate artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.20",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.5.4 Include for each design:",
+      "status": "pending"
+    },
+    {
+      "id": "3.21",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.6.1 Create `/brainstorm:approaches` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.22",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.6.2 Implement approach comparison:",
+      "status": "pending"
+    },
+    {
+      "id": "3.23",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.6.3 Generate artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.24",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.6.4 Include decision framework:",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Artifact Generation",
+      "description": "4.1.1 Define ideas.md schema:",
+      "status": "pending"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Artifact Generation",
+      "description": "4.1.2 Implement idea format:",
+      "status": "pending"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Artifact Generation",
+      "description": "4.2.1 Define alternatives.md schema:",
+      "status": "pending"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Artifact Generation",
+      "description": "4.2.2 Implement alternative format:",
+      "status": "pending"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Artifact Generation",
+      "description": "4.3.1 Implement comparison-matrix.md:",
+      "status": "pending"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Artifact Generation",
+      "description": "4.3.2 Add weighted scoring option:",
+      "status": "pending"
+    },
+    {
+      "id": "4.7",
+      "phase": "Phase 4: Artifact Generation",
+      "description": "4.4.1 Implement decision-record.md (optional):",
+      "status": "pending"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Interactive Session Flow",
+      "description": "5.1 Implement session initialization:",
+      "status": "pending"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Interactive Session Flow",
+      "description": "5.2 Implement context gathering:",
+      "status": "pending"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Interactive Session Flow",
+      "description": "5.3 Implement iterative refinement:",
+      "status": "pending"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Interactive Session Flow",
+      "description": "5.4 Implement synthesis phase:",
+      "status": "pending"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Interactive Session Flow",
+      "description": "5.5 Implement session conclusion:",
+      "status": "pending"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Read-Only Constraint Implementation",
+      "description": "6.1 Implement tool restrictions:",
+      "status": "pending"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Read-Only Constraint Implementation",
+      "description": "6.2 Implement artifact output flow:",
+      "status": "pending"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Read-Only Constraint Implementation",
+      "description": "6.3 Add codebase context without modification:",
+      "status": "pending"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Read-Only Constraint Implementation",
+      "description": "6.4 Document read-only philosophy:",
+      "status": "pending"
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Command Integration & Workflows",
+      "description": "7.1 Define integration points:",
+      "status": "pending"
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Command Integration & Workflows",
+      "description": "7.2 Add artifact cross-referencing:",
+      "status": "pending"
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: Command Integration & Workflows",
+      "description": "7.3 Implement workflow continuity:",
+      "status": "pending"
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: Command Integration & Workflows",
+      "description": "7.4 Test common workflows:",
+      "status": "pending"
+    },
+    {
+      "id": "8.1",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.1.1 Test idea diversity (generate distinct approaches, not variations)",
+      "status": "pending"
+    },
+    {
+      "id": "8.2",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.1.2 Test non-obviousness (ideas beyond first-thought solutions)",
+      "status": "pending"
+    },
+    {
+      "id": "8.3",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.1.3 Test creative technique effectiveness (each technique produces different outputs)",
+      "status": "pending"
+    },
+    {
+      "id": "8.4",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.1.4 Test temperature impact (0.9 produces more varied results than default)",
+      "status": "pending"
+    },
+    {
+      "id": "8.5",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.2.1 Test /brainstorm:solutions with common problems:",
+      "status": "pending"
+    },
+    {
+      "id": "8.6",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.2.2 Test /brainstorm:architecture with different contexts:",
+      "status": "pending"
+    },
+    {
+      "id": "8.7",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.2.3 Test /brainstorm:names for:",
+      "status": "pending"
+    },
+    {
+      "id": "8.8",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.2.4 Test /brainstorm:features for:",
+      "status": "pending"
+    },
+    {
+      "id": "8.9",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.2.5 Test /brainstorm:apis for:",
+      "status": "pending"
+    },
+    {
+      "id": "8.10",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.2.6 Test /brainstorm:approaches for:",
+      "status": "pending"
+    },
+    {
+      "id": "8.11",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.3.1 Test idea completeness (all have pros, cons, effort, risk)",
+      "status": "pending"
+    },
+    {
+      "id": "8.12",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.3.2 Test comparison matrix accuracy",
+      "status": "pending"
+    },
+    {
+      "id": "8.13",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.3.3 Test recommendation quality (justified, context-aware)",
+      "status": "pending"
+    },
+    {
+      "id": "8.14",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.3.4 Test artifact formatting consistency",
+      "status": "pending"
+    },
+    {
+      "id": "8.15",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.4.1 Test session flow (smooth, engaging)",
+      "status": "pending"
+    },
+    {
+      "id": "8.16",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.4.2 Test iterative refinement (responds to user direction)",
+      "status": "pending"
+    },
+    {
+      "id": "8.17",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.4.3 Test context gathering (appropriate questions asked)",
+      "status": "pending"
+    },
+    {
+      "id": "8.18",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.4.4 Test artifact generation timing (user controls when)",
+      "status": "pending"
+    },
+    {
+      "id": "9.1",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "9.1 Create command documentation:",
+      "status": "pending"
+    },
+    {
+      "id": "9.2",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "9.2 Document brainstorming philosophy:",
+      "status": "pending"
+    },
+    {
+      "id": "9.3",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "9.3 Create user guides:",
+      "status": "pending"
+    },
+    {
+      "id": "9.4",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "9.4 Add inline help:",
+      "status": "pending"
+    },
+    {
+      "id": "9.5",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "9.5 Polish output formatting:",
+      "status": "pending"
+    },
+    {
+      "id": "9.6",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "9.6 Create example outputs:",
+      "status": "pending"
+    },
+    {
+      "id": "9.7",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Base /brainstorm command presents interactive menu and accepts input",
+      "status": "pending"
+    },
+    {
+      "id": "9.8",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "All 6 sub-commands (solutions, architecture, names, features, apis, approaches) work correctly",
+      "status": "pending"
+    },
+    {
+      "id": "9.9",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Creative prompting techniques produce diverse, non-obvious ideas",
+      "status": "pending"
+    },
+    {
+      "id": "9.10",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Temperature 0.9 produces more varied outputs than default",
+      "status": "pending"
+    },
+    {
+      "id": "9.11",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Read-only constraint is respected (no automatic file writes)",
+      "status": "pending"
+    },
+    {
+      "id": "9.12",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Minimum 4-6 distinct ideas per brainstorming session",
+      "status": "pending"
+    },
+    {
+      "id": "9.13",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Ideas are genuinely different approaches, not variations",
+      "status": "pending"
+    },
+    {
+      "id": "9.14",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "All ideas include pros, cons, effort estimate, and risk level",
+      "status": "pending"
+    },
+    {
+      "id": "9.15",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Comparison matrices enable informed decision-making",
+      "status": "pending"
+    },
+    {
+      "id": "9.16",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Recommendations (when provided) are justified",
+      "status": "pending"
+    },
+    {
+      "id": "9.17",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Interactive sessions are engaging and productive",
+      "status": "pending"
+    },
+    {
+      "id": "9.18",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Users can iterate and refine ideas",
+      "status": "pending"
+    },
+    {
+      "id": "9.19",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Artifact generation is controlled by user",
+      "status": "pending"
+    },
+    {
+      "id": "9.20",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Clear integration path to downstream commands",
+      "status": "pending"
+    },
+    {
+      "id": "9.21",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Artifacts can be consumed by /architect, /design, /implement",
+      "status": "pending"
+    },
+    {
+      "id": "9.22",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Metadata includes related_artifacts cross-references",
+      "status": "pending"
+    },
+    {
+      "id": "9.23",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Works seamlessly in common workflows (greenfield design, feature development)",
+      "status": "pending"
+    },
+    {
+      "id": "9.24",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "All sub-commands tested with representative scenarios",
+      "status": "pending"
+    },
+    {
+      "id": "9.25",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Creative technique effectiveness validated",
+      "status": "pending"
+    },
+    {
+      "id": "9.26",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Idea diversity confirmed",
+      "status": "pending"
+    },
+    {
+      "id": "9.27",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Interactive flow tested end-to-end",
+      "status": "pending"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 100,
+    "completed": 0,
+    "pending": 100,
+    "failed": 0,
+    "skipped": 0
+  }
+}

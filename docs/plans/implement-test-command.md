@@ -1,0 +1,271 @@
+# Implementation Plan: Implement /test Command
+
+## Overview
+- **Goal:** Create a comprehensive testing command with 10 sub-commands supporting multiple frameworks, TDD/BDD workflows, and artifact generation
+- **Priority:** P0
+- **Created:** 2025-12-22
+- **Output:** `docs/plan-outputs/implement-test-command/`
+
+> Implement the /test command system that provides intelligent test generation, planning, execution, and analysis capabilities. Supports Jest, Vitest, Playwright, Cypress, Mocha, and Pact with automatic framework detection. Generates structured artifacts including test plans, coverage matrices, and gap analysis reports.
+
+## Phase 1: Core Command Setup
+
+- [ ] 1.1 Create base command YAML at `.claude/commands/test.md`
+  - Set model to `claude-sonnet-4-5`
+  - Configure allowed tools: `Read`, `Write`, `Glob`, `Grep`, `Bash`
+  - Define category as "Analysis & Quality"
+  - Set up sub-command structure for 10 sub-commands
+- [ ] 1.2 Implement framework detection logic
+  - Detect Jest from `jest.config.js`, `jest.config.ts`, or package.json
+  - Detect Vitest from `vitest.config.ts`, `vitest.config.js`, or package.json
+  - Detect Playwright from `playwright.config.ts` or package.json
+  - Detect Cypress from `cypress.config.ts`, `cypress.json`, or package.json
+  - Detect Mocha from `.mocharc.json`, `mocha.opts`, or package.json
+  - Detect Pact from package.json pact dependencies
+  - Create priority fallback chain for multiple frameworks
+- [ ] 1.3 Create base system prompt template
+  - Define role as testing expert with framework-specific knowledge
+  - Include context for project structure analysis
+  - Add guidelines for test generation best practices
+  - Include artifact generation requirements
+- [ ] 1.4 Set up output directory structure
+  - Create `docs/plan-outputs/implement-test-command/` directory
+  - Set up subdirectories: `artifacts/`, `findings/`, `verification/`
+  - Initialize `status.json` tracking file
+- [ ] **VERIFY 1**: Framework detection correctly identifies test frameworks from sample projects, base YAML structure is valid
+
+## Phase 2: Test Generation Engine
+
+- [ ] 2.1 Implement unit test generation logic
+  - Create template for unit test structure (describe/it blocks)
+  - Add mocking patterns for dependencies
+  - Include assertion library detection (expect, assert, should)
+  - Generate test cases covering: happy path, edge cases, error handling
+  - Support TypeScript and JavaScript syntax
+- [ ] 2.2 Implement integration test generation logic
+  - Create templates for API/service integration tests
+  - Add database/external service mocking patterns
+  - Include setup/teardown helpers
+  - Generate test cases for service interactions
+- [ ] 2.3 Implement E2E test generation logic
+  - Create Playwright/Cypress test templates
+  - Add page object model patterns
+  - Include selector strategies (data-testid, aria roles)
+  - Generate user flow scenarios
+  - Add screenshot/video capture configuration
+- [ ] 2.4 Implement fixture generation
+  - Create factory patterns for test data
+  - Support JSON fixtures and builder patterns
+  - Include seed data generation
+  - Add faker.js integration patterns
+- [ ] 2.5 Implement snapshot testing patterns
+  - Add Jest/Vitest snapshot templates
+  - Include component snapshot examples
+  - Add serializer configuration
+  - Create update workflow guidance
+- [ ] **VERIFY 2**: Generated tests are syntactically valid, run successfully, and follow framework conventions
+
+## Phase 3: Sub-Commands Implementation
+
+- [ ] 3.1 Implement `test:unit` sub-command
+  - Add file path/pattern parameter support
+  - Generate unit tests for specified files
+  - Include coverage annotations
+  - Output: `*.test.ts` or `*.spec.ts` files
+- [ ] 3.2 Implement `test:integration` sub-command
+  - Add service/API endpoint parameters
+  - Generate integration test suites
+  - Include environment setup instructions
+  - Output: integration test files in appropriate directory
+- [ ] 3.3 Implement `test:e2e` sub-command
+  - Add user flow description parameter
+  - Generate E2E test scenarios
+  - Include page objects when needed
+  - Output: E2E test files with configuration
+- [ ] 3.4 Implement `test:plan` sub-command
+  - Analyze codebase for test requirements
+  - Generate structured test plan (test-plan.md)
+  - Include test strategy and scope
+  - Output: `artifacts/test-plan.md`
+- [ ] 3.5 Implement `test:coverage` sub-command
+  - Parse existing coverage reports
+  - Identify coverage gaps
+  - Generate coverage-gaps.json artifact
+  - Provide recommendations for improvement
+  - Output: `artifacts/coverage-gaps.json`
+- [ ] 3.6 Implement `test:run` sub-command
+  - Execute tests using detected framework
+  - Support filtering by pattern/path
+  - Parse and format test results
+  - Report failures with debugging hints
+  - Output: formatted test results summary
+- [ ] 3.7 Implement `test:fixture` sub-command
+  - Generate fixture files for specified entities
+  - Support multiple formats (JSON, TypeScript factories)
+  - Include realistic sample data
+  - Output: fixture files in `__fixtures__/` or `fixtures/`
+- [ ] 3.8 Implement `test:snapshot` sub-command
+  - Generate snapshot tests for components/outputs
+  - Include snapshot configuration
+  - Add update instructions
+  - Output: snapshot test files
+- [ ] 3.9 Implement `test:contract` sub-command
+  - Generate Pact consumer/provider tests
+  - Include contract definition templates
+  - Add verification setup
+  - Output: contract test files and pact configuration
+- [ ] 3.10 Implement `test:mutation` sub-command
+  - Analyze code for mutation testing opportunities
+  - Generate Stryker configuration if needed
+  - Identify weak test coverage areas
+  - Output: mutation testing recommendations and config
+- [ ] **VERIFY 3**: All 10 sub-commands execute successfully with appropriate inputs and generate expected outputs
+
+## Phase 4: Artifact Generation
+
+- [ ] 4.1 Implement test-plan.md artifact generator
+  - Create schema with sections: Overview, Scope, Test Strategy, Test Matrix, Entry/Exit Criteria
+  - Add test case enumeration logic
+  - Include risk assessment section
+  - Generate markdown tables for test matrix
+  - Add test environment requirements
+  - Example template with placeholders
+- [ ] 4.2 Implement test-matrix.json artifact generator
+  - Define JSON schema with: metadata, testCases[], coverage{}
+  - Map test cases to requirements/features
+  - Include priority and status fields
+  - Add execution time estimates
+  - Generate coverage metrics per area
+- [ ] 4.3 Implement coverage-gaps.json artifact generator
+  - Define JSON schema with: metadata, gaps[], summary{}
+  - Identify untested files/functions/branches
+  - Calculate coverage percentages by category
+  - Prioritize gaps by risk/impact
+  - Include actionable recommendations
+- [ ] 4.4 Add artifact validation logic
+  - Validate JSON schemas before writing
+  - Check markdown formatting for test-plan.md
+  - Ensure required fields are present
+  - Add schema version metadata
+- [ ] **VERIFY 4**: All artifacts validate against schemas, contain accurate data, and are properly formatted
+
+## Phase 5: Framework Integration
+
+- [ ] 5.1 Create Jest integration module
+  - Parse jest.config.js/ts for test patterns
+  - Extract coverage thresholds
+  - Identify custom matchers and setup files
+  - Generate Jest-compatible test syntax
+  - Include watch mode and filtering examples
+- [ ] 5.2 Create Vitest integration module
+  - Parse vitest.config.ts for test configuration
+  - Extract coverage provider (c8/istanbul)
+  - Identify globals and environment settings
+  - Generate Vitest-compatible test syntax
+  - Include UI mode and browser mode examples
+- [ ] 5.3 Create Playwright integration module
+  - Parse playwright.config.ts for browser settings
+  - Extract base URL and test directory
+  - Identify fixtures and page objects
+  - Generate Playwright test syntax with annotations
+  - Include parallel execution and retries config
+- [ ] 5.4 Create Cypress integration module
+  - Parse cypress.config.ts/cypress.json
+  - Extract base URL and viewport settings
+  - Identify custom commands
+  - Generate Cypress test syntax
+  - Include component testing patterns if configured
+- [ ] 5.5 Create Mocha integration module
+  - Parse .mocharc.json or mocha.opts
+  - Identify assertion library (chai, expect)
+  - Extract reporter configuration
+  - Generate Mocha test syntax
+  - Include hooks and async testing patterns
+- [ ] 5.6 Create Pact integration module
+  - Identify consumer/provider roles
+  - Parse pact configuration
+  - Generate contract test templates
+  - Include verification scripts
+  - Add pact broker integration examples
+- [ ] 5.7 Implement framework-specific best practices
+  - Add framework-specific linting rules references
+  - Include common pitfalls and solutions
+  - Generate framework-appropriate mocking patterns
+  - Add performance optimization tips per framework
+- [ ] **VERIFY 5**: Tests generated for each framework follow framework conventions and execute successfully
+
+## Phase 6: TDD/BDD Workflows
+
+- [ ] 6.1 Implement TDD workflow support
+  - Create "red-green-refactor" guidance
+  - Generate failing test first approach
+  - Add minimal implementation hints
+  - Include refactoring checklist
+  - Support watch mode integration
+- [ ] 6.2 Implement BDD workflow support
+  - Generate Gherkin-style given-when-then scenarios
+  - Create Cucumber integration patterns (if detected)
+  - Map user stories to test scenarios
+  - Include acceptance criteria verification
+  - Generate feature file templates
+- [ ] 6.3 Add specification-by-example patterns
+  - Create example-driven test templates
+  - Include table-driven test patterns
+  - Generate parameterized test structures
+  - Add documentation value emphasis
+- [ ] 6.4 Implement test-first development guidance
+  - Create workflow documentation
+  - Add commit message patterns for TDD
+  - Include code review checklist
+  - Generate CI/CD integration examples
+- [ ] **VERIFY 6**: TDD/BDD workflows produce valid test-first development cycles with appropriate artifacts
+
+## Phase 7: Testing & Documentation
+
+- [ ] 7.1 Test command with real-world projects
+  - Test with TypeScript project using Jest
+  - Test with JavaScript project using Vitest
+  - Test with full-stack app using Playwright
+  - Test with legacy project using Mocha/Chai
+  - Test with microservices using Pact
+  - Verify all sub-commands work correctly
+  - Validate artifact generation accuracy
+- [ ] 7.2 Create comprehensive documentation
+  - Write command reference for /test and all sub-commands
+  - Document supported frameworks and versions
+  - Add troubleshooting section for common issues
+  - Include best practices guide
+  - Create migration guide from other testing approaches
+  - Add examples for each sub-command
+- [ ] 7.3 Create example artifacts
+  - Generate sample test-plan.md
+  - Generate sample test-matrix.json
+  - Generate sample coverage-gaps.json
+  - Include for each major framework
+- [ ] 7.4 Add usage examples
+  - Create quickstart guide
+  - Add framework-specific walkthroughs
+  - Include common workflow scenarios
+  - Document integration with CI/CD pipelines
+  - Add debugging tips for test failures
+- [ ] 7.5 Performance optimization
+  - Measure artifact generation time
+  - Optimize file system operations
+  - Cache framework detection results
+  - Parallelize independent operations
+- [ ] **VERIFY 7**: Documentation is complete, examples work as shown, command performs efficiently on large codebases
+
+## Success Criteria
+
+- [ ] Base /test command YAML is valid and registers all 10 sub-commands
+- [ ] Framework detection accurately identifies Jest, Vitest, Playwright, Cypress, Mocha, and Pact
+- [ ] All test generation engines produce syntactically valid, executable tests
+- [ ] All 10 sub-commands (unit, integration, e2e, plan, coverage, run, fixture, snapshot, contract, mutation) execute successfully
+- [ ] Artifacts (test-plan.md, test-matrix.json, coverage-gaps.json) validate against schemas
+- [ ] Generated tests follow framework-specific conventions and best practices
+- [ ] TDD/BDD workflows produce appropriate test-first development cycles
+- [ ] Command works correctly with at least 5 different real-world project structures
+- [ ] Documentation covers all features with working examples
+- [ ] Performance is acceptable (<5s for typical test generation, <10s for complex analysis)
+- [ ] Coverage analysis correctly identifies gaps and provides actionable recommendations
+- [ ] Integration with CI/CD pipelines is documented and tested

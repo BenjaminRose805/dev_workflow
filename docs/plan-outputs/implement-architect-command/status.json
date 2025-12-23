@@ -1,0 +1,845 @@
+{
+  "planPath": "docs/plans/implement-architect-command.md",
+  "planName": "Implementation Plan: /architect Command",
+  "createdAt": "2025-12-23T04:36:56.666Z",
+  "lastUpdatedAt": "2025-12-23T04:36:56.668Z",
+  "currentPhase": "Phase 1: Core Command Setup",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.1 Create `/architect` command file at `.claude/commands/architect.md`",
+      "status": "pending"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.2 Add YAML frontmatter with configuration:",
+      "status": "pending"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.3 Write base command prompt with sections:",
+      "status": "pending"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.4 Define default parameters:",
+      "status": "pending"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.5 Create output directory structure: `docs/architecture/`",
+      "status": "pending"
+    },
+    {
+      "id": "1.6",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.6 Implement artifact discovery logic:",
+      "status": "pending"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Sub-Command Implementation - Core (P0)",
+      "description": "2.1.1 Create `/architect:system` command file at `.claude/commands/architect/system.md`",
+      "status": "pending"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Sub-Command Implementation - Core (P0)",
+      "description": "2.1.2 Implement interactive requirement gathering:",
+      "status": "pending"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Sub-Command Implementation - Core (P0)",
+      "description": "2.1.3 Implement C4 Context diagram generation:",
+      "status": "pending"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Sub-Command Implementation - Core (P0)",
+      "description": "2.1.4 Implement C4 Container diagram generation:",
+      "status": "pending"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Sub-Command Implementation - Core (P0)",
+      "description": "2.1.5 Generate artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "2.6",
+      "phase": "Phase 2: Sub-Command Implementation - Core (P0)",
+      "description": "2.2.1 Create `/architect:components` command file at `.claude/commands/architect/components.md`",
+      "status": "pending"
+    },
+    {
+      "id": "2.7",
+      "phase": "Phase 2: Sub-Command Implementation - Core (P0)",
+      "description": "2.2.2 Implement component decomposition logic:",
+      "status": "pending"
+    },
+    {
+      "id": "2.8",
+      "phase": "Phase 2: Sub-Command Implementation - Core (P0)",
+      "description": "2.2.3 Implement relationship mapping:",
+      "status": "pending"
+    },
+    {
+      "id": "2.9",
+      "phase": "Phase 2: Sub-Command Implementation - Core (P0)",
+      "description": "2.2.4 Implement interface definition:",
+      "status": "pending"
+    },
+    {
+      "id": "2.10",
+      "phase": "Phase 2: Sub-Command Implementation - Core (P0)",
+      "description": "2.2.5 Generate artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Sub-Command Implementation - Data & Deployment (P1)",
+      "description": "3.1.1 Create `/architect:data` command file at `.claude/commands/architect/data.md`",
+      "status": "pending"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Sub-Command Implementation - Data & Deployment (P1)",
+      "description": "3.1.2 Implement data store analysis:",
+      "status": "pending"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Sub-Command Implementation - Data & Deployment (P1)",
+      "description": "3.1.3 Implement data flow mapping:",
+      "status": "pending"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Sub-Command Implementation - Data & Deployment (P1)",
+      "description": "3.1.4 Implement data governance design:",
+      "status": "pending"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Sub-Command Implementation - Data & Deployment (P1)",
+      "description": "3.1.5 Generate artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Sub-Command Implementation - Data & Deployment (P1)",
+      "description": "3.2.1 Create `/architect:deployment` command file at `.claude/commands/architect/deployment.md`",
+      "status": "pending"
+    },
+    {
+      "id": "3.7",
+      "phase": "Phase 3: Sub-Command Implementation - Data & Deployment (P1)",
+      "description": "3.2.2 Implement infrastructure design:",
+      "status": "pending"
+    },
+    {
+      "id": "3.8",
+      "phase": "Phase 3: Sub-Command Implementation - Data & Deployment (P1)",
+      "description": "3.2.3 Implement deployment pipeline design:",
+      "status": "pending"
+    },
+    {
+      "id": "3.9",
+      "phase": "Phase 3: Sub-Command Implementation - Data & Deployment (P1)",
+      "description": "3.2.4 Implement operations design:",
+      "status": "pending"
+    },
+    {
+      "id": "3.10",
+      "phase": "Phase 3: Sub-Command Implementation - Data & Deployment (P1)",
+      "description": "3.2.5 Generate artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Sub-Command Implementation - ADR System (P1)",
+      "description": "4.1.1 Create `/architect:adr` command file at `.claude/commands/architect/adr.md`",
+      "status": "pending"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Sub-Command Implementation - ADR System (P1)",
+      "description": "4.1.2 Implement ADR template initialization:",
+      "status": "pending"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Sub-Command Implementation - ADR System (P1)",
+      "description": "4.1.3 Implement decision capture workflow:",
+      "status": "pending"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Sub-Command Implementation - ADR System (P1)",
+      "description": "4.1.4 Implement consequences documentation:",
+      "status": "pending"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Sub-Command Implementation - ADR System (P1)",
+      "description": "4.1.5 Implement ADR relationships:",
+      "status": "pending"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Sub-Command Implementation - ADR System (P1)",
+      "description": "4.1.6 Generate artifact:",
+      "status": "pending"
+    },
+    {
+      "id": "4.7",
+      "phase": "Phase 4: Sub-Command Implementation - ADR System (P1)",
+      "description": "4.1.7 Update architecture.md:",
+      "status": "pending"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Sub-Command Implementation - Security (P2)",
+      "description": "5.1.1 Create `/architect:security` command file at `.claude/commands/architect/security.md`",
+      "status": "pending"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Sub-Command Implementation - Security (P2)",
+      "description": "5.1.2 Implement threat modeling:",
+      "status": "pending"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Sub-Command Implementation - Security (P2)",
+      "description": "5.1.3 Implement security controls design:",
+      "status": "pending"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Sub-Command Implementation - Security (P2)",
+      "description": "5.1.4 Implement compliance mapping:",
+      "status": "pending"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Sub-Command Implementation - Security (P2)",
+      "description": "5.1.5 Generate artifact:",
+      "status": "pending"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Artifact Schema Implementation",
+      "description": "6.1.1 Implement `architecture.md` template with YAML frontmatter:",
+      "status": "pending"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Artifact Schema Implementation",
+      "description": "6.1.2 Implement 12 standard sections:",
+      "status": "pending"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Artifact Schema Implementation",
+      "description": "6.2.1 Implement `components.json` JSON schema:",
+      "status": "pending"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Artifact Schema Implementation",
+      "description": "6.2.2 Implement JSON schema validation:",
+      "status": "pending"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Artifact Schema Implementation",
+      "description": "6.3.1 Implement ADR template with YAML frontmatter:",
+      "status": "pending"
+    },
+    {
+      "id": "6.6",
+      "phase": "Phase 6: Artifact Schema Implementation",
+      "description": "6.3.2 Implement standard ADR sections:",
+      "status": "pending"
+    },
+    {
+      "id": "6.7",
+      "phase": "Phase 6: Artifact Schema Implementation",
+      "description": "6.4.1 Ensure all artifacts include:",
+      "status": "pending"
+    },
+    {
+      "id": "6.8",
+      "phase": "Phase 6: Artifact Schema Implementation",
+      "description": "6.4.2 Implement artifact linking:",
+      "status": "pending"
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Mermaid Diagram Implementation",
+      "description": "7.1.1 Implement C4 Context diagram generation:",
+      "status": "pending"
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Mermaid Diagram Implementation",
+      "description": "7.1.2 Add diagram styling:",
+      "status": "pending"
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: Mermaid Diagram Implementation",
+      "description": "7.2.1 Implement C4 Container diagram generation:",
+      "status": "pending"
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: Mermaid Diagram Implementation",
+      "description": "7.2.2 Add container details:",
+      "status": "pending"
+    },
+    {
+      "id": "7.5",
+      "phase": "Phase 7: Mermaid Diagram Implementation",
+      "description": "7.3.1 Implement component diagram generation:",
+      "status": "pending"
+    },
+    {
+      "id": "7.6",
+      "phase": "Phase 7: Mermaid Diagram Implementation",
+      "description": "7.3.2 Generate per-container component diagrams:",
+      "status": "pending"
+    },
+    {
+      "id": "7.7",
+      "phase": "Phase 7: Mermaid Diagram Implementation",
+      "description": "7.4.1 Implement data flow diagram generation:",
+      "status": "pending"
+    },
+    {
+      "id": "7.8",
+      "phase": "Phase 7: Mermaid Diagram Implementation",
+      "description": "7.4.2 Add data flow annotations:",
+      "status": "pending"
+    },
+    {
+      "id": "7.9",
+      "phase": "Phase 7: Mermaid Diagram Implementation",
+      "description": "7.5.1 Implement deployment diagram generation:",
+      "status": "pending"
+    },
+    {
+      "id": "7.10",
+      "phase": "Phase 7: Mermaid Diagram Implementation",
+      "description": "7.5.2 Add environment variations:",
+      "status": "pending"
+    },
+    {
+      "id": "8.1",
+      "phase": "Phase 8: Quality Gates & Validation",
+      "description": "8.1.1 Implement pre-completion checklist:",
+      "status": "pending"
+    },
+    {
+      "id": "8.2",
+      "phase": "Phase 8: Quality Gates & Validation",
+      "description": "8.1.2 Implement validation warnings:",
+      "status": "pending"
+    },
+    {
+      "id": "8.3",
+      "phase": "Phase 8: Quality Gates & Validation",
+      "description": "8.1.3 Implement completeness scoring:",
+      "status": "pending"
+    },
+    {
+      "id": "8.4",
+      "phase": "Phase 8: Quality Gates & Validation",
+      "description": "8.2.1 Implement cross-artifact consistency checks:",
+      "status": "pending"
+    },
+    {
+      "id": "8.5",
+      "phase": "Phase 8: Quality Gates & Validation",
+      "description": "8.2.2 Implement reference validation:",
+      "status": "pending"
+    },
+    {
+      "id": "8.6",
+      "phase": "Phase 8: Quality Gates & Validation",
+      "description": "8.2.3 Implement diagram-text consistency:",
+      "status": "pending"
+    },
+    {
+      "id": "9.1",
+      "phase": "Phase 9: Workflow Integration",
+      "description": "9.1.1 Implement artifact discovery from /clarify:",
+      "status": "pending"
+    },
+    {
+      "id": "9.2",
+      "phase": "Phase 9: Workflow Integration",
+      "description": "9.1.2 Implement artifact discovery from /explore:",
+      "status": "pending"
+    },
+    {
+      "id": "9.3",
+      "phase": "Phase 9: Workflow Integration",
+      "description": "9.1.3 Implement artifact discovery from /research:",
+      "status": "pending"
+    },
+    {
+      "id": "9.4",
+      "phase": "Phase 9: Workflow Integration",
+      "description": "9.1.4 Implement artifact discovery from /brainstorm:",
+      "status": "pending"
+    },
+    {
+      "id": "9.5",
+      "phase": "Phase 9: Workflow Integration",
+      "description": "9.2.1 Prepare artifacts for /design command:",
+      "status": "pending"
+    },
+    {
+      "id": "9.6",
+      "phase": "Phase 9: Workflow Integration",
+      "description": "9.2.2 Prepare artifacts for /implement command:",
+      "status": "pending"
+    },
+    {
+      "id": "9.7",
+      "phase": "Phase 9: Workflow Integration",
+      "description": "9.2.3 Prepare artifacts for /model command:",
+      "status": "pending"
+    },
+    {
+      "id": "9.8",
+      "phase": "Phase 9: Workflow Integration",
+      "description": "9.2.4 Prepare artifacts for /spec command:",
+      "status": "pending"
+    },
+    {
+      "id": "9.9",
+      "phase": "Phase 9: Workflow Integration",
+      "description": "9.3.1 Document common workflows:",
+      "status": "pending"
+    },
+    {
+      "id": "9.10",
+      "phase": "Phase 9: Workflow Integration",
+      "description": "9.3.2 Create workflow decision tree:",
+      "status": "pending"
+    },
+    {
+      "id": "10.1",
+      "phase": "Phase 10: Interactive Guidance & UX",
+      "description": "10.1.1 Implement adaptive questioning:",
+      "status": "pending"
+    },
+    {
+      "id": "10.2",
+      "phase": "Phase 10: Interactive Guidance & UX",
+      "description": "10.1.2 Implement sensible defaults:",
+      "status": "pending"
+    },
+    {
+      "id": "10.3",
+      "phase": "Phase 10: Interactive Guidance & UX",
+      "description": "10.1.3 Implement progressive disclosure:",
+      "status": "pending"
+    },
+    {
+      "id": "10.4",
+      "phase": "Phase 10: Interactive Guidance & UX",
+      "description": "10.2.1 Implement examples in prompts:",
+      "status": "pending"
+    },
+    {
+      "id": "10.5",
+      "phase": "Phase 10: Interactive Guidance & UX",
+      "description": "10.2.2 Implement explanation text:",
+      "status": "pending"
+    },
+    {
+      "id": "10.6",
+      "phase": "Phase 10: Interactive Guidance & UX",
+      "description": "10.2.3 Implement recommendations:",
+      "status": "pending"
+    },
+    {
+      "id": "10.7",
+      "phase": "Phase 10: Interactive Guidance & UX",
+      "description": "10.3.1 Implement phase indicators:",
+      "status": "pending"
+    },
+    {
+      "id": "10.8",
+      "phase": "Phase 10: Interactive Guidance & UX",
+      "description": "10.3.2 Implement completion indicators:",
+      "status": "pending"
+    },
+    {
+      "id": "11.1",
+      "phase": "Phase 11: Testing & Validation",
+      "description": "11.1.1 Test artifact generation functions:",
+      "status": "pending"
+    },
+    {
+      "id": "11.2",
+      "phase": "Phase 11: Testing & Validation",
+      "description": "11.1.2 Test diagram generation:",
+      "status": "pending"
+    },
+    {
+      "id": "11.3",
+      "phase": "Phase 11: Testing & Validation",
+      "description": "11.1.3 Test validation logic:",
+      "status": "pending"
+    },
+    {
+      "id": "11.4",
+      "phase": "Phase 11: Testing & Validation",
+      "description": "11.2.1 Test base /architect command:",
+      "status": "pending"
+    },
+    {
+      "id": "11.5",
+      "phase": "Phase 11: Testing & Validation",
+      "description": "11.2.2 Test each sub-command independently:",
+      "status": "pending"
+    },
+    {
+      "id": "11.6",
+      "phase": "Phase 11: Testing & Validation",
+      "description": "11.2.3 Test sub-command sequencing:",
+      "status": "pending"
+    },
+    {
+      "id": "11.7",
+      "phase": "Phase 11: Testing & Validation",
+      "description": "11.3.1 Test on web application scenario:",
+      "status": "pending"
+    },
+    {
+      "id": "11.8",
+      "phase": "Phase 11: Testing & Validation",
+      "description": "11.3.2 Test on microservices scenario:",
+      "status": "pending"
+    },
+    {
+      "id": "11.9",
+      "phase": "Phase 11: Testing & Validation",
+      "description": "11.3.3 Test on data pipeline scenario:",
+      "status": "pending"
+    },
+    {
+      "id": "11.10",
+      "phase": "Phase 11: Testing & Validation",
+      "description": "11.3.4 Test on mobile app scenario:",
+      "status": "pending"
+    },
+    {
+      "id": "11.11",
+      "phase": "Phase 11: Testing & Validation",
+      "description": "11.3.5 Test on existing codebase refactoring:",
+      "status": "pending"
+    },
+    {
+      "id": "11.12",
+      "phase": "Phase 11: Testing & Validation",
+      "description": "11.4.1 Validate architecture.md completeness:",
+      "status": "pending"
+    },
+    {
+      "id": "11.13",
+      "phase": "Phase 11: Testing & Validation",
+      "description": "11.4.2 Validate components.json correctness:",
+      "status": "pending"
+    },
+    {
+      "id": "11.14",
+      "phase": "Phase 11: Testing & Validation",
+      "description": "11.4.3 Validate ADR quality:",
+      "status": "pending"
+    },
+    {
+      "id": "11.15",
+      "phase": "Phase 11: Testing & Validation",
+      "description": "11.4.4 Validate diagram quality:",
+      "status": "pending"
+    },
+    {
+      "id": "12.1",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "12.1.1 Create main /architect documentation:",
+      "status": "pending"
+    },
+    {
+      "id": "12.2",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "12.1.2 Create sub-command documentation:",
+      "status": "pending"
+    },
+    {
+      "id": "12.3",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "12.1.3 Create workflow documentation:",
+      "status": "pending"
+    },
+    {
+      "id": "12.4",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "12.2.1 Document architecture.md schema:",
+      "status": "pending"
+    },
+    {
+      "id": "12.5",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "12.2.2 Document components.json schema:",
+      "status": "pending"
+    },
+    {
+      "id": "12.6",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "12.2.3 Document ADR schema:",
+      "status": "pending"
+    },
+    {
+      "id": "12.7",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "12.3.1 Create e-commerce platform example:",
+      "status": "pending"
+    },
+    {
+      "id": "12.8",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "12.3.2 Create SaaS application example:",
+      "status": "pending"
+    },
+    {
+      "id": "12.9",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "12.3.3 Create microservices example:",
+      "status": "pending"
+    },
+    {
+      "id": "12.10",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "12.3.4 Create data platform example:",
+      "status": "pending"
+    },
+    {
+      "id": "12.11",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "12.4.1 Document C4 modeling best practices:",
+      "status": "pending"
+    },
+    {
+      "id": "12.12",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "12.4.2 Document ADR best practices:",
+      "status": "pending"
+    },
+    {
+      "id": "12.13",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "12.4.3 Document architecture evolution:",
+      "status": "pending"
+    },
+    {
+      "id": "12.14",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "12.5.1 Document common issues:",
+      "status": "pending"
+    },
+    {
+      "id": "12.15",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "12.5.2 Provide decision frameworks:",
+      "status": "pending"
+    },
+    {
+      "id": "12.16",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "Base /architect command routes to appropriate workflow based on context",
+      "status": "pending"
+    },
+    {
+      "id": "12.17",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "All 6 sub-commands work correctly (system, components, data, deployment, adr, security)",
+      "status": "pending"
+    },
+    {
+      "id": "12.18",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "Artifacts validate against defined schemas",
+      "status": "pending"
+    },
+    {
+      "id": "12.19",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "Mermaid diagrams render correctly in all contexts",
+      "status": "pending"
+    },
+    {
+      "id": "12.20",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "Quality gates prevent incomplete architectures",
+      "status": "pending"
+    },
+    {
+      "id": "12.21",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "architecture.md includes all 12 required sections",
+      "status": "pending"
+    },
+    {
+      "id": "12.22",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "components.json includes all containers and components with relationships",
+      "status": "pending"
+    },
+    {
+      "id": "12.23",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "ADRs follow template with at least 2 options considered",
+      "status": "pending"
+    },
+    {
+      "id": "12.24",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "C4 diagrams accurately represent system at appropriate levels",
+      "status": "pending"
+    },
+    {
+      "id": "12.25",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "All artifacts include proper metadata and cross-references",
+      "status": "pending"
+    },
+    {
+      "id": "12.26",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "Interactive questions are clear and contextual",
+      "status": "pending"
+    },
+    {
+      "id": "12.27",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "Progress indicators show current phase",
+      "status": "pending"
+    },
+    {
+      "id": "12.28",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "Artifacts are human-readable and actionable",
+      "status": "pending"
+    },
+    {
+      "id": "12.29",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "Documentation explains when to use each sub-command",
+      "status": "pending"
+    },
+    {
+      "id": "12.30",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "Examples cover common project types",
+      "status": "pending"
+    },
+    {
+      "id": "12.31",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "Discovers and uses upstream artifacts (requirements, research, brainstorming)",
+      "status": "pending"
+    },
+    {
+      "id": "12.32",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "Produces artifacts consumable by downstream commands (/design, /implement, /model, /spec)",
+      "status": "pending"
+    },
+    {
+      "id": "12.33",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "Integrates into common workflows (new system, refactoring, API-first)",
+      "status": "pending"
+    },
+    {
+      "id": "12.34",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "Metadata includes related_artifacts cross-references",
+      "status": "pending"
+    },
+    {
+      "id": "12.35",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "All unit tests pass for artifact generation and validation",
+      "status": "pending"
+    },
+    {
+      "id": "12.36",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "Tested on web app, microservices, data platform, mobile app scenarios",
+      "status": "pending"
+    },
+    {
+      "id": "12.37",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "All sub-commands tested independently and in sequence",
+      "status": "pending"
+    },
+    {
+      "id": "12.38",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "Artifacts validated for completeness and consistency",
+      "status": "pending"
+    },
+    {
+      "id": "12.39",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "Mermaid diagrams render correctly",
+      "status": "pending"
+    },
+    {
+      "id": "12.40",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "architect:system completes in < 3 minutes for standard project",
+      "status": "pending"
+    },
+    {
+      "id": "12.41",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "architect:components completes in < 2 minutes for system with 10-20 components",
+      "status": "pending"
+    },
+    {
+      "id": "12.42",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "architect:adr completes in < 1 minute per decision",
+      "status": "pending"
+    },
+    {
+      "id": "12.43",
+      "phase": "Phase 12: Documentation & Examples",
+      "description": "Full architecture (all sub-commands) completes in < 10 minutes",
+      "status": "pending"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 138,
+    "completed": 0,
+    "pending": 138,
+    "failed": 0,
+    "skipped": 0
+  }
+}

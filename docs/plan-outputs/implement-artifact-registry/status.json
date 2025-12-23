@@ -1,0 +1,701 @@
+{
+  "planPath": "docs/plans/implement-artifact-registry.md",
+  "planName": "Implementation Plan: Artifact Registry System",
+  "createdAt": "2025-12-23T01:55:40.089Z",
+  "lastUpdatedAt": "2025-12-23T01:55:40.092Z",
+  "currentPhase": "Phase 1: Core Registry Implementation",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Core Registry Implementation",
+      "description": "1.1.1 Create registry schema at `docs/.artifact-registry.json`",
+      "status": "pending"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Core Registry Implementation",
+      "description": "1.1.2 Define JSON schema for registry validation",
+      "status": "pending"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Core Registry Implementation",
+      "description": "1.1.3 Create registry initialization logic",
+      "status": "pending"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Core Registry Implementation",
+      "description": "**VERIFY 1.1:** Registry file created, schema validates correctly, empty registry initializes",
+      "status": "pending"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Core Registry Implementation",
+      "description": "1.2.1 Implement `ArtifactRegistry.constructor()`",
+      "status": "pending"
+    },
+    {
+      "id": "1.6",
+      "phase": "Phase 1: Core Registry Implementation",
+      "description": "1.2.2 Implement `register(artifact, metadata)` method",
+      "status": "pending"
+    },
+    {
+      "id": "1.7",
+      "phase": "Phase 1: Core Registry Implementation",
+      "description": "1.2.3 Implement `query(type, filters)` method",
+      "status": "pending"
+    },
+    {
+      "id": "1.8",
+      "phase": "Phase 1: Core Registry Implementation",
+      "description": "1.2.4 Implement `queryById(artifactId)` method",
+      "status": "pending"
+    },
+    {
+      "id": "1.9",
+      "phase": "Phase 1: Core Registry Implementation",
+      "description": "1.2.5 Implement `update(artifactId, updates)` method",
+      "status": "pending"
+    },
+    {
+      "id": "1.10",
+      "phase": "Phase 1: Core Registry Implementation",
+      "description": "1.2.6 Implement `markSuperseded(oldId, newId)` method",
+      "status": "pending"
+    },
+    {
+      "id": "1.11",
+      "phase": "Phase 1: Core Registry Implementation",
+      "description": "1.2.7 Implement `delete(artifactId)` method",
+      "status": "pending"
+    },
+    {
+      "id": "1.12",
+      "phase": "Phase 1: Core Registry Implementation",
+      "description": "1.2.8 Implement `save()` private method",
+      "status": "pending"
+    },
+    {
+      "id": "1.13",
+      "phase": "Phase 1: Core Registry Implementation",
+      "description": "**VERIFY 1.2:** All CRUD operations work, registry persists correctly, IDs are unique",
+      "status": "pending"
+    },
+    {
+      "id": "1.14",
+      "phase": "Phase 1: Core Registry Implementation",
+      "description": "1.3.1 Define core metadata schema for all artifacts",
+      "status": "pending"
+    },
+    {
+      "id": "1.15",
+      "phase": "Phase 1: Core Registry Implementation",
+      "description": "1.3.2 Define extended metadata schema",
+      "status": "pending"
+    },
+    {
+      "id": "1.16",
+      "phase": "Phase 1: Core Registry Implementation",
+      "description": "1.3.3 Create metadata validation helper",
+      "status": "pending"
+    },
+    {
+      "id": "1.17",
+      "phase": "Phase 1: Core Registry Implementation",
+      "description": "1.3.4 Update existing artifact producers to include metadata",
+      "status": "pending"
+    },
+    {
+      "id": "1.18",
+      "phase": "Phase 1: Core Registry Implementation",
+      "description": "**VERIFY 1.3:** Metadata schema documented, validation works, existing artifacts updated",
+      "status": "pending"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Discovery Pipeline",
+      "description": "2.1.1 Define standard path conventions",
+      "status": "pending"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Discovery Pipeline",
+      "description": "2.1.2 Implement `ConventionResolver.resolve(type, context)` method",
+      "status": "pending"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Discovery Pipeline",
+      "description": "2.1.3 Add support for latest pointers",
+      "status": "pending"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Discovery Pipeline",
+      "description": "2.1.4 Implement date parsing from filenames",
+      "status": "pending"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Discovery Pipeline",
+      "description": "**VERIFY 2.1:** Convention-based discovery finds artifacts, respects latest pointers, validates before returning",
+      "status": "pending"
+    },
+    {
+      "id": "2.6",
+      "phase": "Phase 2: Discovery Pipeline",
+      "description": "2.2.1 Implement `FilesystemScanner.scan(type, context)` method",
+      "status": "pending"
+    },
+    {
+      "id": "2.7",
+      "phase": "Phase 2: Discovery Pipeline",
+      "description": "2.2.2 Add performance optimizations",
+      "status": "pending"
+    },
+    {
+      "id": "2.8",
+      "phase": "Phase 2: Discovery Pipeline",
+      "description": "2.2.3 Implement validation during scan",
+      "status": "pending"
+    },
+    {
+      "id": "2.9",
+      "phase": "Phase 2: Discovery Pipeline",
+      "description": "**VERIFY 2.2:** Filesystem scan finds artifacts in unexpected locations, validates correctly, respects timeouts",
+      "status": "pending"
+    },
+    {
+      "id": "2.10",
+      "phase": "Phase 2: Discovery Pipeline",
+      "description": "2.3.1 Implement `DiscoveryCoordinator` main class",
+      "status": "pending"
+    },
+    {
+      "id": "2.11",
+      "phase": "Phase 2: Discovery Pipeline",
+      "description": "2.3.2 Implement `discover(type, context, options)` method",
+      "status": "pending"
+    },
+    {
+      "id": "2.12",
+      "phase": "Phase 2: Discovery Pipeline",
+      "description": "2.3.3 Implement error handling and suggestions",
+      "status": "pending"
+    },
+    {
+      "id": "2.13",
+      "phase": "Phase 2: Discovery Pipeline",
+      "description": "2.3.4 Add discovery options",
+      "status": "pending"
+    },
+    {
+      "id": "2.14",
+      "phase": "Phase 2: Discovery Pipeline",
+      "description": "**VERIFY 2.3:** Hybrid discovery works, falls through layers correctly, returns helpful errors",
+      "status": "pending"
+    },
+    {
+      "id": "2.15",
+      "phase": "Phase 2: Discovery Pipeline",
+      "description": "2.4.1 Create `.claude/discovery-config.yml`",
+      "status": "pending"
+    },
+    {
+      "id": "2.16",
+      "phase": "Phase 2: Discovery Pipeline",
+      "description": "2.4.2 Implement config loader",
+      "status": "pending"
+    },
+    {
+      "id": "2.17",
+      "phase": "Phase 2: Discovery Pipeline",
+      "description": "2.4.3 Make discovery coordinator config-driven",
+      "status": "pending"
+    },
+    {
+      "id": "2.18",
+      "phase": "Phase 2: Discovery Pipeline",
+      "description": "**VERIFY 2.4:** Config file loads, coordinator respects settings, can toggle layers on/off",
+      "status": "pending"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Indexing System",
+      "description": "3.1.1 Implement `ArtifactIndex` class structure",
+      "status": "pending"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Indexing System",
+      "description": "3.1.2 Implement `build()` method",
+      "status": "pending"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Indexing System",
+      "description": "3.1.3 Implement `query(filters)` method",
+      "status": "pending"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Indexing System",
+      "description": "3.1.4 Implement `refresh(maxAgeSecs)` method",
+      "status": "pending"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Indexing System",
+      "description": "3.1.5 Add index to ArtifactRegistry",
+      "status": "pending"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Indexing System",
+      "description": "**VERIFY 3.1:** Index builds correctly, queries are fast (<5ms), refreshes when stale",
+      "status": "pending"
+    },
+    {
+      "id": "3.7",
+      "phase": "Phase 3: Indexing System",
+      "description": "3.2.1 Implement query helpers on ArtifactRegistry",
+      "status": "pending"
+    },
+    {
+      "id": "3.8",
+      "phase": "Phase 3: Indexing System",
+      "description": "3.2.2 Implement relationship queries",
+      "status": "pending"
+    },
+    {
+      "id": "3.9",
+      "phase": "Phase 3: Indexing System",
+      "description": "3.2.3 Add advanced filtering",
+      "status": "pending"
+    },
+    {
+      "id": "3.10",
+      "phase": "Phase 3: Indexing System",
+      "description": "**VERIFY 3.2:** Query helpers work, relationship queries correct, advanced filters functional",
+      "status": "pending"
+    },
+    {
+      "id": "3.11",
+      "phase": "Phase 3: Indexing System",
+      "description": "3.3.1 Implement `DiscoveryCache` class",
+      "status": "pending"
+    },
+    {
+      "id": "3.12",
+      "phase": "Phase 3: Indexing System",
+      "description": "3.3.2 Integrate cache into DiscoveryCoordinator",
+      "status": "pending"
+    },
+    {
+      "id": "3.13",
+      "phase": "Phase 3: Indexing System",
+      "description": "3.3.3 Add cache statistics",
+      "status": "pending"
+    },
+    {
+      "id": "3.14",
+      "phase": "Phase 3: Indexing System",
+      "description": "**VERIFY 3.3:** Cache reduces discovery time, invalidates correctly, statistics accurate",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Versioning & Lifecycle",
+      "description": "4.1.1 Implement version parsing and comparison",
+      "status": "pending"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Versioning & Lifecycle",
+      "description": "4.1.2 Add version rules to artifacts",
+      "status": "pending"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Versioning & Lifecycle",
+      "description": "4.1.3 Implement version compatibility checks",
+      "status": "pending"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Versioning & Lifecycle",
+      "description": "**VERIFY 4.1:** Version parsing works, comparison correct, compatibility checks functional",
+      "status": "pending"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Versioning & Lifecycle",
+      "description": "4.2.1 Define lifecycle state machine",
+      "status": "pending"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Versioning & Lifecycle",
+      "description": "4.2.2 Implement state transition methods",
+      "status": "pending"
+    },
+    {
+      "id": "4.7",
+      "phase": "Phase 4: Versioning & Lifecycle",
+      "description": "4.2.3 Add lifecycle metadata tracking",
+      "status": "pending"
+    },
+    {
+      "id": "4.8",
+      "phase": "Phase 4: Versioning & Lifecycle",
+      "description": "**VERIFY 4.2:** State transitions validated, lifecycle metadata tracked, illegal transitions rejected",
+      "status": "pending"
+    },
+    {
+      "id": "4.9",
+      "phase": "Phase 4: Versioning & Lifecycle",
+      "description": "4.3.1 Implement `supersede(oldId, newArtifactData)` method",
+      "status": "pending"
+    },
+    {
+      "id": "4.10",
+      "phase": "Phase 4: Versioning & Lifecycle",
+      "description": "4.3.2 Implement supersession chains",
+      "status": "pending"
+    },
+    {
+      "id": "4.11",
+      "phase": "Phase 4: Versioning & Lifecycle",
+      "description": "4.3.3 Add supersession warnings",
+      "status": "pending"
+    },
+    {
+      "id": "4.12",
+      "phase": "Phase 4: Versioning & Lifecycle",
+      "description": "**VERIFY 4.3:** Supersession works, chains tracked, warnings displayed",
+      "status": "pending"
+    },
+    {
+      "id": "4.13",
+      "phase": "Phase 4: Versioning & Lifecycle",
+      "description": "4.4.1 Implement archival policies",
+      "status": "pending"
+    },
+    {
+      "id": "4.14",
+      "phase": "Phase 4: Versioning & Lifecycle",
+      "description": "4.4.2 Implement archival process",
+      "status": "pending"
+    },
+    {
+      "id": "4.15",
+      "phase": "Phase 4: Versioning & Lifecycle",
+      "description": "4.4.3 Add retention enforcement",
+      "status": "pending"
+    },
+    {
+      "id": "4.16",
+      "phase": "Phase 4: Versioning & Lifecycle",
+      "description": "**VERIFY 4.4:** Archival works, retention policies enforced, cleanup runs correctly",
+      "status": "pending"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Integration",
+      "description": "5.1.1 Add registry to command execution context",
+      "status": "pending"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Integration",
+      "description": "5.1.2 Implement artifact registration hooks",
+      "status": "pending"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Integration",
+      "description": "5.1.3 Update command templates to use discovery",
+      "status": "pending"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Integration",
+      "description": "5.1.4 Add auto-registration on command completion",
+      "status": "pending"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Integration",
+      "description": "**VERIFY 5.1:** Commands use registry, outputs auto-register, discovery replaces manual lookups",
+      "status": "pending"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: Integration",
+      "description": "5.2.1 Create `artifact-registry` CLI tool",
+      "status": "pending"
+    },
+    {
+      "id": "5.7",
+      "phase": "Phase 5: Integration",
+      "description": "5.2.2 Implement `list` command",
+      "status": "pending"
+    },
+    {
+      "id": "5.8",
+      "phase": "Phase 5: Integration",
+      "description": "5.2.3 Implement `show` command",
+      "status": "pending"
+    },
+    {
+      "id": "5.9",
+      "phase": "Phase 5: Integration",
+      "description": "5.2.4 Implement `query` command",
+      "status": "pending"
+    },
+    {
+      "id": "5.10",
+      "phase": "Phase 5: Integration",
+      "description": "5.2.5 Implement `dependencies` command",
+      "status": "pending"
+    },
+    {
+      "id": "5.11",
+      "phase": "Phase 5: Integration",
+      "description": "5.2.6 Implement `validate` command",
+      "status": "pending"
+    },
+    {
+      "id": "5.12",
+      "phase": "Phase 5: Integration",
+      "description": "**VERIFY 5.2:** CLI tools functional, output formatted correctly, all commands work",
+      "status": "pending"
+    },
+    {
+      "id": "5.13",
+      "phase": "Phase 5: Integration",
+      "description": "5.3.1 Update /plan:batch to use registry",
+      "status": "pending"
+    },
+    {
+      "id": "5.14",
+      "phase": "Phase 5: Integration",
+      "description": "5.3.2 Add artifact tracking to status.json",
+      "status": "pending"
+    },
+    {
+      "id": "5.15",
+      "phase": "Phase 5: Integration",
+      "description": "5.3.3 Implement cross-session artifact references",
+      "status": "pending"
+    },
+    {
+      "id": "5.16",
+      "phase": "Phase 5: Integration",
+      "description": "**VERIFY 5.3:** Batch workflows use registry, status tracks artifacts, cross-session refs work",
+      "status": "pending"
+    },
+    {
+      "id": "5.17",
+      "phase": "Phase 5: Integration",
+      "description": "5.4.1 Document artifact registry architecture",
+      "status": "pending"
+    },
+    {
+      "id": "5.18",
+      "phase": "Phase 5: Integration",
+      "description": "5.4.2 Create usage guide for commands",
+      "status": "pending"
+    },
+    {
+      "id": "5.19",
+      "phase": "Phase 5: Integration",
+      "description": "5.4.3 Document metadata schemas",
+      "status": "pending"
+    },
+    {
+      "id": "5.20",
+      "phase": "Phase 5: Integration",
+      "description": "5.4.4 Create examples for common patterns",
+      "status": "pending"
+    },
+    {
+      "id": "5.21",
+      "phase": "Phase 5: Integration",
+      "description": "**VERIFY 5.4:** Documentation complete, examples functional, usage clear",
+      "status": "pending"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "6.1.1 Test ArtifactRegistry CRUD operations",
+      "status": "pending"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "6.1.2 Test ConventionResolver",
+      "status": "pending"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "6.1.3 Test FilesystemScanner",
+      "status": "pending"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "6.1.4 Test DiscoveryCoordinator",
+      "status": "pending"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "6.1.5 Test ArtifactIndex",
+      "status": "pending"
+    },
+    {
+      "id": "6.6",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "6.1.6 Test versioning and lifecycle",
+      "status": "pending"
+    },
+    {
+      "id": "6.7",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "**VERIFY 6.1:** All unit tests pass, coverage > 80%",
+      "status": "pending"
+    },
+    {
+      "id": "6.8",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "6.2.1 Test end-to-end artifact lifecycle",
+      "status": "pending"
+    },
+    {
+      "id": "6.9",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "6.2.2 Test cross-command workflows",
+      "status": "pending"
+    },
+    {
+      "id": "6.10",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "6.2.3 Test error scenarios",
+      "status": "pending"
+    },
+    {
+      "id": "6.11",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "**VERIFY 6.2:** Integration tests pass, workflows functional, errors handled",
+      "status": "pending"
+    },
+    {
+      "id": "6.12",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "6.3.1 Benchmark discovery operations (registry <5ms, convention <50ms, scan <500ms)",
+      "status": "pending"
+    },
+    {
+      "id": "6.13",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "6.3.2 Test with large registries (100, 1000, 10000 artifacts)",
+      "status": "pending"
+    },
+    {
+      "id": "6.14",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "6.3.3 Test cache effectiveness (target >70% hit rate)",
+      "status": "pending"
+    },
+    {
+      "id": "6.15",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "**VERIFY 6.3:** Performance meets targets, scales to 1000+ artifacts",
+      "status": "pending"
+    },
+    {
+      "id": "6.16",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "ArtifactRegistry implements all CRUD operations correctly",
+      "status": "pending"
+    },
+    {
+      "id": "6.17",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "Hybrid discovery (registry → convention → filesystem) functional",
+      "status": "pending"
+    },
+    {
+      "id": "6.18",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "In-memory index provides <5ms queries",
+      "status": "pending"
+    },
+    {
+      "id": "6.19",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "Versioning (semantic) and lifecycle states (draft → deleted) work",
+      "status": "pending"
+    },
+    {
+      "id": "6.20",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "Commands auto-register outputs and use discovery",
+      "status": "pending"
+    },
+    {
+      "id": "6.21",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "CLI tools (list, show, query, dependencies, validate) functional",
+      "status": "pending"
+    },
+    {
+      "id": "6.22",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "/plan:batch integrates with registry for task dependencies",
+      "status": "pending"
+    },
+    {
+      "id": "6.23",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "Documentation complete with architecture diagrams and examples",
+      "status": "pending"
+    },
+    {
+      "id": "6.24",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "Unit test coverage > 80%, all integration tests pass",
+      "status": "pending"
+    },
+    {
+      "id": "6.25",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "Performance benchmarks met (registry <5ms, convention <50ms, scan <500ms)",
+      "status": "pending"
+    },
+    {
+      "id": "6.26",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "Cache hit rate > 70% in typical workflows",
+      "status": "pending"
+    },
+    {
+      "id": "6.27",
+      "phase": "Phase 6: Testing & Validation",
+      "description": "Registry validates integrity (no orphaned entries, valid dependencies)",
+      "status": "pending"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 114,
+    "completed": 0,
+    "pending": 114,
+    "failed": 0,
+    "skipped": 0
+  }
+}
