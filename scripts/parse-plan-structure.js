@@ -15,6 +15,7 @@
 const path = require('path');
 const { readFile, fileExists, resolvePath } = require('./lib/file-utils');
 const { parsePhases } = require('./lib/markdown-parser');
+const { getActivePlanPath } = require('./lib/plan-pointer');
 
 /**
  * Main function to parse plan structure
@@ -84,19 +85,8 @@ function getPlanPath() {
     return args[0];
   }
 
-  // Try to read from .claude/current-plan.txt
-  const currentPlanFile = resolvePath('.claude/current-plan.txt');
-  if (!fileExists(currentPlanFile)) {
-    return null;
-  }
-
-  const currentPlanPath = readFile(currentPlanFile);
-  if (currentPlanPath === null) {
-    return null;
-  }
-
-  // Trim whitespace and return
-  return currentPlanPath.trim();
+  // Use plan-pointer module to get active plan
+  return getActivePlanPath();
 }
 
 // Main execution

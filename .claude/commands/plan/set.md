@@ -21,23 +21,13 @@ Set the current working plan file for subsequent `/plan:*` commands.
 
 ### 3.1. Initialize Status Tracking
 
-After setting the plan path, initialize status tracking.
+**See:** `.claude/commands/plan/_common/status-tracking.md` for complete status tracking reference.
 
-**Preferred: Use status-cli.js** (the recommended CLI approach):
+After setting the plan path, initialize status tracking:
+
 ```bash
 # Check status (this triggers initialization if needed)
 node scripts/status-cli.js status
-```
-
-**Alternative: Direct API** (for programmatic use):
-```javascript
-const { initializeStatus, loadStatus, createOutputDir } = require('./scripts/lib/plan-output-utils');
-
-// Create output directory
-createOutputDir(planPath);
-
-// Initialize or load existing status
-const status = loadStatus(planPath);
 ```
 
 This creates `docs/plan-outputs/{plan-name}/` with:
@@ -47,24 +37,9 @@ This creates `docs/plan-outputs/{plan-name}/` with:
 
 Also sets `.claude/current-plan-output.txt` to the output directory.
 
-**If status already exists:**
-- Load existing status instead of reinitializing
-- Preserve previous execution history
-- The functions handle this automatically
-
-**Status response format:**
-```json
-{
-  "planPath": "docs/plans/example.md",
-  "planName": "Plan Title",
-  "summary": { "totalTasks": 10, "completed": 5, "pending": 5 }
-}
-```
-
 **Error handling:**
 - If status cannot be loaded, check `.claude/current-plan.txt` is set correctly
 - Status tracking is optional, plan can be used without it
-- See troubleshooting in `docs/ORCHESTRATOR.md`
 
 ## Script Output Format
 

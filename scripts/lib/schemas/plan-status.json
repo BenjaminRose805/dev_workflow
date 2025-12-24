@@ -1,10 +1,14 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Plan Status Schema",
-  "description": "Schema for tracking plan execution status and outputs",
+  "description": "Schema for tracking plan execution status and outputs. This is the canonical schema for status.json files in docs/plan-outputs/*/status.json",
   "type": "object",
   "required": ["planPath", "planName", "createdAt", "tasks"],
   "properties": {
+    "_comment": {
+      "type": "string",
+      "description": "Human-readable comment explaining status.json purpose and source of truth"
+    },
     "planPath": {
       "type": "string",
       "description": "Relative path to the plan file from project root",
@@ -38,7 +42,8 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Task identifier (e.g., '0.1', '1.2')",
+            "description": "Task identifier in N.N or N.N.N format (e.g., '1.1', '2.3', '3.1.1'). Use N.N for simple tasks, N.N.N for sub-tasks within a subsection.",
+            "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
             "minLength": 1
           },
           "phase": {
@@ -76,6 +81,14 @@
           "error": {
             "type": "string",
             "description": "Error message if task failed"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Optional notes about task completion or implementation details"
+          },
+          "skipReason": {
+            "type": "string",
+            "description": "Reason for skipping the task if status is 'skipped'"
           }
         }
       }
@@ -137,6 +150,11 @@
         "skipped": {
           "type": "integer",
           "minimum": 0
+        },
+        "in_progress": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of tasks currently in progress"
         }
       }
     }

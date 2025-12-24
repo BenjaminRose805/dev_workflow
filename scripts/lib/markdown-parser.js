@@ -73,7 +73,7 @@ function parsePhases(content) {
       const completeMatch = line.match(/^-\s*\[x\]\s*(.+)$/i);
 
       if (incompleteMatch || completeMatch) {
-        const text = (incompleteMatch || completeMatch)[1].trim();
+        const text = (incompleteMatch?.[1] || completeMatch?.[1])?.trim() || '';
         const complete = !!completeMatch;
 
         // Extract priority markers

@@ -17,6 +17,7 @@
 const fs = require('fs');
 const path = require('path');
 const { resolvePath } = require('./lib/file-utils');
+const { createArgParser, COMMON_FLAGS } = require('./lib/arg-parser');
 
 // Cache directories
 const CACHE_DIRS = {
@@ -37,87 +38,35 @@ function verbose(...args) {
   }
 }
 
+// Create argument parser
+const argParser = createArgParser({
+  name: 'cache-clear',
+  description: 'Cache Clear Script - Clears various cache types in .claude/cache/',
+  flags: {
+    ...COMMON_FLAGS,
+    all: { short: '-a', long: '--all', description: 'Clear all cache types' },
+    scripts: { short: '-s', long: '--scripts', description: 'Clear scripts cache only' },
+    research: { short: '-r', long: '--research', description: 'Clear research cache only' },
+  },
+  examples: [
+    'node scripts/cache-clear.js --all',
+    'node scripts/cache-clear.js --scripts --research --verbose',
+  ],
+});
+
 /**
  * Parse command line arguments
  * @returns {{ all: boolean, scripts: boolean, research: boolean, verbose: boolean }}
  */
 function parseArgs() {
-  const args = process.argv.slice(2);
-  const parsed = {
-    all: false,
-    scripts: false,
-    research: false,
-    verbose: false,
-  };
-
-  for (const arg of args) {
-    switch (arg) {
-      case '--all':
-      case '-a':
-        parsed.all = true;
-        break;
-      case '--scripts':
-      case '-s':
-        parsed.scripts = true;
-        break;
-      case '--research':
-      case '-r':
-        parsed.research = true;
-        break;
-      case '--verbose':
-      case '-v':
-        parsed.verbose = true;
-        break;
-      case '--help':
-      case '-h':
-        printUsage();
-        process.exit(0);
-        break;
-      default:
-        console.error(`Unknown argument: ${arg}`);
-        printUsage();
-        process.exit(1);
-    }
-  }
-
-  return parsed;
+  return argParser.parse();
 }
 
 /**
  * Print usage information
  */
 function printUsage() {
-  console.error(`
-Cache Clear Script
-
-Usage:
-  node scripts/cache-clear.js --all           # Clear all caches
-  node scripts/cache-clear.js --scripts       # Clear only scripts cache
-  node scripts/cache-clear.js --research      # Clear only research cache
-  node scripts/cache-clear.js --verbose       # Show detailed output
-
-Options:
-  --all, -a           Clear all cache types
-  --scripts, -s       Clear scripts cache only
-  --research, -r      Clear research cache only
-  --verbose, -v       Show detailed progress output
-  --help, -h          Show this help message
-
-Multiple flags can be combined:
-  node scripts/cache-clear.js --scripts --research --verbose
-
-Output format:
-{
-  "cleared": {
-    "scripts": { "files": 10, "bytes": 12345 },
-    "research": { "files": 5, "bytes": 6789 }
-  },
-  "total": {
-    "files": 15,
-    "bytes": 19134
-  }
-}
-`);
+  argParser.printHelp();
 }
 
 /**

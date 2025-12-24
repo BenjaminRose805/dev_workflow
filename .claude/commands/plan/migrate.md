@@ -6,14 +6,11 @@ Migrate an old plan with inline checkmarks to the new output-separated format wi
 
 ### 1. Load Active Plan
 
-Read `.claude/current-plan.txt` to get the active plan path.
+**See:** `.claude/commands/plan/_common/status-tracking.md` for complete status tracking reference.
 
-**If no active plan:**
-```
-No active plan set.
-
-Use /plan:set to choose a plan first.
-```
+**Quick reference:**
+1. Read `.claude/current-plan.txt` to get the active plan path
+2. If no active plan: show "No active plan set. Use /plan:set to choose a plan first."
 
 ### 2. Check Current Status
 
@@ -120,12 +117,15 @@ node scripts/status-cli.js status
 
 **Using JavaScript API:**
 ```javascript
-const { initializeStatus, createOutputDir, loadStatus } = require('./scripts/lib/plan-output-utils');
+const { initializePlanStatus, loadStatus } = require('./scripts/lib/status-manager');
 
-createOutputDir(planPath);
-const status = loadStatus(planPath) || initializeStatus(planPath, planName, parsedTasks);
-console.log('✓ Created output directory structure');
-console.log('✓ Initialized status.json');
+const result = initializePlanStatus(planPath);
+if (result.success) {
+  console.log('✓ Created output directory structure');
+  console.log('✓ Initialized status.json');
+} else {
+  console.error('Failed to initialize:', result.error);
+}
 ```
 
 **Step 5.2: Mark Completed Tasks**
@@ -140,10 +140,10 @@ node scripts/status-cli.js mark-complete 0.2 --notes "Migrated from markdown"
 
 **Using JavaScript API:**
 ```javascript
-const { updateTaskStatus } = require('./scripts/lib/plan-output-utils');
+const { markTaskCompleted } = require('./scripts/lib/status-manager');
 
 for (const taskId of completedTasks) {
-  updateTaskStatus(planPath, taskId, 'completed', { notes: 'Migrated from markdown' });
+  markTaskCompleted(planPath, taskId, 'Migrated from markdown');
   console.log(`✓ Marked ${taskId} as completed`);
 }
 ```

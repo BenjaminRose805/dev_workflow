@@ -95,36 +95,16 @@ docs/plans/{filename}.md
 
 ### 7. Initialize Output Directory (Output Separation)
 
+**See:** `.claude/commands/plan/_common/status-tracking.md` for complete status tracking reference.
+
 Create the output directory structure for status tracking:
 
-**Directory:** `docs/plan-outputs/{plan-name}/`
-
-Where `{plan-name}` is the filename without `.md` extension.
-
-**Create subdirectories:**
-```
-docs/plan-outputs/{plan-name}/
-├── status.json      # Initialized with plan tasks
-├── findings/        # For task analysis outputs
-└── timestamps/      # For execution timing data
-```
+**Directory:** `docs/plan-outputs/{plan-name}/` (where `{plan-name}` is the filename without `.md` extension)
 
 **Initialize status.json:**
-Use `scripts/status-cli.js` (preferred) or `scripts/lib/plan-output-utils.js`:
-
-**Using status-cli (recommended):**
 ```bash
 # After setting current-plan.txt, run any status command to trigger initialization
 node scripts/status-cli.js status
-```
-
-**Using JavaScript API:**
-```javascript
-const { initializeStatus, createOutputDir } = require('./scripts/lib/plan-output-utils');
-
-// Create output directory and initialize status
-createOutputDir(planPath);
-const status = initializeStatus(planPath, planName, tasks);
 ```
 
 This will:

@@ -75,7 +75,7 @@
       "completedAt": "2025-12-24T01:08:10.420Z"
     },
     {
-      "id": "3.2.A",
+      "id": "3.2.1",
       "phase": "Phase 3: Fix Structural Inconsistencies",
       "description": "Core development commands - add Dependencies & Risks",
       "status": "completed",
@@ -84,7 +84,7 @@
       "notes": "Added Dependencies and Risks sections to: implement-explore-command.md, implement-fix-command.md, implement-refactor-command.md, implement-debug-command.md"
     },
     {
-      "id": "3.2.B",
+      "id": "3.2.2",
       "phase": "Phase 3: Fix Structural Inconsistencies",
       "description": "Quality & analysis commands - add Dependencies & Risks",
       "status": "completed",

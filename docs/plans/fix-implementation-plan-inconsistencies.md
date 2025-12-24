@@ -121,7 +121,7 @@ For example, `implement-explore-command.md` should produce:
 - 1.1.3 Document all section types used across plans (phases, verify, success criteria, etc.)
 - 1.1.4 Identify mandatory vs optional sections
 
-**VERIFY:**
+**VERIFY 1.1:**
 - [x] List of exemplary plans documented
 - [x] All section types cataloged with frequency counts
 - [x] Clear distinction between required and optional sections
@@ -136,7 +136,7 @@ For example, `implement-explore-command.md` should produce:
 - 1.2.5 Define artifact output directory convention: `docs/plan-outputs/{plan-name}/`
 - 1.2.6 Add template variables with `{{variable}}` syntax
 
-**VERIFY:**
+**VERIFY 1.2:**
 - [x] Template covers all necessary sections
 - [x] Phase and subsection naming is unambiguous
 - [x] VERIFY sections have consistent format
@@ -156,7 +156,7 @@ For example, `implement-explore-command.md` should produce:
 - 1.3.5 Create artifact schema reference section
 - 1.3.6 Add decision log template for ADRs
 
-**VERIFY:**
+**VERIFY 1.3:**
 - [x] All naming conventions documented with examples
 - [x] Priority level definitions are clear
 - [x] Quality targets are consistent and measurable
@@ -176,7 +176,7 @@ For example, `implement-explore-command.md` should produce:
 - 2.1.5 Define output artifacts: implementation files, change summary
 - 2.1.6 Add integration points with `/test`, `/validate`, `/review`
 
-**VERIFY:**
+**VERIFY 2.1:**
 - [x] Plan follows canonical template exactly
 - [x] Dependencies on upstream commands documented
 - [x] All sub-commands have clear scope
@@ -192,7 +192,7 @@ For example, `implement-explore-command.md` should produce:
 - 2.2.5 Define rollback and verification strategies
 - 2.2.6 Add integration with `/validate`, `/test`
 
-**VERIFY:**
+**VERIFY 2.2:**
 - [x] Plan follows canonical template
 - [x] Migration scope is well-defined
 - [x] Rollback strategies documented
@@ -208,7 +208,7 @@ For example, `implement-explore-command.md` should produce:
 - 2.3.5 Define artifact outputs: CHANGELOG.md updates, version bumps
 - 2.3.6 Add integration with `/validate`, `/deploy`
 
-**VERIFY:**
+**VERIFY 2.3:**
 - [x] Plan follows canonical template
 - [x] Release workflow is complete
 - [x] All sub-commands documented
@@ -236,7 +236,7 @@ For example, `implement-explore-command.md` should produce:
 - [x] 3.1.G Agent implementations: implement-explore-agent.md, implement-analyze-agent.md, implement-review-agent.md, implement-debug-agent.md
 - [x] 3.1.H Deploy agent & hooks: implement-deploy-agent.md, implement-context-loading-hook.md, implement-artifact-storage-hook.md, implement-notification-hooks.md
 
-**VERIFY:**
+**VERIFY 3.1:**
 - [ ] All plans use consistent phase naming
 - [ ] Subsections use consistent numbering
 - [ ] Every phase has Tasks and VERIFY sections
@@ -263,7 +263,7 @@ For example, `implement-explore-command.md` should produce:
 - Arch/Docs: implement-architect-command.md, implement-design-command.md, implement-spec-command.md, implement-document-command.md, implement-explain-command.md
 - Risks only: implement-clarify-command.md
 
-**VERIFY:**
+**VERIFY 3.2:**
 - [ ] All plans have Dependencies section
 - [ ] All plans have Risks section
 - [ ] All plans have Success Criteria
@@ -277,7 +277,7 @@ For example, `implement-explore-command.md` should produce:
 - 3.3.3 Ensure VERIFY items are specific and measurable
 - 3.3.4 Remove inconsistent formats (inline VERIFY, numbered VERIFY, etc.)
 
-**VERIFY:**
+**VERIFY 3.3:**
 - [ ] All VERIFY sections use consistent format
 - [ ] All items are checkboxes
 - [ ] Items are specific and testable
@@ -289,7 +289,7 @@ For example, `implement-explore-command.md` should produce:
 - 3.4.2 Ensure artifact paths are consistent with output directory
 - 3.4.3 Document subdirectory structure where applicable
 
-**VERIFY:**
+**VERIFY 3.4:**
 - [ ] All plans specify output directory
 - [ ] Output paths follow convention
 - [ ] Artifact paths are relative to output directory
@@ -306,7 +306,7 @@ For example, `implement-explore-command.md` should produce:
 - 4.1.3 Create sub-command naming reference table
 - 4.1.4 Verify consistency across all 37 plans
 
-**VERIFY:**
+**VERIFY 4.1:**
 - [ ] All sub-commands use colon notation
 - [ ] No space-separated sub-commands remain
 - [ ] Reference table created
@@ -319,7 +319,7 @@ For example, `implement-explore-command.md` should produce:
 - 4.2.3 Add model selection rationale comments where helpful
 - 4.2.4 Document model selection guidelines in standards
 
-**VERIFY:**
+**VERIFY 4.2:**
 - [ ] All model references use short form
 - [ ] No full model IDs remain
 - [ ] Model selection rationale documented
@@ -332,7 +332,7 @@ For example, `implement-explore-command.md` should produce:
 - 4.3.3 Create artifact type registry/reference
 - 4.3.4 Ensure consistency in YAML frontmatter references
 
-**VERIFY:**
+**VERIFY 4.3:**
 - [ ] All artifact types use kebab-case
 - [ ] No snake_case artifact types remain
 - [ ] Artifact type registry created
@@ -347,7 +347,7 @@ For example, `implement-explore-command.md` should produce:
 - 4.4.5 Update implement-review-command.md to use standard levels
 - 4.4.6 Add severity level definitions to standards document
 
-**VERIFY:**
+**VERIFY 4.4:**
 - [ ] All plans use same severity levels
 - [ ] Severity definitions documented
 - [ ] Mapping between old/new levels documented
@@ -366,7 +366,7 @@ For example, `implement-explore-command.md` should produce:
 - 5.1.5 Create Mermaid diagram showing dependency relationships
 - 5.1.6 Define implementation order based on dependencies
 
-**VERIFY:**
+**VERIFY 5.1:**
 - [ ] Dependency graph covers all 37 plans
 - [ ] Circular dependencies identified
 - [ ] Implementation order is clear
@@ -381,7 +381,7 @@ For example, `implement-explore-command.md` should produce:
 - 5.2.4 List external tool dependencies (redocly, AJV, etc.)
 - 5.2.5 Add version requirements where applicable
 
-**VERIFY:**
+**VERIFY 5.2:**
 - [ ] All plans have Dependencies section
 - [ ] Upstream dependencies listed
 - [ ] Downstream dependencies listed
@@ -397,7 +397,7 @@ For example, `implement-explore-command.md` should produce:
 - 5.3.5 Document artifact schemas in each producing command's plan
 - 5.3.6 Add artifact consumption notes in each consuming command's plan
 
-**VERIFY:**
+**VERIFY 5.3:**
 - [ ] Artifact formats are compatible across command chain
 - [ ] Schemas documented in producer plans
 - [ ] Consumption documented in consumer plans
@@ -411,7 +411,7 @@ For example, `implement-explore-command.md` should produce:
 - 5.4.4 Add ADR references where decisions need documentation
 - 5.4.5 Verify all linked plans exist
 
-**VERIFY:**
+**VERIFY 5.4:**
 - [ ] All plan references point to existing files
 - [ ] File paths are correct
 - [ ] ADR references added where needed
@@ -434,7 +434,7 @@ For example, `implement-explore-command.md` should produce:
 - `/workflow-branching` (P0) references `/workflow-loops` (P1)
 - `/validate` (P0) requires `/analyze` (P0) - no clear ordering
 
-**VERIFY:**
+**VERIFY 6.1:**
 - [ ] No P0 commands depend on P1+ commands
 - [ ] Dependencies have lower or equal priority numbers
 - [ ] Priority rationale documented
@@ -449,7 +449,7 @@ For example, `implement-explore-command.md` should produce:
 - 6.2.5 Define Wave 4: Execution Commands (implement, test, validate)
 - 6.2.6 Define Wave 5: Advanced Features (workflows, agents, hooks)
 
-**VERIFY:**
+**VERIFY 6.2:**
 - [ ] All 37 plans assigned to a wave
 - [ ] Wave ordering respects dependencies
 - [ ] Roadmap is actionable
@@ -461,7 +461,7 @@ For example, `implement-explore-command.md` should produce:
 - 6.3.2 Ensure sub-command priorities respect internal dependencies
 - 6.3.3 Document which sub-commands are MVP vs enhancement
 
-**VERIFY:**
+**VERIFY 6.3:**
 - [ ] All sub-commands have explicit priority
 - [ ] Internal dependencies respected
 - [ ] MVP scope is clear
@@ -488,7 +488,7 @@ For example, `implement-explore-command.md` should produce:
 | /review | Code quality, suggestions, best practices | Security review suggestions |
 | /audit | Compliance, policy enforcement | Full OWASP audit with compliance mapping |
 
-**VERIFY:**
+**VERIFY 7.1:**
 - [ ] Clear non-overlapping boundaries defined
 - [ ] OWASP responsibility assigned to one command
 - [ ] Selection guide created
@@ -510,7 +510,7 @@ For example, `implement-explore-command.md` should produce:
 | /design | Component/module level | Component specs, interfaces |
 | /architect | System/service level | Architecture docs, C4 diagrams |
 
-**VERIFY:**
+**VERIFY 7.2:**
 - [ ] Clear scope hierarchy defined
 - [ ] Handoff points documented
 - [ ] Usage guide created
@@ -524,7 +524,7 @@ For example, `implement-explore-command.md` should produce:
 - 7.3.4 Update plans with clear boundaries
 - 7.3.5 Document source-of-truth for each doc type
 
-**VERIFY:**
+**VERIFY 7.3:**
 - [ ] Documentation responsibilities clear
 - [ ] No duplicate generation
 - [ ] Source-of-truth defined for each artifact type
@@ -538,7 +538,7 @@ For example, `implement-explore-command.md` should produce:
 - 7.4.4 Define `/audit` quality checks: policy compliance only
 - 7.4.5 Update all four plans with clear boundaries
 
-**VERIFY:**
+**VERIFY 7.4:**
 - [ ] Quality check responsibilities assigned
 - [ ] No duplicate checks
 - [ ] Clear escalation path between commands
@@ -556,7 +556,7 @@ For example, `implement-explore-command.md` should produce:
 - 8.1.4 Update `/document` artifact discovery to use pattern
 - 8.1.5 Document discovery pattern in standards
 
-**VERIFY:**
+**VERIFY 8.1:**
 - [ ] All commands use same discovery pattern
 - [ ] Pattern is documented
 - [ ] Edge cases handled consistently
@@ -570,7 +570,7 @@ For example, `implement-explore-command.md` should produce:
 - 8.2.4 Update all diagram-generating commands
 - 8.2.5 Create diagram template library
 
-**VERIFY:**
+**VERIFY 8.2:**
 - [ ] Diagram style guide created
 - [ ] All commands use consistent syntax
 - [ ] Templates available for common diagrams
@@ -584,7 +584,7 @@ For example, `implement-explore-command.md` should produce:
 - 8.3.4 Update `/design` to use standard approach
 - 8.3.5 Document validation strategy in standards
 
-**VERIFY:**
+**VERIFY 8.3:**
 - [ ] Input validation strategy documented
 - [ ] All interactive commands use consistent approach
 - [ ] User experience is consistent
@@ -600,7 +600,7 @@ For example, `implement-explore-command.md` should produce:
 - 8.4.3 Review and update model assignments in all plans
 - 8.4.4 Document rationale for non-default model choices
 
-**VERIFY:**
+**VERIFY 8.4:**
 - [ ] Model selection criteria documented
 - [ ] All plans have appropriate model assignments
 - [ ] Rationale documented for Opus usage
@@ -621,7 +621,7 @@ For example, `implement-explore-command.md` should produce:
 - 8.5.4 Update `/artifact-registry` integrity checks
 - 8.5.5 Document quality gate configuration
 
-**VERIFY:**
+**VERIFY 8.5:**
 - [ ] Quality gate schema defined
 - [ ] All commands use same schema
 - [ ] Configuration is documented
@@ -637,7 +637,7 @@ For example, `implement-explore-command.md` should produce:
 - 8.6.3 Add performance target to each sub-command
 - 8.6.4 Document performance expectations
 
-**VERIFY:**
+**VERIFY 8.6:**
 - [ ] Performance categories defined
 - [ ] All plans use consistent categories
 - [ ] Sub-commands have performance targets
@@ -653,7 +653,7 @@ For example, `implement-explore-command.md` should produce:
 - 9.1.2 Update all plans to use consistent target
 - 9.1.3 Document exceptions with rationale (e.g., higher for critical components)
 
-**VERIFY:**
+**VERIFY 9.1:**
 - [ ] Standard coverage target documented
 - [ ] All plans updated
 - [ ] Exceptions documented
@@ -668,7 +668,7 @@ For example, `implement-explore-command.md` should produce:
 - 9.2.5 Create schema for `analysis-report.json` (from /analyze)
 - 9.2.6 Reference schemas in producing command plans
 
-**VERIFY:**
+**VERIFY 9.2:**
 - [ ] Schemas directory created
 - [ ] Core artifact schemas defined
 - [ ] Schemas referenced in plans
@@ -681,7 +681,7 @@ For example, `implement-explore-command.md` should produce:
 - 9.3.3 Update plans to reference configuration schemas
 - 9.3.4 Document configuration options
 
-**VERIFY:**
+**VERIFY 9.3:**
 - [ ] Config schema created
 - [ ] All commands have config documentation
 - [ ] Schemas are valid and complete
@@ -699,7 +699,7 @@ For example, `implement-explore-command.md` should produce:
 - 10.1.4 Verify all cross-references are valid
 - 10.1.5 Verify all dependencies are documented
 
-**VERIFY:**
+**VERIFY 10.1:**
 - [ ] Validation script created
 - [ ] All plans pass validation
 - [ ] No broken references
@@ -713,7 +713,7 @@ For example, `implement-explore-command.md` should produce:
 - 10.2.3 Document plan template usage
 - 10.2.4 Add troubleshooting guide for common issues
 
-**VERIFY:**
+**VERIFY 10.2:**
 - [ ] README updated
 - [ ] Quick reference complete
 - [ ] Template usage documented
@@ -726,7 +726,7 @@ For example, `implement-explore-command.md` should produce:
 - 10.3.3 Create before/after comparison
 - 10.3.4 Document lessons learned
 
-**VERIFY:**
+**VERIFY 10.3:**
 - [ ] Analysis archived
 - [ ] Changes documented
 - [ ] Lessons learned captured

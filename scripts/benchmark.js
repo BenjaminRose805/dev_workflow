@@ -44,6 +44,7 @@
 const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const { createArgParser, COMMON_FLAGS } = require('./lib/arg-parser');
 
 // Available scripts to benchmark (matches index.js COMMANDS)
 const AVAILABLE_SCRIPTS = {
@@ -58,6 +59,50 @@ const AVAILABLE_SCRIPTS = {
 // Global flags
 let VERBOSE = false;
 let JSON_ONLY = false;
+
+/**
+ * Create argument parser for this script
+ */
+const argParser = createArgParser({
+  name: 'benchmark',
+  description: 'Benchmark Script - Performance Testing for Scripts',
+  usage: 'node scripts/benchmark.js [options]',
+  flags: {
+    ...COMMON_FLAGS,
+    scripts: {
+      short: '-s',
+      long: '--scripts',
+      description: 'Benchmark specific scripts (space-separated)',
+      type: 'array',
+    },
+    iterations: {
+      short: '-i',
+      long: '--iterations',
+      description: 'Number of iterations per script (default: 1)',
+      type: 'value',
+      valueName: 'n',
+      default: '1',
+    },
+    warmup: {
+      short: '-w',
+      long: '--warmup',
+      description: 'Include warmup run before benchmarking',
+      type: 'boolean',
+    },
+    json: {
+      short: '-j',
+      long: '--json',
+      description: 'Output JSON only (no progress messages)',
+      type: 'boolean',
+    },
+  },
+  examples: [
+    'node scripts/benchmark.js',
+    'node scripts/benchmark.js --scripts scan-plans cache-stats',
+    'node scripts/benchmark.js --iterations 5 --warmup',
+    'node scripts/benchmark.js --verbose --json',
+  ],
+});
 
 /**
  * Log verbose output to stderr
@@ -84,98 +129,23 @@ function progress(...args) {
  * @returns {object} Parsed options
  */
 function parseArgs() {
-  const args = process.argv.slice(2);
+  const parsed = argParser.parse();
+
   const options = {
-    scripts: null, // null means all
-    iterations: 1,
-    warmup: false,
-    verbose: false,
-    json: false,
-    help: false,
+    scripts: parsed.scripts.length > 0 ? parsed.scripts : null,
+    iterations: parseInt(parsed.iterations, 10),
+    warmup: parsed.warmup,
+    verbose: parsed.verbose,
+    json: parsed.json,
+    help: parsed.help,
   };
 
-  for (let i = 0; i < args.length; i++) {
-    const arg = args[i];
-
-    switch (arg) {
-      case '--scripts':
-      case '-s':
-        options.scripts = [];
-        // Collect scripts until next flag
-        while (i + 1 < args.length && !args[i + 1].startsWith('-')) {
-          options.scripts.push(args[++i]);
-        }
-        break;
-
-      case '--iterations':
-      case '-i':
-        options.iterations = parseInt(args[++i], 10);
-        if (isNaN(options.iterations) || options.iterations < 1) {
-          console.error('Error: --iterations must be a positive integer');
-          process.exit(1);
-        }
-        break;
-
-      case '--warmup':
-      case '-w':
-        options.warmup = true;
-        break;
-
-      case '--verbose':
-      case '-v':
-        options.verbose = true;
-        break;
-
-      case '--json':
-      case '-j':
-        options.json = true;
-        break;
-
-      case '--help':
-      case '-h':
-        options.help = true;
-        break;
-
-      default:
-        console.error(`Unknown argument: ${arg}`);
-        printUsage();
-        process.exit(1);
-    }
+  if (isNaN(options.iterations) || options.iterations < 1) {
+    console.error('Error: --iterations must be a positive integer');
+    process.exit(1);
   }
 
   return options;
-}
-
-/**
- * Print usage information
- */
-function printUsage() {
-  console.error(`
-Benchmark Script - Performance Testing for Scripts
-
-Usage:
-  node scripts/benchmark.js [options]
-
-Options:
-  --scripts <names...>, -s    Benchmark specific scripts (space-separated)
-  --iterations <n>, -i        Number of iterations per script (default: 1)
-  --warmup, -w                Include warmup run before benchmarking
-  --verbose, -v               Show detailed output during execution
-  --json, -j                  Output JSON only (no progress messages)
-  --help, -h                  Show this help message
-
-Available Scripts:
-  ${Object.keys(AVAILABLE_SCRIPTS).join('\n  ')}
-
-Examples:
-  node scripts/benchmark.js
-  node scripts/benchmark.js --scripts scan-plans cache-stats
-  node scripts/benchmark.js --iterations 5 --warmup
-  node scripts/benchmark.js --verbose --json
-
-Output:
-  JSON object with benchmark results and statistics
-`);
 }
 
 /**

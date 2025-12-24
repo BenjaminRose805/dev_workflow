@@ -148,6 +148,9 @@ async function readInput(filePath) {
         let data = '';
         process.stdin.setEncoding('utf-8');
 
+        // Add error listener first, before any other operations
+        process.stdin.on('error', reject);
+
         process.stdin.on('data', chunk => {
           data += chunk;
         });
@@ -155,8 +158,6 @@ async function readInput(filePath) {
         process.stdin.on('end', () => {
           resolve(data);
         });
-
-        process.stdin.on('error', reject);
 
         // If stdin is a TTY and no file specified, show error
         if (process.stdin.isTTY) {

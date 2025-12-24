@@ -6,11 +6,11 @@ Break a large task into smaller, more manageable subtasks.
 
 ### 1. Load Active Plan
 
-Read `.claude/current-plan.txt` to get the active plan path.
+**See:** `.claude/commands/plan/_common/status-tracking.md` for complete status tracking reference.
 
-**If no active plan:**
-- Inform the user: "No active plan set. Use /plan:set to choose a plan first."
-- Stop execution
+**Quick reference:**
+1. Read `.claude/current-plan.txt` to get the active plan path
+2. If no active plan: inform user "No active plan set. Use /plan:set to choose a plan first." and stop
 
 ### 1.5. Parse Arguments (if provided)
 

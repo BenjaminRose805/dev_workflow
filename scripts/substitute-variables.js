@@ -48,55 +48,77 @@
 const fs = require('fs');
 const path = require('path');
 const { readFile, fileExists } = require('./lib/file-utils');
+const { createArgParser, COMMON_FLAGS } = require('./lib/arg-parser');
+
+/**
+ * Create argument parser for this script
+ */
+const argParser = createArgParser({
+  name: 'substitute-variables',
+  description: 'Substitutes {{variable}} placeholders in prompt content with provided values.',
+  usage: 'node scripts/substitute-variables.js [options]',
+  flags: {
+    ...COMMON_FLAGS,
+    file: {
+      short: '-f',
+      long: '--file',
+      description: 'Read content from file instead of stdin',
+      type: 'value',
+      valueName: 'path',
+    },
+    vars: {
+      long: '--vars',
+      description: 'Variable values as JSON object',
+      type: 'value',
+      valueName: 'json',
+    },
+    metadata: {
+      short: '-m',
+      long: '--metadata',
+      description: 'JSON file with variable metadata (for defaults/validation)',
+      type: 'value',
+      valueName: 'path',
+    },
+    noValidate: {
+      long: '--no-validate',
+      description: 'Skip validation of required variables',
+      type: 'boolean',
+    },
+  },
+  examples: [
+    "cat prompt.md | node scripts/substitute-variables.js --vars '{\"user\":\"john\"}'",
+    "node scripts/substitute-variables.js --file prompt.md --vars '{\"user\":\"john\"}'",
+    "node scripts/substitute-variables.js --file prompt.md --metadata meta.json",
+  ],
+});
 
 /**
  * Parse command line arguments
  * @returns {{ file: string|null, vars: object, metadata: object|null, verbose: boolean, validate: boolean }}
  */
 function parseArgs() {
-  const args = process.argv.slice(2);
-  let file = null;
-  let varsJson = null;
-  let metadataFile = null;
-  let verbose = false;
-  let validate = true;
-  const varFlags = {};
-
-  for (let i = 0; i < args.length; i++) {
-    if (args[i] === '--file' && i + 1 < args.length) {
-      file = args[i + 1];
-      i++; // Skip next arg
-    } else if (args[i] === '--vars' && i + 1 < args.length) {
-      varsJson = args[i + 1];
-      i++; // Skip next arg
-    } else if (args[i] === '--metadata' && i + 1 < args.length) {
-      metadataFile = args[i + 1];
-      i++; // Skip next arg
-    } else if (args[i] === '--var' && i + 1 < args.length) {
-      const varPair = args[i + 1];
-      const [key, ...valueParts] = varPair.split('=');
-      if (key && valueParts.length > 0) {
-        varFlags[key.trim()] = valueParts.join('=').trim();
-      }
-      i++; // Skip next arg
-    } else if (args[i] === '--verbose') {
-      verbose = true;
-    } else if (args[i] === '--no-validate') {
-      validate = false;
-    } else if (args[i] === '--help' || args[i] === '-h') {
-      printUsage();
-      process.exit(0);
-    }
-  }
+  const parsed = argParser.parse();
 
   // Parse JSON vars if provided
   let vars = {};
-  if (varsJson) {
+  if (parsed.vars) {
     try {
-      vars = JSON.parse(varsJson);
+      vars = JSON.parse(parsed.vars);
     } catch (error) {
       console.error(`Error parsing --vars JSON: ${error.message}`);
       process.exit(1);
+    }
+  }
+
+  // Handle --var key=value flags from positional args (for backwards compatibility)
+  // These would come through as positional arguments
+  const varFlags = {};
+  for (const arg of parsed._positional) {
+    if (arg.includes('=')) {
+      const [key, ...valueParts] = arg.split('=');
+      if (key && valueParts.length > 0) {
+        varFlags[key.trim()] = valueParts.join('=').trim();
+      }
     }
   }
 
@@ -105,10 +127,10 @@ function parseArgs() {
 
   // Load metadata if provided
   let metadata = null;
-  if (metadataFile) {
-    const metadataContent = readFile(metadataFile);
+  if (parsed.metadata) {
+    const metadataContent = readFile(parsed.metadata);
     if (!metadataContent) {
-      console.error(`Error: Cannot read metadata file: ${metadataFile}`);
+      console.error(`Error: Cannot read metadata file: ${parsed.metadata}`);
       process.exit(1);
     }
     try {
@@ -119,58 +141,13 @@ function parseArgs() {
     }
   }
 
-  return { file, vars, metadata, verbose, validate };
-}
-
-/**
- * Print usage information
- */
-function printUsage() {
-  console.error(`
-Variable Substitution Script
-
-Substitutes {{variable}} placeholders in prompt content with provided values.
-
-Usage:
-  cat prompt.md | node scripts/substitute-variables.js --vars '{"user":"john"}'
-  node scripts/substitute-variables.js --file prompt.md --vars '{"user":"john"}'
-  node scripts/substitute-variables.js --file prompt.md --var user=john --var project=myapp
-  node scripts/substitute-variables.js --file prompt.md --metadata meta.json --vars '{"user":"john"}'
-
-Options:
-  --file <path>           Read content from file instead of stdin
-  --vars <json>           Variable values as JSON object
-  --var key=value         Set individual variable (can be used multiple times)
-  --metadata <path>       JSON file with variable metadata (for defaults/validation)
-  --no-validate           Skip validation of required variables
-  --verbose               Show detailed progress output
-  --help, -h              Show this help message
-
-Metadata format:
-{
-  "variables": [
-    {
-      "name": "user",
-      "description": "Username",
-      "default": "guest"
-    },
-    {
-      "name": "project",
-      "description": "Project name"
-    }
-  ]
-}
-
-Output format:
-{
-  "success": true,
-  "content": "Substituted content...",
-  "substitutions": {
-    "user": "john",
-    "project": "myapp"
-  }
-}
-`);
+  return {
+    file: parsed.file,
+    vars,
+    metadata,
+    verbose: parsed.verbose,
+    validate: !parsed.noValidate,
+  };
 }
 
 /**

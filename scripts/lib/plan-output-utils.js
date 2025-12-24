@@ -36,6 +36,7 @@ const path = require('path');
 const lockfile = require('proper-lockfile');
 const { readFile, writeFile, writeFileAtomic, fileExists, resolvePath } = require('./file-utils');
 const planStatusSchema = require('./schemas/plan-status.json');
+const planPointer = require('./plan-pointer');
 
 // Output directory base path
 const OUTPUT_BASE = 'docs/plan-outputs';
@@ -286,11 +287,9 @@ async function acquireLock(statusPath, timeoutMs = LOCK_TIMEOUT_MS) {
       return null;
     }
 
-    // Check for stale lock and clean if necessary
-    // proper-lockfile handles this via the stale option, but we do an extra check
-    if (isLockStale(statusPath)) {
-      cleanStaleLock(statusPath);
-    }
+    // Trust proper-lockfile's stale option (configured in LOCK_OPTIONS) to handle
+    // stale lock detection. Manual cleanup was removed to prevent race conditions
+    // where we might delete a lock that another process legitimately holds.
 
     // Create a promise that rejects after timeout
     const timeoutPromise = new Promise((_, reject) => {
@@ -1271,5 +1270,9 @@ module.exports = {
   getBackupPath,
   createBackup,
   restoreFromBackup,
-  rebuildStatusFromMarkdown
+  rebuildStatusFromMarkdown,
+  // Plan pointer re-exports for convenience
+  getActivePlanPath: planPointer.getActivePlanPath,
+  getActivePlanOutputPath: planPointer.getActivePlanOutputPath,
+  hasActivePlan: planPointer.hasActivePlan
 };

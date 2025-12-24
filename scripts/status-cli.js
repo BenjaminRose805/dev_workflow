@@ -36,6 +36,9 @@
 const fs = require('fs');
 const path = require('path');
 
+// Import shared modules
+const { getActivePlanPath } = require('./lib/plan-pointer.js');
+
 // Import plan-output-utils
 const {
   loadStatus,
@@ -55,21 +58,6 @@ const {
 // =============================================================================
 // Utility Functions
 // =============================================================================
-
-/**
- * Get the active plan path from .claude/current-plan.txt
- */
-function getActivePlanPath() {
-  const pointerPath = '.claude/current-plan.txt';
-  try {
-    if (!fs.existsSync(pointerPath)) {
-      return null;
-    }
-    return fs.readFileSync(pointerPath, 'utf8').trim();
-  } catch (error) {
-    return null;
-  }
-}
 
 /**
  * Output JSON to stdout

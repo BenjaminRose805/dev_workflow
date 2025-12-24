@@ -6,26 +6,19 @@ Show progress summary for the active plan.
 
 ### 1. Load Active Plan
 
-Read `.claude/current-plan.txt` to get the active plan path.
+**See:** `.claude/commands/plan/_common/status-tracking.md` for complete status tracking reference.
 
-**If no active plan:**
-```
-No active plan set.
-
-Use /plan:set to choose a plan, or /plan:create to create one from a template.
-```
+**Quick reference:**
+1. Read `.claude/current-plan.txt` to get the active plan path
+2. If no active plan: show "No active plan set. Use /plan:set to choose a plan, or /plan:create to create one from a template."
 
 ### 2. Check for Status Tracking (Output Separation)
 
-First, check if the plan has status tracking enabled by looking for:
-- Output directory: `docs/plan-outputs/{plan-name}/`
-- Status file: `docs/plan-outputs/{plan-name}/status.json`
+Check if the plan has status tracking by looking for `docs/plan-outputs/{plan-name}/status.json`.
 
 **If status.json exists:**
-- Use it as the primary source of task status
-- This provides more accurate timing, run history, and task state
+- Use it as the primary source of task status (provides timing, run history, task state)
 - Skip step 3 (parsing plan file) - use status.json data instead
-- Show additional info: run count, last updated time, execution history
 
 **If status.json does NOT exist:**
 - Fall back to parsing the plan file markdown (step 3)

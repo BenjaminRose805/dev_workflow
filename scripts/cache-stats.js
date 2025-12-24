@@ -40,6 +40,7 @@
 const fs = require('fs');
 const path = require('path');
 const { resolvePath, fileExists, readFile, getFileMtime } = require('./lib/file-utils');
+const { createArgParser, COMMON_FLAGS } = require('./lib/arg-parser');
 
 // Cache directories
 const CACHE_DIRS = {
@@ -66,104 +67,37 @@ function verbose(...args) {
   }
 }
 
+// Create argument parser
+const argParser = createArgParser({
+  name: 'cache-stats',
+  description: 'Cache Statistics Script - Shows cache hit rates, sizes, and other statistics',
+  flags: {
+    ...COMMON_FLAGS,
+    all: { short: '-a', long: '--all', description: 'Show all cache types (default)' },
+    scripts: { short: '-s', long: '--scripts', description: 'Show scripts cache stats only' },
+    research: { short: '-r', long: '--research', description: 'Show research cache stats only' },
+    detailed: { short: '-d', long: '--detailed', description: 'Include file-level details in output' },
+  },
+  examples: [
+    'node scripts/cache-stats.js                 # Show all cache stats',
+    'node scripts/cache-stats.js --scripts       # Show only scripts cache stats',
+    'node scripts/cache-stats.js --detailed      # Include file-level details',
+  ],
+});
+
 /**
  * Parse command line arguments
  * @returns {{ all: boolean, scripts: boolean, research: boolean, verbose: boolean, detailed: boolean }}
  */
 function parseArgs() {
-  const args = process.argv.slice(2);
-  const parsed = {
-    all: false,
-    scripts: false,
-    research: false,
-    verbose: false,
-    detailed: false,
-  };
-
-  for (const arg of args) {
-    switch (arg) {
-      case '--all':
-      case '-a':
-        parsed.all = true;
-        break;
-      case '--scripts':
-      case '-s':
-        parsed.scripts = true;
-        break;
-      case '--research':
-      case '-r':
-        parsed.research = true;
-        break;
-      case '--verbose':
-      case '-v':
-        parsed.verbose = true;
-        break;
-      case '--detailed':
-      case '-d':
-        parsed.detailed = true;
-        break;
-      case '--help':
-      case '-h':
-        printUsage();
-        process.exit(0);
-        break;
-      default:
-        console.error(`Unknown argument: ${arg}`);
-        printUsage();
-        process.exit(1);
-    }
-  }
-
-  return parsed;
+  return argParser.parse();
 }
 
 /**
  * Print usage information
  */
 function printUsage() {
-  console.error(`
-Cache Statistics Script
-
-Usage:
-  node scripts/cache-stats.js                 # Show all cache stats
-  node scripts/cache-stats.js --scripts       # Show only scripts cache stats
-  node scripts/cache-stats.js --research      # Show only research cache stats
-  node scripts/cache-stats.js --verbose       # Show detailed progress output
-  node scripts/cache-stats.js --detailed      # Include file-level details
-
-Options:
-  --all, -a           Show all cache types (default)
-  --scripts, -s       Show scripts cache stats only
-  --research, -r      Show research cache stats only
-  --verbose, -v       Show detailed progress output
-  --detailed, -d      Include file-level details in output
-  --help, -h          Show this help message
-
-Output format:
-{
-  "caches": {
-    "scripts": {
-      "type": "scripts",
-      "path": "/path/.claude/cache/scripts",
-      "exists": true,
-      "totalEntries": 10,
-      "validEntries": 8,
-      "expiredEntries": 2,
-      "totalSizeBytes": 12345,
-      "totalSizeKB": "12.05",
-      "totalSizeMB": "0.01"
-    }
-  },
-  "totals": {
-    "totalEntries": 18,
-    "validEntries": 15,
-    "expiredEntries": 3,
-    "totalSizeBytes": 23701,
-    "totalSizeKB": "23.14",
-    "totalSizeMB": "0.02"
-  }
-}
-`);
+  argParser.printHelp();
 }
 
 /**

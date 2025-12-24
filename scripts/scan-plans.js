@@ -12,22 +12,7 @@ const path = require('path');
 const { readFile, globSync, resolvePath, getCached, setCached } = require('./lib/file-utils');
 const { getTitle, countTasks, parsePhases } = require('./lib/markdown-parser');
 const { loadStatus, outputDirExists, getOutputDir } = require('./lib/plan-output-utils');
-
-/**
- * Get the current active plan from .claude/current-plan.txt
- * @returns {string|null} Current plan path or null
- */
-function getCurrentPlan() {
-  const currentPlanPath = resolvePath('.claude', 'current-plan.txt');
-  const content = readFile(currentPlanPath);
-
-  if (!content) {
-    return null;
-  }
-
-  // Trim whitespace and normalize path
-  return content.trim();
-}
+const { getActivePlanPath } = require('./lib/plan-pointer');
 
 /**
  * Scan a single plan file
@@ -103,8 +88,8 @@ function scanPlanFile(filePath) {
  */
 function scanAllPlans() {
   try {
-    // Get current plan
-    const currentPlan = getCurrentPlan();
+    // Get current plan using plan-pointer module
+    const currentPlan = getActivePlanPath();
 
     // Find all plan files
     const planPattern = resolvePath('docs', 'plans', '*.md');
@@ -165,7 +150,7 @@ if (require.main === module) {
 
 // Export for testing
 module.exports = {
-  getCurrentPlan,
+  getCurrentPlan: getActivePlanPath, // Re-export for backwards compatibility
   scanPlanFile,
   scanAllPlans
 };

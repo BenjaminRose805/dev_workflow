@@ -28,40 +28,13 @@
 
 const fs = require('fs');
 const path = require('path');
-
-// Paths
-const CURRENT_PLAN_PATH = '.claude/current-plan.txt';
-const CURRENT_OUTPUT_PATH = '.claude/current-plan-output.txt';
-
-/**
- * Read the active plan path
- */
-function getActivePlan() {
-    try {
-        const planPath = fs.readFileSync(CURRENT_PLAN_PATH, 'utf8').trim();
-        if (!planPath) return null;
-        return planPath;
-    } catch (e) {
-        return null;
-    }
-}
-
-/**
- * Read the output directory path
- */
-function getOutputDir() {
-    try {
-        return fs.readFileSync(CURRENT_OUTPUT_PATH, 'utf8').trim();
-    } catch (e) {
-        return null;
-    }
-}
+const { getActivePlanPath, getActivePlanOutputPath } = require('./lib/plan-pointer');
 
 /**
  * Load status.json for the plan
  */
 function loadStatus(planPath) {
-    const outputDir = getOutputDir();
+    const outputDir = getActivePlanOutputPath();
     if (!outputDir) return null;
 
     const statusPath = path.join(outputDir, 'status.json');
@@ -401,7 +374,7 @@ const command = args[0];
 const options = args.slice(1);
 
 // Get plan
-const planPath = getActivePlan();
+const planPath = getActivePlanPath();
 if (!planPath) {
     console.log(JSON.stringify({ error: 'No active plan set. Use /plan:set first.' }));
     process.exit(1);

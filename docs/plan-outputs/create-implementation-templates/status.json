@@ -48,7 +48,7 @@
       "completedAt": "2025-12-22T20:16:00.000Z"
     },
     {
-      "id": "VERIFY-1",
+      "id": "1.7",
       "phase": "Phase 1: P0 Templates (MVP)",
       "description": "VERIFY 1: All 6 P0 templates exist in `docs/plan-templates/`",
       "status": "completed",
@@ -90,7 +90,7 @@
       "completedAt": "2025-12-22T21:29:00.000Z"
     },
     {
-      "id": "VERIFY-2",
+      "id": "2.6",
       "phase": "Phase 2: P1 Command Templates",
       "description": "VERIFY 2: All 5 P1 command templates exist",
       "status": "completed",
@@ -132,7 +132,7 @@
       "completedAt": "2025-12-22T22:12:00.000Z"
     },
     {
-      "id": "VERIFY-3",
+      "id": "3.6",
       "phase": "Phase 3: P1 Infrastructure + P2 Design Commands",
       "description": "VERIFY 3: All 5 templates (2 infra + 3 design) exist",
       "status": "completed",
@@ -181,7 +181,7 @@
       "completedAt": "2025-12-22T23:12:00.000Z"
     },
     {
-      "id": "VERIFY-4",
+      "id": "4.7",
       "phase": "Phase 4: P2 Design + Documentation Commands",
       "description": "VERIFY 4: All 6 templates (3 design + 3 docs) exist",
       "status": "completed",
@@ -237,7 +237,7 @@
       "completedAt": "2025-12-22T23:55:00.000Z"
     },
     {
-      "id": "VERIFY-5",
+      "id": "5.8",
       "phase": "Phase 5: P2 Infrastructure + P3 Operations Commands",
       "description": "VERIFY 5: All 7 templates (2 infra + 5 ops) exist",
       "status": "completed",
@@ -279,7 +279,7 @@
       "completedAt": "2025-12-23T00:05:00.000Z"
     },
     {
-      "id": "VERIFY-6",
+      "id": "6.6",
       "phase": "Phase 6: Agent Templates",
       "description": "VERIFY 6: All 5 agent templates exist",
       "status": "completed",
@@ -314,14 +314,14 @@
       "completedAt": "2025-12-23T00:45:00.000Z"
     },
     {
-      "id": "VERIFY-7",
+      "id": "7.5",
       "phase": "Phase 7: Hook Templates + Implement Command",
       "description": "VERIFY 7: All 4 templates (3 hooks + 1 command) exist",
       "status": "completed",
       "completedAt": "2025-12-23T00:45:00.000Z"
     },
     {
-      "id": "SC-1",
+      "id": "8.1",
       "phase": "Success Criteria",
       "description": "40 templates created in `docs/plan-templates/`",
       "status": "completed",
@@ -329,7 +329,7 @@
       "findings": "44 templates found (38 implement-*.md + 6 base templates). Exceeds target of 40."
     },
     {
-      "id": "SC-2",
+      "id": "8.2",
       "phase": "Success Criteria",
       "description": "All templates follow format in `TEMPLATE.md`",
       "status": "completed",
@@ -337,7 +337,7 @@
       "findings": "All templates have Overview section with Goal/Priority/Created/Output, numbered phases, checkbox tasks, and Success Criteria section."
     },
     {
-      "id": "SC-3",
+      "id": "8.3",
       "phase": "Success Criteria",
       "description": "Each template has phases, tasks, and verification checkpoints",
       "status": "completed",
@@ -345,7 +345,7 @@
       "findings": "All templates contain numbered phases (Phase N:), checkbox tasks (- [ ] X.X.X), and VERIFY checkpoints at phase boundaries."
     },
     {
-      "id": "SC-4",
+      "id": "8.4",
       "phase": "Success Criteria",
       "description": "Each template includes variables for customization",
       "status": "completed",

@@ -36,85 +36,62 @@ const fs = require('fs');
 const path = require('path');
 const { execa } = require('execa');
 const { fileExists, getFileMtime, resolvePath } = require('./lib/file-utils');
+const { createArgParser, COMMON_FLAGS } = require('./lib/arg-parser');
 
 const TEST_TIMEOUT = 60000; // 60 seconds for test execution
 const VITEST_BIN = path.join(__dirname, '..', 'node_modules', '.bin', 'vitest');
+
+// Create argument parser
+const argParser = createArgParser({
+  name: 'check-file-status',
+  description: 'File Status Checker - Checks existence, size, mtime, and optionally runs tests',
+  flags: {
+    ...COMMON_FLAGS,
+    files: {
+      short: '-f',
+      long: '--files',
+      description: 'File paths to check (space-separated)',
+      type: 'array',
+      valueName: 'paths',
+    },
+    file: {
+      long: '--file',
+      description: 'Read file paths from JSON file',
+      type: 'value',
+      valueName: 'path',
+    },
+    runTests: {
+      short: '-t',
+      long: '--run-tests',
+      description: 'Run tests for test files',
+    },
+  },
+  examples: [
+    "echo '[\"file1.js\"]' | node scripts/check-file-status.js",
+    'node scripts/check-file-status.js --files file1.js file2.ts',
+    'node scripts/check-file-status.js --file tasks.json --run-tests',
+  ],
+});
 
 /**
  * Parse command line arguments
  * @returns {{ files: string[]|null, file: string|null, runTests: boolean, verbose: boolean }}
  */
 function parseArgs() {
-  const args = process.argv.slice(2);
-  let files = null;
-  let file = null;
-  let runTests = false;
-  let verbose = false;
-
-  for (let i = 0; i < args.length; i++) {
-    if (args[i] === '--files' || args[i] === '-f') {
-      // Collect all following args until next flag
-      files = [];
-      i++;
-      while (i < args.length && !args[i].startsWith('--')) {
-        files.push(args[i]);
-        i++;
-      }
-      i--; // Step back one since loop will increment
-    } else if (args[i] === '--file' && i + 1 < args.length) {
-      file = args[i + 1];
-      i++; // Skip next arg
-    } else if (args[i] === '--run-tests' || args[i] === '-t') {
-      runTests = true;
-    } else if (args[i] === '--verbose' || args[i] === '-v') {
-      verbose = true;
-    } else if (args[i] === '--help' || args[i] === '-h') {
-      printUsage();
-      process.exit(0);
-    }
-  }
-
-  return { files, file, runTests, verbose };
+  const parsed = argParser.parse();
+  return {
+    files: parsed.files.length > 0 ? parsed.files : null,
+    file: parsed.file,
+    runTests: parsed.runTests,
+    verbose: parsed.verbose,
+  };
 }
 
 /**
  * Print usage information
  */
 function printUsage() {
-  console.error(`
-File Status Checker
-
-Usage:
-  echo '["file1.js", "file2.ts"]' | node scripts/check-file-status.js
-  node scripts/check-file-status.js --files file1.js file2.ts
-  node scripts/check-file-status.js --file tasks.json
-  node scripts/check-file-status.js --files file1.js --run-tests
-  node scripts/check-file-status.js --file tasks.json --run-tests --verbose
-
-Options:
-  --files, -f <paths...>  File paths to check (space-separated)
-  --file <path>           Read file paths from JSON file
-  --run-tests, -t         Run tests for test files
-  --verbose, -v           Show detailed progress output
-  --help, -h              Show this help message
-
-Input format (stdin or file):
-["path/to/file1.js", "path/to/file2.ts"]
-
-Output format:
-{
-  "checks": [
-    {
-      "file": "path/to/file.ts",
-      "exists": true,
-      "size": 1234,
-      "mtime": 1702857600000,
-      "tests_pass": true,
-      "coverage": 85.5
-    }
-  ]
-}
-`);
+  argParser.printHelp();
 }
 
 /**

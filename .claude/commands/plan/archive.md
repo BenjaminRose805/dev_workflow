@@ -2,6 +2,8 @@
 
 View and manage archived plans in `docs/completed plans/`.
 
+**See:** `.claude/commands/plan/_common/status-tracking.md` for complete status tracking reference.
+
 ## Instructions
 
 ### 1. Scan Archived Plans

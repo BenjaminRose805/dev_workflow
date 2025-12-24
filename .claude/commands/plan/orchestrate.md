@@ -20,6 +20,8 @@ Autonomously execute a plan from start to finish. This command runs continuously
 
 ### 1. Initialize
 
+**See:** `.claude/commands/plan/_common/status-tracking.md` for complete status tracking reference.
+
 **Load current state:**
 ```bash
 ./scripts/plan-runner.sh status

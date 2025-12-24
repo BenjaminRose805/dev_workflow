@@ -4,17 +4,15 @@ Check if task(s) are still needed, already done, blocked, or obsolete.
 
 ## Instructions
 
-### 1. Load Active Plan
+### 1. Load Active Plan and Initialize Status
 
-Read `.claude/current-plan.txt` to get the active plan path.
+**See:** `.claude/commands/plan/_common/status-tracking.md` for complete status tracking reference.
 
-**If no active plan:**
-- Inform the user: "No active plan set. Use /plan:set to choose a plan first."
-- Stop execution
-
-**After loading the plan:**
-- Initialize status tracking if needed: `initializePlanStatus(planPath)`
-- Load current status: `getStatus(planPath, true)`
+**Quick reference:**
+1. Read `.claude/current-plan.txt` to get the active plan path
+2. If no active plan: inform user "No active plan set. Use /plan:set to choose a plan first." and stop
+3. Initialize status tracking if needed: `initializePlanStatus(planPath)`
+4. Load current status: `getStatus(planPath, true)`
 
 ### 1.5. Parse Arguments (if provided)
 

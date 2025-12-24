@@ -97,7 +97,7 @@ Most scripts support these common flags:
 
 ## Integration
 
-The system integrates with the main Idea-to-Code workflow through:
+The system integrates with the main dev_workflow system through:
 1. Plan management from `docs/plans/`
 2. Phase execution with research agents
 3. Task verification
