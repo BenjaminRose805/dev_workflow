@@ -122,9 +122,9 @@ For example, `implement-explore-command.md` should produce:
 - 1.1.4 Identify mandatory vs optional sections
 
 **VERIFY:**
-- [ ] List of exemplary plans documented
-- [ ] All section types cataloged with frequency counts
-- [ ] Clear distinction between required and optional sections
+- [x] List of exemplary plans documented
+- [x] All section types cataloged with frequency counts
+- [x] Clear distinction between required and optional sections
 
 ### 1.2 Create Canonical Plan Template
 
@@ -137,10 +137,10 @@ For example, `implement-explore-command.md` should produce:
 - 1.2.6 Add template variables with `{{variable}}` syntax
 
 **VERIFY:**
-- [ ] Template covers all necessary sections
-- [ ] Phase and subsection naming is unambiguous
-- [ ] VERIFY sections have consistent format
-- [ ] Output directory convention is clear
+- [x] Template covers all necessary sections
+- [x] Phase and subsection naming is unambiguous
+- [x] VERIFY sections have consistent format
+- [x] Output directory convention is clear
 
 ### 1.3 Create Standards Document
 
@@ -157,10 +157,10 @@ For example, `implement-explore-command.md` should produce:
 - 1.3.6 Add decision log template for ADRs
 
 **VERIFY:**
-- [ ] All naming conventions documented with examples
-- [ ] Priority level definitions are clear
-- [ ] Quality targets are consistent and measurable
-- [ ] Standards document is comprehensive
+- [x] All naming conventions documented with examples
+- [x] Priority level definitions are clear
+- [x] Quality targets are consistent and measurable
+- [x] Standards document is comprehensive
 
 ---
 
@@ -177,10 +177,10 @@ For example, `implement-explore-command.md` should produce:
 - 2.1.6 Add integration points with `/test`, `/validate`, `/review`
 
 **VERIFY:**
-- [ ] Plan follows canonical template exactly
-- [ ] Dependencies on upstream commands documented
-- [ ] All sub-commands have clear scope
-- [ ] Integration points are explicit
+- [x] Plan follows canonical template exactly
+- [x] Dependencies on upstream commands documented
+- [x] All sub-commands have clear scope
+- [x] Integration points are explicit
 
 ### 2.2 Create implement-migrate-command.md (if missing)
 
@@ -193,10 +193,10 @@ For example, `implement-explore-command.md` should produce:
 - 2.2.6 Add integration with `/validate`, `/test`
 
 **VERIFY:**
-- [ ] Plan follows canonical template
-- [ ] Migration scope is well-defined
-- [ ] Rollback strategies documented
-- [ ] Integration points explicit
+- [x] Plan follows canonical template
+- [x] Migration scope is well-defined
+- [x] Rollback strategies documented
+- [x] Integration points explicit
 
 ### 2.3 Create implement-release-command.md (if missing)
 
@@ -209,10 +209,10 @@ For example, `implement-explore-command.md` should produce:
 - 2.3.6 Add integration with `/validate`, `/deploy`
 
 **VERIFY:**
-- [ ] Plan follows canonical template
-- [ ] Release workflow is complete
-- [ ] All sub-commands documented
-- [ ] Integration points explicit
+- [x] Plan follows canonical template
+- [x] Release workflow is complete
+- [x] All sub-commands documented
+- [x] Integration points explicit
 
 ---
 
@@ -226,12 +226,15 @@ For example, `implement-explore-command.md` should produce:
 - 3.1.3 Ensure all phases have Tasks and VERIFY sections
 - 3.1.4 Remove inconsistent phase naming (e.g., "Phase 1.1" at top level)
 
-**Files to update:**
-- implement-explore-command.md
-- implement-clarify-command.md
-- implement-fix-command.md
-- implement-refactor-command.md
-- (all 37 files need review)
+**Subtasks:**
+- [x] 3.1.A Core development commands: implement-explore-command.md, implement-clarify-command.md, implement-fix-command.md, implement-refactor-command.md, implement-debug-command.md
+- [x] 3.1.B Quality & analysis commands: implement-analyze-command.md, implement-review-command.md, implement-audit-command.md, implement-validate-command.md, implement-test-command.md
+- [x] 3.1.C Architecture & docs commands: implement-architect-command.md, implement-design-command.md, implement-spec-command.md, implement-document-command.md, implement-explain-command.md
+- [x] 3.1.D Planning & creation commands: implement-research-command.md, implement-brainstorm-command.md, implement-model-command.md, implement-implement-command.md, implement-template-command.md
+- [x] 3.1.E Workflow commands: implement-workflow-command.md, implement-workflow-loops.md, implement-workflow-branching.md, implement-workflow-composition.md, implement-fan-in-fan-out.md
+- [x] 3.1.F Deploy & infrastructure: implement-deploy-command.md, implement-migrate-command.md, implement-release-command.md, implement-artifact-registry.md, implement-error-recovery-hooks.md
+- [x] 3.1.G Agent implementations: implement-explore-agent.md, implement-analyze-agent.md, implement-review-agent.md, implement-debug-agent.md
+- [x] 3.1.H Deploy agent & hooks: implement-deploy-agent.md, implement-context-loading-hook.md, implement-artifact-storage-hook.md, implement-notification-hooks.md
 
 **VERIFY:**
 - [ ] All plans use consistent phase naming
@@ -243,13 +246,22 @@ For example, `implement-explore-command.md` should produce:
 **Tasks:**
 - 3.2.1 Add "Dependencies" section to plans missing it
 - 3.2.2 Add "Risks" section to plans missing it
-- 3.2.3 Add "Success Criteria" section to plans missing it
+- 3.2.3 Add "Success Criteria" section to plans missing it (already complete - 0 plans missing)
 - 3.2.4 Ensure all plans have Overview with Priority, Created, Output fields
 
-**Files to update:**
-- implement-test-command.md (missing Dependencies)
-- implement-validate-command.md (missing sections)
-- implement-workflow-loops.md (review sections)
+**Subtasks:**
+- [x] 3.2.A Core development commands: implement-explore-command.md, implement-fix-command.md, implement-refactor-command.md, implement-debug-command.md (add Dependencies & Risks)
+- [x] 3.2.B Quality & analysis commands: implement-analyze-command.md, implement-review-command.md, implement-audit-command.md, implement-validate-command.md, implement-test-command.md (add Dependencies & Risks)
+- [x] 3.2.C Architecture & docs commands: implement-architect-command.md, implement-design-command.md, implement-spec-command.md, implement-document-command.md, implement-explain-command.md (add Dependencies & Risks)
+- [x] 3.2.D Remaining commands with partial sections: implement-clarify-command.md (add Risks only - Dependencies exists)
+- [x] 3.2.E Verify Overview completeness across all 38 plans (Priority, Created, Output fields)
+- [x] 3.2.F Standardize Overview format in 6 plans to use bullet-point style (implement-deploy-command.md, implement-fix-command.md, implement-migrate-command.md, implement-refactor-command.md, implement-release-command.md, implement-template-command.md)
+
+**Files to update (12 missing Dependencies, 15 missing Risks):**
+- Core: implement-explore-command.md, implement-fix-command.md, implement-refactor-command.md, implement-debug-command.md
+- Quality: implement-analyze-command.md, implement-review-command.md, implement-audit-command.md, implement-validate-command.md, implement-test-command.md
+- Arch/Docs: implement-architect-command.md, implement-design-command.md, implement-spec-command.md, implement-document-command.md, implement-explain-command.md
+- Risks only: implement-clarify-command.md
 
 **VERIFY:**
 - [ ] All plans have Dependencies section
