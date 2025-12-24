@@ -1,15 +1,39 @@
 # Implementation Plan: Workflow Branching and Conditional Execution
 
 ## Overview
+
 - **Goal:** Implement conditional branching, loops, and error handling patterns to enable adaptive workflow execution
 - **Priority:** P0
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-workflow-branching/`
+- **Output:** `docs/plan-outputs/workflow-branching/`
 
-> Transform linear workflows into adaptive execution flows with conditional branching (IF/THEN/ELSE), looping constructs (LOOP/UNTIL/WHILE), error handling (Try-Catch-Finally), and advanced patterns (circuit breakers, fallback chains, approval gates). This addresses critical gaps in workflow capabilities enabling TDD, complex dependencies, and intelligent error recovery.
+## Description
+
+Transform linear workflows into adaptive execution flows with conditional branching (IF/THEN/ELSE), looping constructs (LOOP/UNTIL/WHILE), error handling (Try-Catch-Finally), and advanced patterns (circuit breakers, fallback chains, approval gates). This addresses critical gaps in workflow capabilities enabling TDD, complex dependencies, and intelligent error recovery.
+
+---
+
+## Dependencies
+
+### Upstream
+- `/workflow` command infrastructure
+- Workflow execution engine
+
+### Downstream
+- `/workflow:run` conditional execution
+- TDD workflow templates
+- Error recovery patterns
+
+### External Tools
+- None (uses built-in workflow engine)
+
+---
 
 ## Phase 1: Condition Expression Parser
 
+**Objective:** Implement expression parsing and evaluation for conditional logic.
+
+**Tasks:**
 - [ ] 1.1 Design expression syntax grammar supporting basic operators (==, !=, <, >, <=, >=, &&, ||, !)
 - [ ] 1.2 Implement lexer/tokenizer for condition expressions with proper operator precedence
 - [ ] 1.3 Build expression parser with AST generation for complex conditions
@@ -20,10 +44,19 @@
 - [ ] 1.8 Implement compound condition evaluation with short-circuit logic
 - [ ] 1.9 Add parenthetical grouping support for complex expressions
 - [ ] 1.10 Create expression validation with helpful error messages
-- [ ] **VERIFY 1**: Unit tests pass for expression parsing with edge cases (nested conditions, invalid syntax, type mismatches). Can evaluate: `${steps.validate.exit_code == 0 && (env.ENVIRONMENT == "prod" || artifact_exists("build.tar"))}`
+
+**VERIFY Phase 1:**
+- [ ] Unit tests pass for expression parsing with edge cases
+- [ ] Nested conditions and type mismatches handled correctly
+- [ ] Can evaluate complex expressions like: `${steps.validate.exit_code == 0 && (env.ENVIRONMENT == "prod" || artifact_exists("build.tar"))}`
+
+---
 
 ## Phase 2: Basic Branching Constructs
 
+**Objective:** Implement if/then/else branching patterns for conditional execution.
+
+**Tasks:**
 - [ ] 2.1 Design plan format extensions for conditional steps (if/then/else blocks)
 - [ ] 2.2 Implement If-Then pattern with single condition and consequence steps
 - [ ] 2.3 Implement If-Then-Else pattern with alternate execution paths
@@ -34,10 +67,19 @@
 - [ ] 2.8 Add condition evaluation logging with debug output
 - [ ] 2.9 Create validation rules for conditional step configuration
 - [ ] 2.10 Update plan schema to support conditional step syntax
-- [ ] **VERIFY 2**: Create test plan with If-Then-Else branches. Execute successfully with different conditions. Verify correct path taken and alternate path skipped.
+
+**VERIFY Phase 2:**
+- [ ] Test plan with If-Then-Else branches executes successfully
+- [ ] Correct path taken based on condition evaluation
+- [ ] Alternate path correctly skipped with proper status
+
+---
 
 ## Phase 3: Error Handling Patterns
 
+**Objective:** Implement try/catch/finally and retry patterns for error handling.
+
+**Tasks:**
 - [ ] 3.1 Define exit code conventions (0=success, 1=recoverable error, 2=fatal error, 124=timeout)
 - [ ] 3.2 Implement Try-Catch block pattern in plan format
 - [ ] 3.3 Add catch block execution on step failure with error context
@@ -50,10 +92,20 @@
 - [ ] 3.10 Add timeout handling with configurable duration
 - [ ] 3.11 Create error recovery strategy selector by error type
 - [ ] 3.12 Update status tracking to record retry attempts and outcomes
-- [ ] **VERIFY 3**: Test plan with Try-Catch-Finally executes catch on failure, finally always runs. Retry with exponential backoff succeeds after 2 attempts. Fatal error skips retry.
+
+**VERIFY Phase 3:**
+- [ ] Test plan with Try-Catch-Finally executes catch on failure
+- [ ] Finally block always runs regardless of success/failure
+- [ ] Retry with exponential backoff succeeds after configured attempts
+- [ ] Fatal error correctly skips retry
+
+---
 
 ## Phase 4: Loop Constructs
 
+**Objective:** Implement loop patterns (LOOP/UNTIL/WHILE) with safety limits.
+
+**Tasks:**
 - [ ] 4.1 Design loop syntax for plan format (LOOP/UNTIL/WHILE constructs)
 - [ ] 4.2 Implement LOOP construct with fixed iteration count
 - [ ] 4.3 Add iteration index variable (loop.index, loop.iteration) to context
@@ -66,10 +118,20 @@
 - [ ] 4.10 Implement continue/break keywords for loop control
 - [ ] 4.11 Add nested loop support with distinct iteration contexts
 - [ ] 4.12 Create loop iteration result aggregation (collect outputs)
-- [ ] **VERIFY 4**: WHILE loop executes until condition met (max 5 iterations). UNTIL loop runs at least once. LOOP with break_on_success exits early. Infinite loop prevented by max_iterations.
+
+**VERIFY Phase 4:**
+- [ ] WHILE loop executes until condition met (max 5 iterations)
+- [ ] UNTIL loop runs at least once before checking condition
+- [ ] LOOP with break_on_success exits early when appropriate
+- [ ] Infinite loop prevented by max_iterations safety limit
+
+---
 
 ## Phase 5: Advanced Patterns
 
+**Objective:** Implement circuit breakers, fallback chains, and approval gates.
+
+**Tasks:**
 - [ ] 5.1 Design circuit breaker pattern configuration (failure_threshold, success_threshold, timeout_ms)
 - [ ] 5.2 Implement circuit breaker states (CLOSED, OPEN, HALF_OPEN)
 - [ ] 5.3 Add circuit breaker state transitions based on success/failure tracking
@@ -82,10 +144,19 @@
 - [ ] 5.10 Create notification system for approval gates (webhook, email config)
 - [ ] 5.11 Implement timeout for approval gates with default action
 - [ ] 5.12 Add audit logging for approval decisions
-- [ ] **VERIFY 5**: Circuit breaker opens after 3 failures, half-opens after timeout. Fallback chain tries 3 alternatives. Approval gate pauses execution, resumes on approval.
+
+**VERIFY Phase 5:**
+- [ ] Circuit breaker opens after configured failures, half-opens after timeout
+- [ ] Fallback chain tries alternatives in order until success
+- [ ] Approval gate pauses execution and resumes on approval
+
+---
 
 ## Phase 6: Integration and Documentation
 
+**Objective:** Complete schema updates, validation, and documentation.
+
+**Tasks:**
 - [ ] 6.1 Update plan format schema with all new constructs (conditions, loops, error handling)
 - [ ] 6.2 Create JSON schema validation for branching patterns
 - [ ] 6.3 Update plan parser to handle all new syntax elements
@@ -98,10 +169,19 @@
 - [ ] 6.10 Write user documentation for condition syntax and patterns
 - [ ] 6.11 Document performance considerations (condition evaluation overhead, loop limits)
 - [ ] 6.12 Create migration guide for converting linear plans to branching plans
-- [ ] **VERIFY 6**: All pattern examples validate against schema. Execute complex plan combining If-Else, Try-Catch, Loop, and Circuit Breaker. Status output clearly shows execution path.
+
+**VERIFY Phase 6:**
+- [ ] All pattern examples validate against schema
+- [ ] Complex plan combining If-Else, Try-Catch, Loop, and Circuit Breaker executes correctly
+- [ ] Status output clearly shows execution path taken
+
+---
 
 ## Phase 7: Testing and Validation
 
+**Objective:** Comprehensive testing of all branching functionality.
+
+**Tasks:**
 - [ ] 7.1 Create comprehensive unit tests for expression parser (100+ test cases)
 - [ ] 7.2 Write integration tests for each branching pattern
 - [ ] 7.3 Create end-to-end tests combining multiple patterns
@@ -112,10 +192,19 @@
 - [ ] 7.8 Validate retry backoff timing accuracy
 - [ ] 7.9 Test approval gate timeout and default actions
 - [ ] 7.10 Create load tests with parallel conditional workflows
-- [ ] **VERIFY 7**: Test suite achieves >95% code coverage. All edge cases pass. Performance overhead <10% for simple conditions.
+
+**VERIFY Phase 7:**
+- [ ] Test suite achieves >95% code coverage
+- [ ] All edge cases pass
+- [ ] Performance overhead <10% for simple conditions
+
+---
 
 ## Phase 8: TDD Workflow Support
 
+**Objective:** Create TDD workflow template using all branching patterns.
+
+**Tasks:**
 - [ ] 8.1 Create TDD workflow template using branching patterns
 - [ ] 8.2 Implement test execution with failure branching to implementation
 - [ ] 8.3 Add loop construct for test-fix-verify cycles
@@ -124,7 +213,13 @@
 - [ ] 8.6 Add circuit breaker for repeated test failures
 - [ ] 8.7 Create approval gate for manual review when automated fixes fail
 - [ ] 8.8 Test complete TDD workflow end-to-end
-- [ ] **VERIFY 8**: TDD plan executes: run tests → if fail, implement fix → retry tests (max 3 attempts) → if still fail, request approval. Circuit breaker opens after 5 consecutive failures.
+
+**VERIFY Phase 8:**
+- [ ] TDD plan executes: run tests → if fail, implement fix → retry tests (max 3 attempts)
+- [ ] If still failing, request approval via approval gate
+- [ ] Circuit breaker opens after 5 consecutive failures
+
+---
 
 ## Success Criteria
 
@@ -143,3 +238,24 @@
 - [ ] TDD workflow template successfully implements test-driven development cycle
 - [ ] Performance overhead for branching <10% compared to linear execution
 - [ ] Migration path exists for converting existing linear plans to branching plans
+
+---
+
+## Risks
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Expression parser complexity | High | Medium | Thorough unit testing with 100+ test cases |
+| Infinite loops despite safety limits | High | Low | Multiple prevention layers and max_iterations |
+| Circuit breaker race conditions | Medium | Low | Proper state synchronization and locking |
+| Approval gate timeouts causing stalls | Medium | Medium | Configurable timeouts with default actions |
+| Performance overhead from condition evaluation | Medium | Low | Lazy evaluation and caching |
+
+---
+
+## Notes
+
+- Expression syntax follows JavaScript-like conventions for familiarity
+- Circuit breaker states: CLOSED (normal), OPEN (failing), HALF_OPEN (testing)
+- Approval gates require UI integration for best experience
+- Consider adding visual debugging tools for complex conditional flows

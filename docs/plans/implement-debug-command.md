@@ -4,7 +4,7 @@
 - **Goal:** Implement the /debug command with 8 sub-commands for systematic, hypothesis-driven debugging across error analysis, performance, behavior, testing, memory, network, concurrency, and data issues
 - **Priority:** P0 (CRITICAL - Analysis & Quality phase)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-debug-command/`
+- **Output:** `docs/plan-outputs/debug-command/`
 - **Model:** Sonnet 4.5 (6 sub-commands), Opus 4.5 (memory, concurrency - complex reasoning)
 - **Category:** Analysis & Quality
 
@@ -12,12 +12,31 @@
 
 ---
 
+## Dependencies
+
+### Upstream
+- `/explore` - uses exploration data to understand affected code areas
+- `/analyze` - leverages analysis results for pattern detection and metrics
+
+### Downstream
+- `/fix` - consumes fix-suggestion.md artifacts for automated fixing
+- `/test` - debugging sessions may generate test recommendations
+- `/validate` - verification of fixes triggers validation
+
+### External Tools
+- Git - for change history analysis (recent commits affecting area)
+- Test runners (Jest/Vitest/pytest) - for running tests during debugging
+- Profilers (optional) - for performance debugging flamegraphs
+
+---
+
 ## Phase 1: Core Command Infrastructure
 
 **Objective:** Establish base /debug command with YAML configuration, hypothesis framework, and investigation logging system
 
+**Tasks:**
 - [ ] 1.1 Create base command YAML at `.claude/commands/debug.md`
-  - Set model to `claude-sonnet-4-5` (default)
+  - Set model to `sonnet` (default for most sub-commands)
   - Configure allowed-tools: `Read`, `Grep`, `Glob`, `Bash`
   - Define category as "Analysis & Quality"
   - Set permission_mode to interactive (requires user confirmation for fixes)
@@ -34,14 +53,16 @@
   - Initialize investigation timeline tracker
   - Set up hypothesis testing workflow
 - [ ] 1.4 Create output directory structure:
-  - `docs/plan-outputs/implement-debug-command/` base directory
+  - `docs/plan-outputs/debug-command/` base directory
   - Subdirectories: `artifacts/`, `sessions/`, `findings/`, `verification/`
   - Initialize `status.json` tracking file
 - [ ] 1.5 Implement hypothesis generation framework:
   - Create hypothesis ranking algorithm (evidence-based probability)
   - Build hypothesis template with: description, supporting evidence, testing approach, files to examine, expected findings
   - Add hypothesis testing result tracker (✓ Confirmed | ✗ Eliminated | ⊙ Partial)
-- [ ] **VERIFY 1:** Base /debug command generates session ID, accepts problem description, produces initial hypothesis list with rankings
+
+**VERIFY Phase 1:**
+- [ ] Base /debug command generates session ID, accepts problem description, produces initial hypothesis list with rankings
 
 ---
 
@@ -49,6 +70,7 @@
 
 **Objective:** Build systematic investigation tools with chronological logging and evidence tracking
 
+**Tasks:**
 - [ ] 2.1 Implement investigation timeline logger:
   - Create timestamped entry system ([HH:MM] format)
   - Build hypothesis testing tracker (hypothesis → actions → findings → result)
@@ -74,7 +96,9 @@
   - Exhausted hypotheses handler (generate new hypotheses if needed)
   - Time limit enforcement (with graceful summary)
   - Partial findings reporter (if investigation incomplete)
-- [ ] **VERIFY 2:** Investigation engine systematically tests hypotheses, logs findings chronologically, and terminates appropriately
+
+**VERIFY Phase 2:**
+- [ ] Investigation engine systematically tests hypotheses, logs findings chronologically, and terminates appropriately
 
 ---
 
@@ -83,8 +107,10 @@
 **Objective:** Implement critical P0 sub-commands: debug:error, debug:performance, debug:behavior
 
 ### 3.1 debug:error - Error & Exception Analysis
+
+**Tasks:**
 - [ ] 3.1.1 Create `debug:error` command file at `.claude/commands/debug-error.md`
-  - YAML: model: claude-sonnet-4-5, interactive: true
+  - YAML: model: sonnet, interactive: true
   - argument-hint: [error-message-or-stack-trace]
   - outputs: debug-log.md, root-cause.md, fix-suggestion.md
 - [ ] 3.1.2 Implement stack trace parser:
@@ -112,8 +138,10 @@
   - Configuration corrections
 
 ### 3.2 debug:performance - Performance Debugging
+
+**Tasks:**
 - [ ] 3.2.1 Create `debug:performance` command file
-  - YAML: model: claude-sonnet-4-5, interactive: true
+  - YAML: model: sonnet, interactive: true
   - argument-hint: [performance-issue-description]
   - outputs: debug-log.md, performance-analysis.md, optimization-plan.md
 - [ ] 3.2.2 Implement performance analysis tools:
@@ -141,8 +169,10 @@
   - Code examples for each optimization
 
 ### 3.3 debug:behavior - Unexpected Behavior
+
+**Tasks:**
 - [ ] 3.3.1 Create `debug:behavior` command file
-  - YAML: model: claude-sonnet-4-5, interactive: true
+  - YAML: model: sonnet, interactive: true
   - argument-hint: [expected-behavior] [actual-behavior]
   - outputs: debug-log.md, hypothesis.md, behavior-analysis.md, fix-suggestion.md
 - [ ] 3.3.2 Implement behavior analysis framework:
@@ -169,7 +199,8 @@
   - Edge case handling
   - Timing/async fixes
 
-- [ ] **VERIFY 3:** All P0 sub-commands (error, performance, behavior) generate appropriate hypotheses, conduct systematic investigation, and produce actionable fixes
+**VERIFY Phase 3:**
+- [ ] All P0 sub-commands (error, performance, behavior) generate appropriate hypotheses, conduct systematic investigation, and produce actionable fixes
 
 ---
 
@@ -178,8 +209,10 @@
 **Objective:** Implement P1 sub-commands: debug:test, debug:memory, debug:network, debug:concurrency
 
 ### 4.1 debug:test - Test Failure Debugging
+
+**Tasks:**
 - [ ] 4.1.1 Create `debug:test` command file
-  - YAML: model: claude-sonnet-4-5, interactive: true
+  - YAML: model: sonnet, interactive: true
   - argument-hint: [test-name-or-failure-output]
   - outputs: debug-log.md, test-analysis.md, fix-suggestion.md
 - [ ] 4.1.2 Implement test failure classifier:
@@ -206,8 +239,10 @@
   - Flakiness elimination strategies
 
 ### 4.2 debug:memory - Memory Debugging
+
+**Tasks:**
 - [ ] 4.2.1 Create `debug:memory` command file
-  - YAML: model: claude-opus-4-5 (complex object lifecycle reasoning)
+  - YAML: model: opus (complex object lifecycle reasoning requires advanced reasoning)
   - argument-hint: [memory-issue-description]
   - outputs: debug-log.md, memory-analysis.md, leak-report.md, fix-suggestion.md
 - [ ] 4.2.2 Implement memory leak pattern detectors:
@@ -234,8 +269,10 @@
   - Resource pooling recommendations
 
 ### 4.3 debug:network - Network/API Debugging
+
+**Tasks:**
 - [ ] 4.3.1 Create `debug:network` command file
-  - YAML: model: claude-sonnet-4-5, interactive: true
+  - YAML: model: sonnet, interactive: true
   - argument-hint: [network-issue-description]
   - outputs: debug-log.md, network-analysis.md, fix-suggestion.md
 - [ ] 4.3.2 Implement network issue classifier:
@@ -262,8 +299,10 @@
   - API contract alignment
 
 ### 4.4 debug:concurrency - Race Condition Debugging
+
+**Tasks:**
 - [ ] 4.4.1 Create `debug:concurrency` command file
-  - YAML: model: claude-opus-4-5 (complex thread interaction analysis)
+  - YAML: model: opus (complex thread interaction analysis requires advanced reasoning)
   - argument-hint: [concurrency-issue-description]
   - outputs: debug-log.md, concurrency-analysis.md, fix-suggestion.md
 - [ ] 4.4.2 Implement concurrency issue classifier:
@@ -288,7 +327,8 @@
   - Thread-safe data structure recommendations
   - Deadlock prevention strategies
 
-- [ ] **VERIFY 4:** All P1 sub-commands (test, memory, network, concurrency) handle complex scenarios, use appropriate models (Opus for memory/concurrency), and generate specialized analyses
+**VERIFY Phase 4:**
+- [ ] All P1 sub-commands (test, memory, network, concurrency) handle complex scenarios, use appropriate models (Opus for memory/concurrency), and generate specialized analyses
 
 ---
 
@@ -297,8 +337,10 @@
 **Objective:** Implement P2 sub-command: debug:data
 
 ### 5.1 debug:data - Data Corruption Debugging
+
+**Tasks:**
 - [ ] 5.1.1 Create `debug:data` command file
-  - YAML: model: claude-sonnet-4-5, interactive: true
+  - YAML: model: sonnet, interactive: true
   - argument-hint: [data-corruption-description]
   - outputs: debug-log.md, data-analysis.md, fix-suggestion.md
 - [ ] 5.1.2 Implement data corruption detector:
@@ -325,7 +367,8 @@
   - Encoding handling improvements
   - Transaction isolation recommendations
 
-- [ ] **VERIFY 5:** debug:data sub-command identifies data corruption sources, traces data flow, and provides data integrity fixes
+**VERIFY Phase 5:**
+- [ ] debug:data sub-command identifies data corruption sources, traces data flow, and provides data integrity fixes
 
 ---
 
@@ -334,8 +377,10 @@
 **Objective:** Implement all 4 artifact types with validated schemas and consistent formatting
 
 ### 6.1 debug-log.md Artifact
+
+**Tasks:**
 - [ ] 6.1.1 Create debug-log.md template with YAML frontmatter:
-  - artifact-type: debug-log
+  - artifact_type: debug-log
   - session-id: [unique-id]
   - command: [debug:error | debug:performance | etc.]
   - timestamp: [ISO-8601]
@@ -358,8 +403,10 @@
   - Key findings summary
 
 ### 6.2 hypothesis.md Artifact
+
+**Tasks:**
 - [ ] 6.2.1 Create hypothesis.md template with YAML frontmatter:
-  - artifact-type: hypothesis
+  - artifact_type: hypothesis
   - hypothesis-count: [number]
   - session-id: [unique-id]
 - [ ] 6.2.2 Implement hypothesis ranking system:
@@ -382,8 +429,10 @@
   - Partial (contributes but not root cause)
 
 ### 6.3 root-cause.md Artifact
+
+**Tasks:**
 - [ ] 6.3.1 Create root-cause.md template with YAML frontmatter:
-  - artifact-type: root-cause
+  - artifact_type: root-cause
   - severity: [critical | high | medium | low]
   - confirmed: [yes | no | partial]
   - session-id: [unique-id]
@@ -404,8 +453,10 @@
   - Low: Minor issue, cosmetic problem
 
 ### 6.4 fix-suggestion.md Artifact
+
+**Tasks:**
 - [ ] 6.4.1 Create fix-suggestion.md template with YAML frontmatter:
-  - artifact-type: fix-suggestion
+  - artifact_type: fix-suggestion
   - confidence: [high | medium | low]
   - risk-level: [low | medium | high]
   - session-id: [unique-id]
@@ -430,6 +481,8 @@
   - Testing requirements
 
 ### 6.5 Specialized Artifacts
+
+**Tasks:**
 - [ ] 6.5.1 Implement performance-analysis.md (for debug:performance):
   - Bottleneck identification section
   - Current vs target metrics
@@ -476,7 +529,8 @@
   - Schema comparison
   - Validation failures
 
-- [ ] **VERIFY 6:** All artifacts validate against schemas, contain complete information, and follow consistent formatting
+**VERIFY Phase 6:**
+- [ ] All artifacts validate against schemas, contain complete information, and follow consistent formatting
 
 ---
 
@@ -484,6 +538,7 @@
 
 **Objective:** Enable seamless workflow from debugging to automated fixing
 
+**Tasks:**
 - [ ] 7.1 Design /debug → /fix workflow:
   - debug generates fix-suggestion.md artifact
   - /fix command can consume fix-suggestion.md
@@ -513,7 +568,8 @@
   - Include decision tree (when to auto-fix vs manual review)
   - Add troubleshooting for workflow issues
 
-- [ ] **VERIFY 7:** /debug artifacts successfully consumed by /fix command, workflow produces working fixes with proper verification
+**VERIFY Phase 7:**
+- [ ] /debug artifacts successfully consumed by /fix command, workflow produces working fixes with proper verification
 
 ---
 
@@ -522,6 +578,8 @@
 **Objective:** Comprehensive testing across all sub-commands and debugging scenarios
 
 ### 8.1 Unit Testing
+
+**Tasks:**
 - [ ] 8.1.1 Test hypothesis generation for each sub-command
 - [ ] 8.1.2 Test investigation timeline logging
 - [ ] 8.1.3 Test root cause identification logic
@@ -530,6 +588,8 @@
 - [ ] 8.1.6 Test session management (ID generation, context preservation)
 
 ### 8.2 Sub-Command Testing
+
+**Tasks:**
 - [ ] 8.2.1 Test debug:error with various error types:
   - JavaScript TypeError, ReferenceError, SyntaxError
   - Python exceptions (ValueError, AttributeError, KeyError)
@@ -572,6 +632,8 @@
   - Truncation/overflow
 
 ### 8.3 Integration Testing
+
+**Tasks:**
 - [ ] 8.3.1 Test complete debugging workflow (problem → hypotheses → investigation → root cause → fix)
 - [ ] 8.3.2 Test /debug → /fix integration
 - [ ] 8.3.3 Test artifact generation and consumption
@@ -579,6 +641,8 @@
 - [ ] 8.3.5 Test interactive mode (user confirmation for invasive debugging steps)
 
 ### 8.4 Cross-Language Testing
+
+**Tasks:**
 - [ ] 8.4.1 Test debugging TypeScript/JavaScript projects
 - [ ] 8.4.2 Test debugging Python projects
 - [ ] 8.4.3 Test debugging Java projects
@@ -586,6 +650,8 @@
 - [ ] 8.4.5 Test debugging multi-language projects
 
 ### 8.5 Edge Case Testing
+
+**Tasks:**
 - [ ] 8.5.1 Test with incomplete error information
 - [ ] 8.5.2 Test with intermittent issues (cannot reproduce)
 - [ ] 8.5.3 Test with multiple potential root causes
@@ -593,7 +659,8 @@
 - [ ] 8.5.5 Test with very large stack traces (>1000 lines)
 - [ ] 8.5.6 Test with obfuscated/minified code
 
-- [ ] **VERIFY 8:** All test cases pass, command handles edge cases gracefully, artifacts are accurate and complete
+**VERIFY Phase 8:**
+- [ ] All test cases pass, command handles edge cases gracefully, artifacts are accurate and complete
 
 ---
 
@@ -601,6 +668,7 @@
 
 **Objective:** Create comprehensive documentation and refine user experience
 
+**Tasks:**
 - [ ] 9.1 Create command documentation:
   - Overview of debugging philosophy (hypothesis-driven)
   - Usage examples for each sub-command
@@ -647,7 +715,8 @@
   - Practice scenarios with solutions
   - Self-assessment checklist
 
-- [ ] **VERIFY 9:** Documentation is comprehensive, examples are accurate and helpful, user experience is polished and intuitive
+**VERIFY Phase 9:**
+- [ ] Documentation is comprehensive, examples are accurate and helpful, user experience is polished and intuitive
 
 ---
 
@@ -664,8 +733,8 @@
 - [ ] Artifacts validate against defined schemas
 
 ### Model Requirements
-- [ ] Sonnet 4.5 used for: debug:error, debug:performance, debug:behavior, debug:test, debug:network, debug:data
-- [ ] Opus 4.5 used for: debug:memory (object lifecycle reasoning), debug:concurrency (thread interaction analysis)
+- [ ] sonnet used for: debug:error, debug:performance, debug:behavior, debug:test, debug:network, debug:data (standard debugging tasks)
+- [ ] opus used for: debug:memory (object lifecycle reasoning), debug:concurrency (thread interaction analysis - complex reasoning required)
 - [ ] Model selection automatic based on sub-command
 - [ ] Complex scenarios trigger appropriate model upgrade
 
@@ -703,3 +772,17 @@
 - [ ] Artifact schemas fully documented with examples
 - [ ] Troubleshooting guide addresses common issues
 - [ ] Example debugging sessions demonstrate workflows
+
+---
+
+## Risks
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Incorrect root cause identification | High | Medium | Use hypothesis ranking, require evidence confirmation |
+| Fix suggestions introduce new bugs | High | Medium | Include risk assessment, require testing strategy |
+| Investigation times out before completion | Medium | Medium | Implement graceful termination, save partial findings |
+| Intermittent issues cannot be reproduced | Medium | High | Add state analysis, track timing conditions |
+| Memory/concurrency debugging complexity | High | Medium | Use Opus model, implement specialized analysis tools |
+| Hypothesis generation misses root cause | Medium | Medium | Allow hypothesis regeneration, support user input |
+| Investigation alters system state | Medium | Low | Use read-only tools by default, require confirmation for changes |

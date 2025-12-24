@@ -4,11 +4,41 @@
 - **Goal:** Implement the /audit command with 8 sub-commands for comprehensive compliance, security, and quality auditing
 - **Priority:** P1 (Analysis & Quality phase)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-audit-command/`
-- **Model:** Claude Sonnet 4.5 (security analysis, compliance verification)
+- **Output:** `docs/plan-outputs/audit-command/`
+- **Model:** sonnet (security analysis and compliance verification)
 - **Category:** Analysis & Quality
 
 > The /audit command suite provides comprehensive compliance, security, and quality auditing capabilities. It enables systematic verification of security posture, regulatory compliance, access controls, credential management, and license obligations with evidence-based findings and framework-aligned reporting.
+
+## Dependencies
+
+### Upstream
+- `/analyze` - Provides security and quality analysis as audit input
+- `/explore` - Uses codebase structure for audit scoping
+- Compliance frameworks (OWASP, SOC2, GDPR, HIPAA, PCI-DSS, ISO27001)
+
+### Downstream
+- `/fix` - Generates remediation for audit findings
+- `/validate` - Uses audit results for compliance validation
+- CI/CD pipelines - Quality gate enforcement
+
+### External Tools
+- CVE/NVD databases - Vulnerability references
+- License databases - SPDX license identification
+- Secret scanning tools (trufflehog patterns)
+- SBOM generators (CycloneDX, SPDX)
+
+---
+
+## Risks
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Compliance framework complexity | High - Incomplete audits | Medium | Focus on core controls, allow framework customization |
+| Secrets detection false positives | Medium - Alert fatigue | Medium | Implement entropy thresholds, allow whitelisting |
+| Outdated CVE data | High - Missed vulnerabilities | Low | Use multiple data sources, version dependencies |
+| License compliance ambiguity | Medium - Legal uncertainty | Medium | Flag ambiguous licenses for legal review |
+| Audit scope creep | Medium - Timeouts | Medium | Clear scoping parameters, incremental audits |
 
 ---
 
@@ -16,12 +46,13 @@
 
 **Objective:** Establish base /audit command with YAML configuration and core prompt structure
 
+**Tasks:**
 - [ ] 1.1 Create `/audit` command file at `.claude/commands/audit.md`
 - [ ] 1.2 Add YAML frontmatter with configuration:
   - name: audit
   - description: Comprehensive compliance, security, and quality auditing with evidence-based findings and remediation guidance
   - category: analysis-quality
-  - model: claude-sonnet-4-5
+  - model: sonnet
   - allowed-tools: Read, Glob, Grep, Bash
   - argument-hint: [audit-type | --full]
 - [ ] 1.3 Write base command prompt with sections:
@@ -36,7 +67,8 @@
   - severity-threshold: critical | high | medium | low | info
 - [ ] 1.5 Create output directory structure: `docs/audits/`
 
-**VERIFY 1:** Base /audit command runs successfully, analyzes codebase, and produces structured findings
+**VERIFY Phase 1:**
+- [ ] Base /audit command runs successfully, analyzes codebase, and produces structured findings
 
 ---
 
@@ -44,6 +76,7 @@
 
 **Objective:** Implement systematic audit workflow with evidence collection
 
+**Tasks:**
 - [ ] 2.1 Implement Audit Parameters phase:
   - Use AskUserQuestion to gather audit type, scope, framework
   - Identify compliance requirements
@@ -68,7 +101,8 @@
   - Identify quick wins vs complex fixes
   - Estimate remediation effort
 
-**VERIFY 2:** Audit workflow produces comprehensive, evidence-based findings
+**VERIFY Phase 2:**
+- [ ] Audit workflow produces comprehensive, evidence-based findings
 
 ---
 
@@ -77,8 +111,10 @@
 **Objective:** Create security-focused audit sub-commands
 
 ### 3.1 Security Audit Sub-Command
+
+**Tasks:**
 - [ ] 3.1.1 Create `/audit:security` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <scope | --owasp | --cwe>
+  - YAML: model: sonnet, argument-hint: <scope | --owasp | --cwe>
 - [ ] 3.1.2 Implement OWASP Top 10 checks:
   - A01: Broken Access Control
   - A02: Cryptographic Failures
@@ -103,8 +139,10 @@
   - `security-remediation-plan.md` (prioritized fixes)
 
 ### 3.2 Secrets Audit Sub-Command
+
+**Tasks:**
 - [ ] 3.2.1 Create `/audit:secrets` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <path | --all>
+  - YAML: model: sonnet, argument-hint: <path | --all>
 - [ ] 3.2.2 Implement secret detection:
   - AWS credentials (AKIA*, access keys)
   - Azure credentials (subscription keys, connection strings)
@@ -125,8 +163,10 @@
   - `secret-remediation.md`
 
 ### 3.3 Dependencies Audit Sub-Command
+
+**Tasks:**
 - [ ] 3.3.1 Create `/audit:dependencies` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <package-manager | --all>
+  - YAML: model: sonnet, argument-hint: <package-manager | --all>
 - [ ] 3.3.2 Implement vulnerability scanning:
   - Parse package.json, package-lock.json
   - Parse requirements.txt, Pipfile.lock
@@ -143,7 +183,8 @@
   - `dependency-health.md`
   - `update-plan.md`
 
-**VERIFY 3:** Security audit sub-commands detect vulnerabilities with evidence
+**VERIFY Phase 3:**
+- [ ] Security audit sub-commands detect vulnerabilities with evidence
 
 ---
 
@@ -152,8 +193,10 @@
 **Objective:** Create compliance-focused audit sub-commands
 
 ### 4.1 Compliance Audit Sub-Command
+
+**Tasks:**
 - [ ] 4.1.1 Create `/audit:compliance` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <framework: soc2|gdpr|hipaa|pci-dss|iso27001>
+  - YAML: model: sonnet, argument-hint: <framework: soc2|gdpr|hipaa|pci-dss|iso27001>
 - [ ] 4.1.2 Implement SOC2 Type II checks:
   - CC1: Control Environment
   - CC2: Communication and Information
@@ -188,8 +231,10 @@
   - `compliance-gaps.md`
 
 ### 4.2 Access Control Audit Sub-Command
+
+**Tasks:**
 - [ ] 4.2.1 Create `/audit:access` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <--rbac | --abac | --all>
+  - YAML: model: sonnet, argument-hint: <--rbac | --abac | --all>
 - [ ] 4.2.2 Implement access control analysis:
   - RBAC policy review
   - ABAC attribute mapping
@@ -207,8 +252,10 @@
   - `access-remediation.md`
 
 ### 4.3 Privacy Audit Sub-Command
+
+**Tasks:**
 - [ ] 4.3.1 Create `/audit:privacy` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <--pii | --phi | --all>
+  - YAML: model: sonnet, argument-hint: <--pii | --phi | --all>
 - [ ] 4.3.2 Implement PII/PHI detection:
   - Personal identifiers (name, email, SSN)
   - Health information (PHI)
@@ -227,7 +274,8 @@
   - `privacy-controls.md`
   - `data-flow-map.md`
 
-**VERIFY 4:** Compliance audit sub-commands verify framework adherence with evidence
+**VERIFY Phase 4:**
+- [ ] Compliance audit sub-commands verify framework adherence with evidence
 
 ---
 
@@ -236,8 +284,10 @@
 **Objective:** Create infrastructure-focused audit sub-commands
 
 ### 5.1 Infrastructure Audit Sub-Command
+
+**Tasks:**
 - [ ] 5.1.1 Create `/audit:infrastructure` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <--iac | --containers | --cloud>
+  - YAML: model: sonnet, argument-hint: <--iac | --containers | --cloud>
 - [ ] 5.1.2 Implement IaC security scanning:
   - Terraform misconfigurations
   - CloudFormation vulnerabilities
@@ -260,8 +310,10 @@
   - `infrastructure-remediation.md`
 
 ### 5.2 License Audit Sub-Command
+
+**Tasks:**
 - [ ] 5.2.1 Create `/audit:licenses` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <--sbom | --attribution>
+  - YAML: model: sonnet, argument-hint: <--sbom | --attribution>
 - [ ] 5.2.2 Implement license detection:
   - Direct dependency licenses
   - Transitive dependency licenses
@@ -279,7 +331,8 @@
   - `attribution.md`
   - `sbom.json` (SPDX/CycloneDX format)
 
-**VERIFY 5:** Infrastructure audit sub-commands assess IaC, containers, and licenses
+**VERIFY Phase 5:**
+- [ ] Infrastructure audit sub-commands assess IaC, containers, and licenses
 
 ---
 
@@ -288,9 +341,11 @@
 **Objective:** Implement structured artifact generation with quality validation
 
 ### 6.1 Report Artifacts
+
+**Tasks:**
 - [ ] 6.1.1 Implement security-audit-report.md schema:
   - YAML frontmatter:
-    - artifact-type: security-audit-report
+    - artifact_type: security-audit-report
     - command: audit:security
     - timestamp: ISO-8601
     - status: passed | failed | warnings
@@ -308,20 +363,24 @@
   - Remediation with code examples
 
 ### 6.2 Severity Standards
+
+**Tasks:**
 - [ ] 6.2.1 Implement severity classification:
-  - Critical: Immediate security/functionality risk, block merge/deploy
-  - High: Significant issue, fix in current sprint
-  - Medium: Notable issue, plan for next sprint
-  - Low: Minor issue, backlog
-  - Info: Suggestion, optional enhancement
+  - critical: Immediate security/functionality risk, block merge/deploy
+  - high: Significant issue, fix in current sprint
+  - medium: Notable issue, plan for next sprint
+  - low: Minor issue, backlog
+  - info: Suggestion, optional enhancement
 - [ ] 6.2.2 Implement CVSS scoring:
   - Attack vector (Network, Adjacent, Local, Physical)
-  - Attack complexity (Low, High)
-  - Privileges required (None, Low, High)
+  - Attack complexity (low, high)
+  - Privileges required (none, low, high)
   - User interaction (None, Required)
   - Impact (Confidentiality, Integrity, Availability)
 
 ### 6.3 Evidence Standards
+
+**Tasks:**
 - [ ] 6.3.1 Require evidence for all findings:
   - File path and line numbers
   - Code snippets showing vulnerability
@@ -332,7 +391,8 @@
   - Reference specific control requirements
   - Include version information
 
-**VERIFY 6:** Artifacts meet quality standards with proper evidence and severity
+**VERIFY Phase 6:**
+- [ ] Artifacts meet quality standards with proper evidence and severity
 
 ---
 
@@ -341,6 +401,8 @@
 **Objective:** Provide actionable remediation for all findings
 
 ### 7.1 Remediation Plan Generation
+
+**Tasks:**
 - [ ] 7.1.1 Implement prioritized remediation:
   - Order by severity and exploitability
   - Group related findings
@@ -357,6 +419,8 @@
   - Training recommendations
 
 ### 7.2 Automated Fix Suggestions
+
+**Tasks:**
 - [ ] 7.2.1 Integrate with /fix command:
   - Generate fix tasks from findings
   - Provide /fix invocation commands
@@ -366,7 +430,8 @@
   - Provide batch fix scripts
   - Validate fixes don't introduce regressions
 
-**VERIFY 7:** Remediation guidance is actionable and includes code examples
+**VERIFY Phase 7:**
+- [ ] Remediation guidance is actionable and includes code examples
 
 ---
 
@@ -375,6 +440,8 @@
 **Objective:** Support recurring audits and CI/CD integration
 
 ### 8.1 Recommended Cadence
+
+**Tasks:**
 - [ ] 8.1.1 Document audit frequency:
   - audit:security: Quarterly + pre-release
   - audit:compliance: Annually + pre-certification
@@ -388,6 +455,8 @@
   - Pre-deployment
 
 ### 8.2 CI/CD Integration
+
+**Tasks:**
 - [ ] 8.2.1 Generate CI/CD snippets:
   - GitHub Actions workflow
   - GitLab CI configuration
@@ -401,7 +470,8 @@
   - JUnit XML for CI systems
   - JSON for custom integrations
 
-**VERIFY 8:** Audit can run in CI/CD with appropriate quality gates
+**VERIFY Phase 8:**
+- [ ] Audit can run in CI/CD with appropriate quality gates
 
 ---
 
@@ -410,6 +480,8 @@
 **Objective:** Comprehensive testing of audit accuracy and coverage
 
 ### 9.1 Sub-Command Testing
+
+**Tasks:**
 - [ ] 9.1.1 Test /audit:security:
   - Test with known vulnerable code patterns
   - Verify OWASP Top 10 detection
@@ -424,23 +496,30 @@
   - Check detection rate
 
 ### 9.2 Accuracy Testing
+
+**Tasks:**
 - [ ] 9.2.1 Test false positive rate (target <10%)
 - [ ] 9.2.2 Test false negative rate (target <5% for critical)
 - [ ] 9.2.3 Verify severity classifications
 - [ ] 9.2.4 Validate remediation accuracy
 
 ### 9.3 Coverage Testing
+
+**Tasks:**
 - [ ] 9.3.1 Test framework coverage (OWASP, SOC2, etc.)
 - [ ] 9.3.2 Test language coverage (JS, TS, Python, Go)
 - [ ] 9.3.3 Test IaC coverage (Terraform, K8s, Docker)
 
 ### 9.4 Edge Cases
+
+**Tasks:**
 - [ ] 9.4.1 Test with clean codebase (no findings)
 - [ ] 9.4.2 Test with heavily vulnerable codebase
 - [ ] 9.4.3 Test with mixed language project
 - [ ] 9.4.4 Test with large monorepo
 
-**VERIFY 9:** All test cases pass, audit accuracy meets targets
+**VERIFY Phase 9:**
+- [ ] All test cases pass, audit accuracy meets targets
 
 ---
 
@@ -448,6 +527,7 @@
 
 **Objective:** Create comprehensive documentation and refine user experience
 
+**Tasks:**
 - [ ] 10.1 Create command documentation:
   - Usage examples for each sub-command
   - Framework selection guidance
@@ -477,7 +557,8 @@
   - Example compliance checklist
   - Example SBOM
 
-**VERIFY 10:** Documentation is complete, clear, and helpful; output quality is polished
+**VERIFY Phase 10:**
+- [ ] Documentation is complete, clear, and helpful; output quality is polished
 
 ---
 

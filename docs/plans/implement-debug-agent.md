@@ -1,14 +1,30 @@
 # Implementation Plan: Debug Agent
 
 ## Overview
-- **Goal:** Implement a custom Debug Agent with hypothesis-driven debugging methodology, specialized tool configuration (includes Write and AskUser), and intelligent model selection (Sonnet default, Opus for complex cases)
-- **Priority:** P0 (CRITICAL - Analysis & Quality phase)
+
+- **Goal:** Implement a custom Debug Agent with hypothesis-driven debugging methodology, specialized tool configuration (includes Write and AskUser), and intelligent model selection (sonnet default, opus for complex cases)
+- **Priority:** P0 (Critical - Analysis & Quality phase)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-debug-agent/`
-- **Model:** Sonnet 4.5 (default), Opus 4.5 (memory/concurrency debugging)
+- **Output:** `docs/plan-outputs/debug-agent/`
+- **Model:** sonnet (default), opus (memory/concurrency debugging)
 - **Category:** Analysis & Quality
 
 > The Debug Agent provides systematic, hypothesis-driven debugging capabilities with specialized tool access including interactive debugging (AskUser) and fix application (Write). Supports integration with /debug command for error analysis, performance optimization, memory leaks, concurrency issues, and more. Generates structured debug artifacts for root cause documentation and reproducible investigations.
+
+---
+
+## Dependencies
+
+### Upstream
+- Analyze Agent (can consume analysis findings to guide debugging)
+- Explore Agent (uses codebase context for investigation)
+
+### Downstream
+- `/fix` command (consumes fix-suggestion.md for auto-fix)
+- `/test` command (uses testing strategy from fix-suggestion.md)
+
+### External Tools
+- None (uses Claude's built-in capabilities)
 
 ---
 
@@ -28,7 +44,7 @@
 - [ ] 1.3 Configure YAML frontmatter:
   - name: debug
   - description: "Hypothesis-driven systematic debugging with root cause analysis"
-  - model: claude-sonnet-4-5 (default)
+  - model: sonnet (default, use opus for memory/concurrency debugging)
   - category: "Analysis & Quality"
   - permission_mode: interactive (requires user confirmation for fixes)
   - proactive: true (auto-invoked on debugging task patterns)
@@ -51,7 +67,10 @@
   - `docs/debug/sessions/` for session-specific logs
   - `docs/debug/root-causes/` for root cause analyses
   - `docs/debug/fixes/` for fix suggestions
-- [ ] **VERIFY 1:** Agent configuration file is valid YAML, tools are correctly restricted, model upgrade logic is defined
+**VERIFY Phase 1:**
+- [ ] Agent configuration file is valid YAML
+- [ ] Tools are correctly restricted
+- [ ] Model upgrade logic is defined
 
 ---
 
@@ -97,7 +116,10 @@
   - Request additional context when symptoms are unclear
   - Confirm fix approach before applying (if Write is used)
   - Ask for reproduction steps if issue is not reproducible
-- [ ] **VERIFY 2:** System prompt clearly defines methodology, provides actionable guidance, supports interactive workflow
+**VERIFY Phase 2:**
+- [ ] System prompt clearly defines methodology
+- [ ] Provides actionable guidance
+- [ ] Supports interactive workflow
 
 ---
 
@@ -137,7 +159,10 @@
   - hypotheses_tested: Number of hypotheses tested
   - root_cause_found: boolean
   - fix_applied: boolean
-- [ ] **VERIFY 3:** Session management creates unique IDs, preserves context, tracks investigation progress chronologically
+**VERIFY Phase 3:**
+- [ ] Session management creates unique IDs
+- [ ] Context is preserved
+- [ ] Investigation progress tracked chronologically
 
 ---
 
@@ -186,7 +211,10 @@
   - Support for multiple hypotheses in single document
   - Status tracking (pending → testing → confirmed/eliminated)
   - Cross-reference to debug-log.md timeline
-- [ ] **VERIFY 4:** Hypothesis generator creates 3-5 ranked hypotheses, includes testing approaches, maps evidence correctly
+**VERIFY Phase 4:**
+- [ ] Hypothesis generator creates 3-5 ranked hypotheses
+- [ ] Includes testing approaches
+- [ ] Maps evidence correctly
 
 ---
 
@@ -196,7 +224,7 @@
 
 ### 5.1 Debug Log Artifact (debug-log.md)
 - [ ] 5.1.1 Create debug-log.md template with YAML frontmatter:
-  - artifact-type: debug-log
+  - artifact_type: debug-log
   - session-id: {unique-id}
   - command: {debug:error | debug:performance | etc.}
   - timestamp: {ISO-8601}
@@ -220,7 +248,7 @@
 
 ### 5.2 Root Cause Artifact (root-cause.md)
 - [ ] 5.2.1 Create root-cause.md template with YAML frontmatter:
-  - artifact-type: root-cause
+  - artifact_type: root-cause
   - severity: {critical | high | medium | low}
   - confirmed: {yes | no | partial}
   - session-id: {unique-id}
@@ -243,7 +271,7 @@
 
 ### 5.3 Fix Suggestion Artifact (fix-suggestion.md)
 - [ ] 5.3.1 Create fix-suggestion.md template with YAML frontmatter:
-  - artifact-type: fix-suggestion
+  - artifact_type: fix-suggestion
   - confidence: {high | medium | low}
   - risk-level: {low | medium | high}
   - session-id: {unique-id}
@@ -270,7 +298,7 @@
 
 ### 5.4 Hypothesis Artifact (hypothesis.md)
 - [ ] 5.4.1 Create hypothesis.md template with YAML frontmatter:
-  - artifact-type: hypothesis
+  - artifact_type: hypothesis
   - hypothesis-count: {number}
   - session-id: {unique-id}
   - highest_probability: {hypothesis-id}
@@ -294,7 +322,12 @@
   - Eliminated: Ruled out
   - Partial: Contributes but not root cause
 
-- [ ] **VERIFY 5:** All four artifacts (debug-log.md, root-cause.md, fix-suggestion.md, hypothesis.md) generate correctly with valid YAML and complete information
+**VERIFY Phase 5:**
+- [ ] All four artifacts generate correctly with valid YAML
+- [ ] debug-log.md contains complete investigation timeline
+- [ ] root-cause.md has supporting evidence
+- [ ] fix-suggestion.md includes risk assessment
+- [ ] hypothesis.md tracks all hypotheses with status
 
 ---
 
@@ -322,7 +355,10 @@
   - For Opus (memory): "Perform deep object lifecycle analysis, trace reference chains, identify garbage collection barriers"
   - For Opus (concurrency): "Analyze thread interactions, detect race conditions, identify lock acquisition patterns, check happens-before relationships"
   - For Sonnet (standard): "Systematic hypothesis testing, evidence-based debugging, root cause identification"
-- [ ] **VERIFY 6:** Model selection correctly identifies memory/concurrency cases for Opus upgrade, defaults to Sonnet appropriately
+**VERIFY Phase 6:**
+- [ ] Model selection correctly identifies memory/concurrency cases for opus upgrade
+- [ ] Defaults to sonnet appropriately
+- [ ] Model upgrade is logged in artifacts
 
 ---
 
@@ -362,7 +398,10 @@
   - User provides stack traces in message
   - User asks "why is X happening?"
   - Suggest Debug Agent when appropriate (don't auto-invoke without confirmation)
-- [ ] **VERIFY 7:** Debug Agent integrates with all 8 /debug sub-commands, artifacts flow to downstream commands, proactive suggestions work
+**VERIFY Phase 7:**
+- [ ] Debug Agent integrates with all 8 /debug sub-commands
+- [ ] Artifacts flow to downstream commands
+- [ ] Proactive suggestions work
 
 ---
 
@@ -395,7 +434,10 @@
   - Standard mode: Test top 3 hypotheses
   - Deep mode: Test all hypotheses, generate new ones if needed
   - Allow user to control depth: "Continue deeper investigation or stop here?"
-- [ ] **VERIFY 8:** Interactive workflow requests user input at appropriate points, confirms actions, provides investigation control
+**VERIFY Phase 8:**
+- [ ] Interactive workflow requests user input at appropriate points
+- [ ] Confirms actions before applying fixes
+- [ ] Provides investigation control
 
 ---
 
@@ -465,7 +507,10 @@
 - [ ] 9.5.5 Test with very large stack traces (>1000 lines)
 - [ ] 9.5.6 Test when all hypotheses are eliminated (needs new hypotheses)
 
-- [ ] **VERIFY 9:** All test cases pass, Debug Agent handles edge cases gracefully, artifacts are accurate and actionable
+**VERIFY Phase 9:**
+- [ ] All test cases pass
+- [ ] Debug Agent handles edge cases gracefully
+- [ ] Artifacts are accurate and actionable
 
 ---
 
@@ -524,7 +569,10 @@
   - "Multiple root causes" → Prioritize by severity, fix highest impact first
   - "Agent stuck in investigation" → Timeout handling, graceful summary
 
-- [ ] **VERIFY 10:** Documentation is comprehensive and clear, examples are accurate and helpful, user experience is polished
+**VERIFY Phase 10:**
+- [ ] Documentation is comprehensive and clear
+- [ ] Examples are accurate and helpful
+- [ ] User experience is polished
 
 ---
 
@@ -541,9 +589,9 @@
 - [ ] All artifacts validate against defined schemas (YAML frontmatter is valid)
 
 ### Model Requirements
-- [ ] Sonnet 4.5 is default model for standard debugging scenarios
-- [ ] Opus 4.5 is used for memory debugging (object lifecycle analysis)
-- [ ] Opus 4.5 is used for concurrency debugging (thread interaction analysis)
+- [ ] sonnet is default model for standard debugging scenarios
+- [ ] opus is used for memory debugging (object lifecycle analysis)
+- [ ] opus is used for concurrency debugging (thread interaction analysis)
 - [ ] Model selection is automatic based on debugging scenario keywords
 - [ ] Model upgrade is logged in session metadata and debug artifacts
 
@@ -582,3 +630,25 @@
 - [ ] Best practices guide provides actionable advice
 - [ ] Example debugging sessions demonstrate common scenarios
 - [ ] Troubleshooting guide addresses common issues
+
+---
+
+## Risks
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Incorrect root cause identification | High | Medium | Require multiple evidence sources, hypothesis testing |
+| Fix suggestion breaks code | High | Low | Risk assessment, user confirmation before applying |
+| Exhaustive investigation takes too long | Medium | Medium | Implement depth limits and timeout handling |
+| Intermittent issues cannot be reproduced | Medium | High | Interactive debugging with user for reproduction steps |
+| Hypothesis generation misses true cause | Medium | Low | Allow new hypothesis generation after exhaustion |
+
+---
+
+## Notes
+
+- The Debug Agent has Write access specifically for applying fixes with user confirmation
+- AskUser tool enables interactive hypothesis validation with the user
+- Model upgrade to opus for memory/concurrency debugging enables deep reasoning
+- Session management supports resuming interrupted debugging
+- Artifacts should be comprehensive enough to reproduce the investigation

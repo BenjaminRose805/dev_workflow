@@ -4,24 +4,57 @@
 - **Goal:** Implement the /explain command with 7 sub-commands for intelligent code and concept explanation
 - **Priority:** P2 (Documentation & Knowledge Transfer)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-explain-command/`
-- **Model:** Claude Sonnet 4.5 (code analysis, knowledge synthesis)
+- **Output:** `docs/plan-outputs/explain-command/`
+- **Model:** sonnet (code analysis and knowledge synthesis)
 - **Category:** Implementation & Documentation
 
 > The /explain command provides intelligent code and concept explanation capabilities for onboarding, documentation, code review, and knowledge transfer. Unlike `plan:explain` which explains plan tasks, /explain focuses on explaining existing code, architecture patterns, design decisions, and technical concepts within a codebase.
 
 ---
 
+
+---
+
+## Dependencies
+
+### Upstream Dependencies
+- /architect command - Provides architecture.md and ADRs for decision context
+- Source code repository - Primary input for code analysis
+- Git - Required for diff explanations and history analysis
+
+### Downstream Dependencies
+- Onboarding documentation - Explanation artifacts used for training
+- /debug command - May use flow explanations for debugging context
+- /test command - May use code explanations for test planning
+
+### External Tools
+- Git - Required for diff and history analysis
+- Mermaid - Required for diagram generation in explanations
+
+---
+
+## Risks
+
+| Risk | Impact | Mitigation |
+|------|--------|------------|
+| Explanation inaccuracy | High | Cross-reference with tests, validate against actual code behavior |
+| Stale explanations | Medium | Include generated timestamp, link to source locations for verification |
+| Audience level mismatch | Medium | Clear audience selection prompts, adjustable depth levels |
+| Missing context discovery | Medium | Trace imports/exports, search for related tests and docs |
+| Over-simplification for seniors | Low | Provide depth options, focus on decisions and trade-offs for senior audience |
+| Under-explanation for juniors | Medium | Include more context, examples, and prerequisites for junior audience |
+| Pattern misidentification | Medium | Validate pattern detection with multiple examples, allow user correction |
 ## Phase 1: Core Command Setup
 
 **Objective:** Establish base /explain command with YAML configuration and core prompt structure
 
+**Tasks:**
 - [ ] 1.1 Create `/explain` command file at `.claude/commands/explain.md`
 - [ ] 1.2 Add YAML frontmatter with configuration:
   - name: explain
   - description: Intelligent code and concept explanation for onboarding, documentation, and knowledge transfer. Use when understanding existing code, not planning tasks.
   - category: documentation
-  - model: claude-sonnet-4-5
+  - model: sonnet
   - allowed-tools: Read, Grep, Glob, Write, Bash, AskUserQuestion
   - argument-hint: [file-path | concept | pattern]
 - [ ] 1.3 Write base command prompt with sections:
@@ -36,7 +69,8 @@
   - focus: architecture | implementation | usage | all
 - [ ] 1.5 Create output directory structure: `docs/explanations/`
 
-**VERIFY 1:** Base /explain command runs successfully, analyzes code, and produces structured explanations
+**VERIFY Phase 1:**
+- [ ] Base /explain command runs successfully, analyzes code, and produces structured explanations
 
 ---
 
@@ -44,6 +78,7 @@
 
 **Objective:** Implement systematic explanation workflow with code analysis
 
+**Tasks:**
 - [ ] 2.1 Implement Explanation Parameters phase:
   - Use AskUserQuestion to gather target, depth, audience
   - Auto-detect target type (file, function, class, module)
@@ -68,7 +103,8 @@
   - Senior: Focus on design decisions, trade-offs, nuances
   - External: API-focused, usage-oriented, less internals
 
-**VERIFY 2:** Explanation workflow produces comprehensive, audience-appropriate explanations
+**VERIFY Phase 2:**
+- [ ] Explanation workflow produces comprehensive, audience-appropriate explanations
 
 ---
 
@@ -77,8 +113,10 @@
 **Objective:** Create 2 P0 sub-commands for core explanation needs
 
 ### 3.1 Code Explanation Sub-Command
+
+**Tasks:**
 - [ ] 3.1.1 Create `/explain:code` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <file-path | symbol>
+  - YAML: model: sonnet, argument-hint: <file-path | symbol>
 - [ ] 3.1.2 Implement code explanation logic:
   - Parse target file/function/class
   - Identify purpose and responsibilities
@@ -98,8 +136,10 @@
   - Related Documentation
 
 ### 3.2 Architecture Explanation Sub-Command
+
+**Tasks:**
 - [ ] 3.2.1 Create `/explain:architecture` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <system | layer | component>
+  - YAML: model: sonnet, argument-hint: <system | layer | component>
 - [ ] 3.2.2 Implement architecture explanation:
   - Map system components and boundaries
   - Identify architectural patterns (MVC, hexagonal, microservices)
@@ -117,7 +157,8 @@
   - Design Decisions
   - Trade-offs & Constraints
 
-**VERIFY 3:** P0 sub-commands produce valid, educational explanations
+**VERIFY Phase 3:**
+- [ ] P0 sub-commands produce valid, educational explanations
 
 ---
 
@@ -126,8 +167,10 @@
 **Objective:** Create 3 P1 sub-commands for extended explanation needs
 
 ### 4.1 Pattern Explanation Sub-Command
+
+**Tasks:**
 - [ ] 4.1.1 Create `/explain:pattern` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <pattern-name | --discover>
+  - YAML: model: sonnet, argument-hint: <pattern-name | --discover>
 - [ ] 4.1.2 Implement pattern explanation:
   - Identify patterns in codebase
   - Explain pattern intent and structure
@@ -146,8 +189,10 @@
   - Related Patterns
 
 ### 4.2 Decision Explanation Sub-Command
+
+**Tasks:**
 - [ ] 4.2.1 Create `/explain:decision` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <topic | "why X">
+  - YAML: model: sonnet, argument-hint: <topic | "why X">
 - [ ] 4.2.2 Implement decision explanation:
   - Search for ADRs and design docs
   - Analyze Git history for context
@@ -165,8 +210,10 @@
   - Related Decisions/ADRs
 
 ### 4.3 Flow Explanation Sub-Command
+
+**Tasks:**
 - [ ] 4.3.1 Create `/explain:flow` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <feature | flow-name>
+  - YAML: model: sonnet, argument-hint: <feature | flow-name>
 - [ ] 4.3.2 Implement flow explanation:
   - Trace execution path through code
   - Map data transformations
@@ -184,7 +231,8 @@
   - Performance Characteristics
   - Edge Cases
 
-**VERIFY 4:** P1 sub-commands produce valid, detailed explanations
+**VERIFY Phase 4:**
+- [ ] P1 sub-commands produce valid, detailed explanations
 
 ---
 
@@ -193,8 +241,10 @@
 **Objective:** Create 2 P2 sub-commands for advanced explanation needs
 
 ### 5.1 API Explanation Sub-Command
+
+**Tasks:**
 - [ ] 5.1.1 Create `/explain:api` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <endpoint | module>
+  - YAML: model: sonnet, argument-hint: <endpoint | module>
 - [ ] 5.1.2 Implement API explanation:
   - Document API contracts and types
   - Explain authentication/authorization
@@ -212,8 +262,10 @@
   - Common Use Cases
 
 ### 5.2 Diff Explanation Sub-Command
+
+**Tasks:**
 - [ ] 5.2.1 Create `/explain:diff` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <commit | PR | branch>
+  - YAML: model: sonnet, argument-hint: <commit | PR | branch>
 - [ ] 5.2.2 Implement diff explanation:
   - Parse Git diff or PR changes
   - Summarize changes by category
@@ -231,7 +283,8 @@
   - Testing Recommendations
   - Review Considerations
 
-**VERIFY 5:** P2 sub-commands produce valid, contextual explanations
+**VERIFY Phase 5:**
+- [ ] P2 sub-commands produce valid, contextual explanations
 
 ---
 
@@ -240,6 +293,8 @@
 **Objective:** Implement structured artifact generation with quality validation
 
 ### 6.1 Primary Artifacts
+
+**Tasks:**
 - [ ] 6.1.1 Implement code-explanation.md artifact schema:
   - YAML frontmatter:
     - type: code-explanation
@@ -261,6 +316,8 @@
     - status: active | superseded
 
 ### 6.2 Quality Standards
+
+**Tasks:**
 - [ ] 6.2.1 Implement explanation principles:
   - Start with "Why" (motivation/purpose)
   - Explain "What" (responsibilities, boundaries)
@@ -276,6 +333,8 @@
   - Technical accuracy verified
 
 ### 6.3 Audience Adaptation
+
+**Tasks:**
 - [ ] 6.3.1 Implement audience-specific content:
   - Junior developers: More explanation, simpler terms
   - Senior developers: Focus on decisions, trade-offs
@@ -285,7 +344,8 @@
   - Standard: Full explanation with examples
   - Deep: Include edge cases, performance, history
 
-**VERIFY 6:** Artifacts meet quality standards and are audience-appropriate
+**VERIFY Phase 6:**
+- [ ] Artifacts meet quality standards and are audience-appropriate
 
 ---
 
@@ -294,6 +354,8 @@
 **Objective:** Ensure /explain integrates with other commands and workflows
 
 ### 7.1 Upstream Integration
+
+**Tasks:**
 - [ ] 7.1.1 Define artifact consumption:
   - Source code from repository
   - architecture.md from /architect
@@ -305,6 +367,8 @@
   - Identify consumers and dependencies
 
 ### 7.2 Downstream Integration
+
+**Tasks:**
 - [ ] 7.2.1 Define artifact production:
   - code-explanation.md → Onboarding docs
   - pattern-explanation.md → Code review guidance
@@ -315,6 +379,8 @@
   - Include next steps for learning
 
 ### 7.3 Onboarding Workflow
+
+**Tasks:**
 - [ ] 7.3.1 Define onboarding sequence:
   - /explain:architecture [system] → System overview
   - /explain:pattern [common-patterns] → Pattern knowledge
@@ -326,12 +392,15 @@
   - Knowledge checkpoints
 
 ### 7.4 Code Review Integration
+
+**Tasks:**
 - [ ] 7.4.1 Integrate with /explain:diff:
   - Explain PR changes in context
   - Identify related code to review
   - Suggest testing focus areas
 
-**VERIFY 7:** Explanation workflows support onboarding and code review effectively
+**VERIFY Phase 7:**
+- [ ] Explanation workflows support onboarding and code review effectively
 
 ---
 
@@ -340,6 +409,8 @@
 **Objective:** Comprehensive testing of explanation quality and accuracy
 
 ### 8.1 Sub-Command Testing
+
+**Tasks:**
 - [ ] 8.1.1 Test /explain:code:
   - Test with functions, classes, modules
   - Test with different languages (TS, Python, Go)
@@ -354,23 +425,30 @@
   - Check example accuracy
 
 ### 8.2 Quality Testing
+
+**Tasks:**
 - [ ] 8.2.1 Test explanation principles (Why → What → How)
 - [ ] 8.2.2 Test code example accuracy
 - [ ] 8.2.3 Test diagram correctness
 - [ ] 8.2.4 Test audience adaptation
 
 ### 8.3 Audience Testing
+
+**Tasks:**
 - [ ] 8.3.1 Test junior developer explanations
 - [ ] 8.3.2 Test senior developer explanations
 - [ ] 8.3.3 Test external user explanations
 
 ### 8.4 Edge Cases
+
+**Tasks:**
 - [ ] 8.4.1 Test with heavily documented code
 - [ ] 8.4.2 Test with undocumented code
 - [ ] 8.4.3 Test with complex nested code
 - [ ] 8.4.4 Test with legacy code
 
-**VERIFY 8:** All test cases pass, explanation quality is consistently high
+**VERIFY Phase 8:**
+- [ ] All test cases pass, explanation quality is consistently high
 
 ---
 
@@ -378,6 +456,7 @@
 
 **Objective:** Create comprehensive documentation and refine user experience
 
+**Tasks:**
 - [ ] 9.1 Create command documentation:
   - Usage examples for each sub-command
   - Audience selection guidance
@@ -407,7 +486,8 @@
   - Example architecture explanation
   - Example flow explanation
 
-**VERIFY 9:** Documentation is complete, clear, and helpful; output quality is polished
+**VERIFY Phase 9:**
+- [ ] Documentation is complete, clear, and helpful; output quality is polished
 
 ---
 
@@ -449,3 +529,6 @@
 - [ ] /explain (code understanding) distinct from plan:explain (task understanding)
 - [ ] /explain (educational) distinct from /document (reference)
 - [ ] /explain (deep dive) distinct from /explore (broad discovery)
+
+---
+

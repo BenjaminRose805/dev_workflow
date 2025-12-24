@@ -1,19 +1,42 @@
 # Implementation Plan: Error Recovery Hooks
 
 ## Overview
+
 - **Goal:** Implement comprehensive error recovery framework with automatic retry, checkpoint/resume, and rollback capabilities
 - **Priority:** P1 (Infrastructure)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-error-recovery-hooks/`
-- **Category:** Hook Infrastructure
+- **Output:** `docs/plan-outputs/error-recovery-hooks/`
 
-> Error recovery hooks provide a robust framework for handling failures in agent workflows. This system classifies errors, implements automatic retry strategies with exponential backoff, supports checkpoint/resume for long-running operations, enables rollback to previous states, and provides manual intervention prompts for user-recoverable errors. The infrastructure integrates with PostToolUse and PreToolUse hooks to intercept failures and apply appropriate recovery strategies.
+## Description
+
+Error recovery hooks provide a robust framework for handling failures in agent workflows. This system classifies errors, implements automatic retry strategies with exponential backoff, supports checkpoint/resume for long-running operations, enables rollback to previous states, and provides manual intervention prompts for user-recoverable errors. The infrastructure integrates with PostToolUse and PreToolUse hooks to intercept failures and apply appropriate recovery strategies.
+
+---
+
+## Dependencies
+
+### Upstream
+- Hook system infrastructure (command lifecycle integration)
+- Configuration management (`.claude/settings.json` parsing)
+- Tool execution framework
+- State persistence layer
+
+### Downstream
+- All commands that use tool execution
+- Batch workflows that need recovery capabilities
+- Long-running operations requiring checkpoints
+
+### External Tools
+- Node.js >= 18.x for async operations
+- File system access for checkpoint storage
 
 ---
 
 ## Phase 1: Error Classification System
-**Objective:** Implement error categorization and context preservation for intelligent recovery decision-making
 
+**Objective:** Implement error categorization and context preservation for intelligent recovery decision-making.
+
+**Tasks:**
 - [ ] 1.1 Create error classification types enum with five categories: recoverable_transient, recoverable_validation, partial_failure, non_recoverable, user_intervention
 - [ ] 1.2 Implement error classifier function that analyzes error messages, exit codes, and tool types to assign categories
 - [ ] 1.3 Design error context data structure with fields: error_id, timestamp, category, tool_name, error_message, stack_trace, context_snapshot, recovery_attempts, recovery_history
@@ -22,13 +45,17 @@
 - [ ] 1.6 Add error classification rules configuration file for customizing classification logic
 - [ ] 1.7 Create unit tests for error classification across different error types and scenarios
 
-**VERIFY 1:** Error classifier correctly categorizes at least 20 test cases covering all five error categories, and error context JSON structure contains all required fields with proper data types
+**VERIFY Phase 1:**
+- [ ] Error classifier correctly categorizes at least 20 test cases covering all five error categories
+- [ ] Error context JSON structure contains all required fields with proper data types
 
 ---
 
 ## Phase 2: Automatic Retry with Exponential Backoff
-**Objective:** Implement automatic retry mechanism for transient failures with configurable backoff strategies
 
+**Objective:** Implement automatic retry mechanism for transient failures with configurable backoff strategies.
+
+**Tasks:**
 - [ ] 2.1 Create retry configuration schema with fields: max_attempts, initial_delay_ms, max_delay_ms, backoff_multiplier, jitter_enabled
 - [ ] 2.2 Implement exponential backoff calculator that computes delay based on attempt number and configuration
 - [ ] 2.3 Add jitter randomization to prevent thundering herd problems in distributed scenarios
@@ -40,13 +67,18 @@
 - [ ] 2.9 Add logging and telemetry for retry attempts with duration, outcome, and backoff delay
 - [ ] 2.10 Create tests for retry logic including success after N attempts, max attempts exceeded, and backoff timing
 
-**VERIFY 2:** Retry mechanism successfully recovers from simulated transient failures within configured max_attempts, exponential backoff delays are calculated correctly (verify timing), and circuit breaker prevents retries after threshold is exceeded
+**VERIFY Phase 2:**
+- [ ] Retry mechanism successfully recovers from simulated transient failures within configured max_attempts
+- [ ] Exponential backoff delays are calculated correctly (verify timing)
+- [ ] Circuit breaker prevents retries after threshold is exceeded
 
 ---
 
 ## Phase 3: Checkpoint and Resume Capability
-**Objective:** Enable saving workflow progress and resuming from failure points for long-running operations
 
+**Objective:** Enable saving workflow progress and resuming from failure points for long-running operations.
+
+**Tasks:**
 - [ ] 3.1 Design checkpoint data structure with fields: checkpoint_id, workflow_id, timestamp, completed_tasks, pending_tasks, state_snapshot, artifacts_created
 - [ ] 3.2 Create checkpoint storage interface (file-based initially, extensible for other backends)
 - [ ] 3.3 Implement checkpoint writer that serializes workflow state to disk at designated savepoints
@@ -59,13 +91,18 @@
 - [ ] 3.10 Add checkpoint metadata index for quick lookup and recovery point selection
 - [ ] 3.11 Create tests for checkpoint save/restore cycle, partial completion resume, and corrupted checkpoint handling
 
-**VERIFY 3:** Workflow with 10 sequential tasks can be interrupted at any point, then successfully resumed from the last checkpoint without re-executing completed tasks, and checkpoint files contain complete state information for accurate resume
+**VERIFY Phase 3:**
+- [ ] Workflow with 10 sequential tasks can be interrupted at any point
+- [ ] Successfully resumed from the last checkpoint without re-executing completed tasks
+- [ ] Checkpoint files contain complete state information for accurate resume
 
 ---
 
 ## Phase 4: Rollback Mechanisms
-**Objective:** Implement state rollback capabilities to undo partial changes when recovery is not possible
 
+**Objective:** Implement state rollback capabilities to undo partial changes when recovery is not possible.
+
+**Tasks:**
 - [ ] 4.1 Design rollback transaction log structure with fields: operation_id, tool_name, action_type, original_state, new_state, rollback_script
 - [ ] 4.2 Create transaction logger that records reversible operations during tool execution
 - [ ] 4.3 Implement rollback generators for common operations: file edits, file creation, directory operations, git operations
@@ -78,13 +115,17 @@
 - [ ] 4.10 Add rollback reporting to show what was undone and final system state
 - [ ] 4.11 Create tests for full rollback, partial rollback, and rollback failure scenarios
 
-**VERIFY 4:** After a batch operation fails at task 5 of 10, rollback successfully reverses changes from tasks 1-4, restoring all modified files to original state (verify with file content comparison and git status)
+**VERIFY Phase 4:**
+- [ ] After a batch operation fails at task 5 of 10, rollback successfully reverses changes from tasks 1-4
+- [ ] All modified files restored to original state (verify with file content comparison and git status)
 
 ---
 
 ## Phase 5: Manual Intervention Prompts
-**Objective:** Create user intervention framework for errors requiring human decision-making or external fixes
 
+**Objective:** Create user intervention framework for errors requiring human decision-making or external fixes.
+
+**Tasks:**
 - [ ] 5.1 Design intervention prompt data structure with fields: prompt_id, error_context, suggested_actions, user_options, timeout_behavior
 - [ ] 5.2 Create intervention prompt generator that formats error information into user-friendly prompts
 - [ ] 5.3 Implement intervention handler that displays prompt and waits for user input
@@ -97,13 +138,18 @@
 - [ ] 5.10 Add intervention context preservation so users have full error history when making decisions
 - [ ] 5.11 Create tests for intervention flow including user confirmation, timeout behavior, and retry after manual fix
 
-**VERIFY 5:** When a permission error occurs, system displays clear intervention prompt with error details and action options, waits for user input (or times out after configured period), and correctly processes user's choice to continue workflow
+**VERIFY Phase 5:**
+- [ ] When a permission error occurs, system displays clear intervention prompt with error details and action options
+- [ ] Waits for user input (or times out after configured period)
+- [ ] Correctly processes user's choice to continue workflow
 
 ---
 
 ## Phase 6: Hook Configuration and Integration
-**Objective:** Integrate error recovery into PostToolUse and PreToolUse hooks with flexible configuration
 
+**Objective:** Integrate error recovery into PostToolUse and PreToolUse hooks with flexible configuration.
+
+**Tasks:**
 - [ ] 6.1 Extend .claude/settings.json schema to include error_recovery section with global configuration
 - [ ] 6.2 Create hook configuration options: recovery_enabled, auto_retry_enabled, checkpoint_enabled, rollback_enabled, intervention_enabled
 - [ ] 6.3 Implement PostToolUse hook integration to intercept tool failures and trigger recovery logic
@@ -118,13 +164,19 @@
 - [ ] 6.12 Implement recovery metrics collection for monitoring (recovery success rate, average retry count, checkpoint usage)
 - [ ] 6.13 Create configuration migration tool to update existing .claude/settings.json files with recovery defaults
 
-**VERIFY 6:** PostToolUse hook successfully intercepts a tool failure, applies configured recovery strategy (verify retry was attempted), and either recovers successfully or escalates to intervention. Configuration changes in .claude/settings.json correctly modify recovery behavior.
+**VERIFY Phase 6:**
+- [ ] PostToolUse hook successfully intercepts a tool failure
+- [ ] Applies configured recovery strategy (verify retry was attempted)
+- [ ] Either recovers successfully or escalates to intervention
+- [ ] Configuration changes in .claude/settings.json correctly modify recovery behavior
 
 ---
 
 ## Phase 7: Workflow Integration Patterns
-**Objective:** Implement recovery patterns for complex workflows including batch operations and dependencies
 
+**Objective:** Implement recovery patterns for complex workflows including batch operations and dependencies.
+
+**Tasks:**
 - [ ] 7.1 Create batch operation recovery orchestrator that manages recovery for multiple sequential tasks
 - [ ] 7.2 Implement dependency graph analysis to determine impact of task failures on downstream tasks
 - [ ] 7.3 Add dependency failure propagation modes: fail_all_dependents, continue_independent, user_decide
@@ -137,13 +189,18 @@
 - [ ] 7.10 Create recovery report generator that summarizes all recovery actions taken during workflow
 - [ ] 7.11 Implement tests for batch operation recovery, dependency failure scenarios, and complex workflows
 
-**VERIFY 7:** In a workflow with 15 tasks where task 6 depends on tasks 3-5 and task 10 depends on task 6, when task 4 fails and recovers successfully, dependent tasks 6 and 10 execute correctly. When task 4 fails permanently, tasks 6 and 10 are properly skipped or aborted based on configured propagation mode.
+**VERIFY Phase 7:**
+- [ ] In a workflow with 15 tasks where task 6 depends on tasks 3-5 and task 10 depends on task 6
+- [ ] When task 4 fails and recovers successfully, dependent tasks 6 and 10 execute correctly
+- [ ] When task 4 fails permanently, tasks 6 and 10 are properly skipped or aborted based on configured propagation mode
 
 ---
 
 ## Phase 8: Advanced Recovery Patterns (P2)
-**Objective:** Implement advanced recovery capabilities including circuit breaker and webhooks
 
+**Objective:** Implement advanced recovery capabilities including circuit breaker and webhooks.
+
+**Tasks:**
 - [ ] 8.1 Create circuit breaker state machine with states: closed, open, half_open
 - [ ] 8.2 Implement circuit breaker failure threshold tracking (e.g., open after 5 failures in 60 seconds)
 - [ ] 8.3 Add circuit breaker automatic recovery attempt after cooldown period (half_open state)
@@ -156,13 +213,19 @@
 - [ ] 8.10 Create recovery dashboard data export for monitoring and analytics
 - [ ] 8.11 Implement tests for circuit breaker state transitions, webhook delivery, and full rollback scenarios
 
-**VERIFY 8:** Circuit breaker opens after 5 consecutive failures, prevents further attempts during cooldown, and automatically transitions to half_open for recovery attempt. Webhook successfully delivers recovery event notification to configured endpoint with complete error context.
+**VERIFY Phase 8:**
+- [ ] Circuit breaker opens after 5 consecutive failures
+- [ ] Prevents further attempts during cooldown
+- [ ] Automatically transitions to half_open for recovery attempt
+- [ ] Webhook successfully delivers recovery event notification to configured endpoint with complete error context
 
 ---
 
 ## Phase 9: Testing and Validation
-**Objective:** Comprehensive testing of error recovery infrastructure across all components
 
+**Objective:** Comprehensive testing of error recovery infrastructure across all components.
+
+**Tasks:**
 - [ ] 9.1 Create unit tests for error classifier with 30+ test cases covering all error categories
 - [ ] 9.2 Implement integration tests for retry logic with simulated transient failures
 - [ ] 9.3 Add checkpoint/resume integration tests with interrupted workflows of varying complexity
@@ -177,13 +240,19 @@
 - [ ] 9.12 Add regression tests for previously discovered recovery bugs
 - [ ] 9.13 Create documentation tests to verify all examples in docs work correctly
 
-**VERIFY 9:** All test suites pass with 100% success rate, code coverage for recovery modules exceeds 85%, and performance benchmarks show recovery classification and decision-making complete within 50ms. Chaos testing with random failure injection demonstrates successful recovery in 95%+ of scenarios.
+**VERIFY Phase 9:**
+- [ ] All test suites pass with 100% success rate
+- [ ] Code coverage for recovery modules exceeds 85%
+- [ ] Performance benchmarks show recovery classification and decision-making complete within 50ms
+- [ ] Chaos testing with random failure injection demonstrates successful recovery in 95%+ of scenarios
 
 ---
 
 ## Phase 10: Documentation and Examples
-**Objective:** Create comprehensive documentation and practical examples for error recovery usage
 
+**Objective:** Create comprehensive documentation and practical examples for error recovery usage.
+
+**Tasks:**
 - [ ] 10.1 Write architecture documentation explaining error recovery design and components
 - [ ] 10.2 Create configuration guide for .claude/settings.json recovery settings with all options explained
 - [ ] 10.3 Write user guide for understanding recovery behavior and intervention prompts
@@ -195,7 +264,10 @@
 - [ ] 10.9 Write migration guide for adding recovery to existing workflows
 - [ ] 10.10 Create video/tutorial walkthrough of recovery features with real examples
 
-**VERIFY 10:** Documentation is complete, accurate, and includes working examples that can be copy-pasted and executed successfully. At least 5 real-world scenario examples are provided with complete configuration files.
+**VERIFY Phase 10:**
+- [ ] Documentation is complete and accurate
+- [ ] Includes working examples that can be copy-pasted and executed successfully
+- [ ] At least 5 real-world scenario examples are provided with complete configuration files
 
 ---
 
@@ -215,22 +287,14 @@
 
 ---
 
-## Dependencies
-- Hook system infrastructure (command lifecycle integration)
-- Configuration management (.claude/settings.json parsing)
-- Tool execution framework
-- State persistence layer (checkpoints, transaction logs)
-- User interaction/prompt system
+## Risks
 
-## Risks and Mitigations
-- **Risk:** Recovery logic introduces bugs that worsen failures
-  - **Mitigation:** Comprehensive testing including chaos engineering, feature flags for gradual rollout
-- **Risk:** Checkpoint files grow too large for complex workflows
-  - **Mitigation:** Implement checkpoint compression, incremental checkpoints, configurable retention
-- **Risk:** Rollback operations fail leaving system in inconsistent state
-  - **Mitigation:** Rollback verification, transaction log integrity checks, dry-run mode for testing
-- **Risk:** Automatic retry causes unintended side effects for non-idempotent operations
-  - **Mitigation:** Per-tool retry policies, idempotency detection, user confirmation for risky operations
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Recovery logic introduces bugs that worsen failures | High | Medium | Comprehensive testing including chaos engineering, feature flags for gradual rollout |
+| Checkpoint files grow too large for complex workflows | Medium | Medium | Implement checkpoint compression, incremental checkpoints, configurable retention |
+| Rollback operations fail leaving system in inconsistent state | High | Low | Rollback verification, transaction log integrity checks, dry-run mode for testing |
+| Automatic retry causes unintended side effects for non-idempotent operations | High | Medium | Per-tool retry policies, idempotency detection, user confirmation for risky operations |
 
 ## Future Enhancements
 - Machine learning-based error classification that improves over time

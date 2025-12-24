@@ -4,20 +4,52 @@
 - **Goal:** Create a comprehensive code review command with 7 sub-commands for automated PR reviews, diff analysis, security audits, and quality checks
 - **Priority:** P0 (pr, diff, file), P1 (commit, standards, security, performance)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-review-command/`
+- **Output:** `docs/plan-outputs/review-command/`
 
 > Implement the /review command system that provides intelligent code review capabilities for pull requests, diffs, commits, and files. Supports automated bug detection, security analysis, performance optimization, and standards compliance checking. Generates structured artifacts including review comments, suggestions, summaries, and merge blockers.
 
+## Dependencies
+
+### Upstream
+- `/explore` - Uses codebase understanding for context-aware reviews
+- `/analyze` - Consumes analysis findings to inform review comments
+- Project coding standards (ESLint, Prettier configs)
+
+### Downstream
+- `/fix` - Generates fixes based on review suggestions
+- `/implement` - Uses review feedback to guide implementation changes
+- GitHub/GitLab PR integration (comment posting)
+
+### External Tools
+- `gh` CLI - GitHub PR interactions
+- Git - Diff parsing, commit history
+- ESLint/Prettier - Standards detection
+
+---
+
+## Risks
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Overly critical reviews | High - Developer frustration | Medium | Balance criticism with praise, use constructive tone |
+| Missing context in diff reviews | Medium - Invalid suggestions | Medium | Expand context window, cross-reference related files |
+| GitHub API rate limits | Medium - Interrupted workflows | Low | Implement caching, batch comment posting |
+| Large PR performance | High - Timeouts on 500+ line PRs | Medium | Implement chunked analysis, depth parameter |
+| False positive suggestions | Medium - User trust erosion | Medium | Add confidence levels, allow feedback loops |
+
+---
+
 ## Phase 1: Core Infrastructure
 
+**Tasks:**
 - [ ] 1.1 Create base command YAML at `.claude/commands/review.md`
-  - Set model to `claude-sonnet-4-5`
+  - Set model to `sonnet`
   - Configure allowed tools: `Read`, `Write`, `Glob`, `Grep`, `Bash`
   - Define category as "Analysis & Quality"
   - Set up sub-command structure for 7 sub-commands
 - [ ] 1.2 Implement comment formatting system
   - Create markdown template for line-by-line comments
-  - Define severity levels: Critical, High, Medium, Low, Info
+  - Define severity levels: critical, high, medium, low, info
   - Define categories: Bug, Security, Performance, Maintainability, Style
   - Add code snippet formatting with syntax highlighting
   - Include suggestion formatting with before/after examples
@@ -28,7 +60,7 @@
   - Include best practices for constructive feedback
   - Add code quality heuristics and patterns
 - [ ] 1.4 Set up output directory structure
-  - Create `docs/plan-outputs/implement-review-command/` directory
+  - Create `docs/plan-outputs/review-command/` directory
   - Set up subdirectories: `artifacts/`, `findings/`, `verification/`
   - Initialize `status.json` tracking file
   - Create artifact output directory structure
@@ -38,12 +70,15 @@
   - Detect existing linting rules and configurations
   - Parse code style guides if present
   - Gather historical review patterns from past PRs
-- [ ] **VERIFY 1**: Base YAML structure is valid, comment formatting renders correctly, context gathering identifies project conventions
+
+**VERIFY Phase 1:**
+- [ ] Base YAML structure is valid, comment formatting renders correctly, context gathering identifies project conventions
 
 ## Phase 2: P0 Sub-Commands (Core Review Features)
 
 ### 2.1 review:pr - Pull Request Review
 
+**Tasks:**
 - [ ] 2.1.1 Implement PR data fetching
   - Integrate with `gh pr view` command for PR metadata
   - Extract changed files list from PR
@@ -88,10 +123,13 @@
   - Implement `standard` depth (typical review, <5min)
   - Implement `deep` depth (comprehensive analysis, <10min)
   - Adjust analysis scope based on depth
-- [ ] **VERIFY 2.1**: PR reviews identify real issues, focus parameter correctly filters, depth parameter controls analysis time
+
+**VERIFY 2.1:**
+- [ ] PR reviews identify real issues, focus parameter correctly filters, depth parameter controls analysis time
 
 ### 2.2 review:diff - Git Diff Review
 
+**Tasks:**
 - [ ] 2.2.1 Implement diff source handling
   - Support `ref` parameter for comparison against branch/commit
   - Support `--staged` flag for reviewing staged changes
@@ -110,10 +148,13 @@
   - Show before/after code snippets
   - Add change rationale assessment
   - Highlight potential breaking changes
-- [ ] **VERIFY 2.2**: Diff reviews accurately map to changed lines, staged flag works correctly, comments are actionable
+
+**VERIFY 2.2:**
+- [ ] Diff reviews accurately map to changed lines, staged flag works correctly, comments are actionable
 
 ### 2.3 review:file - Deep File Analysis
 
+**Tasks:**
 - [ ] 2.3.1 Implement single-file deep analysis
   - Analyze file structure and organization
   - Check adherence to design patterns
@@ -149,12 +190,15 @@
   - Add nesting depth metrics
   - Include maintainability index
   - Add trend data if available
-- [ ] **VERIFY 2.3**: File analysis provides actionable insights, complexity metrics are accurate, refactoring suggestions are valid
+
+**VERIFY 2.3:**
+- [ ] File analysis provides actionable insights, complexity metrics are accurate, refactoring suggestions are valid
 
 ## Phase 3: P1 Sub-Commands (Advanced Features)
 
 ### 3.1 review:commit - Commit History Review
 
+**Tasks:**
 - [ ] 3.1.1 Implement commit range parsing
   - Support `range` parameter (e.g., "HEAD~5..HEAD")
   - Support `count` parameter for N recent commits
@@ -183,10 +227,13 @@
   - Include metrics: message quality, size, atomicity
   - Add recommendations per commit
   - Include trend analysis
-- [ ] **VERIFY 3.1**: Commit analysis identifies quality issues, recommendations improve commit practices
+
+**VERIFY 3.1:**
+- [ ] Commit analysis identifies quality issues, recommendations improve commit practices
 
 ### 3.2 review:standards - Standards Compliance Review
 
+**Tasks:**
 - [ ] 3.2.1 Implement standards detection
   - Parse ESLint/TSLint configuration
   - Parse Prettier configuration
@@ -224,10 +271,13 @@
   - Pass/fail status per standard
   - Top violations list
   - Improvement recommendations
-- [ ] **VERIFY 3.2**: Standards compliance accurately reflects configured rules, violations are correct and fixable
+
+**VERIFY 3.2:**
+- [ ] Standards compliance accurately reflects configured rules, violations are correct and fixable
 
 ### 3.3 review:security - Security-Focused Review
 
+**Tasks:**
 - [ ] 3.3.1 Implement OWASP Top 10 checks
   - A01: Broken Access Control
   - A02: Cryptographic Failures
@@ -276,10 +326,13 @@
   - Include data flow diagrams (text-based)
   - Add mitigation strategies
   - Include security requirements
-- [ ] **VERIFY 3.3**: Security analysis identifies real vulnerabilities, severity assessment is accurate, remediation guidance is actionable
+
+**VERIFY 3.3:**
+- [ ] Security analysis identifies real vulnerabilities, severity assessment is accurate, remediation guidance is actionable
 
 ### 3.4 review:performance - Performance Analysis
 
+**Tasks:**
 - [ ] 3.4.1 Implement algorithmic complexity analysis
   - Identify O(n²) or worse algorithms
   - Find nested loops with potential issues
@@ -326,10 +379,13 @@
   - Include performance targets
   - Add measurement methodologies
   - Include profiling tool recommendations
-- [ ] **VERIFY 3.4**: Performance analysis identifies real bottlenecks, optimization suggestions are valid and impactful
+
+**VERIFY 3.4:**
+- [ ] Performance analysis identifies real bottlenecks, optimization suggestions are valid and impactful
 
 ## Phase 4: Artifact Generation System
 
+**Tasks:**
 - [ ] 4.1 Implement review-comments.md generator
   - Create schema with YAML frontmatter
   - Group comments by file
@@ -356,7 +412,7 @@
   - Add time spent on review
   - Include next steps and recommendations
 - [ ] 4.4 Implement blockers.md generator
-  - Filter for Critical and High severity issues
+  - Filter for critical and high severity issues
   - Group by category (Security, Bug, Performance)
   - Include detailed descriptions
   - Add required fix code examples
@@ -377,10 +433,13 @@
   - Reference blockers from summary
   - Add consistent ID scheme across artifacts
   - Enable artifact-to-code traceability
-- [ ] **VERIFY 4**: All artifacts validate against schemas, contain accurate data, cross-references work correctly
+
+**VERIFY Phase 4:**
+- [ ] All artifacts validate against schemas, contain accurate data, cross-references work correctly
 
 ## Phase 5: GitHub Integration & Git Hooks
 
+**Tasks:**
 - [ ] 5.1 Implement GitHub PR comment posting
   - Use `gh pr comment` to post review-comments.md
   - Format comments for GitHub markdown rendering
@@ -424,10 +483,13 @@
   - Add troubleshooting section
   - Include example workflows
   - Add security best practices
-- [ ] **VERIFY 5**: GitHub integration posts comments correctly, hooks trigger properly, CI/CD integration works in real pipelines
+
+**VERIFY Phase 5:**
+- [ ] GitHub integration posts comments correctly, hooks trigger properly, CI/CD integration works in real pipelines
 
 ## Phase 6: Testing & CI/CD Integration
 
+**Tasks:**
 - [ ] 6.1 Create test suite for review logic
   - Unit tests for comment formatting
   - Unit tests for severity classification
@@ -470,10 +532,13 @@
   - Test false negative detection
   - Include edge cases from production
   - Version test expectations
-- [ ] **VERIFY 6**: All tests pass, performance meets SLOs, real-world testing shows accurate results
+
+**VERIFY Phase 6:**
+- [ ] All tests pass, performance meets SLOs, real-world testing shows accurate results
 
 ## Phase 7: Documentation & Examples
 
+**Tasks:**
 - [ ] 7.1 Create comprehensive command documentation
   - Document /review base command
   - Document all 7 sub-commands with examples
@@ -517,7 +582,9 @@
   - Customizing for team conventions
   - Training team on using artifacts
   - Measuring review effectiveness
-- [ ] **VERIFY 7**: Documentation is complete, examples work as shown, guides are clear and actionable
+
+**VERIFY Phase 7:**
+- [ ] Documentation is complete, examples work as shown, guides are clear and actionable
 
 ## Success Criteria
 

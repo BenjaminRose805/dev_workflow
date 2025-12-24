@@ -4,10 +4,31 @@
 - **Goal:** Implement /implement command for spec-driven code generation
 - **Priority:** P0 (Critical)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-implement-command/`
+- **Output:** `docs/plan-outputs/implement-command/`
 - **Category:** Implementation Commands
 
 > The `/implement` command transforms design artifacts, specifications, and requirements into production-ready code. It bridges the gap between design/architecture and working implementation by supporting spec-driven development, pattern consistency, and incremental refinement.
+
+---
+
+
+---
+
+## Dependencies
+
+**Required Before Starting:**
+- Core command infrastructure (`src/commands/`)
+- Artifact registry system for input/output tracking
+- Pattern analysis utilities for codebase convention detection
+- Template engine for code generation
+
+**Integrations:**
+- /design command for design-spec.md input
+- /spec command for OpenAPI/AsyncAPI input
+- /clarify command for requirements.json input
+- /test command for test execution
+- /review command for code review
+- /document command for documentation generation
 
 ---
 
@@ -35,7 +56,10 @@
 - [ ] 1.9 Implement basic help text and usage documentation
 - [ ] 1.10 Create unit tests for command infrastructure and routing
 
-**VERIFY 1:** Command loads successfully, routes to sub-commands, help text displays correctly
+**VERIFY Phase 1:**
+- [ ] Command loads successfully
+- [ ] Routes to sub-commands correctly
+- [ ] Help text displays correctly
 
 ---
 
@@ -54,7 +78,10 @@
 - [ ] 2.9 Generate feature tests based on requirements and acceptance criteria
 - [ ] 2.10 Create feature implementation report in implementation-notes.md
 
-**VERIFY 2:** Can generate complete feature from design-spec.md with all layers
+**VERIFY Phase 2:**
+- [ ] Can generate complete feature from design-spec.md
+- [ ] All layers (controller, service, model) are created
+- [ ] Feature tests are generated from acceptance criteria
 
 ---
 
@@ -73,7 +100,10 @@
 - [ ] 3.9 Implement story/documentation file generation for UI components
 - [ ] 3.10 Generate component manifest with dependencies and exports
 
-**VERIFY 3:** Can generate components with props, state, tests, and documentation
+**VERIFY Phase 3:**
+- [ ] Can generate components with props and state
+- [ ] Component tests are generated
+- [ ] Documentation/story files are created
 
 ---
 
@@ -92,7 +122,10 @@
 - [ ] 4.9 Create API documentation merger (combine spec with implementation notes)
 - [ ] 4.10 Generate API versioning structure if versions detected in spec
 
-**VERIFY 4:** Can generate complete API from openapi.yaml with validation and tests
+**VERIFY Phase 4:**
+- [ ] Can generate complete API from openapi.yaml
+- [ ] Request/response validation is implemented
+- [ ] API tests are generated from examples
 
 ---
 
@@ -111,7 +144,10 @@
 - [ ] 5.9 Create schema test suite with valid/invalid data examples
 - [ ] 5.10 Generate schema registry integration for distributed systems
 
-**VERIFY 5:** Can generate types, validators, and docs from JSON Schema files
+**VERIFY Phase 5:**
+- [ ] Can generate types from JSON Schema
+- [ ] Validators are generated correctly
+- [ ] Schema documentation is complete
 
 ---
 
@@ -130,7 +166,10 @@
 - [ ] 6.9 Create caching layer integration for frequently accessed data
 - [ ] 6.10 Generate data layer documentation with usage examples
 
-**VERIFY 6:** Can generate complete data layer with repositories, migrations, tests
+**VERIFY Phase 6:**
+- [ ] Can generate complete data layer
+- [ ] Repository pattern is implemented
+- [ ] Migrations and tests are generated
 
 ---
 
@@ -149,7 +188,10 @@
 - [ ] 7.9 Create artifact cross-referencing to link generated files with specs
 - [ ] 7.10 Generate artifact summary report with statistics and metrics
 
-**VERIFY 7:** All sub-commands generate implementation-notes.md and manifest.json
+**VERIFY Phase 7:**
+- [ ] All sub-commands generate implementation-notes.md
+- [ ] Manifest.json contains accurate file metadata
+- [ ] Artifact versioning works correctly
 
 ---
 
@@ -168,7 +210,10 @@
 - [ ] 8.9 Create verification report generator with pass/fail status
 - [ ] 8.10 Implement verification failure recovery suggestions
 
-**VERIFY 8:** Verification runs automatically and reports issues with suggestions
+**VERIFY Phase 8:**
+- [ ] Verification runs automatically after generation
+- [ ] Issues are reported with clear messages
+- [ ] Suggestions for fixing issues are provided
 
 ---
 
@@ -187,7 +232,10 @@
 - [ ] 9.9 Create workflow state persistence for resuming partial implementations
 - [ ] 9.10 Implement workflow reporting showing full design-to-implementation pipeline
 
-**VERIFY 9:** Can chain /design -> /implement -> /test -> /review successfully
+**VERIFY Phase 9:**
+- [ ] Can chain /design → /implement successfully
+- [ ] Can chain /implement → /test successfully
+- [ ] Full pipeline /design → /implement → /test → /review works
 
 ---
 
@@ -206,7 +254,10 @@
 - [ ] 10.9 Create documentation review and validation
 - [ ] 10.10 Perform end-to-end workflow testing with /design, /test, /review
 
-**VERIFY 10:** All tests pass, documentation complete, ready for production use
+**VERIFY Phase 10:**
+- [ ] All tests pass with > 80% coverage
+- [ ] Documentation is complete and accurate
+- [ ] Command is ready for production use
 
 ---
 
@@ -223,24 +274,6 @@
 - [ ] Workflow integration with /design, /test, /review commands
 - [ ] Comprehensive test coverage (>80%) for all functionality
 - [ ] Documentation complete with examples for each sub-command
-
----
-
-## Dependencies
-
-**Required Before Starting:**
-- Core command infrastructure (`src/commands/`)
-- Artifact registry system for input/output tracking
-- Pattern analysis utilities for codebase convention detection
-- Template engine for code generation
-
-**Integrations:**
-- /design command for design-spec.md input
-- /spec command for OpenAPI/AsyncAPI input
-- /clarify command for requirements.json input
-- /test command for test execution
-- /review command for code review
-- /document command for documentation generation
 
 ---
 

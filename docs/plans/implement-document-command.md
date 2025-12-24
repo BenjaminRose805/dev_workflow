@@ -4,24 +4,58 @@
 - **Goal:** Implement the /document command with 8 sub-commands for comprehensive documentation generation
 - **Priority:** P2 (Documentation & Communication phase)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-document-command/`
-- **Model:** Claude Sonnet 4.5 (code analysis, documentation synthesis)
+- **Output:** `docs/plan-outputs/document-command/`
+- **Model:** sonnet (code analysis and documentation synthesis)
 - **Category:** Implementation & Documentation
 
 > The /document command provides comprehensive documentation generation capabilities across multiple documentation types and audiences. It transforms code, design artifacts, and architectural decisions into clear, well-structured documentation following the Diátaxis framework.
 
 ---
 
+
+---
+
+## Dependencies
+
+### Upstream Dependencies
+- /architect command - Provides architecture.md for architecture documentation
+- /design command - Provides design-spec.md for technical documentation
+- /spec command - Provides openapi.yaml for API documentation
+- /implement command - Provides source code for inline documentation
+- Git - Required for changelog generation from commit history
+
+### Downstream Dependencies
+- /test command - May use api-reference.md for test generation
+- /release command - Uses CHANGELOG.md for release notes
+
+### External Tools
+- Git - Required for changelog generation and history analysis
+- Mermaid - Required for diagram generation in docs
+
+---
+
+## Risks
+
+| Risk | Impact | Mitigation |
+|------|--------|------------|
+| Documentation-code drift | High | Regenerate docs regularly, integrate into CI, timestamp docs |
+| Overwriting custom content | High | Implement section preservation, detect user-added sections |
+| Inconsistent documentation style | Medium | Apply Diátaxis framework consistently, use templates |
+| Stale examples | High | Extract examples from tests where possible, validate examples run |
+| Missing public API coverage | Medium | Scan for undocumented exports, report coverage metrics |
+| Changelog generation errors | Medium | Validate conventional commit format, handle malformed commits gracefully |
+| Audience mismatch | Medium | Clear audience selection prompts, validate language complexity |
 ## Phase 1: Core Command Setup
 
 **Objective:** Establish base /document command with YAML configuration and core prompt structure
 
+**Tasks:**
 - [ ] 1.1 Create `/document` command file at `.claude/commands/document.md`
 - [ ] 1.2 Add YAML frontmatter with configuration:
   - name: document
   - description: Generate comprehensive documentation for APIs, users, developers, and architecture. Synthesizes code, designs, and artifacts into audience-specific docs.
   - category: documentation
-  - model: claude-sonnet-4-5
+  - model: sonnet
   - allowed-tools: Read, Write, Grep, Glob, Bash, AskUserQuestion
   - argument-hint: [scope-or-type]
 - [ ] 1.3 Write base command prompt with sections:
@@ -36,7 +70,8 @@
   - format: markdown | mdx | jsdoc
 - [ ] 1.5 Create output directory structure: `docs/`
 
-**VERIFY 1:** Base /document command runs successfully, analyzes codebase, and produces structured output
+**VERIFY Phase 1:**
+- [ ] Base /document command runs successfully, analyzes codebase, and produces structured output
 
 ---
 
@@ -44,6 +79,7 @@
 
 **Objective:** Implement systematic documentation workflow with codebase analysis
 
+**Tasks:**
 - [ ] 2.1 Implement Documentation Parameters phase:
   - Use AskUserQuestion to gather doc type, audience, format
   - Auto-detect project type (Node.js, Python, etc.)
@@ -67,7 +103,8 @@
   - Merge new content into existing structure
   - Preserve custom sections users have added
 
-**VERIFY 2:** Documentation workflow produces comprehensive, well-structured documentation
+**VERIFY Phase 2:**
+- [ ] Documentation workflow produces comprehensive, well-structured documentation
 
 ---
 
@@ -76,8 +113,10 @@
 **Objective:** Create 3 P0 sub-commands for core documentation needs
 
 ### 3.1 API Documentation Sub-Command
+
+**Tasks:**
 - [ ] 3.1.1 Create `/document:api` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <api-path | openapi-spec>
+  - YAML: model: sonnet, argument-hint: <api-path | openapi-spec>
 - [ ] 3.1.2 Implement API documentation generation:
   - Parse Express/Fastify/Hono routes
   - Extract from OpenAPI/Swagger specs
@@ -94,8 +133,10 @@
   - Postman collection export
 
 ### 3.2 User Guide Sub-Command
+
+**Tasks:**
 - [ ] 3.2.1 Create `/document:user` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <feature | --full>
+  - YAML: model: sonnet, argument-hint: <feature | --full>
 - [ ] 3.2.2 Implement user guide generation:
   - Getting started guide
   - Feature walkthroughs
@@ -110,8 +151,10 @@
   - How-to guides (problem-oriented)
 
 ### 3.3 Developer Documentation Sub-Command
+
+**Tasks:**
 - [ ] 3.3.1 Create `/document:developer` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <--readme | --contributing | --full>
+  - YAML: model: sonnet, argument-hint: <--readme | --contributing | --full>
 - [ ] 3.3.2 Implement developer documentation:
   - README.md generation and updates
   - CONTRIBUTING.md with contribution guidelines
@@ -128,7 +171,8 @@
   - License information
   - Links to other documentation
 
-**VERIFY 3:** All P0 sub-commands produce valid, audience-appropriate documentation
+**VERIFY Phase 3:**
+- [ ] All P0 sub-commands produce valid, audience-appropriate documentation
 
 ---
 
@@ -137,8 +181,10 @@
 **Objective:** Create 3 P1 sub-commands for extended documentation needs
 
 ### 4.1 Architecture Documentation Sub-Command
+
+**Tasks:**
 - [ ] 4.1.1 Create `/document:architecture` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <system | --adr>
+  - YAML: model: sonnet, argument-hint: <system | --adr>
 - [ ] 4.1.2 Implement architecture documentation:
   - High-level system overview
   - Component diagrams (Mermaid)
@@ -154,8 +200,10 @@
   - ADRs from /architect:adr
 
 ### 4.2 Changelog Generation Sub-Command
+
+**Tasks:**
 - [ ] 4.2.1 Create `/document:changelog` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <version | --since tag>
+  - YAML: model: sonnet, argument-hint: <version | --since tag>
 - [ ] 4.2.2 Implement changelog generation:
   - Parse Git history with conventional commits
   - Group by type (Added, Changed, Fixed, etc.)
@@ -170,8 +218,10 @@
   - Custom version patterns
 
 ### 4.3 Inline Documentation Sub-Command
+
+**Tasks:**
 - [ ] 4.3.1 Create `/document:inline` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <file-path | --all>
+  - YAML: model: sonnet, argument-hint: <file-path | --all>
 - [ ] 4.3.2 Implement inline documentation:
   - Add JSDoc/docstrings to functions
   - Add type annotations where missing
@@ -186,7 +236,8 @@
   - Python (docstrings)
   - Go (godoc comments)
 
-**VERIFY 4:** All P1 sub-commands produce valid, well-formatted documentation
+**VERIFY Phase 4:**
+- [ ] All P1 sub-commands produce valid, well-formatted documentation
 
 ---
 
@@ -195,8 +246,10 @@
 **Objective:** Create 2 P2 sub-commands for advanced documentation needs
 
 ### 5.1 Diagrams Documentation Sub-Command
+
+**Tasks:**
 - [ ] 5.1.1 Create `/document:diagrams` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <type> [--scope path]
+  - YAML: model: sonnet, argument-hint: <type> [--scope path]
 - [ ] 5.1.2 Implement diagram generation:
   - System architecture diagrams
   - Sequence diagrams for key flows
@@ -215,8 +268,10 @@
   - stateDiagram (state machines)
 
 ### 5.2 Runbook Documentation Sub-Command
+
+**Tasks:**
 - [ ] 5.2.1 Create `/document:runbook` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <operation | --deployment | --incident>
+  - YAML: model: sonnet, argument-hint: <operation | --deployment | --incident>
 - [ ] 5.2.2 Implement runbook generation:
   - Deployment procedures
   - Rollback procedures
@@ -234,7 +289,8 @@
   - Health check commands
   - Common troubleshooting steps
 
-**VERIFY 5:** All P2 sub-commands produce valid operational documentation
+**VERIFY Phase 5:**
+- [ ] All P2 sub-commands produce valid operational documentation
 
 ---
 
@@ -243,6 +299,8 @@
 **Objective:** Implement structured artifact generation with quality validation
 
 ### 6.1 Primary Artifacts
+
+**Tasks:**
 - [ ] 6.1.1 Implement README.md artifact schema:
   - YAML frontmatter:
     - artifact_type: readme-documentation
@@ -260,6 +318,8 @@
   - Version links at bottom
 
 ### 6.2 Quality Standards
+
+**Tasks:**
 - [ ] 6.2.1 Implement completeness validation:
   - All public APIs documented
   - Installation instructions present
@@ -276,6 +336,8 @@
   - Metadata frontmatter present
 
 ### 6.3 Diátaxis Framework Compliance
+
+**Tasks:**
 - [ ] 6.3.1 Categorize documentation types:
   - Tutorials (learning-oriented) → document:user
   - How-to Guides (problem-oriented) → document:user
@@ -287,7 +349,8 @@
   - API docs are precise and complete
   - Architecture docs explain "why"
 
-**VERIFY 6:** Artifacts meet quality standards and Diátaxis framework principles
+**VERIFY Phase 6:**
+- [ ] Artifacts meet quality standards and Diátaxis framework principles
 
 ---
 
@@ -296,6 +359,8 @@
 **Objective:** Ensure /document integrates with upstream and downstream commands
 
 ### 7.1 Upstream Integration
+
+**Tasks:**
 - [ ] 7.1.1 Define artifact consumption:
   - `architecture.md` from /architect
   - `design-spec.md` from /design
@@ -308,6 +373,8 @@
   - Parse existing documentation for updates
 
 ### 7.2 Downstream Integration
+
+**Tasks:**
 - [ ] 7.2.1 Define artifact production:
   - README.md → GitHub, developers
   - api-reference.md → /test, developers
@@ -319,6 +386,8 @@
   - Reference generated from timestamps
 
 ### 7.3 Common Workflows
+
+**Tasks:**
 - [ ] 7.3.1 API-First Documentation workflow:
   - /design:api → /spec:api → /document:api → /test
 - [ ] 7.3.2 Feature Documentation workflow:
@@ -327,7 +396,8 @@
 - [ ] 7.3.3 Release Documentation workflow:
   - /implement → /test → /document:changelog → /release
 
-**VERIFY 7:** Documentation workflows produce consistent, linked documentation sets
+**VERIFY Phase 7:**
+- [ ] Documentation workflows produce consistent, linked documentation sets
 
 ---
 
@@ -336,6 +406,8 @@
 **Objective:** Comprehensive testing of documentation quality and accuracy
 
 ### 8.1 Sub-Command Testing
+
+**Tasks:**
 - [ ] 8.1.1 Test /document:api:
   - Test with Express, Fastify, Hono APIs
   - Test with existing OpenAPI specs
@@ -351,23 +423,30 @@
   - Verify technical accuracy
 
 ### 8.2 Quality Testing
+
+**Tasks:**
 - [ ] 8.2.1 Test completeness (all public APIs documented)
 - [ ] 8.2.2 Test accuracy (examples work)
 - [ ] 8.2.3 Test formatting (valid markdown)
 - [ ] 8.2.4 Test links (no broken links)
 
 ### 8.3 Update Testing
+
+**Tasks:**
 - [ ] 8.3.1 Test updating existing README
 - [ ] 8.3.2 Test merging changelog entries
 - [ ] 8.3.3 Test preserving custom sections
 
 ### 8.4 Edge Cases
+
+**Tasks:**
 - [ ] 8.4.1 Test with no existing documentation
 - [ ] 8.4.2 Test with extensive existing documentation
 - [ ] 8.4.3 Test with undocumented codebase
 - [ ] 8.4.4 Test with multiple documentation formats
 
-**VERIFY 8:** All test cases pass, documentation quality is consistently high
+**VERIFY Phase 8:**
+- [ ] All test cases pass, documentation quality is consistently high
 
 ---
 
@@ -375,6 +454,7 @@
 
 **Objective:** Create comprehensive documentation and refine user experience
 
+**Tasks:**
 - [ ] 9.1 Create command documentation:
   - Usage examples for each sub-command
   - Audience selection guidance
@@ -404,7 +484,8 @@
   - Example api-reference.md
   - Example CHANGELOG.md
 
-**VERIFY 9:** Documentation is complete, clear, and helpful; output quality is polished
+**VERIFY Phase 9:**
+- [ ] Documentation is complete, clear, and helpful; output quality is polished
 
 ---
 
@@ -441,3 +522,6 @@
 - [ ] Update logic tested (merge vs create)
 - [ ] Edge cases handled gracefully
 - [ ] Documentation quality validated across different codebases
+
+---
+

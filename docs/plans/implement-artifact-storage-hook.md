@@ -1,13 +1,31 @@
 # Implementation Plan: Artifact Storage Hook
 
 ## Overview
+
 - **Goal:** Implement post-command hook system for automatic artifact detection, deduplication, and registry management
 - **Priority:** P1 (Infrastructure)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-artifact-storage-hook/`
+- **Output:** `docs/plan-outputs/artifact-storage-hook/`
+- **Model:** haiku (fast artifact processing)
 - **Category:** Hook Infrastructure
 
 > The Artifact Storage Hook is a PostToolUse hook that automatically captures command outputs, parses them for file paths, deduplicates artifacts by content hash, and updates the artifact registry. It integrates with the planning system to track workflow step completion and maintains artifact provenance across sessions. This infrastructure enables seamless artifact lifecycle management without manual intervention.
+
+---
+
+## Dependencies
+
+### Upstream
+- Hook system infrastructure (PostToolUse lifecycle integration)
+- Artifact Registry System (core registry implementation)
+- Plan execution framework (status.json structure)
+
+### Downstream
+- Context Loading Hook (consumes registered artifacts)
+- Plan status tracking (consumes task completion updates)
+
+### External Tools
+- None (internal Node.js implementation)
 
 ---
 
@@ -26,7 +44,10 @@
 - [ ] 1.9 Add support for parsing directory paths and automatically discovering contained artifacts
 - [ ] 1.10 Create artifact metadata extraction from parsed outputs (timestamps, command context)
 
-**VERIFY 1:** Parser correctly extracts file paths from 20+ test cases including JSON outputs, markdown documents, CLI outputs, and structured data. Path validation confirms all detected paths exist. Artifact type inference achieves 90%+ accuracy.
+**VERIFY Phase 1:**
+- [ ] Parser correctly extracts file paths from 20+ test cases
+- [ ] Path validation confirms all detected paths exist
+- [ ] Artifact type inference achieves 90%+ accuracy
 
 ---
 
@@ -45,7 +66,11 @@
 - [ ] 2.9 Add hash verification to detect file corruption or modification
 - [ ] 2.10 Create performance optimizations: hash only first/last N bytes for initial comparison
 
-**VERIFY 2:** Content hashing correctly identifies duplicate files with 100% accuracy. Hash computation completes within 100ms for files up to 10MB. Deduplication logic skips duplicate artifacts and updates metadata appropriately. Hash cache reduces computation time by 80%+ on repeated operations.
+**VERIFY Phase 2:**
+- [ ] Content hashing correctly identifies duplicate files with 100% accuracy
+- [ ] Hash computation completes within 100ms for files up to 10MB
+- [ ] Deduplication logic skips duplicate artifacts and updates metadata appropriately
+- [ ] Hash cache reduces computation time by 80%+ on repeated operations
 
 ---
 
@@ -64,7 +89,12 @@
 - [ ] 3.9 Add registry audit logging for all modifications (who, when, what changed)
 - [ ] 3.10 Create registry statistics tracking (total artifacts, size, growth rate)
 
-**VERIFY 3:** Registry updates are atomic and never leave corrupted state. Concurrent updates handled correctly through file locking. Backup restoration works from any of the last 5 backups. Registry validation detects and reports schema violations. Audit log captures all registry modifications with complete context.
+**VERIFY Phase 3:**
+- [ ] Registry updates are atomic and never leave corrupted state
+- [ ] Concurrent updates handled correctly through file locking
+- [ ] Backup restoration works from any of the last 5 backups
+- [ ] Registry validation detects and reports schema violations
+- [ ] Audit log captures all registry modifications with complete context
 
 ---
 
@@ -83,7 +113,12 @@
 - [ ] 4.9 Add status rollback capability for failed artifact registration
 - [ ] 4.10 Implement status synchronization between registry and plan status
 
-**VERIFY 4:** Hook correctly identifies source task from command context. Task status updates to "completed" after artifact registration. Multiple artifacts from single task all recorded in status.json. Status updates are atomic and synchronized with registry updates. Task dependency chain validated before marking completion.
+**VERIFY Phase 4:**
+- [ ] Hook correctly identifies source task from command context
+- [ ] Task status updates to "completed" after artifact registration
+- [ ] Multiple artifacts from single task all recorded in status.json
+- [ ] Status updates are atomic and synchronized with registry updates
+- [ ] Task dependency chain validated before marking completion
 
 ---
 
@@ -102,7 +137,12 @@
 - [ ] 5.9 Add workflow completion notification when all steps finish
 - [ ] 5.10 Create workflow progress visualization data export for status display
 
-**VERIFY 5:** Workflow progress accurately reflects completed steps. Step completion triggers on artifact creation. Workflow milestones detected and logged. Step dependencies correctly prevent execution until prerequisites complete. Progress calculation matches actual completion state (verify with 10-step workflow).
+**VERIFY Phase 5:**
+- [ ] Workflow progress accurately reflects completed steps
+- [ ] Step completion triggers on artifact creation
+- [ ] Workflow milestones detected and logged
+- [ ] Step dependencies correctly prevent execution until prerequisites complete
+- [ ] Progress calculation matches actual completion state
 
 ---
 
@@ -123,7 +163,12 @@
 - [ ] 6.11 Implement hook error handling with retry logic (max 3 attempts, exponential backoff)
 - [ ] 6.12 Add hook logging with configurable verbosity levels
 
-**VERIFY 6:** Hook configuration validates successfully in .claude/settings.json. Skill matcher triggers hook only for Skill tool uses. Hook receives tool output correctly and processes within timeout. Exit codes properly communicate status to parent process. Performance metrics show hook adds <200ms overhead per command.
+**VERIFY Phase 6:**
+- [ ] Hook configuration validates successfully in .claude/settings.json
+- [ ] Skill matcher triggers hook only for Skill tool uses
+- [ ] Hook receives tool output correctly and processes within timeout
+- [ ] Exit codes properly communicate status to parent process
+- [ ] Performance metrics show hook adds <200ms overhead per command
 
 ---
 
@@ -143,7 +188,12 @@
 - [ ] 7.10 Create graceful degradation when registry unavailable (log and continue)
 - [ ] 7.11 Implement signal handling for clean shutdown on SIGTERM/SIGINT
 
-**VERIFY 7:** Script successfully processes tool output end-to-end. Error handling catches and reports all error types appropriately. Logging provides clear visibility into processing steps. Dry-run mode simulates operation without side effects. Script completes within timeout under normal conditions.
+**VERIFY Phase 7:**
+- [ ] Script successfully processes tool output end-to-end
+- [ ] Error handling catches and reports all error types appropriately
+- [ ] Logging provides clear visibility into processing steps
+- [ ] Dry-run mode simulates operation without side effects
+- [ ] Script completes within timeout under normal conditions
 
 ---
 
@@ -162,7 +212,12 @@
 - [ ] 8.9 Add corruption detection and automatic recovery from backup
 - [ ] 8.10 Create error reporting format for hook system (structured JSON output)
 
-**VERIFY 8:** Transient errors (simulated file lock) automatically retry and succeed. Permanent errors (invalid JSON) fail gracefully with clear error messages. Partial success correctly registers successful artifacts and reports failures. Corruption detected and registry restored from backup. Error context provides actionable debugging information.
+**VERIFY Phase 8:**
+- [ ] Transient errors automatically retry and succeed
+- [ ] Permanent errors fail gracefully with clear error messages
+- [ ] Partial success correctly registers successful artifacts and reports failures
+- [ ] Corruption detected and registry restored from backup
+- [ ] Error context provides actionable debugging information
 
 ---
 
@@ -183,7 +238,12 @@
 - [ ] 9.11 Implement chaos testing with random failures injected
 - [ ] 9.12 Add test coverage reporting (target: 85%+ coverage)
 
-**VERIFY 9:** All unit tests pass with 100% success rate. Integration tests demonstrate end-to-end functionality. Performance tests confirm hook completes within 10000ms timeout. Concurrency tests show correct behavior under parallel execution. Test coverage exceeds 85% for all hook modules.
+**VERIFY Phase 9:**
+- [ ] All unit tests pass with 100% success rate
+- [ ] Integration tests demonstrate end-to-end functionality
+- [ ] Performance tests confirm hook completes within 10000ms timeout
+- [ ] Concurrency tests show correct behavior under parallel execution
+- [ ] Test coverage exceeds 85% for all hook modules
 
 ---
 
@@ -202,7 +262,11 @@
 - [ ] 10.9 Write performance tuning guide for large-scale usage
 - [ ] 10.10 Create API reference for hook script command-line interface
 
-**VERIFY 10:** Documentation is complete, accurate, and includes working examples. Troubleshooting guide addresses common issues with solutions. Flowcharts clearly communicate hook execution flow. Developer guide enables extensions without source code review.
+**VERIFY Phase 10:**
+- [ ] Documentation is complete, accurate, and includes working examples
+- [ ] Troubleshooting guide addresses common issues with solutions
+- [ ] Flowcharts clearly communicate hook execution flow
+- [ ] Developer guide enables extensions without source code review
 
 ---
 
@@ -224,38 +288,22 @@
 
 ---
 
-## Dependencies
+## Risks
 
-- Hook system infrastructure (PostToolUse lifecycle integration)
-- Artifact Registry System (core registry implementation)
-- Plan execution framework (status.json structure)
-- File system utilities (locking, atomic operations)
-- Configuration management (.claude/settings.json parsing)
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Hook timeout causes missed artifact registration | Medium | Medium | Async queue for slow operations, timeout monitoring |
+| Concurrent hook executions cause registry corruption | High | Low | File locking, atomic writes, backup before update |
+| False positive artifact detection registers non-artifacts | Low | Medium | Strict path validation, configurable patterns, artifact type verification |
+| Hook failures block command execution | Medium | Low | Non-blocking hook execution, graceful degradation, error isolation |
+| Performance overhead slows down command execution | Medium | Medium | Async execution, hash caching, incremental processing |
 
-## Risks and Mitigations
+---
 
-- **Risk:** Hook timeout causes missed artifact registration
-  - **Mitigation:** Implement async queue for slow operations, increase timeout for large files, add timeout monitoring
+## Notes
 
-- **Risk:** Concurrent hook executions cause registry corruption
-  - **Mitigation:** File locking, atomic writes, backup before update, merge conflict resolution
-
-- **Risk:** False positive artifact detection registers non-artifacts
-  - **Mitigation:** Strict path validation, configurable patterns, artifact type verification, manual review mode
-
-- **Risk:** Hook failures block command execution
-  - **Mitigation:** Non-blocking hook execution, graceful degradation, error isolation, fallback mode
-
-- **Risk:** Performance overhead slows down command execution
-  - **Mitigation:** Async execution, hash caching, incremental processing, performance monitoring
-
-## Future Enhancements
-
-- Artifact compression for large files to reduce storage
-- Cloud storage integration for artifact backup
-- Webhook notifications on artifact registration events
-- Machine learning-based artifact type classification
-- Artifact lineage visualization showing creation and consumption chains
-- Distributed deduplication across multiple machines
-- Real-time artifact indexing for instant search
-- Integration with external artifact repositories (npm, Maven, Docker registries)
+- Artifact Storage Hook runs on PostToolUse events for Skill tool invocations
+- Registry updates are atomic using write-temp-then-rename pattern
+- Content hashing uses SHA256 for deduplication
+- Performance target: <200ms overhead per command
+- Rolling backups keep last 5 registry states for recovery

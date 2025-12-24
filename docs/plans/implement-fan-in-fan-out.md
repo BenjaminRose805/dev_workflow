@@ -1,15 +1,40 @@
 # Implementation Plan: Fan-In and Fan-Out Patterns
 
 ## Overview
+
 - **Goal:** Implement fan-in (multiple inputs converging to single command) and fan-out (single output triggering multiple commands) patterns for workflow parallelization
 - **Priority:** P2
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-fan-in-fan-out/`
+- **Output:** `docs/plan-outputs/fan-in-fan-out/`
 
-> Enable sophisticated parallel workflow patterns where multiple independent data sources feed into aggregation points (fan-in) and single artifacts trigger multiple downstream consumers (fan-out). Implement synchronization semantics (wait for all/any/threshold), conflict resolution for overlapping data, aggregation strategies for different data types, broadcast/selective routing, and partial success handling.
+## Description
+
+Enable sophisticated parallel workflow patterns where multiple independent data sources feed into aggregation points (fan-in) and single artifacts trigger multiple downstream consumers (fan-out). Implement synchronization semantics (wait for all/any/threshold), conflict resolution for overlapping data, aggregation strategies for different data types, broadcast/selective routing, and partial success handling.
+
+---
+
+## Dependencies
+
+### Upstream
+- `/workflow` command infrastructure
+- Workflow execution engine
+- Workflow composition patterns
+
+### Downstream
+- Multi-source research workflows
+- Multi-environment deployment workflows
+- Validation pipelines
+
+### External Tools
+- None (uses built-in workflow engine)
+
+---
 
 ## Phase 1: Fan-In Core Infrastructure
 
+**Objective:** Implement the core fan-in dependency tracking and input collection.
+
+**Tasks:**
 - [ ] 1.1 Design `fan_in` step configuration schema with type, timeout, dependencies
 - [ ] 1.2 Implement dependency tracking for multiple input sources
 - [ ] 1.3 Create input collection mechanism to gather outputs from upstream steps
@@ -18,10 +43,19 @@
 - [ ] 1.6 Create input availability tracking (which inputs ready, which pending)
 - [ ] 1.7 Implement input validation before fan-in command execution
 - [ ] 1.8 Add fan-in progress reporting ("3 of 4 inputs ready")
-- [ ] **VERIFY 1**: Three research steps fan into architect command. All three must complete before architect executes. Timeout after 10 minutes if any input missing.
+
+**VERIFY Phase 1:**
+- [ ] Three research steps fan into architect command correctly
+- [ ] All three must complete before architect executes
+- [ ] Timeout after configured duration if any input missing
+
+---
 
 ## Phase 2: Fan-In Synchronization Semantics
 
+**Objective:** Implement join semantics (all/any/threshold/priority).
+
+**Tasks:**
 - [ ] 2.1 Implement `join_type: all` - wait for all dependencies (Promise.all)
 - [ ] 2.2 Implement `join_type: any` - proceed with first available (Promise.race)
 - [ ] 2.3 Implement `join_type: threshold` with `join_threshold: N` (N of M)
@@ -30,10 +64,20 @@
 - [ ] 2.6 Implement timeout per dependency (not just overall)
 - [ ] 2.7 Create short-circuit evaluation for "any" semantics
 - [ ] 2.8 Add remaining dependency tracking after "any" completes
-- [ ] **VERIFY 2**: `join_type: all` waits for all 3 inputs. `join_type: any` proceeds with first. `join_type: threshold(2)` proceeds when 2 of 3 complete. Priority-based selects highest available.
+
+**VERIFY Phase 2:**
+- [ ] `join_type: all` waits for all 3 inputs
+- [ ] `join_type: any` proceeds with first available
+- [ ] `join_type: threshold(2)` proceeds when 2 of 3 complete
+- [ ] Priority-based selects highest available
+
+---
 
 ## Phase 3: Partial Input Handling
 
+**Objective:** Handle missing or optional inputs gracefully.
+
+**Tasks:**
 - [ ] 3.1 Implement required vs optional input declaration
 - [ ] 3.2 Create `missing_input_action: fail | infer | default | skip`
 - [ ] 3.3 Implement default value provider for missing optional inputs
@@ -42,10 +86,19 @@
 - [ ] 3.6 Implement staged progression (process available, enhance when more arrive)
 - [ ] 3.7 Add user prompt for missing required inputs
 - [ ] 3.8 Create input availability report before command execution
-- [ ] **VERIFY 3**: Command executes with 2 of 3 optional inputs present. Missing input inferred from context. Staged progression enhances output as late inputs arrive.
+
+**VERIFY Phase 3:**
+- [ ] Command executes with 2 of 3 optional inputs present
+- [ ] Missing input inferred from context when configured
+- [ ] Staged progression enhances output as late inputs arrive
+
+---
 
 ## Phase 4: Conflict Resolution
 
+**Objective:** Implement conflict detection and resolution for overlapping data.
+
+**Tasks:**
 - [ ] 4.1 Implement duplicate value detection across inputs
 - [ ] 4.2 Create merge rules configuration: `union | max | min | first | manual`
 - [ ] 4.3 Implement source priority resolution (manual > inferred > default)
@@ -54,10 +107,19 @@
 - [ ] 4.6 Implement temporal conflict resolution (prefer fresh over stale)
 - [ ] 4.7 Add conflict logging and audit trail
 - [ ] 4.8 Create user prompt for manual conflict resolution
-- [ ] **VERIFY 4**: Conflicting `priority` values resolved by `max` rule. Source priority selects manual input over inferred. Stale input (>24h) flagged and fresh preferred.
+
+**VERIFY Phase 4:**
+- [ ] Conflicting `priority` values resolved by configured rule
+- [ ] Source priority selects manual input over inferred
+- [ ] Stale input (>24h) flagged and fresh preferred
+
+---
 
 ## Phase 5: Aggregation Strategies
 
+**Objective:** Implement data aggregation strategies for different data types.
+
+**Tasks:**
 - [ ] 5.1 Implement deep merge for structured data (JSON, YAML)
 - [ ] 5.2 Create union aggregation for collections (combine arrays)
 - [ ] 5.3 Implement intersection aggregation (common elements only)
@@ -68,10 +130,20 @@
 - [ ] 5.8 Create statistical aggregation for numeric data (mean, median, stddev)
 - [ ] 5.9 Implement confidence-weighted aggregation
 - [ ] 5.10 Add timeline merge for temporal data
-- [ ] **VERIFY 5**: JSON requirements merged with deep merge. Array collections use union. Numeric metrics aggregated with statistical functions. Text documents concatenated with source headers.
+
+**VERIFY Phase 5:**
+- [ ] JSON requirements merged with deep merge
+- [ ] Array collections use union aggregation
+- [ ] Numeric metrics aggregated with statistical functions
+- [ ] Text documents concatenated with source headers
+
+---
 
 ## Phase 6: Fan-Out Core Infrastructure
 
+**Objective:** Implement core fan-out parallel execution.
+
+**Tasks:**
 - [ ] 6.1 Design `fan_out` step configuration schema
 - [ ] 6.2 Implement single source triggering multiple downstream steps
 - [ ] 6.3 Create parallel execution launcher for fan-out branches
@@ -80,10 +152,19 @@
 - [ ] 6.6 Create output collection from all branches
 - [ ] 6.7 Add fan-out progress tracking ("3 of 5 branches complete")
 - [ ] 6.8 Implement branch timeout handling
-- [ ] **VERIFY 6**: Single implement step fans out to 3 validation steps running in parallel. All branches execute concurrently. Progress shows completion count.
+
+**VERIFY Phase 6:**
+- [ ] Single implement step fans out to 3 validation steps running in parallel
+- [ ] All branches execute concurrently
+- [ ] Progress shows completion count
+
+---
 
 ## Phase 7: Fan-Out Patterns
 
+**Objective:** Implement broadcast, routing, and matrix fan-out patterns.
+
+**Tasks:**
 - [ ] 7.1 Implement simple broadcast (same command, different parameters)
 - [ ] 7.2 Create content-based routing (different commands based on output properties)
 - [ ] 7.3 Implement selective routing with conditions (if-then branching)
@@ -91,10 +172,19 @@
 - [ ] 7.5 Create matrix execution (cartesian product of parameters)
 - [ ] 7.6 Implement dynamic fan-out (branch count determined at runtime)
 - [ ] 7.7 Add broadcast with target list configuration
-- [ ] **VERIFY 7**: Broadcast pattern runs same test on 3 frameworks. Content-based routes security-critical code to security scan. Matrix produces 9 browser/framework combinations.
+
+**VERIFY Phase 7:**
+- [ ] Broadcast pattern runs same test on 3 frameworks
+- [ ] Content-based routes security-critical code to security scan
+- [ ] Matrix produces 9 browser/framework combinations
+
+---
 
 ## Phase 8: Fan-Out Coordination
 
+**Objective:** Implement coordination semantics for parallel branches.
+
+**Tasks:**
 - [ ] 8.1 Implement Promise.all semantics (all branches must succeed)
 - [ ] 8.2 Create Promise.allSettled semantics (collect all results regardless)
 - [ ] 8.3 Add quorum/majority semantics (N of M must succeed)
@@ -103,10 +193,20 @@
 - [ ] 8.6 Add retry failed branches with exponential backoff
 - [ ] 8.7 Implement canary pattern (test subset before full fan-out)
 - [ ] 8.8 Create error collection from all branches
-- [ ] **VERIFY 8**: All-succeed blocks on any failure. AllSettled collects 2 successes and 1 failure. Quorum(2) proceeds with 2 of 3 success. Critical branch failure aborts workflow.
+
+**VERIFY Phase 8:**
+- [ ] All-succeed blocks on any failure
+- [ ] AllSettled collects 2 successes and 1 failure
+- [ ] Quorum(2) proceeds with 2 of 3 success
+- [ ] Critical branch failure aborts workflow
+
+---
 
 ## Phase 9: Artifact Propagation
 
+**Objective:** Implement artifact sharing patterns for parallel branches.
+
+**Tasks:**
 - [ ] 9.1 Implement shared reference pattern (all branches read same artifact)
 - [ ] 9.2 Create snapshot/copy pattern (each branch gets immutable copy)
 - [ ] 9.3 Add artifact versioning for fan-out tracking
@@ -114,10 +214,19 @@
 - [ ] 9.5 Create symlink/reference pattern for lightweight sharing
 - [ ] 9.6 Add artifact mutation protection in parallel branches
 - [ ] 9.7 Implement artifact provenance tracking through fan-out
-- [ ] **VERIFY 9**: Parallel branches read shared artifact without conflict. Snapshot pattern gives each branch independent copy. Mutation in one branch doesn't affect others.
+
+**VERIFY Phase 9:**
+- [ ] Parallel branches read shared artifact without conflict
+- [ ] Snapshot pattern gives each branch independent copy
+- [ ] Mutation in one branch doesn't affect others
+
+---
 
 ## Phase 10: Result Aggregation
 
+**Objective:** Implement result collection and aggregation from parallel branches.
+
+**Tasks:**
 - [ ] 10.1 Implement collect-transform-report pipeline for fan-out results
 - [ ] 10.2 Create `${steps.fan_out.outputs[*]}` syntax for collecting all outputs
 - [ ] 10.3 Add built-in aggregation functions (merge, intersect, deduplicate)
@@ -125,20 +234,38 @@
 - [ ] 10.5 Create aggregation with error handling (skip failed branches)
 - [ ] 10.6 Add aggregation statistics (success rate, timing)
 - [ ] 10.7 Implement custom aggregation function support
-- [ ] **VERIFY 10**: Test results from 3 branches aggregated into single report. Failed branch results excluded. Aggregation shows "2 of 3 branches contributed".
+
+**VERIFY Phase 10:**
+- [ ] Test results from 3 branches aggregated into single report
+- [ ] Failed branch results excluded
+- [ ] Aggregation shows "2 of 3 branches contributed"
+
+---
 
 ## Phase 11: State Synchronization
 
+**Objective:** Implement state synchronization and checkpoint patterns.
+
+**Tasks:**
 - [ ] 11.1 Implement checkpoint-based synchronization between fan-out branches
 - [ ] 11.2 Create state merge for fan-in from parallel branches
 - [ ] 11.3 Add conflict detection for concurrent state updates
 - [ ] 11.4 Implement optimistic concurrency control
 - [ ] 11.5 Create state machine tracking for complex workflows
 - [ ] 11.6 Add progress checkpointing for resume support
-- [ ] **VERIFY 11**: Parallel branches write checkpoints. Fan-in merges states correctly. Conflict in concurrent update detected and resolved.
+
+**VERIFY Phase 11:**
+- [ ] Parallel branches write checkpoints successfully
+- [ ] Fan-in merges states correctly
+- [ ] Conflict in concurrent update detected and resolved
+
+---
 
 ## Phase 12: Integration and Documentation
 
+**Objective:** Complete schema updates, validation, and documentation.
+
+**Tasks:**
 - [ ] 12.1 Update workflow schema with fan-in and fan-out constructs
 - [ ] 12.2 Create JSON schema validation for fan patterns
 - [ ] 12.3 Implement execution engine support for all patterns
@@ -149,17 +276,32 @@
 - [ ] 12.8 Write user documentation for fan patterns
 - [ ] 12.9 Create example workflows for common scenarios
 - [ ] 12.10 Document best practices and anti-patterns
-- [ ] **VERIFY 12**: All fan patterns validate against schema. Visualization shows fan topology. Documentation covers all synchronization semantics.
+
+**VERIFY Phase 12:**
+- [ ] All fan patterns validate against schema
+- [ ] Visualization shows fan topology
+- [ ] Documentation covers all synchronization semantics
+
+---
 
 ## Phase 13: Common Workflow Templates
 
+**Objective:** Create workflow templates demonstrating fan patterns.
+
+**Tasks:**
 - [ ] 13.1 Create multi-source research template (fan-in to architect)
 - [ ] 13.2 Implement convergent test results template (fan-in validation)
 - [ ] 13.3 Create multi-framework test template (fan-out broadcast)
 - [ ] 13.4 Implement multi-environment deploy template (fan-out with canary)
 - [ ] 13.5 Create architecture-to-implementation template (pyramid pattern)
 - [ ] 13.6 Add comprehensive validation template combining fan-in and fan-out
-- [ ] **VERIFY 13**: Research template runs 3 parallel research streams feeding architect. Test template validates on 5 frameworks with threshold(4). Deploy template uses canary then full fan-out.
+
+**VERIFY Phase 13:**
+- [ ] Research template runs 3 parallel research streams feeding architect
+- [ ] Test template validates on 5 frameworks with threshold(4)
+- [ ] Deploy template uses canary then full fan-out
+
+---
 
 ## Success Criteria
 
@@ -178,3 +320,24 @@
 - [ ] Documentation covers patterns, semantics, and best practices
 - [ ] Test suite covers all scenarios with >90% coverage
 - [ ] Performance metrics show parallelization benefits
+
+---
+
+## Risks
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Data conflicts in fan-in aggregation | High | Medium | Clear merge rules and conflict resolution strategies |
+| Race conditions in fan-out coordination | High | Low | Proper synchronization and isolation between branches |
+| Performance overhead from coordination | Medium | Medium | Efficient state management and lazy evaluation |
+| Timeout handling complexity | Medium | Medium | Per-branch and overall timeout configuration |
+| State corruption on partial failures | High | Low | Checkpoint and rollback support |
+
+---
+
+## Notes
+
+- Priority: P2 (enhancement) - depends on core workflow infrastructure
+- Fan-in patterns inspired by MapReduce and dataflow programming
+- Fan-out patterns support both static and dynamic branch counts
+- Consider visual debugging tools for complex fan topologies

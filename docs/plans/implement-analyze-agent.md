@@ -1,19 +1,39 @@
 # Implementation Plan: Implement Analyze Agent
 
 ## Overview
+
 - **Goal:** Create a specialized read-only agent for structured code analysis with proactive invocation capabilities
-- **Priority:** P0
+- **Priority:** P0 (Critical - Core analysis agent)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-analyze-agent/`
-- **Model:** claude-sonnet-4-5
+- **Output:** `docs/plan-outputs/analyze-agent/`
+- **Model:** sonnet
 - **Category:** Agent Implementation
 
 > Implement the Analyze Agent (.claude/agents/analyze.md) as a specialized read-only agent for comprehensive code analysis. The agent provides structured findings generation, severity classification, and integrates with the /analyze command family (security, performance, quality, dependencies, architecture, accessibility, test). Supports proactive invocation based on task patterns and generates standardized artifacts (findings.json, metrics.json, analysis reports).
 
+---
+
+## Dependencies
+
+### Upstream
+- Explore Agent (uses exploration context for scope determination)
+
+### Downstream
+- `/review` command (consumes analysis findings)
+- `/fix` command (consumes findings for remediation)
+- `/audit` command (uses analysis as baseline)
+
+### External Tools
+- None (uses Claude's built-in analysis capabilities)
+
+---
+
 ## Phase 1: Agent Configuration & System Prompt
 
+**Objective:** Create base Analyze Agent configuration with system prompt and tool restrictions
+
 - [ ] 1.1 Create agent configuration file at `.claude/agents/analyze.md`
-  - Set model to `claude-sonnet-4-5` (analysis requires reasoning)
+  - Set model to `sonnet` (analysis requires reasoning)
   - Configure temperature to `0.0` for deterministic, reproducible analysis
   - Set category as "Analysis & Quality"
   - Define agent description: "Read-only agent for comprehensive code analysis"
@@ -54,7 +74,11 @@
   - Require concrete examples in recommendations
   - Include false positive reduction strategies
   - Add confidence scoring guidelines
-- [ ] **VERIFY 1**: Agent config validates, tool restrictions work correctly, system prompt loads, severity classification guidelines are clear
+**VERIFY Phase 1:**
+- [ ] Agent config validates
+- [ ] Tool restrictions work correctly
+- [ ] System prompt loads
+- [ ] Severity classification guidelines are clear
 
 ## Phase 2: Proactive Invocation System
 
@@ -95,7 +119,10 @@
   - Add agent capability query support
   - Include agent status and availability checks
   - Support agent version selection if needed
-- [ ] **VERIFY 2**: Proactive invocation triggers correctly, pattern detection has <15% false positives, context passing is complete
+**VERIFY Phase 2:**
+- [ ] Proactive invocation triggers correctly
+- [ ] Pattern detection has <15% false positives
+- [ ] Context passing is complete
 
 ## Phase 3: Integration with /analyze Command Family
 
@@ -139,7 +166,10 @@
   - Combine with existing artifacts if incremental
   - Add deduplication logic for repeated findings
   - Include trend analysis if baseline exists
-- [ ] **VERIFY 3**: All 7 sub-commands invoke agent correctly, parameters pass through, depth levels control scope appropriately
+**VERIFY Phase 3:**
+- [ ] All 7 sub-commands invoke agent correctly
+- [ ] Parameters pass through
+- [ ] Depth levels control scope appropriately
 
 ## Phase 4: Findings Artifact Generation
 
@@ -191,7 +221,10 @@
   - Group related findings (same root cause)
   - Preserve highest severity when deduplicating
   - Add deduplication metadata for transparency
-- [ ] **VERIFY 4**: findings.json validates against schema, all required fields present, IDs are unique and stable
+**VERIFY Phase 4:**
+- [ ] findings.json validates against schema
+- [ ] All required fields present
+- [ ] IDs are unique and stable
 
 ## Phase 5: Metrics Artifact Generation
 
@@ -247,7 +280,10 @@
   - Identify improvements (better metrics)
   - Add statistical significance indicators
   - Generate trend summary (improving/stable/degrading)
-- [ ] **VERIFY 5**: Metrics calculations are accurate, baseline comparison works, technical debt estimates are realistic
+**VERIFY Phase 5:**
+- [ ] Metrics calculations are accurate
+- [ ] Baseline comparison works
+- [ ] Technical debt estimates are realistic
 
 ## Phase 6: Severity Classification System
 
@@ -291,7 +327,10 @@
   - Add severity override comments in code
   - Include severity justification logging
   - Add severity appeal process documentation
-- [ ] **VERIFY 6**: Severity classification is consistent, context adjustments work correctly, impact scoring is accurate
+**VERIFY Phase 6:**
+- [ ] Severity classification is consistent
+- [ ] Context adjustments work correctly
+- [ ] Impact scoring is accurate
 
 ## Phase 7: CI/CD Integration Hooks
 
@@ -350,7 +389,10 @@
   - Add status check integration
   - Block PR merge if blockers found
   - Include artifact upload to PR
-- [ ] **VERIFY 7**: Exit codes work in CI/CD, GitHub annotations render correctly, SARIF uploads to Security tab
+**VERIFY Phase 7:**
+- [ ] Exit codes work in CI/CD
+- [ ] GitHub annotations render correctly
+- [ ] SARIF uploads to Security tab
 
 ## Phase 8: Proactive Invocation Testing
 
@@ -388,7 +430,11 @@
   - Measure overhead vs manual invocation
   - Test concurrent invocation handling
   - Optimize slow paths
-- [ ] **VERIFY 8**: Pattern detection is accurate, confidence scoring works, context passing is complete, logging is comprehensive
+**VERIFY Phase 8:**
+- [ ] Pattern detection is accurate
+- [ ] Confidence scoring works
+- [ ] Context passing is complete
+- [ ] Logging is comprehensive
 
 ## Phase 9: Real-World Validation
 
@@ -441,7 +487,10 @@
   - Measure analysis time per depth level
   - Verify timeout handling works correctly
   - Test memory consumption (should not exceed 2GB)
-- [ ] **VERIFY 9**: All analysis types are accurate on real codebases, CI/CD integration works, performance is acceptable
+**VERIFY Phase 9:**
+- [ ] All analysis types are accurate on real codebases
+- [ ] CI/CD integration works
+- [ ] Performance is acceptable
 
 ## Phase 10: Documentation & Examples
 
@@ -498,7 +547,10 @@
   - Generate example quality-report.md
   - Include baseline comparison examples
   - Add multi-language examples
-- [ ] **VERIFY 10**: Documentation is complete and clear, examples are accurate and helpful, guides are actionable
+**VERIFY Phase 10:**
+- [ ] Documentation is complete and clear
+- [ ] Examples are accurate and helpful
+- [ ] Guides are actionable
 
 ## Success Criteria
 
@@ -528,3 +580,25 @@
 - [ ] Documentation covers all features with working examples
 - [ ] Troubleshooting guide addresses common issues
 - [ ] Example artifacts are valid and representative
+
+---
+
+## Risks
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| High false positive rate | Medium | Medium | Implement confidence scoring and context-aware filtering |
+| Performance issues on large codebases | High | Medium | Implement scope limits and depth level timeouts |
+| Inconsistent severity classification | Medium | Low | Define clear severity rules with examples |
+| CI/CD integration failures | Medium | Low | Comprehensive testing across CI environments |
+| Metrics calculation inaccuracy | Low | Medium | Validate against reference tools (ESLint, SonarQube)
+
+---
+
+## Notes
+
+- The Analyze Agent should NEVER modify any files - it is strictly read-only
+- Analysis results should be reproducible with the same input
+- Consider caching analysis results for unchanged files
+- Analysis artifacts can serve as input for other agents (Review, Fix, Audit)
+- Support for multiple output formats (JSON, Markdown, SARIF) is essential for CI/CD integration

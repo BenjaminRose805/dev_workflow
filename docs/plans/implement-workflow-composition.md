@@ -1,15 +1,39 @@
 # Implementation Plan: Workflow Composition
 
 ## Overview
+
 - **Goal:** Implement workflow composition patterns enabling complex workflows built from simpler building blocks
 - **Priority:** P2
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-workflow-composition/`
+- **Output:** `docs/plan-outputs/workflow-composition/`
 
-> Enable building complex workflows by composing simpler templates through sequential pipelines, parallel fan-out, conditional routing, loop-based iteration, and nested sub-workflows. Implement artifact handoff between composed workflows, scoping rules for variable isolation, and error handling across composition boundaries.
+## Description
+
+Enable building complex workflows by composing simpler templates through sequential pipelines, parallel fan-out, conditional routing, loop-based iteration, and nested sub-workflows. Implement artifact handoff between composed workflows, scoping rules for variable isolation, and error handling across composition boundaries.
+
+---
+
+## Dependencies
+
+### Upstream
+- `/workflow` command infrastructure
+- Workflow execution engine
+- Workflow branching patterns
+
+### Downstream
+- Feature development workflows
+- Complex multi-stage pipelines
+
+### External Tools
+- None (uses built-in workflow engine)
+
+---
 
 ## Phase 1: Workflow Reference System
 
+**Objective:** Implement the core reference system for composing workflows.
+
+**Tasks:**
 - [ ] 1.1 Design `workflow_ref` step type schema for referencing external workflow templates
 - [ ] 1.2 Implement workflow loader to resolve and parse referenced workflow files
 - [ ] 1.3 Create workflow registry to cache loaded workflow definitions
@@ -18,10 +42,19 @@
 - [ ] 1.6 Create workflow input/output binding validation between parent and child
 - [ ] 1.7 Implement workflow path resolution (relative, absolute, registry-based)
 - [ ] 1.8 Add workflow metadata extraction (name, version, inputs, outputs)
-- [ ] **VERIFY 1**: Unit tests pass for workflow reference resolution. Can load `workflow: discovery-clarification` and validate input/output compatibility. Circular reference detected and rejected.
+
+**VERIFY Phase 1:**
+- [ ] Unit tests pass for workflow reference resolution
+- [ ] Can load referenced workflows and validate input/output compatibility
+- [ ] Circular reference detected and rejected
+
+---
 
 ## Phase 2: Sequential Composition (Pipelines)
 
+**Objective:** Implement sequential workflow chaining with artifact handoff.
+
+**Tasks:**
 - [ ] 2.1 Implement sequential workflow chaining with `depends_on` between workflow refs
 - [ ] 2.2 Create output-to-input binding syntax: `${steps.discover.outputs.requirements}`
 - [ ] 2.3 Implement execution engine changes to wait for workflow completion before next step
@@ -30,10 +63,19 @@
 - [ ] 2.6 Implement artifact path resolution for cross-workflow references
 - [ ] 2.7 Add pipeline visualization showing workflow chain
 - [ ] 2.8 Create checkpoint support for resuming failed pipelines
-- [ ] **VERIFY 2**: Test pipeline: discovery → design → implement executes sequentially. Output from discovery feeds into design inputs. Pipeline resumes from checkpoint after failure.
+
+**VERIFY Phase 2:**
+- [ ] Test pipeline: discovery → design → implement executes sequentially
+- [ ] Output from discovery feeds into design inputs
+- [ ] Pipeline resumes from checkpoint after failure
+
+---
 
 ## Phase 3: Parallel Composition (Fan-Out)
 
+**Objective:** Implement parallel workflow execution with output collection.
+
+**Tasks:**
 - [ ] 3.1 Implement `type: parallel` step containing multiple sub-workflows
 - [ ] 3.2 Create parallel execution engine launching N workflows concurrently
 - [ ] 3.3 Add configurable max concurrent workflows (default: 5)
@@ -44,10 +86,20 @@
 - [ ] 3.8 Create branch isolation ensuring parallel workflows don't share state
 - [ ] 3.9 Implement progress reporting for parallel execution (N of M complete)
 - [ ] 3.10 Add timeout handling for slow parallel branches
-- [ ] **VERIFY 3**: Three validation workflows run in parallel. All must complete before aggregation step. One failure with `threshold(2)` still proceeds. Progress shows "2 of 3 complete".
+
+**VERIFY Phase 3:**
+- [ ] Three validation workflows run in parallel successfully
+- [ ] All must complete before aggregation step
+- [ ] One failure with `threshold(2)` still proceeds
+- [ ] Progress shows "2 of 3 complete"
+
+---
 
 ## Phase 4: Conditional Composition
 
+**Objective:** Implement conditional workflow routing based on expressions.
+
+**Tasks:**
 - [ ] 4.1 Implement condition expression on workflow ref steps
 - [ ] 4.2 Add `condition: ${steps.assess.scope == 'minor'}` evaluation before execution
 - [ ] 4.3 Create mutually exclusive branch detection and validation
@@ -56,10 +108,19 @@
 - [ ] 4.6 Create condition evaluation logging for debugging
 - [ ] 4.7 Implement fallback chain pattern (try A, if fail try B, etc.)
 - [ ] 4.8 Add condition coverage validation (ensure all paths handled)
-- [ ] **VERIFY 4**: Conditional workflow routes to `simple-release` when scope=minor, `comprehensive-release` when scope=major. Skipped branch shows status `skipped`. Fallback chain tries 3 alternatives.
+
+**VERIFY Phase 4:**
+- [ ] Conditional workflow routes correctly based on scope evaluation
+- [ ] Skipped branch shows status `skipped`
+- [ ] Fallback chain tries alternatives in order
+
+---
 
 ## Phase 5: Loop Composition
 
+**Objective:** Implement iterative workflow execution with exit conditions.
+
+**Tasks:**
 - [ ] 5.1 Implement `type: loop` step referencing a workflow to iterate
 - [ ] 5.2 Create loop configuration: `max_iterations`, `exit_condition`
 - [ ] 5.3 Add loop context variables: `loop.index`, `loop.iteration`, `loop.previous_output`
@@ -69,10 +130,19 @@
 - [ ] 5.7 Add loop output aggregation (collect all iteration results)
 - [ ] 5.8 Create safety limit enforcement (max_iterations required)
 - [ ] 5.9 Implement loop progress reporting
-- [ ] **VERIFY 5**: Refinement loop executes until quality_score >= 0.85 or max 5 iterations. Loop context accessible in child workflow. Outputs from all iterations collected.
+
+**VERIFY Phase 5:**
+- [ ] Refinement loop executes until quality_score >= 0.85 or max 5 iterations
+- [ ] Loop context accessible in child workflow
+- [ ] Outputs from all iterations collected
+
+---
 
 ## Phase 6: Nested Composition
 
+**Objective:** Implement nested workflow support with scope isolation.
+
+**Tasks:**
 - [ ] 6.1 Implement nested parallel blocks within workflows
 - [ ] 6.2 Create scope isolation for nested workflows (can't access sibling scope)
 - [ ] 6.3 Add variable shadowing support (inner can override outer scope)
@@ -81,10 +151,20 @@
 - [ ] 6.6 Add output promotion from nested to parent scope
 - [ ] 6.7 Implement nested error propagation rules
 - [ ] 6.8 Create nested execution graph visualization
-- [ ] **VERIFY 6**: Three-level nested workflow executes correctly. Inner workflow cannot access sibling's steps. Variable shadowing works (inner `version` overrides outer). Depth limit enforced.
+
+**VERIFY Phase 6:**
+- [ ] Three-level nested workflow executes correctly
+- [ ] Inner workflow cannot access sibling's steps
+- [ ] Variable shadowing works (inner overrides outer)
+- [ ] Depth limit enforced
+
+---
 
 ## Phase 7: Artifact Handoff
 
+**Objective:** Implement artifact binding, validation, and tracking between workflows.
+
+**Tasks:**
 - [ ] 7.1 Implement explicit artifact binding: `inputs: { architecture: ${steps.design.outputs.architecture} }`
 - [ ] 7.2 Create artifact transformation support for type conversion
 - [ ] 7.3 Implement shared read-only artifact pattern for parallel branches
@@ -93,10 +173,19 @@
 - [ ] 7.6 Implement artifact versioning for composition tracking
 - [ ] 7.7 Add artifact provenance tracking (which workflow created it)
 - [ ] 7.8 Create artifact merge strategies for fan-in scenarios
-- [ ] **VERIFY 7**: Artifact flows from design to implementation workflow. Parallel branches read same artifact without conflict. Artifact version mismatch detected and reported.
+
+**VERIFY Phase 7:**
+- [ ] Artifact flows from design to implementation workflow
+- [ ] Parallel branches read same artifact without conflict
+- [ ] Artifact version mismatch detected and reported
+
+---
 
 ## Phase 8: Scoping Rules
 
+**Objective:** Implement variable scope isolation and resolution.
+
+**Tasks:**
 - [ ] 8.1 Implement global scope (inputs, env, config) accessible to all workflows
 - [ ] 8.2 Create workflow scope containing steps and outputs
 - [ ] 8.3 Implement sub-workflow scope with own inputs/steps/outputs
@@ -105,10 +194,19 @@
 - [ ] 8.6 Implement variable shadowing rules (inner shadows outer)
 - [ ] 8.7 Add scope validation at composition time (not runtime)
 - [ ] 8.8 Create scope debugging tools (show variable resolution chain)
-- [ ] **VERIFY 8**: Variable from global scope accessible in sub-workflow. Parallel workflow A cannot access workflow B's steps. Explicit output crossing scope boundary works.
+
+**VERIFY Phase 8:**
+- [ ] Variable from global scope accessible in sub-workflow
+- [ ] Parallel workflow A cannot access workflow B's steps
+- [ ] Explicit output crossing scope boundary works
+
+---
 
 ## Phase 9: Error Handling
 
+**Objective:** Implement error propagation and recovery patterns across composition boundaries.
+
+**Tasks:**
 - [ ] 9.1 Implement error propagation from child workflow to parent
 - [ ] 9.2 Create `on_error: continue` for optional workflow steps
 - [ ] 9.3 Implement `on_error: fallback` with fallback workflow definition
@@ -120,10 +218,20 @@
   - `on_error_in_loop: break | skip_iteration | retry`
 - [ ] 9.7 Add error boundary isolation (error in sub-workflow doesn't crash parent)
 - [ ] 9.8 Create error aggregation for parallel composition failures
-- [ ] **VERIFY 9**: Error in sub-workflow captured by parent. `on_error: continue` proceeds despite failure. Parallel with `fail_fast` stops on first error. Error context accessible in recovery workflow.
+
+**VERIFY Phase 9:**
+- [ ] Error in sub-workflow captured by parent
+- [ ] `on_error: continue` proceeds despite failure
+- [ ] Parallel with `fail_fast` stops on first error
+- [ ] Error context accessible in recovery workflow
+
+---
 
 ## Phase 10: Integration and Documentation
 
+**Objective:** Complete schema updates, validation, and documentation.
+
+**Tasks:**
 - [ ] 10.1 Update workflow schema with all composition constructs
 - [ ] 10.2 Create JSON schema validation for composition patterns
 - [ ] 10.3 Implement composition-aware plan parser
@@ -134,10 +242,19 @@
 - [ ] 10.8 Create example plans demonstrating each composition pattern
 - [ ] 10.9 Write user documentation for composition syntax
 - [ ] 10.10 Document performance considerations (nesting depth, parallel limits)
-- [ ] **VERIFY 10**: All composition patterns validate against schema. Complex workflow combining pipeline, parallel, conditional, and loop executes correctly. Status shows full composition hierarchy.
+
+**VERIFY Phase 10:**
+- [ ] All composition patterns validate against schema
+- [ ] Complex workflow combining pipeline, parallel, conditional, and loop executes correctly
+- [ ] Status shows full composition hierarchy
+
+---
 
 ## Phase 11: Feature Development Workflow Template
 
+**Objective:** Create a comprehensive feature development template demonstrating all composition patterns.
+
+**Tasks:**
 - [ ] 11.1 Create `feature-complete` template using all composition patterns
 - [ ] 11.2 Implement discovery phase as sequential workflow
 - [ ] 11.3 Add parallel implementation phase (backend, frontend, docs, deploy prep)
@@ -145,7 +262,12 @@
 - [ ] 11.5 Implement error handling with recovery workflows
 - [ ] 11.6 Add approval gates at critical composition points
 - [ ] 11.7 Create end-to-end test for feature development workflow
-- [ ] **VERIFY 11**: Feature development workflow executes: discovery → design → parallel(implement, document, deploy-prep) → validation → conditional(release). All patterns working together.
+
+**VERIFY Phase 11:**
+- [ ] Feature development workflow executes: discovery → design → parallel(implement, document, deploy-prep) → validation → conditional(release)
+- [ ] All composition patterns working together
+
+---
 
 ## Success Criteria
 
@@ -161,3 +283,24 @@
 - [ ] Feature development template demonstrates real-world composition
 - [ ] Documentation covers syntax, patterns, and anti-patterns
 - [ ] Test suite covers all composition scenarios with >90% coverage
+
+---
+
+## Risks
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Circular workflow references | High | Medium | Detection at parse time, not runtime |
+| Excessive nesting depth | Medium | Low | Configurable depth limits (default: 5) |
+| Scope isolation leaks | High | Low | Strict scope validation at composition time |
+| Performance degradation in deep compositions | Medium | Medium | Lazy loading and caching of workflow definitions |
+| Error handling complexity | Medium | Medium | Clear error propagation rules and documentation |
+
+---
+
+## Notes
+
+- Priority: P2 (enhancement) - depends on core workflow infrastructure
+- Composition patterns follow functional programming principles
+- Consider visual workflow editor for complex compositions
+- Template library should include common composition patterns

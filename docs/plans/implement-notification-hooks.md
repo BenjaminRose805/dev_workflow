@@ -1,13 +1,31 @@
 # Implementation Plan: Notification Hooks System
 
 ## Overview
+
 - **Goal:** Implement comprehensive Notification Hooks system with multiple channels and flexible triggering
 - **Priority:** P2 (Infrastructure)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-notification-hooks/`
+- **Output:** `docs/plan-outputs/notification-hooks/`
+- **Model:** haiku (fast notification processing)
 - **Category:** Hook Infrastructure
 
 > This plan implements a comprehensive notification system that provides multiple notification channels (terminal, status file, log file, webhooks) with flexible triggering patterns. The system supports success, error, progress, and warning notifications with configurable verbosity levels, batching, and rate limiting to ensure users receive timely, actionable information without overwhelming noise.
+
+---
+
+## Dependencies
+
+### Upstream
+- Core SDK hook system (Hook interface, registration)
+- Configuration management system
+
+### Downstream
+- All command execution (receives notifications)
+- External integrations (webhooks, Slack)
+
+### External Tools
+- HTTP client library (for webhook delivery)
+- Terminal formatting library (chalk or similar)
 
 ---
 
@@ -26,7 +44,10 @@
 - [ ] 1.9 Add TypeScript type guards for notification validation
 - [ ] 1.10 Document notification schemas with examples in JSDoc comments
 
-**VERIFY 1:** All notification types compile without errors, type guards validate correctly, schemas cover all use cases from source material.
+**VERIFY Phase 1:**
+- [ ] All notification types compile without errors
+- [ ] Type guards validate correctly
+- [ ] Schemas cover all use cases
 
 ---
 
@@ -45,7 +66,10 @@
 - [ ] 2.9 Implement message truncation and wrapping for terminal width
 - [ ] 2.10 Add configuration options for disabling colors, progress bars, and emoji symbols
 
-**VERIFY 2:** Terminal output displays correctly for all notification types, verbosity filtering works, colors and formatting render properly in different terminal environments.
+**VERIFY Phase 2:**
+- [ ] Terminal output displays correctly for all notification types
+- [ ] Verbosity filtering works
+- [ ] Colors and formatting render properly in different terminal environments
 
 ---
 
@@ -64,7 +88,11 @@
 - [ ] 3.9 Add configuration for status file path, max size, and max notification entries
 - [ ] 3.10 Create utility functions to read and parse status files for external consumers
 
-**VERIFY 3:** Status file updates atomically, concurrent writes don't corrupt file, status aggregation reflects current state accurately, rotation works correctly.
+**VERIFY Phase 3:**
+- [ ] Status file updates atomically
+- [ ] Concurrent writes don't corrupt file
+- [ ] Status aggregation reflects current state accurately
+- [ ] Rotation works correctly
 
 ---
 
@@ -83,7 +111,11 @@
 - [ ] 4.9 Add error handling for write failures with retry mechanism
 - [ ] 4.10 Create log parsing utilities for reading and filtering log files
 
-**VERIFY 4:** Logs written in valid JSONL format, rotation triggers correctly on size and time, old logs cleaned up, async writing doesn't lose messages.
+**VERIFY Phase 4:**
+- [ ] Logs written in valid JSONL format
+- [ ] Rotation triggers correctly on size and time
+- [ ] Old logs cleaned up
+- [ ] Async writing doesn't lose messages
 
 ---
 
@@ -102,7 +134,11 @@
 - [ ] 5.9 Add webhook delivery tracking and failure logging
 - [ ] 5.10 Create webhook testing utilities for validating configurations
 
-**VERIFY 5:** Webhooks deliver successfully to test endpoints, authentication works, retries handle failures gracefully, Slack formatting renders correctly.
+**VERIFY Phase 5:**
+- [ ] Webhooks deliver successfully to test endpoints
+- [ ] Authentication works
+- [ ] Retries handle failures gracefully
+- [ ] Slack formatting renders correctly
 
 ---
 
@@ -121,7 +157,11 @@
 - [ ] 6.9 Implement trigger conditions (only fire if certain context values match)
 - [ ] 6.10 Create configuration validation with helpful error messages
 
-**VERIFY 6:** Event routing correctly matches patterns, channels receive appropriate notifications, configuration validation catches errors, overrides work properly.
+**VERIFY Phase 6:**
+- [ ] Event routing correctly matches patterns
+- [ ] Channels receive appropriate notifications
+- [ ] Configuration validation catches errors
+- [ ] Overrides work properly
 
 ---
 
@@ -140,7 +180,11 @@
 - [ ] 7.9 Add configuration for batching intervals, thresholds, and rate limits
 - [ ] 7.10 Create bypass mechanism for critical notifications that skip batching
 
-**VERIFY 7:** Batching reduces notification volume appropriately, high-priority notifications bypass batching, rate limiting prevents spam, grouped notifications summarize correctly.
+**VERIFY Phase 7:**
+- [ ] Batching reduces notification volume appropriately
+- [ ] High-priority notifications bypass batching
+- [ ] Rate limiting prevents spam
+- [ ] Grouped notifications summarize correctly
 
 ---
 
@@ -159,7 +203,11 @@
 - [ ] 8.9 Add session statistics aggregation for summary notifications
 - [ ] 8.10 Implement graceful shutdown that flushes pending notifications
 
-**VERIFY 8:** Hooks trigger notifications correctly, context includes relevant information, session summaries accurate, shutdown flushes all pending notifications.
+**VERIFY Phase 8:**
+- [ ] Hooks trigger notifications correctly
+- [ ] Context includes relevant information
+- [ ] Session summaries accurate
+- [ ] Shutdown flushes all pending notifications
 
 ---
 
@@ -178,7 +226,12 @@
 - [ ] 9.9 Create tests for concurrent access to status files and log files
 - [ ] 9.10 Add validation tests for configuration schema and error messages
 
-**VERIFY 9:** All tests pass, code coverage >= 80%, performance acceptable under high load, concurrent access safe, error handling robust.
+**VERIFY Phase 9:**
+- [ ] All tests pass
+- [ ] Code coverage >= 80%
+- [ ] Performance acceptable under high load
+- [ ] Concurrent access safe
+- [ ] Error handling robust
 
 ---
 
@@ -199,49 +252,25 @@
 
 ---
 
-## Dependencies
+## Risks
 
-- Core SDK hook system (Hook interface, registration)
-- TypeScript type system for notification schemas
-- File system utilities for atomic writes and locking
-- HTTP client library for webhook delivery
-- Terminal formatting library (chalk or similar)
-- Testing framework (Jest or similar)
-- Configuration management system
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| File system race conditions corrupt data | Medium | Low | File locking and atomic writes using temp files |
+| Webhook delivery failures | Medium | Medium | Retry logic with exponential backoff and timeout limits |
+| Notification spam overwhelms users | Medium | Medium | Batching, rate limiting, and threshold-based filtering |
+| Performance overhead slows main operations | Low | Medium | Async writing, queues, and optimized critical paths |
+| Configuration complexity | Low | Low | Sensible defaults, validation, and clear documentation |
+| Terminal compatibility issues | Low | Medium | Configuration to disable colors/emoji, detect capabilities |
+| Log file growth consumes disk space | Medium | Medium | Rotation and auto-cleanup of old logs |
+| Memory leaks in batching queues | Medium | Low | Max queue sizes, timeouts, and graceful shutdown |
 
-## Risks and Mitigations
+---
 
-- **Risk:** File system race conditions - Status file and log file concurrent writes could corrupt data
-  - **Mitigation:** Implement file locking and atomic writes using temp files
+## Notes
 
-- **Risk:** Webhook delivery failures - External services may be unreachable or slow
-  - **Mitigation:** Implement retry logic with exponential backoff and timeout limits
-
-- **Risk:** Notification spam - Too many notifications could overwhelm users and systems
-  - **Mitigation:** Implement batching, rate limiting, and threshold-based filtering
-
-- **Risk:** Performance overhead - Notification system could slow down main operations
-  - **Mitigation:** Use async writing, queues, and optimize critical paths
-
-- **Risk:** Configuration complexity - Trigger configuration could become difficult to manage
-  - **Mitigation:** Provide sensible defaults, validation, and clear documentation
-
-- **Risk:** Terminal compatibility - Color and formatting may not work in all environments
-  - **Mitigation:** Add configuration to disable colors/emoji, detect terminal capabilities
-
-- **Risk:** Log file growth - Logs could consume excessive disk space
-  - **Mitigation:** Implement rotation and auto-cleanup of old logs
-
-- **Risk:** Memory leaks - Batching queues could accumulate if not flushed properly
-  - **Mitigation:** Implement max queue sizes, timeouts, and graceful shutdown
-
-## Future Enhancements
-
-- Desktop/OS notification integration for critical alerts
-- Email channel for scheduled digests
-- Integration with monitoring systems (Datadog, Sentry, etc.)
-- Custom notification templates with Handlebars or similar
-- Notification analytics and usage metrics
-- User preference profiles for notification customization
-- Mobile push notification support via external services
-- Interactive notifications with action buttons (for supported channels)
+- Notification hooks integrate with PostToolUse and SessionEnd events
+- Four notification channels: terminal, status file, log file, webhooks
+- Batching and rate limiting prevent notification spam
+- Performance target: <10ms overhead per notification
+- Log rotation prevents unbounded disk usage

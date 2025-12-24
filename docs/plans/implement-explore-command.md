@@ -4,11 +4,28 @@
 - **Goal:** Implement the /explore command with 6 sub-commands for automated codebase exploration and mapping
 - **Priority:** P0 (CRITICAL - Discovery & Ideation phase)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-explore-command/`
+- **Output:** `docs/plan-outputs/explore-command/`
 - **Model:** Haiku (fast exploration), Sonnet (deep analysis)
 - **Category:** Discovery & Ideation
 
 > The /explore command is a specialized codebase exploration tool that helps developers understand unfamiliar code through automated analysis, progressive depth exploration (quick/standard/deep), and structured artifact generation. It wraps the existing Explore agent while adding specialized sub-commands for architecture, patterns, dependencies, and data flow analysis.
+
+---
+
+## Dependencies
+
+### Upstream
+- None (foundational discovery command)
+
+### Downstream
+- `/clarify` - uses exploration artifacts to identify clarification needs
+- `/analyze` - consumes exploration results for deep-dive analysis
+- `/refactor` - uses exploration data for refactoring planning
+- `/document` - generates documentation from exploration artifacts
+- `/architect` - leverages codebase-map.json for architecture decisions
+
+### External Tools
+- None (uses built-in Claude Code tools: Read, Grep, Glob, Bash)
 
 ---
 
@@ -34,7 +51,8 @@
   - focus_areas: optional user hints
 - [ ] 1.5 Create output directory structure: `docs/artifacts/discovery/exploration/`
 
-**VERIFY 1:** Base /explore command runs successfully with standard depth, produces structured output
+**VERIFY Phase 1:**
+- [ ] Base /explore command runs successfully with standard depth, produces structured output
 
 ---
 
@@ -64,7 +82,8 @@
   - Sample representative files per directory
   - Skip generated code, build artifacts
 
-**VERIFY 2:** All three depth levels complete within time limits and produce proportional output quality
+**VERIFY Phase 2:**
+- [ ] All three depth levels complete within time limits and produce proportional output quality
 
 ---
 
@@ -73,6 +92,8 @@
 **Objective:** Create 6 specialized sub-commands with unique analysis focuses
 
 ### 3.1 Quick & Deep Modifiers
+
+**Tasks:**
 - [ ] 3.1.1 Create `/explore:quick` command file
   - YAML: depth: shallow, model: haiku
   - Quick summary only, 30-second limit
@@ -83,6 +104,8 @@
   - Output: `comprehensive-report.md`, `full-map.json`
 
 ### 3.2 Architecture Sub-Command
+
+**Tasks:**
 - [ ] 3.2.1 Create `/explore:architecture` command file
   - YAML: depth: deep, model: haiku
   - argument-hint: [target-path]
@@ -96,6 +119,8 @@
   - `component-graph.md` (Mermaid diagrams)
 
 ### 3.3 Patterns Sub-Command
+
+**Tasks:**
 - [ ] 3.3.1 Create `/explore:patterns` command file
   - YAML: depth: standard, model: haiku
 - [ ] 3.3.2 Implement pattern detection:
@@ -108,6 +133,8 @@
   - `conventions.json` (machine-readable rules)
 
 ### 3.4 Dependencies Sub-Command
+
+**Tasks:**
 - [ ] 3.4.1 Create `/explore:dependencies` command file
   - YAML: depth: deep, model: haiku
 - [ ] 3.4.2 Implement dependency analysis:
@@ -120,6 +147,8 @@
   - `impact-analysis.md` (change impact reports)
 
 ### 3.5 Flow Sub-Command
+
+**Tasks:**
 - [ ] 3.5.1 Create `/explore:flow` command file
   - YAML: depth: deep, model: haiku
 - [ ] 3.5.2 Implement flow tracing:
@@ -131,7 +160,8 @@
   - `flow-diagram.md` (Mermaid sequence diagrams)
   - `execution-paths.json` (structured paths)
 
-**VERIFY 3:** All sub-commands produce valid, specialized artifacts unique to their focus area
+**VERIFY Phase 3:**
+- [ ] All sub-commands produce valid, specialized artifacts unique to their focus area
 
 ---
 
@@ -140,6 +170,8 @@
 **Objective:** Implement structured artifact generation with validated schemas
 
 ### 4.1 Primary Artifacts
+
+**Tasks:**
 - [ ] 4.1.1 Implement `exploration-report.md` generation:
   - Metadata: target, date, depth, confidence, coverage
   - Summary (2-3 paragraphs)
@@ -156,6 +188,8 @@
   - patterns: {naming, state_management}
 
 ### 4.2 Specialized Artifacts
+
+**Tasks:**
 - [ ] 4.2.1 Implement `architecture-map.json` schema:
   - architecture_style enum
   - layers[], components[], relationships[]
@@ -173,12 +207,15 @@
   - documentation: standards
 
 ### 4.3 Schema Validation
+
+**Tasks:**
 - [ ] 4.3.1 Define JSON schemas for all .json artifacts
 - [ ] 4.3.2 Add schema validation before artifact write
 - [ ] 4.3.3 Add schema $ref URLs in artifact metadata
 - [ ] 4.3.4 Create schema documentation in `docs/schemas/`
 
-**VERIFY 4:** All artifacts validate against schemas, metadata is complete and accurate
+**VERIFY Phase 4:**
+- [ ] All artifacts validate against schemas, metadata is complete and accurate
 
 ---
 
@@ -207,7 +244,8 @@
   - "Analyzed: X files, Y lines"
   - "Generating artifacts..."
 
-**VERIFY 5:** Agent integration is seamless, delegation works correctly, error cases handled gracefully
+**VERIFY Phase 5:**
+- [ ] Agent integration is seamless, delegation works correctly, error cases handled gracefully
 
 ---
 
@@ -233,7 +271,8 @@
   - Refactoring workflow: /explore → /analyze → /refactor
   - Architecture review: /explore:architecture → /analyze
 
-**VERIFY 6:** Command integration works smoothly, artifacts flow between commands correctly
+**VERIFY Phase 6:**
+- [ ] Command integration works smoothly, artifacts flow between commands correctly
 
 ---
 
@@ -242,6 +281,8 @@
 **Objective:** Comprehensive testing across codebases, languages, and sizes
 
 ### 7.1 Unit Testing
+
+**Tasks:**
 - [ ] 7.1.1 Test depth level logic (quick vs standard vs deep)
 - [ ] 7.1.2 Test time limiting and timeout handling
 - [ ] 7.1.3 Test file selection algorithms
@@ -249,11 +290,15 @@
 - [ ] 7.1.5 Test schema validation
 
 ### 7.2 Integration Testing
+
+**Tasks:**
 - [ ] 7.2.1 Test on small codebase (<100 files)
 - [ ] 7.2.2 Test on medium codebase (100-500 files)
 - [ ] 7.2.3 Test on large codebase (500+ files)
 
 ### 7.3 Cross-Language Testing
+
+**Tasks:**
 - [ ] 7.3.1 Test on TypeScript/JavaScript projects
 - [ ] 7.3.2 Test on Python projects
 - [ ] 7.3.3 Test on Go projects
@@ -261,12 +306,15 @@
 - [ ] 7.3.5 Test on multi-language projects
 
 ### 7.4 Sub-Command Testing
+
+**Tasks:**
 - [ ] 7.4.1 Test each sub-command independently
 - [ ] 7.4.2 Verify specialized artifacts are unique and valuable
 - [ ] 7.4.3 Compare sub-command output to base explore output
 - [ ] 7.4.4 Test sub-command argument handling
 
-**VERIFY 7:** All test cases pass, command works reliably across diverse codebases
+**VERIFY Phase 7:**
+- [ ] All test cases pass, command works reliably across diverse codebases
 
 ---
 
@@ -304,7 +352,8 @@
   - Helpful artifact summaries
   - Clickable file paths (where supported)
 
-**VERIFY 8:** Documentation is complete, clear, and helpful; user experience is polished
+**VERIFY Phase 8:**
+- [ ] Documentation is complete, clear, and helpful; user experience is polished
 
 ---
 
@@ -340,3 +389,15 @@
 - [ ] Tested on small, medium, and large codebases
 - [ ] Tested on TypeScript, Python, Go, and Java projects
 - [ ] All sub-commands tested independently
+
+---
+
+## Risks
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Large codebase timeouts | Medium | Medium | Implement graceful degradation, auto-adjust depth if timeout imminent |
+| Inaccurate framework detection | Medium | Low | Use multiple indicators, allow manual override |
+| Incomplete exploration artifacts | Medium | Medium | Add confidence/coverage scores, warn on incomplete results |
+| Performance degradation on deep exploration | Medium | Medium | Time-box operations, prioritize high-value files |
+| Generated artifacts become stale | Low | Medium | Add timestamps, recommend re-exploration cadence |

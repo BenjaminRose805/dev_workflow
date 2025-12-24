@@ -1,19 +1,41 @@
 # Implementation Plan: Implement Deploy Agent
 
 ## Overview
+
 - **Goal:** Create a deployment orchestration agent for safe, observable deployments across multiple platforms with pre-flight checks, health verification, and rollback capabilities
-- **Priority:** P0
+- **Priority:** P0 (Critical - Deployment automation)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-deploy-agent/`
-- **Model:** Sonnet (platform knowledge and orchestration)
+- **Output:** `docs/plan-outputs/deploy-agent/`
+- **Model:** sonnet (platform knowledge and orchestration)
 - **Category:** Operations & Meta
 
 > Implement the Deploy Agent for the /deploy command system. This agent orchestrates deployment workflows with a safety-first approach, providing platform-agnostic deployment support across Vercel, Netlify, AWS, Docker, and Kubernetes. It performs comprehensive pre-flight checks, executes deployments with real-time feedback, verifies health post-deployment, and maintains rollback readiness. The agent uses the AskUser tool for critical confirmations and bypassPermissions mode for deployment operations.
 
+---
+
+## Dependencies
+
+### Upstream
+- `/test` command (pre-flight test execution)
+- `/validate` command (build and lint verification)
+- Artifact Registry (deployment configuration artifacts)
+
+### Downstream
+- Deployment artifacts consumed by monitoring systems
+- Health check reports consumed by `/audit` command
+
+### External Tools
+- Platform CLIs: `vercel`, `netlify`, `aws`, `docker`, `kubectl`, `helm`
+- Git CLI for branch/commit verification
+
+---
+
 ## Phase 1: Agent Configuration & System Prompt
 
+**Objective:** Create base Deploy Agent configuration with system prompt and tool permissions
+
 - [ ] 1.1 Create agent configuration file at `.claude/agents/deploy.md`
-  - Set model to `claude-sonnet-4-5` for deployment orchestration
+  - Set model to `sonnet` for deployment orchestration
   - Configure allowed tools: `Read`, `Glob`, `Grep`, `Bash`, `AskUser`
   - Set permission_mode to `bypassPermissions` for deployment operations
   - Define category as "operations"
@@ -49,7 +71,10 @@
   - Add example invocations
   - Include upstream/downstream command references
   - Document integration points with /test, /validate, /release
-- [ ] **VERIFY 1**: Agent configuration file is valid, system prompt establishes clear deployment protocols, tool restrictions are appropriate for safe deployments
+**VERIFY Phase 1:**
+- [ ] Agent configuration file is valid
+- [ ] System prompt establishes clear deployment protocols
+- [ ] Tool restrictions are appropriate for safe deployments
 
 ## Phase 2: Platform Detection Implementation
 
@@ -95,7 +120,10 @@
   - Prompt user to select target platform
   - Support platform priority configuration
   - Warn about platform conflicts
-- [ ] **VERIFY 2**: All five platforms are correctly detected, platform adapter factory returns appropriate handlers, multi-platform scenarios are handled gracefully
+**VERIFY Phase 2:**
+- [ ] All five platforms are correctly detected
+- [ ] Platform adapter factory returns appropriate handlers
+- [ ] Multi-platform scenarios are handled gracefully
 
 ## Phase 3: Pre-Flight Checks System
 
@@ -142,7 +170,10 @@
   - Staging: Most checks required, allow some warnings
   - Preview: Minimal checks, fast iteration focus
   - Support custom check configuration per environment
-- [ ] **VERIFY 3**: All pre-flight checks correctly identify issues, blocking checks prevent deployment, check orchestrator provides clear pass/fail reporting
+**VERIFY Phase 3:**
+- [ ] All pre-flight checks correctly identify issues
+- [ ] Blocking checks prevent deployment
+- [ ] Check orchestrator provides clear pass/fail reporting
 
 ## Phase 4: Deployment Execution Workflow
 
@@ -200,7 +231,10 @@
   - Store URLs in deployment-config.json
   - Display URLs prominently to user
   - Generate shareable preview links
-- [ ] **VERIFY 4**: Deployments execute successfully on all platforms, deployment URLs are captured correctly, progress tracking provides clear feedback
+**VERIFY Phase 4:**
+- [ ] Deployments execute successfully on all platforms
+- [ ] Deployment URLs are captured correctly
+- [ ] Progress tracking provides clear feedback
 
 ## Phase 5: Health Verification Implementation
 
@@ -243,7 +277,10 @@
   - Trigger automatic rollback on severe failures
   - Log health check failures for debugging
   - Send health check alerts (if configured)
-- [ ] **VERIFY 5**: Health checks accurately validate deployment, performance regressions are detected, health check report is comprehensive and actionable
+**VERIFY Phase 5:**
+- [ ] Health checks accurately validate deployment
+- [ ] Performance regressions are detected
+- [ ] Health check report is comprehensive and actionable
 
 ## Phase 6: Rollback Capability
 
@@ -288,7 +325,10 @@
   - Verify rollback resolved the issue
   - Generate rollback report
   - Update deployment-config.json with rollback details
-- [ ] **VERIFY 6**: Rollback executes successfully on all platforms, rollback target selection is intuitive, post-rollback health verification confirms success
+**VERIFY Phase 6:**
+- [ ] Rollback executes successfully on all platforms
+- [ ] Rollback target selection is intuitive
+- [ ] Post-rollback health verification confirms success
 
 ## Phase 7: Artifact Generation
 
@@ -331,7 +371,10 @@
   - Check for required sections/fields
   - Ensure artifacts are complete before finalizing
   - Add checksums for integrity verification
-- [ ] **VERIFY 7**: All three artifacts are generated correctly, artifacts contain comprehensive deployment information, validation prevents incomplete artifacts
+**VERIFY Phase 7:**
+- [ ] All three artifacts are generated correctly
+- [ ] Artifacts contain comprehensive deployment information
+- [ ] Validation prevents incomplete artifacts
 
 ## Phase 8: Integration with /deploy Command
 
@@ -365,7 +408,10 @@
   - Show what would be deployed
   - Validate configuration without side effects
   - Support `--dry-run` flag
-- [ ] **VERIFY 8**: Agent is correctly invoked by /deploy command, context is passed properly, confirmation workflows are user-friendly
+**VERIFY Phase 8:**
+- [ ] Agent is correctly invoked by /deploy command
+- [ ] Context is passed properly
+- [ ] Confirmation workflows are user-friendly
 
 ## Phase 9: Advanced Deployment Strategies
 
@@ -396,7 +442,10 @@
   - Promote staging to production atomically
   - Implement rollback-on-failure after promotion
   - Update deployment tracking
-- [ ] **VERIFY 9**: Advanced deployment strategies work on supported platforms, canary rollbacks are automatic, blue-green switching is instant
+**VERIFY Phase 9:**
+- [ ] Advanced deployment strategies work on supported platforms
+- [ ] Canary rollbacks are automatic
+- [ ] Blue-green switching is instant
 
 ## Phase 10: Testing & Validation
 
@@ -446,7 +495,11 @@
   - Test AskUser confirmations work correctly
   - Verify agent system prompt guides behavior appropriately
   - Test agent error handling and recovery
-- [ ] **VERIFY 10**: All platforms deploy successfully, health checks work reliably, rollback functionality is robust, artifacts are accurate and complete
+**VERIFY Phase 10:**
+- [ ] All platforms deploy successfully
+- [ ] Health checks work reliably
+- [ ] Rollback functionality is robust
+- [ ] Artifacts are accurate and complete
 
 ## Phase 11: Documentation & Examples
 
@@ -478,7 +531,10 @@
   - Example workflow: /deploy:preview → review → /deploy:promote
   - Example workflow: deployment failure → /deploy:rollback
   - Example workflow: /validate → /deploy:app → /deploy:verify
-- [ ] **VERIFY 11**: Documentation is comprehensive, examples are realistic and helpful, platform-specific guides enable successful deployments
+**VERIFY Phase 11:**
+- [ ] Documentation is comprehensive
+- [ ] Examples are realistic and helpful
+- [ ] Platform-specific guides enable successful deployments
 
 ## Success Criteria
 
@@ -500,3 +556,25 @@
 - [ ] Agent provides clear progress feedback and actionable error messages
 - [ ] Deployment artifacts are comprehensive and enable audit trail
 - [ ] Agent follows safety-first philosophy with appropriate confirmations
+
+---
+
+## Risks
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Failed deployment leaves system in bad state | High | Medium | Pre-flight checks, health verification, automatic rollback |
+| Platform CLI changes break deployment | Medium | Medium | Version pinning, platform adapter abstraction |
+| Credentials exposed in logs or artifacts | High | Low | Credential masking, secure logging practices |
+| Rollback fails when needed | High | Low | Rollback testing, multiple rollback strategies |
+| Health checks produce false positives/negatives | Medium | Medium | Configurable thresholds, retry logic |
+
+---
+
+## Notes
+
+- Deploy Agent uses bypassPermissions mode for deployment commands but requires AskUser confirmation for production
+- Safety-first approach: all pre-flight checks must pass before deployment executes
+- Platform detection is automatic but can be overridden via command arguments
+- Rollback is always available to the previous deployment version
+- All deployment actions are logged for audit trail

@@ -1,14 +1,30 @@
 # Implementation Plan: Implement Review Agent
 
 ## Overview
+
 - **Goal:** Create a specialized Review Agent that provides proactive, context-aware code review with structured feedback for PRs, diffs, and commits
-- **Priority:** P0 (CRITICAL - Core agent for automated code quality enforcement)
+- **Priority:** P0 (Critical - Core agent for automated code quality enforcement)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-review-agent/`
-- **Model:** Sonnet 4.5 (balanced code review capabilities)
+- **Output:** `docs/plan-outputs/review-agent/`
+- **Model:** sonnet (balanced code review capabilities)
 - **Category:** Agents & Automation
 
 > Implement a custom agent (subagent) that acts as a specialized code reviewer, proactively analyzing code changes for quality, security, performance, and maintainability. The agent operates with read-only tools, generates structured artifacts (review-comments.md, suggestions.json), and integrates seamlessly with the /review command system for comprehensive code review workflows.
+
+---
+
+## Dependencies
+
+### Upstream
+- Analyze Agent (can use analysis findings to enhance review)
+- Explore Agent (uses codebase context for review)
+
+### Downstream
+- `/fix` command (consumes review suggestions for auto-fix)
+- `/test` command (uses review to identify test gaps)
+
+### External Tools
+- `gh` CLI (for GitHub integration)
 
 ---
 
@@ -35,7 +51,7 @@
   - Extract project conventions from existing codebase patterns
   - Identify language-specific standards (linting configs, style guides)
 - [ ] 1.4 Set up output directory structure
-  - Create `docs/plan-outputs/implement-review-agent/` directory
+  - Create `docs/plan-outputs/review-agent/` directory
   - Set up subdirectories: `artifacts/`, `findings/`, `verification/`, `sessions/`
   - Initialize `status.json` tracking file
   - Create artifact schema documentation
@@ -44,7 +60,10 @@
   - Explicit triggers: "Use the review agent", "Have the reviewer check this"
   - Context-based triggers: After git operations, before commits
   - Integration triggers: Called by /review command
-- [ ] **VERIFY 1:** Agent configuration validates, system prompt triggers automatic review workflow, output directories created
+**VERIFY Phase 1:**
+- [ ] Agent configuration validates
+- [ ] System prompt triggers automatic review workflow
+- [ ] Output directories created
 
 ---
 
@@ -89,7 +108,9 @@
   - Medium: Feature degradation, moderate quality issues
   - Low: Style violations, minor improvements
   - Info: Suggestions, best practice recommendations
-- [ ] **VERIFY 2:** All detection systems identify real issues in test code, severity classification is accurate and consistent
+**VERIFY Phase 2:**
+- [ ] All detection systems identify real issues in test code
+- [ ] Severity classification is accurate and consistent
 
 ---
 
@@ -130,7 +151,11 @@
   - Create top 3-5 critical issues summary
   - Identify quick wins (low effort, high impact)
   - Estimate total remediation time
-- [ ] **VERIFY 3:** Feedback is actionable, code suggestions are valid, prioritization makes sense, context-awareness works
+**VERIFY Phase 3:**
+- [ ] Feedback is actionable
+- [ ] Code suggestions are valid
+- [ ] Prioritization makes sense
+- [ ] Context-awareness works
 
 ---
 
@@ -141,11 +166,11 @@
 ### 4.1 review-comments.md Artifact
 
 - [ ] 4.1.1 Create markdown template with YAML frontmatter
-  - artifact-type: review-comments
+  - artifact_type: review-comments
   - scope: [PR number | diff ref | file path]
   - timestamp: ISO-8601 format
   - reviewer: review-agent
-  - model: claude-sonnet-4-5
+  - model: sonnet
 - [ ] 4.1.2 Implement summary section generator
   - Files changed count
   - Total comments count
@@ -193,7 +218,7 @@
 ### 4.3 blockers.md Artifact (Optional - only if blockers found)
 
 - [ ] 4.3.1 Create blockers template with frontmatter
-  - artifact-type: blockers
+  - artifact_type: blockers
   - blocker-count: X
   - severity-threshold: critical,high
   - merge-recommendation: BLOCK
@@ -223,7 +248,10 @@
   - Same session identifier
   - Version compatibility markers
 
-- [ ] **VERIFY 4:** All artifacts validate against schemas, cross-references work, artifacts contain complete information
+**VERIFY Phase 4:**
+- [ ] All artifacts validate against schemas
+- [ ] Cross-references work
+- [ ] Artifacts contain complete information
 
 ---
 
@@ -257,7 +285,10 @@
   - Store session context (scope, parameters, timestamp)
   - Enable review continuation/updates
   - Track review iterations (v1, v2, v3)
-- [ ] **VERIFY 5:** Agent integrates with /review commands, proactive invocation works, session tracking functions
+**VERIFY Phase 5:**
+- [ ] Agent integrates with /review commands
+- [ ] Proactive invocation works
+- [ ] Session tracking functions
 
 ---
 
@@ -302,7 +333,10 @@
   - Block push if critical issues found
   - Show summary of issues
   - Confirmation prompt for warnings
-- [ ] **VERIFY 6:** GitHub integration posts comments correctly, CI/CD pipelines work, hooks trigger appropriately
+**VERIFY Phase 6:**
+- [ ] GitHub integration posts comments correctly
+- [ ] CI/CD pipelines work
+- [ ] Hooks trigger appropriately
 
 ---
 
@@ -357,7 +391,10 @@
   - "Focus on changed lines, but consider surrounding context"
   - "Limit review to reasonable scope (avoid reviewing entire codebase)"
   - "If scope is too large (>50 files), suggest focusing on critical areas"
-- [ ] **VERIFY 7:** System prompt is comprehensive, clear workflow defined, constraints are explicit
+**VERIFY Phase 7:**
+- [ ] System prompt is comprehensive
+- [ ] Clear workflow defined
+- [ ] Constraints are explicit
 
 ---
 
@@ -470,7 +507,11 @@
   - Skips detailed review
   - Suggests reviewing source
 
-- [ ] **VERIFY 8:** All tests pass, edge cases handled, cross-language support works, integrations function
+**VERIFY Phase 8:**
+- [ ] All tests pass
+- [ ] Edge cases handled
+- [ ] Cross-language support works
+- [ ] Integrations function
 
 ---
 
@@ -516,7 +557,11 @@
   - Clear status messages
   - Helpful error messages
   - Suggestions for next steps
-- [ ] **VERIFY 9:** Documentation complete, examples work, troubleshooting covers common issues, user experience polished
+**VERIFY Phase 9:**
+- [ ] Documentation complete
+- [ ] Examples work
+- [ ] Troubleshooting covers common issues
+- [ ] User experience polished
 
 ---
 
@@ -578,3 +623,25 @@
 - [ ] Troubleshooting section covers common issues
 - [ ] Example review sessions demonstrate capabilities
 - [ ] Configuration file includes inline comments
+
+---
+
+## Risks
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| High false positive rate in code suggestions | Medium | Medium | Implement confidence scoring and validation checks |
+| GitHub API rate limiting | Medium | Medium | Implement request batching and caching |
+| Inconsistent review quality across languages | Medium | Medium | Language-specific detection patterns |
+| Large PR performance issues | Medium | Medium | Implement scope limiting and progressive review |
+| Auto-fix suggestions break code | High | Low | Require user confirmation and validation |
+
+---
+
+## Notes
+
+- The Review Agent should NEVER modify files directly - it generates suggestions only
+- Review focus should be on changed lines but consider surrounding context
+- Support for multiple output formats enables CI/CD and GitHub integration
+- Session tracking enables iterative reviews on the same PR
+- Consider caching review results for unchanged files in incremental reviews

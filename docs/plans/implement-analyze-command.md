@@ -4,14 +4,46 @@
 - **Goal:** Create a comprehensive analysis command with 7 sub-commands for security, performance, quality, dependencies, architecture, accessibility, and test analysis
 - **Priority:** P0
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-analyze-command/`
+- **Output:** `docs/plan-outputs/analyze-command/`
 
 > Implement the /analyze command system that provides comprehensive static and dynamic code analysis capabilities. Supports security vulnerability detection (OWASP Top 10, CWE patterns), performance bottleneck identification, code quality metrics, dependency analysis, architecture conformance, accessibility compliance, and test quality assessment. Generates structured artifacts including findings.json, metrics.json, analysis reports, and prioritized recommendations.
 
+## Dependencies
+
+### Upstream
+- `/explore` - Uses exploration reports for codebase understanding before analysis
+- `/clarify` - May consume requirements-spec.json for requirements-based analysis
+
+### Downstream
+- `/review` - Consumes analysis findings for code review suggestions
+- `/fix` - Uses analysis findings to generate targeted fixes
+- `/audit` - Uses analysis as input for compliance auditing
+- `/validate` - Uses analysis metrics for validation thresholds
+
+### External Tools
+- AST parsing libraries (language-specific)
+- Complexity calculation tools (escomplex for JS/TS)
+- Security pattern databases (CWE, OWASP references)
+
+---
+
+## Risks
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| False positive overload | High - Users ignore findings | Medium | Implement confidence scoring, allow severity tuning |
+| Performance on large codebases | High - Timeouts, incomplete analysis | Medium | Implement incremental analysis, depth-level controls |
+| Language support gaps | Medium - Incomplete coverage | Low | Prioritize JS/TS/Python, document limitations |
+| Outdated security patterns | High - Missed vulnerabilities | Low | Version pattern databases, regular updates |
+| Analysis result inconsistency | Medium - User confusion | Low | Standardize finding format, add deduplication |
+
+---
+
 ## Phase 1: Core Infrastructure
 
+**Tasks:**
 - [ ] 1.1 Create base command YAML at `.claude/commands/analyze.md`
-  - Set model to `claude-sonnet-4-5`
+  - Set model to `sonnet`
   - Configure temperature to `0.0` for deterministic analysis
   - Configure allowed tools: `Read`, `Glob`, `Grep`, `Bash`
   - Define category as "Analysis & Quality"
@@ -36,7 +68,7 @@
   - Include artifact generation requirements
   - Add baseline comparison logic
 - [ ] 1.5 Set up output directory structure
-  - Create `docs/plan-outputs/implement-analyze-command/` directory
+  - Create `docs/plan-outputs/analyze-command/` directory
   - Set up subdirectories: `artifacts/`, `findings/`, `verification/`
   - Initialize `status.json` tracking file
   - Create schema validation utilities
@@ -45,10 +77,13 @@
   - Create Standard mode (~2-5min): Comprehensive single-file analysis
   - Create Deep mode (~10-30min): Cross-file analysis, architectural patterns
   - Add timeout and scope controls per depth level
-- [ ] **VERIFY 1**: Base YAML structure is valid, schemas validate correctly, depth level framework differentiates analysis scope appropriately
+
+**VERIFY Phase 1:**
+- [ ] Base YAML structure is valid, schemas validate correctly, depth level framework differentiates analysis scope appropriately
 
 ## Phase 2: P0 Sub-Commands - Security Analysis
 
+**Tasks:**
 - [ ] 2.1 Implement `analyze:security` sub-command structure
   - Create command YAML with security-specific parameters
   - Add scope filtering (file patterns, directories)
@@ -87,10 +122,13 @@
   - Generate security-report.md with executive summary
   - Generate threat-model.md with attack vectors
   - Generate remediation-plan.md with prioritized fixes
-- [ ] **VERIFY 2**: Security analysis detects known vulnerabilities in test projects, generates valid artifacts, provides actionable remediation guidance
+
+**VERIFY Phase 2:**
+- [ ] Security analysis detects known vulnerabilities in test projects, generates valid artifacts, provides actionable remediation guidance
 
 ## Phase 3: P0 Sub-Commands - Performance Analysis
 
+**Tasks:**
 - [ ] 3.1 Implement `analyze:performance` sub-command structure
   - Create command YAML with performance-specific parameters
   - Add profiling data integration support
@@ -131,10 +169,13 @@
   - Generate performance-report.md with benchmarks
   - Generate bottlenecks.md with prioritized issues
   - Generate optimization-plan.md with effort estimates
-- [ ] **VERIFY 3**: Performance analysis identifies known bottlenecks, provides accurate Big O estimates, generates actionable optimization plans
+
+**VERIFY Phase 3:**
+- [ ] Performance analysis identifies known bottlenecks, provides accurate Big O estimates, generates actionable optimization plans
 
 ## Phase 4: P0 Sub-Commands - Quality Analysis
 
+**Tasks:**
 - [ ] 4.1 Implement `analyze:quality` sub-command structure
   - Create command YAML with quality-specific parameters
   - Add configurable quality thresholds
@@ -189,10 +230,13 @@
   - Generate code-smells.md categorized by type
   - Generate refactoring-candidates.md prioritized by impact
   - Generate tech-debt-assessment.md with business impact
-- [ ] **VERIFY 4**: Quality analysis calculates accurate metrics, detects common code smells, provides realistic technical debt estimates
+
+**VERIFY Phase 4:**
+- [ ] Quality analysis calculates accurate metrics, detects common code smells, provides realistic technical debt estimates
 
 ## Phase 5: P1 Sub-Commands - Dependencies
 
+**Tasks:**
 - [ ] 5.1 Implement `analyze:dependencies` sub-command structure
   - Create command YAML with dependency-specific parameters
   - Add package manager detection (npm, yarn, pnpm, pip, maven, etc.)
@@ -234,10 +278,13 @@
   - Generate vulnerabilities.json with CVE details
   - Generate upgrade-plan.md with prioritized updates
   - Generate license-report.md with compliance status
-- [ ] **VERIFY 5**: Dependency analysis detects known CVEs, identifies outdated packages, provides safe upgrade paths
+
+**VERIFY Phase 5:**
+- [ ] Dependency analysis detects known CVEs, identifies outdated packages, provides safe upgrade paths
 
 ## Phase 6: P1 Sub-Commands - Architecture
 
+**Tasks:**
 - [ ] 6.1 Implement `analyze:architecture` sub-command structure
   - Create command YAML with architecture-specific parameters
   - Add architecture pattern detection (MVC, layered, microservices, etc.)
@@ -279,10 +326,13 @@
   - Generate dependency-graph.json (nodes and edges)
   - Generate architecture-score.json with metrics
   - Generate improvement-roadmap.md with refactoring steps
-- [ ] **VERIFY 6**: Architecture analysis detects layer violations, identifies circular dependencies, provides SOLID compliance assessment
+
+**VERIFY Phase 6:**
+- [ ] Architecture analysis detects layer violations, identifies circular dependencies, provides SOLID compliance assessment
 
 ## Phase 7: P1 Sub-Commands - Accessibility & Test
 
+**Tasks:**
 - [ ] 7.1 Implement `analyze:accessibility` sub-command structure
   - Create command YAML with accessibility-specific parameters
   - Add framework detection (React, Vue, Angular, HTML)
@@ -346,10 +396,13 @@
   - Generate test-smells.md categorized by type
   - Generate flaky-tests.json with root causes
   - Generate test-improvement-plan.md with recommendations
-- [ ] **VERIFY 7**: Accessibility analysis detects WCAG violations, test analysis identifies quality issues and flaky tests
+
+**VERIFY Phase 7:**
+- [ ] Accessibility analysis detects WCAG violations, test analysis identifies quality issues and flaky tests
 
 ## Phase 8: Artifact Generation & Reports
 
+**Tasks:**
 - [ ] 8.1 Implement universal findings.json generator
   - Aggregate findings from all sub-commands
   - Apply consistent severity classification
@@ -389,10 +442,13 @@
   - Support GitHub annotations format
   - Support SARIF format for security tools
   - Support JUnit XML for test integration
-- [ ] **VERIFY 8**: All artifacts validate against schemas, contain accurate aggregated data, provide actionable insights
+
+**VERIFY Phase 8:**
+- [ ] All artifacts validate against schemas, contain accurate aggregated data, provide actionable insights
 
 ## Phase 9: Baseline Comparison & Trends
 
+**Tasks:**
 - [ ] 9.1 Implement baseline storage mechanism
   - Store findings.json and metrics.json as baseline
   - Support git branch-based baselines
@@ -422,10 +478,13 @@
   - Include delta metrics in metrics.json
   - Mark new/fixed findings in findings.json
   - Add trend summary to recommendations.md
-- [ ] **VERIFY 9**: Baseline comparison accurately identifies regressions and improvements, fail conditions work correctly in CI/CD
+
+**VERIFY Phase 9:**
+- [ ] Baseline comparison accurately identifies regressions and improvements, fail conditions work correctly in CI/CD
 
 ## Phase 10: Integration & Testing
 
+**Tasks:**
 - [ ] 10.1 Test all sub-commands with real projects
   - Test analyze:security on vulnerable code samples (OWASP WebGoat, Juice Shop)
   - Test analyze:performance on known bottleneck projects
@@ -472,7 +531,9 @@
   - Generate sample analysis-report.md
   - Generate sample recommendations.md
   - Include baseline comparison examples
-- [ ] **VERIFY 10**: All sub-commands work on real projects, artifacts are accurate, documentation is complete, performance is acceptable
+
+**VERIFY Phase 10:**
+- [ ] All sub-commands work on real projects, artifacts are accurate, documentation is complete, performance is acceptable
 
 ## Success Criteria
 

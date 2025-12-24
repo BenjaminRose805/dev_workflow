@@ -4,14 +4,45 @@
 - **Goal:** Implement the /model command with 7 sub-commands for data modeling and schema design
 - **Priority:** P1 (MEDIUM-HIGH - Design & Architecture phase)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-model-command/`
-- **Model:** Claude Sonnet 4.5 (precision required for schema design)
+- **Output:** `docs/plan-outputs/model-command/`
+- **Model:** sonnet (precision required for schema design)
 - **Category:** Design & Architecture
 
 > The /model command is a specialized tool for data modeling and schema design. It helps developers design entity-relationship models, database schemas, domain models, and ORM configurations. It bridges the gap between requirements and implementation by creating structured, validated data models that support multiple database systems (PostgreSQL, MySQL, SQLite, MongoDB) and ORM frameworks (Prisma, Drizzle, TypeORM).
 
 ---
 
+
+---
+
+## Dependencies
+
+### Upstream
+- `/clarify` - Requirements may inform entity modeling
+- `/spec` - API specifications may drive data model
+- `/architect` - Architecture decisions influence data modeling strategy
+- `/design` - Component design informs data needs
+
+### Downstream
+- `/migrate` - Consumes model for migration generation
+- `/implement` - Uses model for code generation
+- `/test` - Uses model for integration tests
+- `/document` - Generates technical documentation from model
+
+### External Tools
+- Database CLI tools (psql, mysql, sqlite3) - For schema validation
+- ORM CLI tools (prisma, drizzle-kit) - For ORM schema validation
+
+---
+
+## Risks
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Invalid SQL generated | High | Low | Comprehensive testing per database |
+| ORM schema incompatible | Medium | Medium | Test with actual ORM tools |
+| Complex relationships mismodeled | Medium | Medium | Detailed relationship validation |
+| Migration conflicts | Medium | Low | Rollback generation, conflict detection |
 ## Phase 1: Core Command Setup
 
 **Objective:** Establish base /model command with YAML configuration and data modeling structure
@@ -35,7 +66,10 @@
   - output_format: sql | orm-schema | both
 - [ ] 1.5 Create output directory structure: `docs/models/`
 
-**VERIFY 1:** Base /model command detects project context and generates basic entity model
+**VERIFY Phase 1:**
+- [ ] Base /model command detects project context
+- [ ] Generates basic entity model
+- [ ] Output directory structure is created
 
 ---
 
@@ -68,7 +102,10 @@
   - Junction entities (many-to-many)
   - Audit entities (logging, history)
 
-**VERIFY 2:** ERD generation produces valid Mermaid diagrams with all relationships
+**VERIFY Phase 2:**
+- [ ] ERD generation produces valid Mermaid diagrams
+- [ ] All relationships are captured with correct cardinality
+- [ ] Entity classification is accurate
 
 ---
 
@@ -187,7 +224,10 @@
 - [ ] 3.7.3 Generate artifacts:
   - `validation-report.md` (findings and recommendations)
 
-**VERIFY 3:** All sub-commands produce valid, useful artifacts for their focus area
+**VERIFY Phase 3:**
+- [ ] All sub-commands produce valid artifacts
+- [ ] Artifacts are useful for their focus area
+- [ ] Sub-commands handle edge cases gracefully
 
 ---
 
@@ -252,7 +292,10 @@
   - Collection creation with validator
   - Index creation commands
 
-**VERIFY 4:** All database systems produce valid, runnable schema definitions
+**VERIFY Phase 4:**
+- [ ] All database systems produce valid schema definitions
+- [ ] Schemas are runnable against target database
+- [ ] Database-specific features are correctly implemented
 
 ---
 
@@ -302,7 +345,10 @@
 - [ ] 5.4.2 Add schema $id URLs in artifact metadata
 - [ ] 5.4.3 Create schema documentation in `docs/schemas/`
 
-**VERIFY 5:** All artifacts validate against defined schemas, metadata is complete
+**VERIFY Phase 5:**
+- [ ] All artifacts validate against defined schemas
+- [ ] Metadata is complete and accurate
+- [ ] JSON schema validation is working
 
 ---
 
@@ -333,7 +379,10 @@
   - Support project-specific naming rules
   - Detect existing conventions from codebase
 
-**VERIFY 6:** Naming conventions are consistent and match project style
+**VERIFY Phase 6:**
+- [ ] Naming conventions are consistent
+- [ ] Generated names match project style
+- [ ] Convention configuration works correctly
 
 ---
 
@@ -363,7 +412,10 @@
   - Schema migration: /model:schema → /model:migration
   - ORM setup: /model:erd → /model:orm
 
-**VERIFY 7:** Command integration works smoothly, artifacts flow between commands correctly
+**VERIFY Phase 7:**
+- [ ] Command integration works smoothly
+- [ ] Artifacts flow between commands correctly
+- [ ] Workflow chains execute properly
 
 ---
 
@@ -403,7 +455,10 @@
 - [ ] 8.5.3 Test argument handling
 - [ ] 8.5.4 Test context detection
 
-**VERIFY 8:** All test cases pass, schemas are valid across all database systems
+**VERIFY Phase 8:**
+- [ ] All test cases pass
+- [ ] Schemas are valid across all database systems
+- [ ] ORM schemas pass validation tools
 
 ---
 
@@ -440,7 +495,10 @@
   - Readable ORM schemas
   - Comprehensive artifact metadata
 
-**VERIFY 9:** Documentation is complete, clear, and helpful; output quality is polished
+**VERIFY Phase 9:**
+- [ ] Documentation is complete and clear
+- [ ] Examples demonstrate all database systems
+- [ ] Output quality is polished and consistent
 
 ---
 
@@ -477,3 +535,6 @@
 - [ ] All ORM frameworks tested
 - [ ] Complex relationship scenarios tested
 - [ ] Migration generation tested end-to-end
+
+---
+

@@ -4,7 +4,7 @@
 - **Goal:** Build formal specification generation system for contract-first development
 - **Priority:** P1 (Design & Architecture)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-spec-command/`
+- **Output:** `docs/plan-outputs/spec-command/`
 - **Model:** Sonnet
 - **Category:** Design & Architecture
 
@@ -12,9 +12,38 @@
 
 ---
 
+
+---
+
+## Dependencies
+- Skill system must support sub-commands (`:` notation)
+- WebSearch tool must be available for standards lookup
+- File I/O tools (Read, Write) must support YAML and JSON formats
+- Bash tool access for running validation CLI tools (redocly, ajv, asyncapi)
+- Upstream commands: /clarify, /design, /architect, /model
+- Downstream commands: /implement, /test, /document, /validate
+
+---
+
+## Risks
+
+| Risk | Impact | Mitigation |
+|------|--------|------------|
+| Spec-implementation drift | High | Integrate validation into CI/CD, generate code from specs where possible |
+| Validation tool unavailability | Medium | Graceful fallback when CLI tools missing, document installation requirements |
+| Breaking changes undetected | High | Implement breaking change detection, version specs properly |
+| Circular $ref references | Medium | Implement cycle detection, provide clear error messages |
+| Schema complexity explosion | Medium | Encourage $defs reuse, limit nesting depth, warn on complex schemas |
+| Inconsistent error responses | Medium | Generate standard error schemas, validate error response coverage |
+| Version migration challenges | High | Provide migration guides between spec versions, support dual output |
+
+---
+
 ## Phase 1: Core Command Setup
+
 **Objective:** Establish base /spec command infrastructure with routing logic
 
+**Tasks:**
 - [ ] 1.1 Create primary command file at `.claude/commands/spec.md`
 - [ ] 1.2 Configure YAML frontmatter with model: sonnet, allowed-tools: Read, Grep, Glob, Write, WebSearch
 - [ ] 1.3 Set command category as "Design & Architecture" with P1 priority
@@ -24,13 +53,16 @@
 - [ ] 1.7 Add input artifact reader for design docs (design-spec.md, interfaces.md)
 - [ ] 1.8 Create base output directory structure `docs/specs/`
 
-**VERIFY 1:** Command loads successfully and routes to correct sub-command based on project type
+**VERIFY Phase 1:**
+- [ ] Command loads successfully and routes to correct sub-command based on project type
 
 ---
 
 ## Phase 2: OpenAPI 3.1 Specification Generation (spec:api)
+
 **Objective:** Implement REST API specification generation with OpenAPI 3.1
 
+**Tasks:**
 - [ ] 2.1 Create sub-command file at `.claude/commands/spec/api.md`
 - [ ] 2.2 Configure YAML frontmatter with argument-hint: [api-name]
 - [ ] 2.3 Implement design document parser to extract endpoints from design-spec.md
@@ -47,13 +79,16 @@
 - [ ] 2.14 Add WebSearch integration for OpenAPI 3.1 best practices
 - [ ] 2.15 Implement version detection and semver handling
 
-**VERIFY 2:** spec:api generates valid OpenAPI 3.1 YAML that passes linting
+**VERIFY Phase 2:**
+- [ ] spec:api generates valid OpenAPI 3.1 YAML that passes linting
 
 ---
 
 ## Phase 3: JSON Schema Generation (spec:schema)
+
 **Objective:** Generate JSON Schema (draft 2020-12) definitions for data structures
 
+**Tasks:**
 - [ ] 3.1 Create sub-command file at `.claude/commands/spec/schema.md`
 - [ ] 3.2 Configure YAML frontmatter with argument-hint: [schema-name]
 - [ ] 3.3 Implement TypeScript type parser to extract interfaces and types
@@ -70,13 +105,16 @@
 - [ ] 3.14 Add description generator from code comments
 - [ ] 3.15 Build $defs section for reusable internal definitions
 
-**VERIFY 3:** spec:schema generates valid JSON Schema that validates with AJV
+**VERIFY Phase 3:**
+- [ ] spec:schema generates valid JSON Schema that validates with AJV
 
 ---
 
 ## Phase 4: GraphQL SDL Generation (spec:graphql)
+
 **Objective:** Generate GraphQL Schema Definition Language specifications
 
+**Tasks:**
 - [ ] 4.1 Create sub-command file at `.claude/commands/spec/graphql.md`
 - [ ] 4.2 Configure YAML frontmatter with argument-hint: [schema-name]
 - [ ] 4.3 Implement GraphQL type detector from design documents
@@ -93,13 +131,16 @@
 - [ ] 4.14 Add deprecation reason support
 - [ ] 4.15 Build schema stitching hints for microservices
 
-**VERIFY 4:** spec:graphql generates valid GraphQL SDL that passes schema linter
+**VERIFY Phase 4:**
+- [ ] spec:graphql generates valid GraphQL SDL that passes schema linter
 
 ---
 
 ## Phase 5: AsyncAPI Event Specification (spec:events)
+
 **Objective:** Generate AsyncAPI specifications for event-driven architectures
 
+**Tasks:**
 - [ ] 5.1 Create sub-command file at `.claude/commands/spec/events.md`
 - [ ] 5.2 Configure YAML frontmatter with argument-hint: [service-name]
 - [ ] 5.3 Implement event catalog parser from design documents
@@ -116,13 +157,16 @@
 - [ ] 5.14 Add retry policy specifications
 - [ ] 5.15 Build event flow documentation generator
 
-**VERIFY 5:** spec:events generates valid AsyncAPI YAML that passes validation
+**VERIFY Phase 5:**
+- [ ] spec:events generates valid AsyncAPI YAML that passes validation
 
 ---
 
 ## Phase 6: Data Model Specification (spec:data)
+
 **Objective:** Generate data model specifications with entity relationships
 
+**Tasks:**
 - [ ] 6.1 Create sub-command file at `.claude/commands/spec/data.md`
 - [ ] 6.2 Configure YAML frontmatter with argument-hint: [model-name]
 - [ ] 6.3 Implement entity relationship parser from ERD diagrams
@@ -135,13 +179,16 @@
 - [ ] 6.10 Implement cascade behavior specifications (ON DELETE, ON UPDATE)
 - [ ] 6.11 Add data type mapping for target database (PostgreSQL, MySQL, MongoDB)
 
-**VERIFY 6:** spec:data generates valid data model JSON with all relationships
+**VERIFY Phase 6:**
+- [ ] spec:data generates valid data model JSON with all relationships
 
 ---
 
 ## Phase 7: Validation Integration
+
 **Objective:** Integrate validation tools for post-generation quality checks
 
+**Tasks:**
 - [ ] 7.1 Implement OpenAPI validator using Redocly CLI
 - [ ] 7.2 Add Swagger CLI validation for OpenAPI specs
 - [ ] 7.3 Integrate AJV for JSON Schema validation
@@ -154,13 +201,16 @@
 - [ ] 7.10 Create completeness checker (required sections, fields)
 - [ ] 7.11 Build quality checklist validator for each spec type
 
-**VERIFY 7:** All generated specifications pass validation with standard tools
+**VERIFY Phase 7:**
+- [ ] All generated specifications pass validation with standard tools
 
 ---
 
 ## Phase 8: Artifact Output Management
+
 **Objective:** Standardize output locations and versioning for specifications
 
+**Tasks:**
 - [ ] 8.1 Create directory structure generator for `docs/specs/`
 - [ ] 8.2 Implement versioned output folders (api/v1, api/v2)
 - [ ] 8.3 Build sub-directory creators (schemas/, graphql/, events/, data/)
@@ -172,13 +222,16 @@
 - [ ] 8.9 Implement artifact index file generator
 - [ ] 8.10 Add validation stamp to artifact metadata
 
-**VERIFY 8:** Output directory structure matches specification and files are versioned correctly
+**VERIFY Phase 8:**
+- [ ] Output directory structure matches specification and files are versioned correctly
 
 ---
 
 ## Phase 9: WebSearch Integration for Standards
+
 **Objective:** Use WebSearch to reference latest standards and best practices
 
+**Tasks:**
 - [ ] 9.1 Implement OpenAPI 3.1 specification fetcher
 - [ ] 9.2 Add JSON Schema 2020-12 specification reference
 - [ ] 9.3 Build GraphQL specification fetcher for latest SDL syntax
@@ -190,13 +243,16 @@
 - [ ] 9.9 Implement breaking change detector for spec versions
 - [ ] 9.10 Add deprecation warning generator based on standards
 
-**VERIFY 9:** WebSearch provides accurate, up-to-date standard references
+**VERIFY Phase 9:**
+- [ ] WebSearch provides accurate, up-to-date standard references
 
 ---
 
 ## Phase 10: Workflow Integration
+
 **Objective:** Enable seamless handoff between upstream and downstream commands
 
+**Tasks:**
 - [ ] 10.1 Implement requirements.json parser from /clarify command
 - [ ] 10.2 Add design-spec.md reader from /design command
 - [ ] 10.3 Build architecture.md parser from /architect command
@@ -209,13 +265,16 @@
 - [ ] 10.10 Add workflow suggestion engine based on spec type
 - [ ] 10.11 Build artifact relationship tracker (upstream/downstream)
 
-**VERIFY 10:** Specifications are consumable by /implement, /test, /document, /validate commands
+**VERIFY Phase 10:**
+- [ ] Specifications are consumable by /implement, /test, /document, /validate commands
 
 ---
 
 ## Phase 11: Quality Checklist System
+
 **Objective:** Implement automated quality checks for generated specifications
 
+**Tasks:**
 - [ ] 11.1 Create OpenAPI quality checklist validator
 - [ ] 11.2 Build JSON Schema quality checklist validator
 - [ ] 11.3 Implement GraphQL quality checklist validator
@@ -227,13 +286,16 @@
 - [ ] 11.9 Create example coverage analyzer
 - [ ] 11.10 Build breaking change detector for version updates
 
-**VERIFY 11:** Quality checklists produce actionable improvement suggestions
+**VERIFY Phase 11:**
+- [ ] Quality checklists produce actionable improvement suggestions
 
 ---
 
 ## Phase 12: Error Handling & Edge Cases
+
 **Objective:** Handle edge cases and error scenarios gracefully
 
+**Tasks:**
 - [ ] 12.1 Handle missing design documents gracefully
 - [ ] 12.2 Implement fallback when no existing specs found
 - [ ] 12.3 Add conflict resolution for contradictory interface definitions
@@ -245,13 +307,16 @@
 - [ ] 12.9 Implement rollback for failed spec generation
 - [ ] 12.10 Add partial spec save on interruption
 
-**VERIFY 12:** Error scenarios are handled without command failure
+**VERIFY Phase 12:**
+- [ ] Error scenarios are handled without command failure
 
 ---
 
 ## Phase 13: Testing Across API Types
+
 **Objective:** Validate spec generation for diverse API architectures
 
+**Tasks:**
 - [ ] 13.1 Test OpenAPI generation for simple CRUD REST API
 - [ ] 13.2 Test OpenAPI generation for complex REST API (nested resources, batch operations)
 - [ ] 13.3 Test JSON Schema generation for flat data structures
@@ -265,13 +330,16 @@
 - [ ] 13.11 Validate all generated specs with standard tools
 - [ ] 13.12 Test version upgrade scenarios (v1 -> v2 with breaking changes)
 
-**VERIFY 13:** All test scenarios produce valid, high-quality specifications
+**VERIFY Phase 13:**
+- [ ] All test scenarios produce valid, high-quality specifications
 
 ---
 
 ## Phase 14: Documentation
+
 **Objective:** Create comprehensive usage documentation
 
+**Tasks:**
 - [ ] 14.1 Create main usage guide at `docs/commands/spec.md`
 - [ ] 14.2 Document spec:api sub-command with OpenAPI examples
 - [ ] 14.3 Document spec:schema sub-command with JSON Schema examples
@@ -285,7 +353,8 @@
 - [ ] 14.11 Add troubleshooting section for common validation errors
 - [ ] 14.12 Document integration with code generation tools (openapi-generator, GraphQL codegen)
 
-**VERIFY 14:** Documentation is complete and examples are tested
+**VERIFY Phase 14:**
+- [ ] Documentation is complete and examples are tested
 
 ---
 
@@ -303,16 +372,6 @@
 - [ ] All test scenarios (REST, GraphQL, events, data) produce valid specs
 - [ ] Documentation enables independent usage with clear examples
 - [ ] Generated specifications can drive implementation and testing
-
----
-
-## Dependencies
-- Skill system must support sub-commands (`:` notation)
-- WebSearch tool must be available for standards lookup
-- File I/O tools (Read, Write) must support YAML and JSON formats
-- Bash tool access for running validation CLI tools (redocly, ajv, asyncapi)
-- Upstream commands: /clarify, /design, /architect, /model
-- Downstream commands: /implement, /test, /document, /validate
 
 ---
 

@@ -4,8 +4,8 @@
 - **Goal:** Implement the /brainstorm command with 6 sub-commands for creative idea generation and solution exploration
 - **Priority:** P1 (MEDIUM - Discovery & Ideation phase)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-brainstorm-command/`
-- **Model:** Claude Opus 4.5 (creative ideation benefits from most capable model)
+- **Output:** `docs/plan-outputs/brainstorm-command/`
+- **Model:** opus (creative ideation benefits from most capable model)
 - **Temperature:** 0.9 (higher temperature for creative, diverse outputs)
 - **Category:** Discovery & Ideation
 
@@ -13,6 +13,33 @@
 
 ---
 
+
+---
+
+## Dependencies
+
+### Upstream
+- `/clarify` - May provide requirements context for brainstorming
+- `/research` - Can inform brainstorming with research findings
+
+### Downstream
+- `/architect` - Consumes brainstorm artifacts for architecture decisions
+- `/design` - Uses brainstorm ideas for detailed design
+- `/implement` - References selected brainstorm options
+
+### External Tools
+- None (brainstorming is primarily internal analysis)
+
+---
+
+## Risks
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Ideas not diverse enough | Medium | Medium | Multiple creative techniques, higher temperature |
+| Users overwhelmed by options | Medium | Low | Clear categorization, comparison matrices |
+| Ideas impractical | Low | Medium | Include feasibility analysis, constraints consideration |
+| Session too long | Low | Low | Clear session phases, early artifact generation option |
 ## Phase 1: Core Command Setup
 
 **Objective:** Establish base /brainstorm command with YAML configuration and creative prompting structure
@@ -22,7 +49,7 @@
   - name: brainstorm
   - description: Generate ideas and alternatives for creative problem-solving
   - category: discovery-ideation
-  - model: claude-opus-4-5-20251101
+  - model: opus
   - temperature: 0.9
   - allowed-tools: Read, Grep, Glob, WebSearch, WebFetch
   - interaction_mode: interactive
@@ -38,7 +65,10 @@
   - perspectives: optional (viewpoints to explore)
 - [ ] 1.5 Create output directory structure: `docs/brainstorm/`
 
-**VERIFY 1:** Base /brainstorm command presents interactive menu and accepts user input
+**VERIFY Phase 1:**
+- [ ] Base /brainstorm command presents interactive menu
+- [ ] Accepts user input for topics and constraints
+- [ ] Output directory structure is created
 
 ---
 
@@ -78,7 +108,10 @@
   - Allow user to request specific techniques
   - Combine techniques for richer ideation
 
-**VERIFY 2:** Creative prompting techniques produce diverse, non-obvious ideas
+**VERIFY Phase 2:**
+- [ ] Creative prompting techniques produce diverse ideas
+- [ ] Ideas are non-obvious and innovative
+- [ ] Multiple techniques can be combined
 
 ---
 
@@ -88,7 +121,7 @@
 
 ### 3.1 Solutions Sub-Command
 - [ ] 3.1.1 Create `/brainstorm:solutions` command file
-  - YAML: model: claude-opus-4-5-20251101, temperature: 0.9, argument-hint: [problem-description]
+  - YAML: model: opus, temperature: 0.9, argument-hint: [problem-description]
 - [ ] 3.1.2 Implement solution generation framework:
   - The Conservative Approach (minimal change, proven patterns)
   - The Innovative Approach (novel techniques, cutting-edge)
@@ -107,7 +140,7 @@
 
 ### 3.2 Architecture Sub-Command
 - [ ] 3.2.1 Create `/brainstorm:architecture` command file
-  - YAML: model: claude-opus-4-5-20251101, temperature: 0.9
+  - YAML: model: opus, temperature: 0.9
 - [ ] 3.2.2 Implement architecture exploration:
   - Monolithic options
   - Microservices options
@@ -125,7 +158,7 @@
 
 ### 3.3 Names Sub-Command
 - [ ] 3.3.1 Create `/brainstorm:names` command file
-  - YAML: model: claude-opus-4-5-20251101, temperature: 0.9
+  - YAML: model: opus, temperature: 0.9
   - Allowed-tools: Read, Grep, Glob (no web tools - naming is internal)
 - [ ] 3.3.2 Implement naming categories:
   - Descriptive names (clear, describes function)
@@ -140,7 +173,7 @@
 
 ### 3.4 Features Sub-Command
 - [ ] 3.4.1 Create `/brainstorm:features` command file
-  - YAML: model: claude-opus-4-5-20251101, temperature: 0.9
+  - YAML: model: opus, temperature: 0.9
 - [ ] 3.4.2 Implement feature ideation:
   - Core features (must-have)
   - Enhancement features (nice-to-have)
@@ -156,7 +189,7 @@
 
 ### 3.5 APIs Sub-Command
 - [ ] 3.5.1 Create `/brainstorm:apis` command file
-  - YAML: model: claude-opus-4-5-20251101, temperature: 0.9
+  - YAML: model: opus, temperature: 0.9
   - Allowed-tools: Read, Grep, Glob (API design is internal)
 - [ ] 3.5.2 Implement API design ideation:
   - REST design options
@@ -173,7 +206,7 @@
 
 ### 3.6 Approaches Sub-Command
 - [ ] 3.6.1 Create `/brainstorm:approaches` command file
-  - YAML: model: claude-opus-4-5-20251101, temperature: 0.9
+  - YAML: model: opus, temperature: 0.9
 - [ ] 3.6.2 Implement approach comparison:
   - Implementation strategy alternatives
   - Technology choice implications
@@ -186,7 +219,10 @@
   - Weighted scoring if applicable
   - Recommendation with reasoning
 
-**VERIFY 3:** All sub-commands produce diverse, creative outputs with structured analysis
+**VERIFY Phase 3:**
+- [ ] All sub-commands produce diverse, creative outputs
+- [ ] Structured analysis accompanies each idea
+- [ ] Comparison matrices enable decision-making
 
 ---
 
@@ -244,7 +280,10 @@
   - Documents rejected alternatives
   - Notes for future reference
 
-**VERIFY 4:** All artifacts are well-structured, consistent, and actionable
+**VERIFY Phase 4:**
+- [ ] All artifacts are well-structured and consistent
+- [ ] Artifacts include actionable recommendations
+- [ ] Decision records capture reasoning
 
 ---
 
@@ -277,7 +316,10 @@
   - Generate artifacts
   - Suggest next steps (link to /architect, /design, /implement)
 
-**VERIFY 5:** Interactive sessions are engaging, productive, and produce actionable outputs
+**VERIFY Phase 5:**
+- [ ] Interactive sessions are engaging and productive
+- [ ] Users can iterate and refine ideas
+- [ ] Actionable outputs are generated
 
 ---
 
@@ -304,7 +346,10 @@
   - No commitment until explicit save
   - Ideas can be discarded freely
 
-**VERIFY 6:** Brainstorming respects read-only constraint while still being informed by codebase
+**VERIFY Phase 6:**
+- [ ] Brainstorming respects read-only constraint
+- [ ] Codebase informs ideas without modification
+- [ ] Artifact saves require explicit user confirmation
 
 ---
 
@@ -332,7 +377,10 @@
   - API development: /brainstorm:apis -> /spec:api -> /implement
   - Naming decision: /brainstorm:names -> manual selection -> codebase update
 
-**VERIFY 7:** Command integration works smoothly, artifacts flow between commands correctly
+**VERIFY Phase 7:**
+- [ ] Command integration works smoothly
+- [ ] Artifacts flow between commands correctly
+- [ ] Workflow continuity is maintained
 
 ---
 
@@ -386,7 +434,10 @@
 - [ ] 8.4.3 Test context gathering (appropriate questions asked)
 - [ ] 8.4.4 Test artifact generation timing (user controls when)
 
-**VERIFY 8:** All test cases pass, brainstorming produces consistently creative, valuable outputs
+**VERIFY Phase 8:**
+- [ ] All test cases pass
+- [ ] Brainstorming produces consistently creative outputs
+- [ ] Ideas provide valuable alternatives
 
 ---
 
@@ -424,7 +475,10 @@
   - Example naming session
   - Example feature ideation
 
-**VERIFY 9:** Documentation is complete, clear, and inspiring; user experience is engaging
+**VERIFY Phase 9:**
+- [ ] Documentation is complete and clear
+- [ ] User experience is engaging and inspiring
+- [ ] Example outputs demonstrate capabilities
 
 ---
 
@@ -460,3 +514,6 @@
 - [ ] Creative technique effectiveness validated
 - [ ] Idea diversity confirmed
 - [ ] Interactive flow tested end-to-end
+
+---
+

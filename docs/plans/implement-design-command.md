@@ -4,7 +4,7 @@
 - **Goal:** Build component-level detailed design system with interface specifications and interaction patterns
 - **Priority:** P1 (Design & Architecture)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-design-command/`
+- **Output:** `docs/plan-outputs/design-command/`
 - **Model:** Sonnet
 - **Category:** Design & Architecture
 
@@ -12,9 +12,59 @@
 
 ---
 
+
+---
+
+## Dependencies
+
+### Tool Requirements
+- Read, Grep, Glob tools for codebase analysis
+- Write tool for artifact generation
+- AskUserQuestion for interactive design sessions
+- JSON and Markdown file format support
+
+### Upstream Dependencies
+- /architect command should be implemented first for system context
+- /clarify command provides requirements input
+- components.json schema must be defined
+- architecture.md schema must be defined
+
+### Downstream Consumers
+- /implement command will consume design artifacts
+- /test command will use design specs for test generation
+- /spec command will formalize design into OpenAPI/JSON Schema
+- /document command will reference design specifications
+
+### Skill System Requirements
+- Support for sub-command notation (design:component syntax)
+- YAML frontmatter parsing
+- Output artifact tracking
+- Command chaining and artifact passing
+
+### Schema Standards
+- JSON Schema draft-07 or later
+- OpenAPI 3.1 compatibility
+- Mermaid diagram syntax support
+- TypeScript interface syntax for default language
+
+---
+
+## Risks
+
+| Risk | Impact | Mitigation |
+|------|--------|------------|
+| Design-implementation divergence | High | Generate implementation-ready artifacts, include code examples that compile |
+| Over-specification | Medium | Focus on essential interfaces and contracts, avoid premature optimization |
+| Missing upstream context | High | Validate architecture.md exists before detailed design, prompt for missing context |
+| Interface instability | High | Version interfaces, document breaking change process |
+| State machine complexity | Medium | Limit state count, provide visual diagrams, validate with stakeholders |
+| Pattern misapplication | Medium | Provide pattern selection guidance, include anti-pattern warnings |
+| Cross-component inconsistency | High | Share type definitions, validate interface compatibility across components |
 ## Phase 1: Core Command Setup
+
 **Objective:** Establish base /design command infrastructure with YAML frontmatter and output directory structure
 
+**Tasks:**
 - [ ] 1.1 Create YAML configuration at `.claude/commands/design.md` with base metadata
 - [ ] 1.2 Configure model as `sonnet` for balanced design capability and cost-effectiveness
 - [ ] 1.3 Define allowed tools: Read, Grep, Glob, Write, AskUserQuestion (no WebSearch/Bash)
@@ -24,13 +74,16 @@
 - [ ] 1.7 Create base prompt template with design methodology framework
 - [ ] 1.8 Implement output directory structure: `docs/design/[component-name]/`
 
-**VERIFY 1:** Command loads successfully, directory structure is created, YAML frontmatter validates
+**VERIFY Phase 1:**
+- [ ] Command loads successfully, directory structure is created, YAML frontmatter validates
 
 ---
 
 ## Phase 2: Sub-Command Infrastructure (6 Sub-Commands)
+
 **Objective:** Create all 6 sub-command files with proper YAML frontmatter and categorization
 
+**Tasks:**
 - [ ] 2.1 Create `.claude/commands/design/component.md` (P0) - Component internals design
 - [ ] 2.2 Create `.claude/commands/design/api.md` (P0) - API endpoint/interface design
 - [ ] 2.3 Create `.claude/commands/design/data.md` (P0) - Data structure and schema design
@@ -40,13 +93,16 @@
 - [ ] 2.7 Configure all sub-commands with `sonnet` model and appropriate tools
 - [ ] 2.8 Set argument-hints specific to each sub-command's purpose
 
-**VERIFY 2:** All 6 sub-commands are discoverable via skill system, each loads with correct configuration
+**VERIFY Phase 2:**
+- [ ] All 6 sub-commands are discoverable via skill system, each loads with correct configuration
 
 ---
 
 ## Phase 3: Artifact Schema Implementation - design-spec.md
+
 **Objective:** Implement comprehensive design specification artifact generator
 
+**Tasks:**
 - [ ] 3.1 Create YAML frontmatter schema with artifact_type, component, version, status
 - [ ] 3.2 Implement "Overview" section generator (Purpose, Scope, Context)
 - [ ] 3.3 Build "Responsibilities" section with Primary/Secondary/Non-Responsibilities
@@ -62,13 +118,16 @@
 - [ ] 3.13 Implement "Implementation Guidance" section with recommended order
 - [ ] 3.14 Add metadata tracking: related_artifacts links to architecture.md, requirements.json
 
-**VERIFY 3:** design-spec.md validates against schema, all sections are populated with relevant content
+**VERIFY Phase 3:**
+- [ ] design-spec.md validates against schema, all sections are populated with relevant content
 
 ---
 
 ## Phase 4: Artifact Schema Implementation - interfaces.md
+
 **Objective:** Create TypeScript-based interface definition artifact with DTOs and events
 
+**Tasks:**
 - [ ] 4.1 Create YAML frontmatter with artifact_type: interface-definitions
 - [ ] 4.2 Implement "Public Interfaces" section with TypeScript interface syntax
 - [ ] 4.3 Add JSDoc comments to interfaces with @param, @returns, @throws annotations
@@ -80,13 +139,16 @@
 - [ ] 4.9 Support language parameter in frontmatter (typescript, python, go, rust)
 - [ ] 4.10 Generate language-appropriate syntax based on language parameter
 
-**VERIFY 4:** interfaces.md validates, TypeScript syntax is correct, interfaces are implementation-ready
+**VERIFY Phase 4:**
+- [ ] interfaces.md validates, TypeScript syntax is correct, interfaces are implementation-ready
 
 ---
 
 ## Phase 5: Artifact Schema Implementation - Interaction Diagrams
+
 **Objective:** Generate Mermaid-based sequence and state diagrams for component interactions
 
+**Tasks:**
 - [ ] 5.1 Create interaction-diagrams.md with artifact_type: interaction-diagrams
 - [ ] 5.2 Implement "Happy Path Flow" section with Mermaid sequence diagrams
 - [ ] 5.3 Build multi-participant sequence diagrams (Client, Component, Dependencies)
@@ -96,13 +158,16 @@
 - [ ] 5.7 Add validation and edge case flow diagrams
 - [ ] 5.8 Support multiple diagram types (sequence, state, flowchart)
 
-**VERIFY 5:** Mermaid diagrams render correctly, diagrams accurately represent design specification
+**VERIFY Phase 5:**
+- [ ] Mermaid diagrams render correctly, diagrams accurately represent design specification
 
 ---
 
 ## Phase 6: Artifact Schema Implementation - state-machine.json
+
 **Objective:** Create machine-readable state machine definition for state-driven components
 
+**Tasks:**
 - [ ] 6.1 Create JSON schema for state-machine-definition artifact type
 - [ ] 6.2 Implement metadata object with artifact_type, component, version
 - [ ] 6.3 Build "states" array with id, name, type (initial/normal/final/error)
@@ -113,13 +178,16 @@
 - [ ] 6.8 Validate JSON schema compliance for all generated state machines
 - [ ] 6.9 Create generator to convert state-machine.json to Mermaid diagrams
 
-**VERIFY 6:** state-machine.json validates against JSON schema, can be consumed by state libraries
+**VERIFY Phase 6:**
+- [ ] state-machine.json validates against JSON schema, can be consumed by state libraries
 
 ---
 
 ## Phase 7: Sub-Command Implementation - design:component (P0)
+
 **Objective:** Implement component internal design with responsibilities and structure
 
+**Tasks:**
 - [ ] 7.1 Build codebase analysis logic to find existing component patterns
 - [ ] 7.2 Implement responsibility extraction from requirements/architecture
 - [ ] 7.3 Create interface design logic with minimal, cohesive contracts
@@ -129,13 +197,16 @@
 - [ ] 7.7 Produce design-spec.md and interfaces.md artifacts
 - [ ] 7.8 Add implementation-notes.md for critical design decisions
 
-**VERIFY 7:** design:component produces complete, implementation-ready specifications
+**VERIFY Phase 7:**
+- [ ] design:component produces complete, implementation-ready specifications
 
 ---
 
 ## Phase 8: Sub-Command Implementation - design:api (P0)
+
 **Objective:** Design RESTful/GraphQL APIs with OpenAPI and interface definitions
 
+**Tasks:**
 - [ ] 8.1 Implement REST endpoint design logic (GET, POST, PUT, DELETE, PATCH)
 - [ ] 8.2 Build request/response DTO generation with validation rules
 - [ ] 8.3 Create error code and HTTP status mapping
@@ -146,13 +217,16 @@
 - [ ] 8.8 Create openapi.yaml skeleton for /spec:api formalization
 - [ ] 8.9 Add API versioning strategy (URL, header, or media type)
 
-**VERIFY 8:** design:api produces RESTful API design ready for implementation and OpenAPI spec
+**VERIFY Phase 8:**
+- [ ] design:api produces RESTful API design ready for implementation and OpenAPI spec
 
 ---
 
 ## Phase 9: Sub-Command Implementation - design:data (P0)
+
 **Objective:** Design data structures, schemas, and validation rules
 
+**Tasks:**
 - [ ] 9.1 Analyze existing data models from model:erd or architecture
 - [ ] 9.2 Create entity/type definitions with field types and constraints
 - [ ] 9.3 Define validation rules (required, unique, length, format, range)
@@ -162,13 +236,16 @@
 - [ ] 9.7 Generate schemas.json with JSON Schema format
 - [ ] 9.8 Add migration strategy for evolving data structures
 
-**VERIFY 9:** design:data produces data models ready for database/ORM implementation
+**VERIFY Phase 9:**
+- [ ] design:data produces data models ready for database/ORM implementation
 
 ---
 
 ## Phase 10: Sub-Command Implementation - design:interactions (P1)
+
 **Objective:** Design component interaction patterns with sequence diagrams
 
+**Tasks:**
 - [ ] 10.1 Identify component communication patterns from architecture
 - [ ] 10.2 Create happy path interaction flows
 - [ ] 10.3 Design error scenario interaction flows
@@ -178,13 +255,16 @@
 - [ ] 10.7 Create sequence-diagrams.md with Mermaid visualizations
 - [ ] 10.8 Document integration point contracts
 
-**VERIFY 10:** design:interactions produces clear interaction patterns for implementation
+**VERIFY Phase 10:**
+- [ ] design:interactions produces clear interaction patterns for implementation
 
 ---
 
 ## Phase 11: Sub-Command Implementation - design:state (P1)
+
 **Objective:** Design state management with state machines and transitions
 
+**Tasks:**
 - [ ] 11.1 Analyze stateful component requirements
 - [ ] 11.2 Define state shape and structure
 - [ ] 11.3 Create state transition rules and guards
@@ -194,13 +274,16 @@
 - [ ] 11.7 Create state-machine.json with formal state machine definition
 - [ ] 11.8 Add state visualization with Mermaid state diagrams
 
-**VERIFY 11:** design:state produces state management design ready for implementation
+**VERIFY Phase 11:**
+- [ ] design:state produces state management design ready for implementation
 
 ---
 
 ## Phase 12: Sub-Command Implementation - design:ui (P2)
+
 **Objective:** Design UI component hierarchy with props, events, and styling
 
+**Tasks:**
 - [ ] 12.1 Create UI component tree structure
 - [ ] 12.2 Define component props interfaces with types and validation
 - [ ] 12.3 Design event handlers and callback patterns
@@ -210,13 +293,16 @@
 - [ ] 12.7 Generate ui-spec.md with component specifications
 - [ ] 12.8 Create component-tree.json with hierarchy and relationships
 
-**VERIFY 12:** design:ui produces UI design ready for React/Vue/Svelte implementation
+**VERIFY Phase 12:**
+- [ ] design:ui produces UI design ready for React/Vue/Svelte implementation
 
 ---
 
 ## Phase 13: Context Analysis and Artifact Consumption
+
 **Objective:** Integrate with upstream artifacts from /architect, /clarify, /research
 
+**Tasks:**
 - [ ] 13.1 Implement architecture.md parser to extract component context
 - [ ] 13.2 Build components.json reader to understand system structure
 - [ ] 13.3 Create requirements.json parser for functional requirements
@@ -226,13 +312,16 @@
 - [ ] 13.7 Add related_artifacts tracking in all generated artifacts
 - [ ] 13.8 Create artifact dependency graph for traceability
 
-**VERIFY 13:** Design command successfully consumes and references upstream artifacts
+**VERIFY Phase 13:**
+- [ ] Design command successfully consumes and references upstream artifacts
 
 ---
 
 ## Phase 14: Workflow Integration with Downstream Commands
+
 **Objective:** Enable smooth transitions to /implement, /test, /spec
 
+**Tasks:**
 - [ ] 14.1 Create design-to-implementation handoff format
 - [ ] 14.2 Implement artifact export for /implement consumption
 - [ ] 14.3 Build design-to-spec transition for /spec:api formalization
@@ -241,13 +330,16 @@
 - [ ] 14.6 Implement artifact validation before handoff
 - [ ] 14.7 Add completeness checker for design artifacts
 
-**VERIFY 14:** Design artifacts are consumable by /implement, /test, and /spec commands
+**VERIFY Phase 14:**
+- [ ] Design artifacts are consumable by /implement, /test, and /spec commands
 
 ---
 
 ## Phase 15: Design Quality Validation
+
 **Objective:** Implement automated quality checks for design artifacts
 
+**Tasks:**
 - [ ] 15.1 Create design completeness checker (all sections present)
 - [ ] 15.2 Implement interface cohesion analyzer (single responsibility check)
 - [ ] 15.3 Build dependency cycle detector
@@ -259,13 +351,16 @@
 - [ ] 15.9 Create Mermaid diagram syntax validator
 - [ ] 15.10 Generate design quality report with checklist
 
-**VERIFY 15:** Quality validator identifies incomplete or problematic designs
+**VERIFY Phase 15:**
+- [ ] Quality validator identifies incomplete or problematic designs
 
 ---
 
 ## Phase 16: Interactive Design Session
+
 **Objective:** Use AskUserQuestion for clarification and validation
 
+**Tasks:**
 - [ ] 16.1 Implement design clarification question generator
 - [ ] 16.2 Add interface design validation prompts
 - [ ] 16.3 Create error handling strategy confirmation flow
@@ -275,13 +370,16 @@
 - [ ] 16.7 Create design review confirmation step
 - [ ] 16.8 Add iterative refinement loop for design improvements
 
-**VERIFY 16:** Interactive session produces validated, user-approved designs
+**VERIFY Phase 16:**
+- [ ] Interactive session produces validated, user-approved designs
 
 ---
 
 ## Phase 17: Design Pattern Recognition
+
 **Objective:** Identify and apply common design patterns automatically
 
+**Tasks:**
 - [ ] 17.1 Build pattern library (Repository, Factory, Observer, Strategy, etc.)
 - [ ] 17.2 Implement pattern detection from requirements and architecture
 - [ ] 17.3 Create pattern recommendation engine
@@ -290,13 +388,16 @@
 - [ ] 17.6 Implement pattern documentation in design artifacts
 - [ ] 17.7 Create pattern catalog reference in implementation guidance
 
-**VERIFY 17:** Design command recommends and applies appropriate patterns
+**VERIFY Phase 17:**
+- [ ] Design command recommends and applies appropriate patterns
 
 ---
 
 ## Phase 18: Error Handling and Edge Cases
+
 **Objective:** Handle incomplete inputs, conflicts, and validation failures
 
+**Tasks:**
 - [ ] 18.1 Handle missing architecture.md gracefully (prompt user or create minimal)
 - [ ] 18.2 Detect and warn about conflicting requirements
 - [ ] 18.3 Handle incomplete component definitions
@@ -306,13 +407,16 @@
 - [ ] 18.7 Validate error type coverage across all operations
 - [ ] 18.8 Add recovery suggestions for validation failures
 
-**VERIFY 18:** Error scenarios are handled gracefully with helpful feedback
+**VERIFY Phase 18:**
+- [ ] Error scenarios are handled gracefully with helpful feedback
 
 ---
 
 ## Phase 19: Testing and Validation
+
 **Objective:** Comprehensive testing of all sub-commands and artifact generation
 
+**Tasks:**
 - [ ] 19.1 Test /design with simple component (UserService)
 - [ ] 19.2 Test /design with complex component (PaymentProcessor with state machine)
 - [ ] 19.3 Test design:api with RESTful API (CRUD operations)
@@ -326,13 +430,16 @@
 - [ ] 19.11 Test Mermaid diagram rendering in common viewers
 - [ ] 19.12 Verify TypeScript interfaces compile without errors
 
-**VERIFY 19:** All test scenarios pass, artifacts are valid and implementation-ready
+**VERIFY Phase 19:**
+- [ ] All test scenarios pass, artifacts are valid and implementation-ready
 
 ---
 
 ## Phase 20: Documentation and Examples
+
 **Objective:** Create comprehensive documentation for /design command usage
 
+**Tasks:**
 - [ ] 20.1 Create main usage guide in `docs/commands/design.md`
 - [ ] 20.2 Document all 6 sub-commands with purpose and examples
 - [ ] 20.3 Add artifact schema reference documentation
@@ -346,7 +453,8 @@
 - [ ] 20.11 Document integration patterns with other commands
 - [ ] 20.12 Create video/tutorial-style walkthrough (as markdown)
 
-**VERIFY 20:** Documentation is complete, examples are tested and functional
+**VERIFY Phase 20:**
+- [ ] Documentation is complete, examples are tested and functional
 
 ---
 
@@ -407,34 +515,3 @@
 
 ---
 
-## Dependencies
-
-### Tool Requirements
-- Read, Grep, Glob tools for codebase analysis
-- Write tool for artifact generation
-- AskUserQuestion for interactive design sessions
-- JSON and Markdown file format support
-
-### Upstream Dependencies
-- /architect command should be implemented first for system context
-- /clarify command provides requirements input
-- components.json schema must be defined
-- architecture.md schema must be defined
-
-### Downstream Consumers
-- /implement command will consume design artifacts
-- /test command will use design specs for test generation
-- /spec command will formalize design into OpenAPI/JSON Schema
-- /document command will reference design specifications
-
-### Skill System Requirements
-- Support for sub-command notation (design:component syntax)
-- YAML frontmatter parsing
-- Output artifact tracking
-- Command chaining and artifact passing
-
-### Schema Standards
-- JSON Schema draft-07 or later
-- OpenAPI 3.1 compatibility
-- Mermaid diagram syntax support
-- TypeScript interface syntax for default language

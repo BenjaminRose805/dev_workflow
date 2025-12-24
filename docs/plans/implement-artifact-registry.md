@@ -1,14 +1,39 @@
 # Implementation Plan: Artifact Registry System
 
 ## Overview
+
 - **Goal:** Build hybrid artifact discovery system with registry, indexing, and lifecycle management
 - **Priority:** P0
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-artifact-registry/`
+- **Output:** `docs/plan-outputs/artifact-registry/`
 
-> Implement a comprehensive artifact registry system that enables fast discovery, versioning, lifecycle management, and dependency tracking across all command outputs. The system uses a hybrid approach: registry lookup → convention-based discovery → filesystem scan fallback.
+## Description
+
+Implement a comprehensive artifact registry system that enables fast discovery, versioning, lifecycle management, and dependency tracking across all command outputs. The system uses a hybrid approach: registry lookup → convention-based discovery → filesystem scan fallback.
+
+---
+
+## Dependencies
+
+### Upstream
+- Core command infrastructure (`src/commands/`)
+- File system utilities for artifact storage
+- JSON schema validation (AJV or similar)
+
+### Downstream
+- All commands that produce artifacts
+- `/plan:batch` for task dependency tracking
+- Workflow orchestration for artifact consumption
+
+### External Tools
+- Node.js >= 18.x for async operations
+- JSON Schema Draft-07 for validation
+
+---
 
 ## Phase 1: Core Registry Implementation
+
+**Objective:** Implement the core registry schema, storage, and CRUD operations.
 
 ### 1.1 Registry Schema & Storage
 - [ ] 1.1.1 Create registry schema at `docs/.artifact-registry.json`
@@ -35,8 +60,6 @@
   - Check if registry exists, create if missing
   - Initialize with empty array structure
   - Add registry to .gitignore or commit (decide based on use case)
-
-- [ ] **VERIFY 1.1:** Registry file created, schema validates correctly, empty registry initializes
 
 ### 1.2 ArtifactRegistry Class (CRUD Operations)
 - [ ] 1.2.1 Implement `ArtifactRegistry.constructor()`
@@ -87,7 +110,6 @@
   - Format with 2-space indentation
   - Handle write errors gracefully
 
-- [ ] **VERIFY 1.2:** All CRUD operations work, registry persists correctly, IDs are unique
 
 ### 1.3 Artifact Metadata Standards
 - [ ] 1.3.1 Define core metadata schema for all artifacts
@@ -120,9 +142,19 @@
   - Add metadata to /explore outputs (codebase-map, exploration-report)
   - Add metadata to /architect outputs (architecture-design, component-spec)
 
-- [ ] **VERIFY 1.3:** Metadata schema documented, validation works, existing artifacts updated
+**VERIFY Phase 1:**
+- [ ] Registry file created and schema validates correctly
+- [ ] Empty registry initializes properly
+- [ ] All CRUD operations work correctly
+- [ ] Registry persists correctly and IDs are unique
+- [ ] Metadata schema documented and validation works
+- [ ] Existing artifacts updated with metadata
+
+---
 
 ## Phase 2: Discovery Pipeline
+
+**Objective:** Implement the multi-layer discovery pipeline with convention-based and filesystem fallback.
 
 ### 2.1 Convention-Based Discovery
 - [ ] 2.1.1 Define standard path conventions
@@ -148,7 +180,6 @@
   - Parse to Date object for sorting
   - Handle invalid/missing dates gracefully
 
-- [ ] **VERIFY 2.1:** Convention-based discovery finds artifacts, respects latest pointers, validates before returning
 
 ### 2.2 Filesystem Scanner (Fallback)
 - [ ] 2.2.1 Implement `FilesystemScanner.scan(type, context)` method
@@ -171,7 +202,6 @@
   - Verify required metadata fields present
   - Log validation failures (don't fail entire scan)
 
-- [ ] **VERIFY 2.2:** Filesystem scan finds artifacts in unexpected locations, validates correctly, respects timeouts
 
 ### 2.3 Discovery Coordinator (Hybrid Strategy)
 - [ ] 2.3.1 Implement `DiscoveryCoordinator` main class
@@ -206,7 +236,6 @@
   - `limit`: max results to return
   - `validate`: validate artifacts before returning (default: true)
 
-- [ ] **VERIFY 2.3:** Hybrid discovery works, falls through layers correctly, returns helpful errors
 
 ### 2.4 Discovery Configuration
 - [ ] 2.4.1 Create `.claude/discovery-config.yml`
@@ -228,9 +257,21 @@
   - Apply timeouts per layer
   - Use configured path patterns
 
-- [ ] **VERIFY 2.4:** Config file loads, coordinator respects settings, can toggle layers on/off
+**VERIFY Phase 2:**
+- [ ] Convention-based discovery finds artifacts correctly
+- [ ] Respects latest pointers and validates before returning
+- [ ] Filesystem scan finds artifacts in unexpected locations
+- [ ] Validates correctly and respects timeouts
+- [ ] Hybrid discovery works and falls through layers correctly
+- [ ] Returns helpful error messages
+- [ ] Config file loads and coordinator respects settings
+- [ ] Can toggle layers on/off
+
+---
 
 ## Phase 3: Indexing System
+
+**Objective:** Implement in-memory indexing, query API, and caching layer for fast artifact discovery.
 
 ### 3.1 In-Memory Index
 - [ ] 3.1.1 Implement `ArtifactIndex` class structure
@@ -273,7 +314,6 @@
   - Rebuild index after register/update/delete operations
   - Expose `registry.index.query(filters)` for fast queries
 
-- [ ] **VERIFY 3.1:** Index builds correctly, queries are fast (<5ms), refreshes when stale
 
 ### 3.2 Query API
 - [ ] 3.2.1 Implement query helpers on ArtifactRegistry
@@ -296,7 +336,6 @@
   - Project context: `project`, `feature`, `component`
   - Lifecycle: `includeSuperseded`, `includeArchived`
 
-- [ ] **VERIFY 3.2:** Query helpers work, relationship queries correct, advanced filters functional
 
 ### 3.3 Caching Layer
 - [ ] 3.3.1 Implement `DiscoveryCache` class
@@ -319,9 +358,20 @@
   - Expose `cache.stats()` method
   - Log cache performance metrics
 
-- [ ] **VERIFY 3.3:** Cache reduces discovery time, invalidates correctly, statistics accurate
+**VERIFY Phase 3:**
+- [ ] Index builds correctly and queries are fast (<5ms)
+- [ ] Refreshes when stale
+- [ ] Query helpers work correctly
+- [ ] Relationship queries return correct results
+- [ ] Advanced filters are functional
+- [ ] Cache reduces discovery time
+- [ ] Invalidates correctly and statistics are accurate
+
+---
 
 ## Phase 4: Versioning & Lifecycle
+
+**Objective:** Implement semantic versioning, lifecycle state management, and archival capabilities.
 
 ### 4.1 Semantic Versioning
 - [ ] 4.1.1 Implement version parsing and comparison
@@ -341,7 +391,6 @@
   - Validate dependencies have compatible versions
   - Warn on major version mismatches
 
-- [ ] **VERIFY 4.1:** Version parsing works, comparison correct, compatibility checks functional
 
 ### 4.2 Lifecycle State Management
 - [ ] 4.2.1 Define lifecycle state machine
@@ -364,7 +413,6 @@
   - `lifecycle.archived_at`: when archived
   - `lifecycle.retention_policy`: permanent|annual|short-term
 
-- [ ] **VERIFY 4.2:** State transitions validated, lifecycle metadata tracked, illegal transitions rejected
 
 ### 4.3 Supersession Management
 - [ ] 4.3.1 Implement `supersede(oldId, newArtifactData)` method
@@ -385,7 +433,6 @@
   - Suggest upgrading to latest version
   - Show what changed (diff if available)
 
-- [ ] **VERIFY 4.3:** Supersession works, chains tracked, warnings displayed
 
 ### 4.4 Archival & Retention
 - [ ] 4.4.1 Implement archival policies
@@ -406,9 +453,22 @@
   - Update registry (mark as deleted)
   - Generate cleanup report
 
-- [ ] **VERIFY 4.4:** Archival works, retention policies enforced, cleanup runs correctly
+**VERIFY Phase 4:**
+- [ ] Version parsing works correctly
+- [ ] Comparison and compatibility checks are functional
+- [ ] State transitions are validated
+- [ ] Lifecycle metadata is tracked
+- [ ] Illegal transitions are rejected
+- [ ] Supersession works and chains are tracked
+- [ ] Warnings displayed for superseded artifacts
+- [ ] Archival works and retention policies are enforced
+- [ ] Cleanup runs correctly
+
+---
 
 ## Phase 5: Integration
+
+**Objective:** Integrate the artifact registry with commands, CLI tools, and workflows.
 
 ### 5.1 Command Integration
 - [ ] 5.1.1 Add registry to command execution context
@@ -432,7 +492,6 @@
   - Register in artifact registry
   - Display artifact_id to user
 
-- [ ] **VERIFY 5.1:** Commands use registry, outputs auto-register, discovery replaces manual lookups
 
 ### 5.2 CLI Tools
 - [ ] 5.2.1 Create `artifact-registry` CLI tool
@@ -475,7 +534,6 @@
   - Validate dependency references
   - Report integrity issues
 
-- [ ] **VERIFY 5.2:** CLI tools functional, output formatted correctly, all commands work
 
 ### 5.3 Workflow Integration
 - [ ] 5.3.1 Update /plan:batch to use registry
@@ -496,7 +554,6 @@
   - Warn if artifact superseded since plan creation
   - Track cross-session dependencies
 
-- [ ] **VERIFY 5.3:** Batch workflows use registry, status tracks artifacts, cross-session refs work
 
 ### 5.4 Documentation & Examples
 - [ ] 5.4.1 Document artifact registry architecture
@@ -524,9 +581,20 @@
   - Superseding artifacts
   - Archival workflows
 
-- [ ] **VERIFY 5.4:** Documentation complete, examples functional, usage clear
+**VERIFY Phase 5:**
+- [ ] Commands use registry and outputs auto-register
+- [ ] Discovery replaces manual lookups
+- [ ] CLI tools functional and output formatted correctly
+- [ ] All commands work as expected
+- [ ] Batch workflows use registry
+- [ ] Status tracks artifacts and cross-session refs work
+- [ ] Documentation complete and examples functional
+
+---
 
 ## Phase 6: Testing & Validation
+
+**Objective:** Ensure comprehensive testing and performance benchmarking.
 
 ### 6.1 Unit Tests
 - [ ] 6.1.1 Test ArtifactRegistry CRUD operations
@@ -536,21 +604,28 @@
 - [ ] 6.1.5 Test ArtifactIndex
 - [ ] 6.1.6 Test versioning and lifecycle
 
-- [ ] **VERIFY 6.1:** All unit tests pass, coverage > 80%
-
 ### 6.2 Integration Tests
+
+**Tasks:**
 - [ ] 6.2.1 Test end-to-end artifact lifecycle
 - [ ] 6.2.2 Test cross-command workflows
 - [ ] 6.2.3 Test error scenarios
 
-- [ ] **VERIFY 6.2:** Integration tests pass, workflows functional, errors handled
-
 ### 6.3 Performance Testing
+
+**Tasks:**
 - [ ] 6.3.1 Benchmark discovery operations (registry <5ms, convention <50ms, scan <500ms)
 - [ ] 6.3.2 Test with large registries (100, 1000, 10000 artifacts)
 - [ ] 6.3.3 Test cache effectiveness (target >70% hit rate)
 
-- [ ] **VERIFY 6.3:** Performance meets targets, scales to 1000+ artifacts
+**VERIFY Phase 6:**
+- [ ] All unit tests pass with coverage > 80%
+- [ ] Integration tests pass and workflows are functional
+- [ ] Errors are handled correctly
+- [ ] Performance meets targets
+- [ ] Scales to 1000+ artifacts
+
+---
 
 ## Success Criteria
 - [ ] ArtifactRegistry implements all CRUD operations correctly
@@ -565,3 +640,15 @@
 - [ ] Performance benchmarks met (registry <5ms, convention <50ms, scan <500ms)
 - [ ] Cache hit rate > 70% in typical workflows
 - [ ] Registry validates integrity (no orphaned entries, valid dependencies)
+
+---
+
+## Risks
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Registry corruption | High | Low | JSON validation, backup before write, atomic operations |
+| Performance degradation with large registries | Medium | Medium | In-memory indexing, caching, pagination |
+| Orphaned artifacts | Medium | Medium | Integrity validation, cleanup job, lifecycle tracking |
+| Discovery false positives | Medium | Low | Schema validation, multiple verification layers |
+| Cache invalidation issues | Medium | Medium | Event-based invalidation, TTL limits, manual refresh |

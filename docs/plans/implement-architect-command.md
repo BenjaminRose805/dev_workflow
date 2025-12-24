@@ -4,7 +4,7 @@
 - **Goal:** Implement system-level architecture design command with 6 sub-commands for comprehensive architecture documentation
 - **Priority:** P1 (Design & Architecture)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-architect-command/`
+- **Output:** `docs/plan-outputs/architect-command/`
 - **Model:** Sonnet (precision for design work)
 - **Category:** Design & Architecture
 
@@ -12,10 +12,47 @@
 
 ---
 
+
+---
+
+## Dependencies
+
+### Upstream Dependencies
+- /clarify command - Provides requirements.json with functional and non-functional requirements
+- /research command - Provides technology research and evaluations
+- /brainstorm command - Provides architecture alternatives and options
+- /explore command - Provides existing codebase understanding via codebase-map.json
+
+### Downstream Dependencies
+- /design command - Consumes architecture.md and components.json for component-level design
+- /implement command - Consumes architecture for implementation guidance
+- /model command - Consumes data architecture for entity modeling
+- /spec command - Consumes component interfaces for API specification
+
+### External Tools
+- Mermaid - Required for diagram rendering (C4, sequence, data flow)
+- Git - Required for ADR version tracking
+
+---
+
+## Risks
+
+| Risk | Impact | Mitigation |
+|------|--------|------------|
+| Over-engineering architecture | High | Focus on MVP requirements, use YAGNI principle, validate with stakeholders |
+| Architecture-reality mismatch | High | Regular validation against implementation, update docs when code diverges |
+| ADR proliferation | Medium | Clear guidelines on when to create ADRs, focus on significant decisions only |
+| Incomplete quality attribute coverage | Medium | Use checklist of common quality attributes (performance, security, scalability, etc.) |
+| Diagram complexity | Medium | Follow C4 model guidelines, limit detail per diagram level |
+| Technology lock-in from early decisions | High | Document technology exit strategies in ADRs, prefer abstractions |
+
+---
+
 ## Phase 1: Core Command Setup
 
 **Objective:** Establish base /architect command with YAML configuration and intelligent routing
 
+**Tasks:**
 - [ ] 1.1 Create `/architect` command file at `.claude/commands/architect.md`
 - [ ] 1.2 Add YAML frontmatter with configuration:
   - name: architect
@@ -41,7 +78,8 @@
   - Search for brainstorming from /brainstorm command
   - Display found artifacts and offer to use them
 
-**VERIFY 1:** Base /architect command runs successfully, discovers upstream artifacts, routes to appropriate workflow
+**VERIFY Phase 1:**
+- [ ] Base /architect command runs successfully, discovers upstream artifacts, routes to appropriate workflow
 
 ---
 
@@ -50,6 +88,8 @@
 **Objective:** Implement highest-priority sub-commands for system and component architecture
 
 ### 2.1 System Sub-Command
+
+**Tasks:**
 - [ ] 2.1.1 Create `/architect:system` command file at `.claude/commands/architect/system.md`
   - YAML: model: sonnet, allowed-tools: Read, Write, Grep, Glob, Bash, AskUserQuestion
   - argument-hint: [system-name]
@@ -74,6 +114,8 @@
   - `system-diagram.md` (C4 Context + Container diagrams)
 
 ### 2.2 Components Sub-Command
+
+**Tasks:**
 - [ ] 2.2.1 Create `/architect:components` command file at `.claude/commands/architect/components.md`
   - YAML: model: sonnet, allowed-tools: Read, Write, Grep, Glob, Bash
   - argument-hint: [system-or-layer]
@@ -95,7 +137,8 @@
   - `components.json` (structured component catalog)
   - `component-diagram.md` (Mermaid component diagrams)
 
-**VERIFY 2:** architect:system and architect:components produce valid, comprehensive artifacts with proper C4 diagrams
+**VERIFY Phase 2:**
+- [ ] architect:system and architect:components produce valid, comprehensive artifacts with proper C4 diagrams
 
 ---
 
@@ -104,6 +147,8 @@
 **Objective:** Implement data architecture and deployment sub-commands
 
 ### 3.1 Data Sub-Command
+
+**Tasks:**
 - [ ] 3.1.1 Create `/architect:data` command file at `.claude/commands/architect/data.md`
   - YAML: model: sonnet, allowed-tools: Read, Write, Grep, Glob, Bash
   - argument-hint: [scope]
@@ -127,6 +172,8 @@
   - `data-flow.md` (Mermaid data flow diagrams)
 
 ### 3.2 Deployment Sub-Command
+
+**Tasks:**
 - [ ] 3.2.1 Create `/architect:deployment` command file at `.claude/commands/architect/deployment.md`
   - YAML: model: sonnet, allowed-tools: Read, Write, Grep, Glob, Bash, AskUserQuestion
   - argument-hint: [environment]
@@ -149,7 +196,8 @@
   - `deployment.md` (deployment topology and strategy)
   - `infrastructure.md` (infrastructure specifications with Mermaid diagrams)
 
-**VERIFY 3:** Data and deployment sub-commands produce actionable, detailed architecture artifacts
+**VERIFY Phase 3:**
+- [ ] Data and deployment sub-commands produce actionable, detailed architecture artifacts
 
 ---
 
@@ -158,6 +206,8 @@
 **Objective:** Implement Architectural Decision Record creation and management
 
 ### 4.1 ADR Sub-Command
+
+**Tasks:**
 - [ ] 4.1.1 Create `/architect:adr` command file at `.claude/commands/architect/adr.md`
   - YAML: model: sonnet, allowed-tools: Read, Write, Grep, Glob
   - argument-hint: [decision-topic]
@@ -186,7 +236,8 @@
   - Add reference to new ADR in Technology Choices section
   - Ensure consistency between ADRs and main architecture doc
 
-**VERIFY 4:** ADR sub-command creates properly numbered, well-structured ADRs with complete decision rationale
+**VERIFY Phase 4:**
+- [ ] ADR sub-command creates properly numbered, well-structured ADRs with complete decision rationale
 
 ---
 
@@ -195,6 +246,8 @@
 **Objective:** Implement security architecture design sub-command
 
 ### 5.1 Security Sub-Command
+
+**Tasks:**
 - [ ] 5.1.1 Create `/architect:security` command file at `.claude/commands/architect/security.md`
   - YAML: model: sonnet, allowed-tools: Read, Write, Grep, Glob, Bash, AskUserQuestion
   - argument-hint: [scope]
@@ -217,7 +270,8 @@
 - [ ] 5.1.5 Generate artifact:
   - `security-architecture.md` (threat model, controls, compliance)
 
-**VERIFY 5:** Security sub-command produces comprehensive security architecture with threat model and controls
+**VERIFY Phase 5:**
+- [ ] Security sub-command produces comprehensive security architecture with threat model and controls
 
 ---
 
@@ -226,6 +280,8 @@
 **Objective:** Implement and validate all artifact schemas with proper metadata
 
 ### 6.1 Architecture Document Schema
+
+**Tasks:**
 - [ ] 6.1.1 Implement `architecture.md` template with YAML frontmatter:
   - artifact_type: architecture-document
   - system: [name]
@@ -248,6 +304,8 @@
   12. Future Considerations
 
 ### 6.2 Components Catalog Schema
+
+**Tasks:**
 - [ ] 6.2.1 Implement `components.json` JSON schema:
   - metadata: {artifact_type, system, version, created_at}
   - containers[]: {id, name, technology, type, responsibility, components[]}
@@ -261,6 +319,8 @@
   - Validate no circular dependencies in critical paths
 
 ### 6.3 ADR Schema
+
+**Tasks:**
 - [ ] 6.3.1 Implement ADR template with YAML frontmatter:
   - artifact_type: architecture-decision-record
   - adr_number: NNNN
@@ -280,6 +340,8 @@
   - References
 
 ### 6.4 Common Metadata
+
+**Tasks:**
 - [ ] 6.4.1 Ensure all artifacts include:
   - Generating command reference
   - Creation and update timestamps
@@ -291,8 +353,18 @@
   - ADRs reference related architecture sections
   - Component catalog references architecture.md
   - All artifacts include navigation links
+- [ ] 6.4.3 Document artifact consumption by downstream commands:
+  - architecture.md consumed by: /design (component context), /implement (tech stack), /model (data entities), /spec (interfaces)
+  - components.json consumed by: /design (component boundaries), /spec (interface extraction), /implement (file structure)
+  - data-architecture.md consumed by: /model (entity relationships), /design:data (data structures), /spec:data (data model specs)
+- [ ] 6.4.4 Document critical field mappings for downstream:
+  - components[].responsibility → design-spec.md "Responsibilities" section
+  - components[].interfaces.provided → interfaces.md "Public Interfaces" section
+  - components[].dependencies → design-spec.md "Integration Points" section
+  - architecture.md Section 9 (Technology Choices) → interfaces.md language parameter
 
-**VERIFY 6:** All artifacts validate against defined schemas, metadata is complete and consistent
+**VERIFY Phase 6:**
+- [ ] All artifacts validate against defined schemas, metadata is complete and consistent
 
 ---
 
@@ -301,6 +373,8 @@
 **Objective:** Implement high-quality Mermaid diagram generation for all architecture views
 
 ### 7.1 C4 Context Diagram
+
+**Tasks:**
 - [ ] 7.1.1 Implement C4 Context diagram generation:
   - Use Mermaid `graph TB` syntax
   - Box for system (bold border)
@@ -313,6 +387,8 @@
   - Add legend if needed
 
 ### 7.2 C4 Container Diagram
+
+**Tasks:**
 - [ ] 7.2.1 Implement C4 Container diagram generation:
   - Use Mermaid `graph TB` with subgraph for system boundary
   - Boxes for each container with technology label
@@ -324,6 +400,8 @@
   - Indicate sync vs async communication
 
 ### 7.3 Component Diagram
+
+**Tasks:**
 - [ ] 7.3.1 Implement component diagram generation:
   - Use Mermaid `graph LR` for horizontal flow
   - Group components by container using subgraphs
@@ -335,6 +413,8 @@
   - Highlight external interfaces
 
 ### 7.4 Data Flow Diagram
+
+**Tasks:**
 - [ ] 7.4.1 Implement data flow diagram generation:
   - Use Mermaid `graph LR` or `flowchart`
   - Show data ingestion points
@@ -347,6 +427,8 @@
   - Show synchronization points
 
 ### 7.5 Deployment Diagram
+
+**Tasks:**
 - [ ] 7.5.1 Implement deployment diagram generation:
   - Use Mermaid `graph TB` with nested subgraphs
   - Show infrastructure layers (network, compute, storage)
@@ -357,7 +439,8 @@
   - Show environment-specific differences
   - Indicate scaling configurations
 
-**VERIFY 7:** All Mermaid diagrams render correctly, are visually clear, and accurately represent architecture
+**VERIFY Phase 7:**
+- [ ] All Mermaid diagrams render correctly, are visually clear, and accurately represent architecture
 
 ---
 
@@ -366,6 +449,8 @@
 **Objective:** Implement architecture completeness checks and validation
 
 ### 8.1 Quality Gate Implementation
+
+**Tasks:**
 - [ ] 8.1.1 Implement pre-completion checklist:
   - System context diagram exists (C4 Level 1)
   - Container diagram exists (C4 Level 2)
@@ -388,6 +473,8 @@
   - Display score at end of execution
 
 ### 8.2 Consistency Validation
+
+**Tasks:**
 - [ ] 8.2.1 Implement cross-artifact consistency checks:
   - Verify components in components.json match architecture.md
   - Verify ADR decisions align with technology choices
@@ -402,7 +489,8 @@
   - Container names consistent across all artifacts
   - Technology names consistent (e.g., "PostgreSQL" not "Postgres" in one place)
 
-**VERIFY 8:** Quality gates prevent incomplete architectures, validation catches inconsistencies
+**VERIFY Phase 8:**
+- [ ] Quality gates prevent incomplete architectures, validation catches inconsistencies
 
 ---
 
@@ -411,6 +499,8 @@
 **Objective:** Integrate with upstream and downstream commands for seamless workflows
 
 ### 9.1 Upstream Integration
+
+**Tasks:**
 - [ ] 9.1.1 Implement artifact discovery from /clarify:
   - Search for `docs/clarify/requirements/*.json`
   - Parse functional and non-functional requirements
@@ -430,6 +520,8 @@
   - Use as Options Considered in ADRs
 
 ### 9.2 Downstream Integration
+
+**Tasks:**
 - [ ] 9.2.1 Prepare artifacts for /design command:
   - Ensure components.json has sufficient detail
   - Document expected interfaces for each component
@@ -448,6 +540,8 @@
   - Document API versioning strategy
 
 ### 9.3 Workflow Documentation
+
+**Tasks:**
 - [ ] 9.3.1 Document common workflows:
   - New system: /clarify → /architect → /design → /implement
   - Greenfield: /brainstorm → /architect → /model → /spec
@@ -459,7 +553,8 @@
   - When to use architect:security (if handling sensitive data)
   - When to skip to /design (small, well-understood features)
 
-**VERIFY 9:** Artifacts flow smoothly between commands, workflows are clear and documented
+**VERIFY Phase 9:**
+- [ ] Artifacts flow smoothly between commands, workflows are clear and documented
 
 ---
 
@@ -468,6 +563,8 @@
 **Objective:** Implement helpful interactive prompts and guidance for users
 
 ### 10.1 Intelligent Question Flow
+
+**Tasks:**
 - [ ] 10.1.1 Implement adaptive questioning:
   - Ask scale questions only if not in requirements
   - Ask about existing systems only if not in constraints
@@ -483,6 +580,8 @@
   - Offer to skip optional sections
 
 ### 10.2 Contextual Help
+
+**Tasks:**
 - [ ] 10.2.1 Implement examples in prompts:
   - "Expected scale: e.g., 1000 concurrent users, 100k requests/day"
   - "Technology constraints: e.g., Must use AWS, Team knows Python"
@@ -496,6 +595,8 @@
   - Warn about common pitfalls
 
 ### 10.3 Progress Indicators
+
+**Tasks:**
 - [ ] 10.3.1 Implement phase indicators:
   - "Phase 1/4: Gathering requirements..."
   - "Phase 2/4: Designing container architecture..."
@@ -507,7 +608,8 @@
   - "Created 3 ADRs"
   - "Quality gates: 8/10 passed"
 
-**VERIFY 10:** User experience is smooth, questions are helpful, progress is clear
+**VERIFY Phase 10:**
+- [ ] User experience is smooth, questions are helpful, progress is clear
 
 ---
 
@@ -516,6 +618,8 @@
 **Objective:** Comprehensive testing across project types and scenarios
 
 ### 11.1 Unit Testing
+
+**Tasks:**
 - [ ] 11.1.1 Test artifact generation functions:
   - architecture.md generation with all 12 sections
   - components.json generation with valid schema
@@ -531,6 +635,8 @@
   - Consistency checks
 
 ### 11.2 Integration Testing
+
+**Tasks:**
 - [ ] 11.2.1 Test base /architect command:
   - With no upstream artifacts
   - With requirements from /clarify
@@ -549,6 +655,8 @@
   - components → adr (document component choices)
 
 ### 11.3 Cross-Project Testing
+
+**Tasks:**
 - [ ] 11.3.1 Test on web application scenario:
   - Frontend + backend + database architecture
   - REST API design
@@ -571,6 +679,8 @@
   - Create migration ADRs
 
 ### 11.4 Artifact Quality Testing
+
+**Tasks:**
 - [ ] 11.4.1 Validate architecture.md completeness:
   - All 12 sections present
   - Quality attributes quantified
@@ -592,7 +702,8 @@
   - All elements labeled
   - Consistent styling
 
-**VERIFY 11:** All tests pass, command works reliably across diverse scenarios and project types
+**VERIFY Phase 11:**
+- [ ] All tests pass, command works reliably across diverse scenarios and project types
 
 ---
 
@@ -601,6 +712,8 @@
 **Objective:** Create comprehensive documentation with real-world examples
 
 ### 12.1 Command Documentation
+
+**Tasks:**
 - [ ] 12.1.1 Create main /architect documentation:
   - Overview and purpose
   - When to use /architect vs /design
@@ -618,6 +731,8 @@
   - Provide workflow decision trees
 
 ### 12.2 Artifact Schema Documentation
+
+**Tasks:**
 - [ ] 12.2.1 Document architecture.md schema:
   - Explain each of 12 sections
   - Provide section templates
@@ -634,6 +749,8 @@
   - Provide 3-4 example ADRs
 
 ### 12.3 Real-World Examples
+
+**Tasks:**
 - [ ] 12.3.1 Create e-commerce platform example:
   - Full architecture.md
   - Complete components.json
@@ -653,6 +770,8 @@
   - Analytics and reporting
 
 ### 12.4 Best Practices Guide
+
+**Tasks:**
 - [ ] 12.4.1 Document C4 modeling best practices:
   - Keep Context diagram high-level (3-5 external systems max)
   - Container diagram shows deployment units
@@ -671,6 +790,8 @@
   - Update diagrams when architecture changes
 
 ### 12.5 Troubleshooting Guide
+
+**Tasks:**
 - [ ] 12.5.1 Document common issues:
   - "How do I decide between monolith and microservices?"
   - "How many components should I have?"
@@ -681,7 +802,8 @@
   - Technology choice framework
   - Deployment pattern selection guide
 
-**VERIFY 12:** Documentation is comprehensive, examples are realistic and helpful, best practices are clear
+**VERIFY Phase 12:**
+- [ ] Documentation is comprehensive, examples are realistic and helpful, best practices are clear
 
 ---
 

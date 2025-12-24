@@ -1,13 +1,31 @@
 # Implementation Plan: Context Loading Hook System
 
 ## Overview
+
 - **Goal:** Implement pre-command context loading hook that automatically injects relevant artifacts, plan status, and environment metadata before command execution
 - **Priority:** P1 (Infrastructure)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-context-loading-hook/`
+- **Output:** `docs/plan-outputs/context-loading-hook/`
+- **Model:** haiku (fast context loading)
 - **Category:** Hook Infrastructure
 
 > The Context Loading Hook is a critical pre-command hook that runs on UserPromptSubmit and PreToolUse (Skill matcher) events. It intelligently loads relevant artifacts from the registry, injects active plan status, parses command arguments to identify dependencies, validates prerequisites before execution, and enriches the command context with environment metadata. This hook ensures commands have access to all necessary context without manual file path specification, blocks execution when critical dependencies are missing (exit code 2), and provides helpful suggestions for resolving issues.
+
+---
+
+## Dependencies
+
+### Upstream
+- Artifact Registry System (for artifact discovery and loading)
+- Plan Execution System (for plan status loading)
+- Hook Infrastructure (for UserPromptSubmit and PreToolUse integration)
+
+### Downstream
+- All command execution (consumes injected context)
+- Command validation (uses prerequisite validation results)
+
+### External Tools
+- None (internal Node.js implementation)
 
 ---
 
@@ -26,7 +44,12 @@
 - [ ] 1.10 Implement timeout mechanism for artifact loading (default: 3000-5000ms)
 - [ ] 1.11 Add logging for all artifact loading operations with timings and outcomes
 
-**VERIFY 1:** Context loading hook successfully discovers and loads artifacts for test commands (/clarify, /architect, /test), validates artifacts are active and not superseded, completes within timeout, and logs all operations. Verify cache reduces load time on repeated calls.
+**VERIFY Phase 1:**
+- [ ] Context loading hook successfully discovers and loads artifacts for test commands
+- [ ] Validates artifacts are active and not superseded
+- [ ] Completes within timeout
+- [ ] Logs all operations
+- [ ] Cache reduces load time on repeated calls
 
 ---
 
@@ -44,7 +67,12 @@
 - [ ] 2.9 Add plan status change detection to invalidate cache when plan files are modified
 - [ ] 2.10 Create plan status summary formatter for display in command context
 
-**VERIFY 2:** When a plan is active, context loading hook successfully loads plan status, extracts current task information, loads related findings, and injects plan context into command environment. Verify plan-aware artifact filtering returns artifacts from current plan first.
+**VERIFY Phase 2:**
+- [ ] When a plan is active, context loading hook successfully loads plan status
+- [ ] Extracts current task information
+- [ ] Loads related findings
+- [ ] Injects plan context into command environment
+- [ ] Plan-aware artifact filtering returns artifacts from current plan first
 
 ---
 
@@ -62,7 +90,11 @@
 - [ ] 3.9 Create fallback discovery strategies when registry lookup fails (convention-based, filesystem scan)
 - [ ] 3.10 Add artifact loading strategy configuration: strict (registry only), fast (registry+convention), thorough (all layers)
 
-**VERIFY 3:** Registry integration enables fast artifact discovery (<5ms for registry hits), correctly falls through discovery layers on cache miss, validates artifact compatibility with command requirements, and applies filtering based on tags, recency, and confidence scores.
+**VERIFY Phase 3:**
+- [ ] Registry integration enables fast artifact discovery (<5ms for registry hits)
+- [ ] Correctly falls through discovery layers on cache miss
+- [ ] Validates artifact compatibility with command requirements
+- [ ] Applies filtering based on tags, recency, and confidence scores
 
 ---
 
@@ -80,7 +112,12 @@
 - [ ] 4.9 Add argument normalization to standardize formats across different command styles
 - [ ] 4.10 Create parsed argument structure with fields: command, subcommand, explicit_deps, implicit_deps, flags, enriched_context
 
-**VERIFY 4:** Command parser correctly extracts command name and arguments, resolves artifact references, infers implicit dependencies based on command type, validates required arguments, and produces enriched argument structure. Test with commands using @artifact-id references, file paths, and various flag combinations.
+**VERIFY Phase 4:**
+- [ ] Command parser correctly extracts command name and arguments
+- [ ] Resolves artifact references
+- [ ] Infers implicit dependencies based on command type
+- [ ] Validates required arguments
+- [ ] Produces enriched argument structure
 
 ---
 
@@ -99,7 +136,11 @@
 - [ ] 5.10 Create detailed validation report with all checks, results, and recommendations
 - [ ] 5.11 Implement validation timeout to prevent hook from blocking indefinitely
 
-**VERIFY 5:** Prerequisite validation correctly identifies missing artifacts, blocks command execution with exit code 2 when critical dependencies absent, provides helpful suggestions for resolution, and completes validation within timeout. Test with missing requirements, superseded artifacts, and version incompatibilities.
+**VERIFY Phase 5:**
+- [ ] Prerequisite validation correctly identifies missing artifacts
+- [ ] Blocks command execution with exit code 2 when critical dependencies absent
+- [ ] Provides helpful suggestions for resolution
+- [ ] Completes validation within timeout
 
 ---
 
@@ -118,7 +159,13 @@
 - [ ] 6.10 Create environment snapshot serialization for checkpoint/resume capability
 - [ ] 6.11 Implement environment change detection to invalidate context when project state changes
 
-**VERIFY 6:** Environment setup correctly detects git context (branch, commit, clean status), loads project metadata from package.json, generates unique session ID, identifies workspace root, and creates comprehensive environment snapshot. Verify warnings appear for dirty git state.
+**VERIFY Phase 6:**
+- [ ] Environment setup correctly detects git context (branch, commit, clean status)
+- [ ] Loads project metadata from package.json
+- [ ] Generates unique session ID
+- [ ] Identifies workspace root
+- [ ] Creates comprehensive environment snapshot
+- [ ] Warnings appear for dirty git state
 
 ---
 
@@ -136,7 +183,12 @@
 - [ ] 7.9 Implement configuration hot-reload that applies settings changes without restart
 - [ ] 7.10 Add configuration documentation with examples for common use cases
 
-**VERIFY 7:** Configuration system loads settings from `.claude/settings.json`, applies per-command overrides, respects timeout and validation level settings, excludes specified commands, and supports hot-reload. Test by modifying config and verifying behavior changes without restart.
+**VERIFY Phase 7:**
+- [ ] Configuration system loads settings from `.claude/settings.json`
+- [ ] Applies per-command overrides
+- [ ] Respects timeout and validation level settings
+- [ ] Excludes specified commands
+- [ ] Supports hot-reload
 
 ---
 
@@ -155,7 +207,13 @@
 - [ ] 8.10 Create hook execution context with fields: event_type, tool_name, arguments, timestamp, session_id
 - [ ] 8.11 Implement hook result structure with fields: exit_code, artifacts_loaded, validation_results, suggestions, duration_ms
 
-**VERIFY 8:** Hook successfully registers on UserPromptSubmit and PreToolUse events, executes before command runs, injects loaded context into execution environment, returns appropriate exit codes, respects timeout, and logs all execution metrics. Verify blocking errors (exit code 2) prevent command execution.
+**VERIFY Phase 8:**
+- [ ] Hook successfully registers on UserPromptSubmit and PreToolUse events
+- [ ] Executes before command runs
+- [ ] Injects loaded context into execution environment
+- [ ] Returns appropriate exit codes
+- [ ] Respects timeout and logs all execution metrics
+- [ ] Blocking errors (exit code 2) prevent command execution
 
 ---
 
@@ -173,7 +231,12 @@
 - [ ] 9.9 Add context rendering modes: full (all details), summary (key info only), minimal (IDs and paths)
 - [ ] 9.10 Create context injection strategies: prepend (add to start of prompt), append (add to end), environment (pass as env vars)
 
-**VERIFY 9:** Context formatter produces well-structured output, injection adds context sections to command prompts without breaking formatting, respects token limits, prioritizes relevant information, and supports different rendering modes. Test with large artifacts to verify summarization works.
+**VERIFY Phase 9:**
+- [ ] Context formatter produces well-structured output
+- [ ] Injection adds context sections to command prompts without breaking formatting
+- [ ] Respects token limits
+- [ ] Prioritizes relevant information
+- [ ] Supports different rendering modes
 
 ---
 
@@ -192,7 +255,12 @@
 - [ ] 10.10 Implement adaptive timeout that adjusts based on historical performance
 - [ ] 10.11 Create performance metrics dashboard data: avg load time, cache hit rate, timeout rate
 
-**VERIFY 10:** Performance optimization achieves <50ms load time for cached artifacts, <500ms for uncached registry lookups, cache hit rate >70% in typical workflows, parallel loading reduces total time by 30%+, and performance metrics are collected accurately. Benchmark with 10, 50, 100 artifacts in registry.
+**VERIFY Phase 10:**
+- [ ] Performance optimization achieves <50ms load time for cached artifacts
+- [ ] <500ms for uncached registry lookups
+- [ ] Cache hit rate >70% in typical workflows
+- [ ] Parallel loading reduces total time by 30%+
+- [ ] Performance metrics are collected accurately
 
 ---
 
@@ -210,7 +278,12 @@
 - [ ] 11.9 Add degraded mode indicators in injected context ("Warning: Partial context loaded")
 - [ ] 11.10 Create error recovery suggestions based on failure type
 
-**VERIFY 11:** Hook gracefully handles missing artifacts (warns but continues), invalid artifact format (skips and warns), filesystem errors (retries then fails), and timeouts (returns partial context). Verify exit codes match error severity and suggestions are helpful.
+**VERIFY Phase 11:**
+- [ ] Hook gracefully handles missing artifacts (warns but continues)
+- [ ] Invalid artifact format (skips and warns)
+- [ ] Filesystem errors (retries then fails)
+- [ ] Timeouts (returns partial context)
+- [ ] Exit codes match error severity and suggestions are helpful
 
 ---
 
@@ -232,7 +305,12 @@
 - [ ] 12.13 Create edge case tests: concurrent loading, missing files, circular dependencies
 - [ ] 12.14 Implement regression tests for discovered bugs
 
-**VERIFY 12:** All unit tests pass with 85%+ code coverage, integration tests verify hook works with event system, performance tests confirm timing requirements met, error handling tests cover all failure modes, and end-to-end tests demonstrate full functionality with real commands.
+**VERIFY Phase 12:**
+- [ ] All unit tests pass with 85%+ code coverage
+- [ ] Integration tests verify hook works with event system
+- [ ] Performance tests confirm timing requirements met
+- [ ] Error handling tests cover all failure modes
+- [ ] End-to-end tests demonstrate full functionality with real commands
 
 ---
 
@@ -250,7 +328,11 @@
 - [ ] 13.9 Write migration guide for enabling context loading in existing projects
 - [ ] 13.10 Create visual diagrams showing context loading flow and decision tree
 
-**VERIFY 13:** Documentation is complete, accurate, and includes working examples. Configuration guide covers all settings, troubleshooting guide addresses common issues, and diagrams clearly illustrate context loading architecture and flow.
+**VERIFY Phase 13:**
+- [ ] Documentation is complete, accurate, and includes working examples
+- [ ] Configuration guide covers all settings
+- [ ] Troubleshooting guide addresses common issues
+- [ ] Diagrams clearly illustrate context loading architecture and flow
 
 ---
 
@@ -271,31 +353,22 @@
 
 ---
 
-## Dependencies
-- Artifact Registry System (for artifact discovery and loading)
-- Plan Execution System (for plan status loading)
-- Hook Infrastructure (for UserPromptSubmit and PreToolUse integration)
-- Configuration Management (`.claude/settings.json` parsing)
-- Command Execution Framework (for context injection)
+## Risks
 
-## Risks and Mitigations
-- **Risk:** Context loading adds significant latency to command execution
-  - **Mitigation:** Implement aggressive caching, parallel loading, lazy loading for non-critical artifacts, performance budgets
-- **Risk:** Over-aggressive artifact loading overwhelms command context with irrelevant information
-  - **Mitigation:** Implement smart filtering by command type, context size limits, artifact summarization, relevance scoring
-- **Risk:** Prerequisite validation blocks legitimate use cases with false positives
-  - **Mitigation:** Configurable validation severity levels, validation bypass flags, clear error messages with override instructions
-- **Risk:** Hook failures cause commands to fail unexpectedly
-  - **Mitigation:** Graceful degradation mode, comprehensive error handling, non-blocking warnings for recoverable errors
-- **Risk:** Cache invalidation bugs cause stale context to be injected
-  - **Mitigation:** Conservative invalidation strategy (invalidate on any artifact/plan change), cache TTL limits, cache validation checks
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Context loading adds significant latency | Medium | Medium | Aggressive caching, parallel loading, lazy loading, performance budgets |
+| Over-aggressive artifact loading overwhelms context | Medium | Medium | Smart filtering by command type, context size limits, summarization |
+| Prerequisite validation blocks legitimate use cases | Medium | Low | Configurable severity levels, validation bypass flags, clear error messages |
+| Hook failures cause commands to fail unexpectedly | High | Low | Graceful degradation mode, comprehensive error handling, non-blocking warnings |
+| Cache invalidation bugs cause stale context | Medium | Low | Conservative invalidation strategy, cache TTL limits, validation checks |
 
-## Future Enhancements
-- Machine learning-based artifact relevance prediction for smarter loading
-- Distributed caching for multi-user/multi-machine setups
-- Context loading analytics dashboard for monitoring performance and usage patterns
-- Smart context compression that learns which information is most valuable per command type
-- Integration with external context sources (API documentation, issue trackers, etc.)
-- Predictive pre-loading based on command usage patterns
-- Context diff visualization showing what changed since last command execution
-- A/B testing framework for optimizing context loading strategies
+---
+
+## Notes
+
+- Context loading hook runs on UserPromptSubmit and PreToolUse (Skill) events
+- Exit code 2 blocks command execution when critical prerequisites are missing
+- Performance target: <50ms for cached artifacts, <500ms for uncached registry lookups
+- Cache hit rate target: >70% in typical workflows
+- All context injection respects token limits to avoid overwhelming commands

@@ -4,14 +4,41 @@
 - **Goal:** Implement the /research command with 4 sub-commands for systematic technology and pattern research
 - **Priority:** P0 (HIGH - Discovery & Ideation phase)
 - **Created:** 2025-12-22
-- **Output:** `docs/plan-outputs/implement-research-command/`
-- **Model:** Claude Sonnet 4.5 (web research, analysis, synthesis)
+- **Output:** `docs/plan-outputs/research-command/`
+- **Model:** sonnet (web research, analysis, synthesis)
 - **Category:** Discovery & Ideation
 
 > The /research command helps developers make informed decisions by systematically researching technologies, patterns, architectures, and best practices. It uses web search, documentation fetching, and codebase analysis to gather information, compare options, and provide data-driven recommendations.
 
 ---
 
+
+---
+
+## Dependencies
+
+### Upstream
+- None (this is a discovery command)
+
+### Downstream
+- `/architect` - Consumes research artifacts for architecture decisions
+- `/design` - Uses research for design patterns and technology choices
+- `/implement` - References research for implementation decisions
+
+### External Tools
+- WebSearch - For gathering research data
+- WebFetch - For fetching documentation
+
+---
+
+## Risks
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Web search unavailable | High | Low | Implement graceful fallback with cached/offline sources |
+| Outdated sources | Medium | Medium | Prioritize recent publications, flag old sources |
+| Conflicting recommendations | Medium | Medium | Document areas of disagreement, provide balanced view |
+| Research scope creep | Low | Medium | Clear scope definitions for quick/standard/deep modes |
 ## Phase 1: Core Command Setup
 
 **Objective:** Establish base /research command with YAML configuration and core prompt structure
@@ -21,7 +48,7 @@
   - name: research
   - description: Research technologies, patterns, and best practices - comparing options and gathering information for decision-making
   - category: discovery-ideation
-  - model: claude-sonnet-4-5
+  - model: sonnet
   - allowed-tools: WebSearch, WebFetch, Read, Grep, Glob, Bash, Write
   - permission_mode: default
 - [ ] 1.3 Write base command prompt with sections:
@@ -36,7 +63,10 @@
   - context: project type or technology stack
 - [ ] 1.5 Create output directory structure: `docs/research/`
 
-**VERIFY 1:** Base /research command runs successfully, performs web research, and produces structured output
+**VERIFY Phase 1:**
+- [ ] Base /research command runs successfully
+- [ ] Performs web research with authoritative sources
+- [ ] Produces structured output in `docs/research/`
 
 ---
 
@@ -68,7 +98,10 @@
   - Note areas of consensus and disagreement
   - Formulate context-specific recommendations
 
-**VERIFY 2:** Research workflow produces comprehensive, well-sourced findings with clear recommendations
+**VERIFY Phase 2:**
+- [ ] Research workflow produces comprehensive findings
+- [ ] All findings are well-sourced with citations
+- [ ] Clear recommendations with evidence
 
 ---
 
@@ -78,7 +111,7 @@
 
 ### 3.1 Technology Research Sub-Command
 - [ ] 3.1.1 Create `/research:technology` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <technology-area> [--options lib1,lib2,lib3]
+  - YAML: model: sonnet, argument-hint: <technology-area> [--options lib1,lib2,lib3]
 - [ ] 3.1.2 Implement technology comparison logic:
   - Library/framework feature comparison
   - Bundle size and performance metrics
@@ -95,7 +128,7 @@
 
 ### 3.2 Patterns Research Sub-Command
 - [ ] 3.2.1 Create `/research:patterns` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <pattern-name> [--context project-type]
+  - YAML: model: sonnet, argument-hint: <pattern-name> [--context project-type]
 - [ ] 3.2.2 Implement pattern research logic:
   - Pattern definition and variants
   - When to use / when not to use
@@ -112,7 +145,7 @@
 
 ### 3.3 Security Research Sub-Command
 - [ ] 3.3.1 Create `/research:security` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <topic> [--context technology]
+  - YAML: model: sonnet, argument-hint: <topic> [--context technology]
 - [ ] 3.3.2 Implement security research logic:
   - OWASP guidance and best practices
   - Known vulnerabilities and CVEs
@@ -128,7 +161,7 @@
 
 ### 3.4 Performance Research Sub-Command
 - [ ] 3.4.1 Create `/research:performance` command file
-  - YAML: model: claude-sonnet-4-5, argument-hint: <area> [--context technology]
+  - YAML: model: sonnet, argument-hint: <area> [--context technology]
 - [ ] 3.4.2 Implement performance research logic:
   - Benchmark data and comparisons
   - Optimization techniques
@@ -144,7 +177,10 @@
   - Profiling tool recommendations
   - KPIs and targets
 
-**VERIFY 3:** All sub-commands produce valid, specialized artifacts relevant to their focus area
+**VERIFY Phase 3:**
+- [ ] All sub-commands produce valid artifacts
+- [ ] Specialized artifacts are relevant to their focus area
+- [ ] All sub-commands handle edge cases gracefully
 
 ---
 
@@ -156,7 +192,7 @@
 - [ ] 4.1.1 Implement `research-notes.md` generation:
   - YAML frontmatter with metadata:
     - type: research-notes
-    - topic, date, researcher (Claude Sonnet 4.5)
+    - topic, date, researcher (sonnet)
     - scope (quick|standard|deep)
     - sources-count
   - Summary (2-3 paragraph overview)
@@ -200,7 +236,10 @@
   - Categorize by source type
   - Include access date
 
-**VERIFY 4:** Artifacts meet quality standards, sources are well-cited, recommendations are justified
+**VERIFY Phase 4:**
+- [ ] Artifacts meet quality standards
+- [ ] Sources are well-cited with working hyperlinks
+- [ ] Recommendations are justified with evidence
 
 ---
 
@@ -231,7 +270,10 @@
   - Identify consensus views
   - Note areas of disagreement
 
-**VERIFY 5:** Web research produces high-quality, diverse, recent, and authoritative sources
+**VERIFY Phase 5:**
+- [ ] Web research produces high-quality sources
+- [ ] Sources are diverse, recent, and authoritative
+- [ ] Graceful fallback when web search unavailable
 
 ---
 
@@ -258,7 +300,10 @@
   - Performance optimization: /research:performance → /analyze → /refactor
   - Architecture planning: /research:patterns → /architect
 
-**VERIFY 6:** Command integration works smoothly, artifacts flow between commands correctly
+**VERIFY Phase 6:**
+- [ ] Command integration works smoothly
+- [ ] Artifacts flow between commands correctly
+- [ ] Cross-references are accurate and useful
 
 ---
 
@@ -302,7 +347,10 @@
 - [ ] 7.4.2 Test research → implementation workflow
 - [ ] 7.4.3 Test multi-research comparison workflow
 
-**VERIFY 7:** All test cases pass, research quality is consistently high
+**VERIFY Phase 7:**
+- [ ] All test cases pass
+- [ ] Research quality is consistently high
+- [ ] Edge cases are handled appropriately
 
 ---
 
@@ -339,7 +387,10 @@
   - Example pattern research
   - Example security assessment
 
-**VERIFY 8:** Documentation is complete, clear, and helpful; output quality is polished
+**VERIFY Phase 8:**
+- [ ] Documentation is complete and clear
+- [ ] User guides cover common scenarios
+- [ ] Output quality is polished and consistent
 
 ---
 
@@ -374,3 +425,6 @@
 - [ ] All sub-commands tested with representative topics
 - [ ] Edge cases (obscure topics, no web access) handled gracefully
 - [ ] Research quality validated across different domains
+
+---
+
