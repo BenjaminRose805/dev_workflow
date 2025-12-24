@@ -8,7 +8,6 @@
  *   node scripts/cache-stats.js                 # Show all cache stats
  *   node scripts/cache-stats.js --scripts       # Show only scripts cache stats
  *   node scripts/cache-stats.js --research      # Show only research cache stats
- *   node scripts/cache-stats.js --speculative   # Show only speculative cache stats
  *   node scripts/cache-stats.js --verbose       # Show detailed output
  *
  * Output Format:
@@ -46,14 +45,12 @@ const { resolvePath, fileExists, readFile, getFileMtime } = require('./lib/file-
 const CACHE_DIRS = {
   scripts: '.claude/cache/scripts',
   research: '.claude/cache/research',
-  speculative: '.claude/cache/speculative',
 };
 
 // Cache versions
 const CACHE_VERSIONS = {
   scripts: 1,
   research: 1,
-  speculative: 1,
 };
 
 // Global verbose flag
@@ -71,7 +68,7 @@ function verbose(...args) {
 
 /**
  * Parse command line arguments
- * @returns {{ all: boolean, scripts: boolean, research: boolean, speculative: boolean, verbose: boolean, detailed: boolean }}
+ * @returns {{ all: boolean, scripts: boolean, research: boolean, verbose: boolean, detailed: boolean }}
  */
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -79,7 +76,6 @@ function parseArgs() {
     all: false,
     scripts: false,
     research: false,
-    speculative: false,
     verbose: false,
     detailed: false,
   };
@@ -97,10 +93,6 @@ function parseArgs() {
       case '--research':
       case '-r':
         parsed.research = true;
-        break;
-      case '--speculative':
-      case '-p':
-        parsed.speculative = true;
         break;
       case '--verbose':
       case '-v':
@@ -136,7 +128,6 @@ Usage:
   node scripts/cache-stats.js                 # Show all cache stats
   node scripts/cache-stats.js --scripts       # Show only scripts cache stats
   node scripts/cache-stats.js --research      # Show only research cache stats
-  node scripts/cache-stats.js --speculative   # Show only speculative cache stats
   node scripts/cache-stats.js --verbose       # Show detailed progress output
   node scripts/cache-stats.js --detailed      # Include file-level details
 
@@ -144,7 +135,6 @@ Options:
   --all, -a           Show all cache types (default)
   --scripts, -s       Show scripts cache stats only
   --research, -r      Show research cache stats only
-  --speculative, -p   Show speculative cache stats only
   --verbose, -v       Show detailed progress output
   --detailed, -d      Include file-level details in output
   --help, -h          Show this help message
@@ -338,19 +328,18 @@ function getCacheStats(cacheType, cachePath, detailed = false) {
  * @returns {object} Combined cache statistics
  */
 function getAllCacheStats(options, detailed = false) {
-  const { all, scripts, research, speculative } = options;
+  const { all, scripts, research } = options;
 
   // If no specific flags set, default to all
-  const showAll = all || (!scripts && !research && !speculative);
+  const showAll = all || (!scripts && !research);
 
   const cachesToCheck = [];
 
   if (showAll) {
-    cachesToCheck.push('scripts', 'research', 'speculative');
+    cachesToCheck.push('scripts', 'research');
   } else {
     if (scripts) cachesToCheck.push('scripts');
     if (research) cachesToCheck.push('research');
-    if (speculative) cachesToCheck.push('speculative');
   }
 
   verbose(`Checking cache(s): ${cachesToCheck.join(', ')}`);

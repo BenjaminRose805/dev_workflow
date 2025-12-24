@@ -49,7 +49,6 @@ const fs = require('fs');
 const AVAILABLE_SCRIPTS = {
   'scan-plans': { file: 'scan-plans.js', args: [] },
   'parse-plan-structure': { file: 'parse-plan-structure.js', args: ['docs/plans'] },
-  'scan-results': { file: 'scan-results.js', args: [] },
   'check-file-status': { file: 'check-file-status.js', args: ['--files', 'package.json', 'tsconfig.json'] },
   'substitute-variables': { file: 'substitute-variables.js', args: [] },
   'cache-clear': { file: 'cache-clear.js', args: ['--help'] }, // Use --help to avoid destructive operations

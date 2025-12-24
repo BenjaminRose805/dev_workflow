@@ -13,7 +13,6 @@
  * Available Commands:
  *   scan-plans                  Scan all plan files and generate JSON summary
  *   parse-plan-structure        Parse a plan file structure
- *   scan-results                Scan result files from .claude/
  *   research-for-implement      Research tasks before implementation
  *   verify-with-agent           Verify implementation with agent
  *   parallel-research-pipeline  Run parallel research pipeline
@@ -37,7 +36,6 @@ const fs = require('fs');
 const COMMANDS = {
   'scan-plans': 'scan-plans.js',
   'parse-plan-structure': 'parse-plan-structure.js',
-  'scan-results': 'scan-results.js',
   'research-for-implement': 'research-for-implement.js',
   'verify-with-agent': 'verify-with-agent.js',
   'parallel-research-pipeline': 'parallel-research-pipeline.js',
@@ -51,13 +49,12 @@ const COMMANDS = {
 const DESCRIPTIONS = {
   'scan-plans': 'Scan all plan files in docs/plans/ and generate JSON summary',
   'parse-plan-structure': 'Parse the structure of a specific plan file',
-  'scan-results': '[DEPRECATED] Scan result files from .claude/ directory (use status-cli.js)',
   'research-for-implement': 'Research tasks before implementation using AI agents',
   'verify-with-agent': 'Verify implementation results with AI agent',
   'parallel-research-pipeline': 'Run parallel research pipeline for batch tasks',
   'check-file-status': 'Check file existence, size, mtime, and optionally run tests',
   'substitute-variables': 'Substitute variables in prompt templates',
-  'cache-clear': 'Clear various cache types (scripts, research, speculative)',
+  'cache-clear': 'Clear various cache types (scripts, research)',
   'cache-stats': 'Show cache hit rates, sizes, and statistics',
 };
 

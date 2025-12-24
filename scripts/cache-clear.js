@@ -8,7 +8,6 @@
  *   node scripts/cache-clear.js --all           # Clear all caches
  *   node scripts/cache-clear.js --scripts       # Clear only scripts cache
  *   node scripts/cache-clear.js --research      # Clear only research cache
- *   node scripts/cache-clear.js --speculative   # Clear only speculative cache
  *   node scripts/cache-clear.js --verbose       # Show detailed output
  *
  * Multiple flags can be combined:
@@ -23,7 +22,6 @@ const { resolvePath } = require('./lib/file-utils');
 const CACHE_DIRS = {
   scripts: '.claude/cache/scripts',
   research: '.claude/cache/research',
-  speculative: '.claude/cache/speculative',
 };
 
 // Global verbose flag
@@ -41,7 +39,7 @@ function verbose(...args) {
 
 /**
  * Parse command line arguments
- * @returns {{ all: boolean, scripts: boolean, research: boolean, speculative: boolean, verbose: boolean }}
+ * @returns {{ all: boolean, scripts: boolean, research: boolean, verbose: boolean }}
  */
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -49,7 +47,6 @@ function parseArgs() {
     all: false,
     scripts: false,
     research: false,
-    speculative: false,
     verbose: false,
   };
 
@@ -66,10 +63,6 @@ function parseArgs() {
       case '--research':
       case '-r':
         parsed.research = true;
-        break;
-      case '--speculative':
-      case '-p':
-        parsed.speculative = true;
         break;
       case '--verbose':
       case '-v':
@@ -101,14 +94,12 @@ Usage:
   node scripts/cache-clear.js --all           # Clear all caches
   node scripts/cache-clear.js --scripts       # Clear only scripts cache
   node scripts/cache-clear.js --research      # Clear only research cache
-  node scripts/cache-clear.js --speculative   # Clear only speculative cache
   node scripts/cache-clear.js --verbose       # Show detailed output
 
 Options:
   --all, -a           Clear all cache types
   --scripts, -s       Clear scripts cache only
   --research, -r      Clear research cache only
-  --speculative, -p   Clear speculative cache only
   --verbose, -v       Show detailed progress output
   --help, -h          Show this help message
 
@@ -119,12 +110,11 @@ Output format:
 {
   "cleared": {
     "scripts": { "files": 10, "bytes": 12345 },
-    "research": { "files": 5, "bytes": 6789 },
-    "speculative": { "files": 3, "bytes": 4567 }
+    "research": { "files": 5, "bytes": 6789 }
   },
   "total": {
-    "files": 18,
-    "bytes": 23701
+    "files": 15,
+    "bytes": 19134
   }
 }
 `);
@@ -193,10 +183,10 @@ function clearCacheDirectory(cacheType, cachePath) {
  * @returns {object} Results object
  */
 function clearCaches(options) {
-  const { all, scripts, research, speculative } = options;
+  const { all, scripts, research } = options;
 
   // If no specific flags set, default to help
-  if (!all && !scripts && !research && !speculative) {
+  if (!all && !scripts && !research) {
     printUsage();
     process.exit(1);
   }
@@ -213,11 +203,10 @@ function clearCaches(options) {
   const cachesToClear = [];
 
   if (all) {
-    cachesToClear.push('scripts', 'research', 'speculative');
+    cachesToClear.push('scripts', 'research');
   } else {
     if (scripts) cachesToClear.push('scripts');
     if (research) cachesToClear.push('research');
-    if (speculative) cachesToClear.push('speculative');
   }
 
   verbose(`Clearing cache(s): ${cachesToClear.join(', ')}`);

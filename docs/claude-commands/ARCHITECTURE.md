@@ -18,7 +18,6 @@ The script layer provides executable commands for various development tasks.
 **Scanning & Analysis:**
 - `scan-plans.js` - Scans plan files and generates JSON summaries
 - `scan-prompts.js` - Scans prompt templates and extracts metadata
-- `scan-results.js` - Analyzes execution results from .claude/
 - `parse-plan-structure.js` - Deep parsing of plan file structure
 
 **AI Agent Operations:**
@@ -54,11 +53,10 @@ Reusable modules supporting script functionality:
 
 ### 4. Cache System (`.claude/cache/`)
 
-Three-tier caching for performance optimization:
+Two-tier caching for performance optimization:
 
 - **scripts/** - Script execution results (5-minute TTL)
 - **research/** - AI agent research results (1-hour TTL)
-- **speculative/** - Speculative execution results (30-minute TTL)
 
 ## Data Flow
 

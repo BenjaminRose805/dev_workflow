@@ -15,7 +15,6 @@ node scripts/index.js --help
 
 **Available Commands:**
 - `scan-plans` - Scan plan files
-- `scan-results` - Scan execution results
 - `check-file-status` - Check file status
 - `substitute-variables` - Variable substitution
 - `cache-clear` - Clear caches
@@ -47,14 +46,6 @@ node scripts/scan-plans.js
     }
   ]
 }
-```
-
-### `scan-results.js`
-
-Scans execution results from `.claude/cache/` directory (deprecated - directory may not exist).
-
-```bash
-node scripts/scan-results.js
 ```
 
 ---
@@ -125,7 +116,6 @@ Clears various cache types.
 node scripts/cache-clear.js --all           # Clear all
 node scripts/cache-clear.js --scripts       # Scripts cache only
 node scripts/cache-clear.js --research      # Research cache only
-node scripts/cache-clear.js --speculative   # Speculative cache only
 ```
 
 **Output:**
