@@ -1,0 +1,391 @@
+{
+  "_comment": "This file is the authoritative source of truth for task execution state. The markdown plan file is read-only reference documentation. Use status-cli.js to update task status.",
+  "planPath": "docs/plans/cleanup-deprecated-code.md",
+  "planName": "Implementation Plan: Cleanup Deprecated Code",
+  "createdAt": "2025-12-24T04:16:52.582Z",
+  "lastUpdatedAt": "2025-12-24T04:16:52.585Z",
+  "currentPhase": "Phase 0: Pre-Cleanup Verification",
+  "tasks": [
+    {
+      "id": "0.1",
+      "phase": "Phase 0: Pre-Cleanup Verification",
+      "description": "0.1 Run all existing tests to establish baseline",
+      "status": "pending"
+    },
+    {
+      "id": "0.2",
+      "phase": "Phase 0: Pre-Cleanup Verification",
+      "description": "0.2 Verify zero imports for target files",
+      "status": "pending"
+    },
+    {
+      "id": "0.3",
+      "phase": "Phase 0: Pre-Cleanup Verification",
+      "description": "0.3 Create git commit with current state",
+      "status": "pending"
+    },
+    {
+      "id": "0.4",
+      "phase": "Phase 0: Pre-Cleanup Verification",
+      "description": "Baseline test results documented",
+      "status": "pending"
+    },
+    {
+      "id": "0.5",
+      "phase": "Phase 0: Pre-Cleanup Verification",
+      "description": "Import analysis confirms zero dependencies for Phase 1 targets",
+      "status": "pending"
+    },
+    {
+      "id": "0.6",
+      "phase": "Phase 0: Pre-Cleanup Verification",
+      "description": "Git state is clean with recovery tag",
+      "status": "pending"
+    },
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Remove Unused Library Modules",
+      "description": "1.1 Remove `scripts/lib/result-aggregator.js`",
+      "status": "pending"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Remove Unused Library Modules",
+      "description": "1.2 Remove `scripts/lib/performance-tracker.js`",
+      "status": "pending"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Remove Unused Library Modules",
+      "description": "1.3 Remove `scripts/lib/speculative-research.js`",
+      "status": "pending"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Remove Unused Library Modules",
+      "description": "1.4 Update cache management for removed speculative module",
+      "status": "pending"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Remove Unused Library Modules",
+      "description": "All three library files deleted",
+      "status": "pending"
+    },
+    {
+      "id": "1.6",
+      "phase": "Phase 1: Remove Unused Library Modules",
+      "description": "`node scripts/cache-clear.js --help` works",
+      "status": "pending"
+    },
+    {
+      "id": "1.7",
+      "phase": "Phase 1: Remove Unused Library Modules",
+      "description": "`node scripts/cache-stats.js` works",
+      "status": "pending"
+    },
+    {
+      "id": "1.8",
+      "phase": "Phase 1: Remove Unused Library Modules",
+      "description": "No JavaScript errors when running remaining scripts",
+      "status": "pending"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Remove Deprecated scan-results.js",
+      "description": "2.1 Remove script file",
+      "status": "pending"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Remove Deprecated scan-results.js",
+      "description": "2.2 Update `scripts/index.js`",
+      "status": "pending"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Remove Deprecated scan-results.js",
+      "description": "2.3 Update `scripts/benchmark.js`",
+      "status": "pending"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Remove Deprecated scan-results.js",
+      "description": "2.4 Update documentation",
+      "status": "pending"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Remove Deprecated scan-results.js",
+      "description": "`scripts/scan-results.js` deleted",
+      "status": "pending"
+    },
+    {
+      "id": "2.6",
+      "phase": "Phase 2: Remove Deprecated scan-results.js",
+      "description": "`node scripts/index.js --help` works and doesn't list scan-results",
+      "status": "pending"
+    },
+    {
+      "id": "2.7",
+      "phase": "Phase 2: Remove Deprecated scan-results.js",
+      "description": "`node scripts/benchmark.js --help` works",
+      "status": "pending"
+    },
+    {
+      "id": "2.8",
+      "phase": "Phase 2: Remove Deprecated scan-results.js",
+      "description": "No documentation references to scan-results remain",
+      "status": "pending"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Audit Python Wrapper System",
+      "description": "3.1 Analyze `scripts/create-plans.py` usage",
+      "status": "pending"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Audit Python Wrapper System",
+      "description": "3.2 Analyze `scripts/test_wrapper.py` usage",
+      "status": "pending"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Audit Python Wrapper System",
+      "description": "3.3 Analyze `scripts/claude_wrapper.py` dependencies",
+      "status": "pending"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Audit Python Wrapper System",
+      "description": "3.4 Document findings for Python system",
+      "status": "pending"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Audit Python Wrapper System",
+      "description": "Usage analysis complete for all three Python files",
+      "status": "pending"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Audit Python Wrapper System",
+      "description": "Clear recommendation documented for each file",
+      "status": "pending"
+    },
+    {
+      "id": "3.7",
+      "phase": "Phase 3: Audit Python Wrapper System",
+      "description": "No ambiguity about Python system status",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Remove Python Wrapper System (Conditional)",
+      "description": "4.1 Remove `scripts/test_wrapper.py` (if unused)",
+      "status": "pending"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Remove Python Wrapper System (Conditional)",
+      "description": "4.2 Remove `scripts/create-plans.py` (if unused)",
+      "status": "pending"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Remove Python Wrapper System (Conditional)",
+      "description": "4.3 Remove `scripts/claude_wrapper.py` (if no remaining importers)",
+      "status": "pending"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Remove Python Wrapper System (Conditional)",
+      "description": "4.4 Clean up `scripts/__pycache__/` directory",
+      "status": "pending"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Remove Python Wrapper System (Conditional)",
+      "description": "Python files removed per Phase 3 recommendations",
+      "status": "pending"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Remove Python Wrapper System (Conditional)",
+      "description": "`python scripts/plan_orchestrator.py --help` still works",
+      "status": "pending"
+    },
+    {
+      "id": "4.7",
+      "phase": "Phase 4: Remove Python Wrapper System (Conditional)",
+      "description": "No import errors in remaining Python code",
+      "status": "pending"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Clean Up Stale References",
+      "description": "5.1 Search for all prompt-results references",
+      "status": "pending"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Clean Up Stale References",
+      "description": "5.2 Update documentation files",
+      "status": "pending"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Clean Up Stale References",
+      "description": "5.3 Update any remaining architecture docs",
+      "status": "pending"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Clean Up Stale References",
+      "description": "5.4 Verify no code references remain",
+      "status": "pending"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Clean Up Stale References",
+      "description": "No active code references `.claude/prompt-results/`",
+      "status": "pending"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: Clean Up Stale References",
+      "description": "Documentation updated to reference current system",
+      "status": "pending"
+    },
+    {
+      "id": "5.7",
+      "phase": "Phase 5: Clean Up Stale References",
+      "description": "Architecture docs are accurate",
+      "status": "pending"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Final Verification & Documentation",
+      "description": "6.1 Run full test suite",
+      "status": "pending"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Final Verification & Documentation",
+      "description": "6.2 Verify all scripts still work",
+      "status": "pending"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Final Verification & Documentation",
+      "description": "6.3 Update CHANGELOG or release notes",
+      "status": "pending"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Final Verification & Documentation",
+      "description": "6.4 Create final commit",
+      "status": "pending"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Final Verification & Documentation",
+      "description": "All tests pass",
+      "status": "pending"
+    },
+    {
+      "id": "6.6",
+      "phase": "Phase 6: Final Verification & Documentation",
+      "description": "All remaining scripts functional",
+      "status": "pending"
+    },
+    {
+      "id": "6.7",
+      "phase": "Phase 6: Final Verification & Documentation",
+      "description": "Changes documented",
+      "status": "pending"
+    },
+    {
+      "id": "6.8",
+      "phase": "Phase 6: Final Verification & Documentation",
+      "description": "Clean git commit created",
+      "status": "pending"
+    },
+    {
+      "id": "6.9",
+      "phase": "Phase 6: Final Verification & Documentation",
+      "description": "All deprecated files removed per plan",
+      "status": "pending"
+    },
+    {
+      "id": "6.10",
+      "phase": "Phase 6: Final Verification & Documentation",
+      "description": "No broken imports or require statements",
+      "status": "pending"
+    },
+    {
+      "id": "6.11",
+      "phase": "Phase 6: Final Verification & Documentation",
+      "description": "All remaining scripts execute without errors",
+      "status": "pending"
+    },
+    {
+      "id": "6.12",
+      "phase": "Phase 6: Final Verification & Documentation",
+      "description": "Test suite passes (same or better than baseline)",
+      "status": "pending"
+    },
+    {
+      "id": "6.13",
+      "phase": "Phase 6: Final Verification & Documentation",
+      "description": "~1,900 lines of dead code removed",
+      "status": "pending"
+    },
+    {
+      "id": "6.14",
+      "phase": "Phase 6: Final Verification & Documentation",
+      "description": "No new functionality broken",
+      "status": "pending"
+    },
+    {
+      "id": "6.15",
+      "phase": "Phase 6: Final Verification & Documentation",
+      "description": "Documentation updated to reflect changes",
+      "status": "pending"
+    },
+    {
+      "id": "6.16",
+      "phase": "Phase 6: Final Verification & Documentation",
+      "description": "Git history preserves removed code for recovery if needed",
+      "status": "pending"
+    },
+    {
+      "id": "6.17",
+      "phase": "Phase 6: Final Verification & Documentation",
+      "description": "Removed files documented in commit message",
+      "status": "pending"
+    },
+    {
+      "id": "6.18",
+      "phase": "Phase 6: Final Verification & Documentation",
+      "description": "Migration guidance provided if applicable",
+      "status": "pending"
+    },
+    {
+      "id": "6.19",
+      "phase": "Phase 6: Final Verification & Documentation",
+      "description": "Architecture docs updated",
+      "status": "pending"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 62,
+    "completed": 0,
+    "pending": 62,
+    "in_progress": 0,
+    "failed": 0,
+    "skipped": 0
+  }
+}
