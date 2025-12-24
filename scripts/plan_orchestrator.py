@@ -187,7 +187,14 @@ class ActivityTracker:
 # =============================================================================
 
 class StreamingClaudeRunner:
-    """Runs Claude CLI with streaming JSON output and event callbacks."""
+    """Runs Claude CLI with streaming JSON output and event callbacks.
+
+    Parses Claude CLI's stream-json format which uses these event types:
+    - type: "system" (subtype: "init") - session initialization
+    - type: "assistant" - assistant messages with tool_use or text content
+    - type: "user" - tool results
+    - type: "result" - session completion
+    """
 
     def __init__(
         self,
@@ -201,18 +208,16 @@ class StreamingClaudeRunner:
         self.on_text = on_text
         self.timeout = timeout
         self.process: Optional[subprocess.Popen] = None
-        self._tool_inputs: Dict[int, str] = {}      # index -> accumulated JSON
-        self._tool_names: Dict[int, str] = {}       # index -> tool name
-        self._tool_ids: Dict[int, str] = {}         # index -> tool id (from Claude)
-        self._tool_start_times: Dict[int, float] = {}  # index -> start timestamp
-        self._current_index: int = 0
+        # Track active tool calls: tool_id -> {name, start_time, input}
+        self._active_tools: Dict[str, Dict] = {}
 
     def run(self, prompt: str) -> Tuple[bool, str]:
         """Run Claude with streaming output, calling callbacks for events."""
         cmd = [
             "claude", "-p", prompt,
             "--dangerously-skip-permissions",
-            "--output-format", "stream-json"
+            "--output-format", "stream-json",
+            "--verbose"  # Required for stream-json with -p
         ]
 
         try:
@@ -254,84 +259,79 @@ class StreamingClaudeRunner:
             return False, str(e)
         finally:
             self.process = None
+            self._active_tools.clear()
 
     def _parse_json_line(self, line: str, output_parts: List[str]):
-        """Parse a streaming JSON line and dispatch to callbacks."""
+        """Parse a Claude CLI streaming JSON line and dispatch to callbacks.
+
+        Claude CLI stream-json format:
+        - {"type": "assistant", "message": {"content": [{"type": "tool_use", ...}]}}
+        - {"type": "user", "message": {"content": [{"type": "tool_result", ...}]}}
+        - {"type": "assistant", "message": {"content": [{"type": "text", "text": "..."}]}}
+        - {"type": "result", "result": "final text", ...}
+        """
         try:
             data = json.loads(line)
             event_type = data.get('type')
 
-            if event_type == 'content_block_start':
-                content_block = data.get('content_block', {})
-                block_type = content_block.get('type')
-                index = data.get('index', 0)
+            if event_type == 'assistant':
+                # Assistant message - may contain tool_use or text
+                message = data.get('message', {})
+                content_list = message.get('content', [])
 
-                if block_type == 'tool_use':
-                    tool_name = content_block.get('name', 'Unknown')
-                    tool_id = content_block.get('id', '')
+                for content in content_list:
+                    content_type = content.get('type')
 
-                    # Store tool info for later
-                    self._tool_names[index] = tool_name
-                    self._tool_ids[index] = tool_id
-                    self._tool_inputs[index] = ""
-                    self._tool_start_times[index] = time.time()
-                    self._current_index = index
+                    if content_type == 'tool_use':
+                        # Tool invocation starting
+                        tool_id = content.get('id', '')
+                        tool_name = content.get('name', 'Unknown')
+                        tool_input = content.get('input', {})
 
-                    # Fire on_tool_start immediately when tool begins
-                    # (we don't have full input yet, but we have tool name)
-                    if self.on_tool_start:
-                        # Pass partial details - just the tool_id for now
-                        self.on_tool_start(tool_name, {'id': tool_id})
+                        # Track this tool call
+                        self._active_tools[tool_id] = {
+                            'name': tool_name,
+                            'start_time': time.time(),
+                            'input': tool_input
+                        }
 
-            elif event_type == 'content_block_delta':
-                delta = data.get('delta', {})
-                delta_type = delta.get('type')
-                index = data.get('index', self._current_index)
+                        # Fire callback
+                        if self.on_tool_start:
+                            self.on_tool_start(tool_name, {'id': tool_id, **tool_input})
 
-                if delta_type == 'text_delta':
-                    text = delta.get('text', '')
-                    if text and self.on_text:
-                        self.on_text(text)
-                    output_parts.append(text)
+                    elif content_type == 'text':
+                        # Text output
+                        text = content.get('text', '')
+                        if text:
+                            if self.on_text:
+                                self.on_text(text)
+                            output_parts.append(text)
 
-                elif delta_type == 'input_json_delta':
-                    # Accumulate tool input JSON
-                    partial = delta.get('partial_json', '')
-                    if index in self._tool_inputs:
-                        self._tool_inputs[index] += partial
+            elif event_type == 'user':
+                # User message with tool results - means tool completed
+                message = data.get('message', {})
+                content_list = message.get('content', [])
 
-            elif event_type == 'content_block_stop':
-                index = data.get('index', self._current_index)
+                for content in content_list:
+                    if content.get('type') == 'tool_result':
+                        tool_id = content.get('tool_use_id', '')
 
-                if index in self._tool_names:
-                    tool_name = self._tool_names[index]
-                    tool_id = self._tool_ids.get(index, '')
-                    details = {}
+                        if tool_id in self._active_tools:
+                            tool_info = self._active_tools[tool_id]
+                            duration = time.time() - tool_info['start_time']
 
-                    # Try to parse accumulated input
-                    if index in self._tool_inputs:
-                        try:
-                            details = json.loads(self._tool_inputs[index])
-                        except json.JSONDecodeError:
-                            pass
+                            # Fire callback
+                            if self.on_tool_end:
+                                self.on_tool_end(tool_info['name'], tool_id, duration)
 
-                    # Calculate duration
-                    duration = 0.0
-                    if index in self._tool_start_times:
-                        duration = time.time() - self._tool_start_times[index]
+                            # Clean up
+                            del self._active_tools[tool_id]
 
-                    # Fire on_tool_end when tool completes
-                    if self.on_tool_end:
-                        self.on_tool_end(tool_name, tool_id, duration)
-
-                    # Clean up
-                    del self._tool_names[index]
-                    if index in self._tool_inputs:
-                        del self._tool_inputs[index]
-                    if index in self._tool_ids:
-                        del self._tool_ids[index]
-                    if index in self._tool_start_times:
-                        del self._tool_start_times[index]
+            elif event_type == 'result':
+                # Session complete - extract final result
+                result_text = data.get('result', '')
+                if result_text and result_text not in ''.join(output_parts):
+                    output_parts.append(result_text)
 
         except json.JSONDecodeError:
             pass  # Skip malformed lines
@@ -1073,8 +1073,12 @@ class PlanOrchestrator:
                         )
                         self.status_monitor.start()
 
-                # NOTE: StreamingClaudeRunner disabled due to --output-format stream-json bug
-                # The TUI still displays progress via status.json file monitoring
+                # Initialize streaming runner with callbacks for real-time activity display
+                self.streaming_runner = StreamingClaudeRunner(
+                    on_tool_start=self._on_tool_start,
+                    on_tool_end=self._on_tool_end,
+                    timeout=self.timeout
+                )
 
                 self.tui.start()
             except Exception as e:
@@ -1196,13 +1200,14 @@ class PlanOrchestrator:
                 prompt = self._build_prompt(status, next_tasks)
 
                 # Run Claude session
-                # NOTE: Always use run_claude_session() - the StreamingClaudeRunner
-                # with --output-format stream-json has a bug causing premature exit.
-                # The TUI still works for progress display via status.json monitoring.
                 if self.use_tui:
                     self.tui.set_claude_running(True)
 
-                success, output = self.run_claude_session(prompt)
+                if self.use_tui and self.streaming_runner:
+                    # Use streaming runner for real-time activity tracking in TUI
+                    success, output = self.streaming_runner.run(prompt)
+                else:
+                    success, output = self.run_claude_session(prompt)
 
                 if self.use_tui:
                     self.tui.set_claude_running(False)
