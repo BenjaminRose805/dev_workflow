@@ -21,15 +21,27 @@ Set the current working plan file for subsequent `/plan:*` commands.
 
 ### 3.1. Initialize Status Tracking
 
-After setting the plan path, initialize status tracking:
+After setting the plan path, initialize status tracking.
 
-Execute status initialization:
+**Preferred: Use status-cli.js** (the recommended CLI approach):
 ```bash
-node -e "const sm = require('./scripts/lib/status-manager'); const result = sm.initializePlanStatus('PLAN_PATH'); console.log(JSON.stringify(result));"
+# Check status (this triggers initialization if needed)
+node scripts/status-cli.js status
+```
+
+**Alternative: Direct API** (for programmatic use):
+```javascript
+const { initializeStatus, loadStatus, createOutputDir } = require('./scripts/lib/plan-output-utils');
+
+// Create output directory
+createOutputDir(planPath);
+
+// Initialize or load existing status
+const status = loadStatus(planPath);
 ```
 
 This creates `docs/plan-outputs/{plan-name}/` with:
-- `status.json` - Task status tracking
+- `status.json` - Task status tracking (the authoritative source of truth)
 - `findings/` - Task findings/outputs
 - `timestamps/` - Execution timestamps
 
@@ -38,21 +50,21 @@ Also sets `.claude/current-plan-output.txt` to the output directory.
 **If status already exists:**
 - Load existing status instead of reinitializing
 - Preserve previous execution history
-- The `initializePlanStatus` function handles this automatically
+- The functions handle this automatically
 
-**Status initialization response format:**
+**Status response format:**
 ```json
 {
-  "success": true,
-  "status": { /* status object */ },
-  "error": null
+  "planPath": "docs/plans/example.md",
+  "planName": "Plan Title",
+  "summary": { "totalTasks": 10, "completed": 5, "pending": 5 }
 }
 ```
 
 **Error handling:**
-- If `success: false`, status initialization failed but this is non-blocking
-- Warn the user but continue with plan activation
-- Status tracking is an optional enhancement
+- If status cannot be loaded, check `.claude/current-plan.txt` is set correctly
+- Status tracking is optional, plan can be used without it
+- See troubleshooting in `docs/ORCHESTRATOR.md`
 
 ## Script Output Format
 
@@ -125,7 +137,8 @@ If `node scripts/scan-plans.js` fails (non-zero exit code or invalid JSON):
 3. **Fall back to manual scanning**:
    - Use Glob to find `docs/plans/*.md`
    - Read each file to extract title (first `#` heading)
-   - Count `- [ ]` (incomplete) and `- [x]` (complete) tasks
+   - Parse task IDs from `- [ ] ID Description` patterns
+   - Note: Markdown checkbox state is for display only; status.json is authoritative
    - Read `.claude/current-plan.txt` for current plan
    - Continue with step 2 as normal
 

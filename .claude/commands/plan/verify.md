@@ -16,14 +16,89 @@ Read `.claude/current-plan.txt` to get the active plan path.
 - Initialize status tracking if needed: `initializePlanStatus(planPath)`
 - Load current status: `getStatus(planPath, true)`
 
+### 1.5. Parse Arguments (if provided)
+
+If arguments are passed to this skill, parse them to determine which tasks to verify:
+
+**Argument formats supported:**
+
+| Format | Example | Behavior |
+|--------|---------|----------|
+| Single task ID | `1.1` | Verify task 1.1 only |
+| Multiple task IDs | `1.1 1.2 1.3` | Verify listed tasks |
+| Phase selector | `phase:1` or `p:1` | All tasks in Phase 1 |
+| All tasks | `all` | All tasks (pending and completed) |
+| No arguments | (empty) | Interactive selection (step 3) |
+
+**Parsing logic:**
+
+```
+args = skill arguments (may be empty)
+
+if args is empty:
+    → Continue to step 3 (interactive selection)
+
+if args == "all":
+    → Select all tasks (pending and completed)
+    → Skip to step 4
+
+if args matches /^p(hase)?:\d+$/i:
+    → Extract phase number
+    → Select all tasks in that phase
+    → Skip to step 4
+
+if args matches /^[\d.]+([\s,]+[\d.]+)*$/:
+    → Split on spaces or commas
+    → Treat each as a task ID (e.g., "1.1", "2.3", "0.1")
+    → Validate each task ID exists in the plan
+    → If any invalid, report: "Task ID 'X.X' not found in plan"
+    → Skip to step 4 with validated tasks
+
+otherwise:
+    → Treat as search string
+    → Find tasks whose description contains the string
+    → If multiple matches, show them and ask user to select
+    → If single match, proceed with that task
+```
+
+**Validation:**
+- For each task ID, verify it exists in the parsed plan
+- Include both pending and completed tasks (verification can re-check completed tasks)
+- Report any invalid IDs before proceeding
+
+**Examples:**
+
+```bash
+# Verify specific task
+/plan:verify 1.1
+
+# Verify multiple tasks
+/plan:verify 1.1 1.2 1.3
+/plan:verify 1.1, 1.2, 1.3
+
+# Verify entire phase
+/plan:verify phase:2
+/plan:verify p:1
+
+# Verify all tasks
+/plan:verify all
+
+# Search by description
+/plan:verify websocket
+```
+
 ### 2. Parse Plan File
 
-Read the plan file and extract incomplete tasks (`- [ ]` items and unfinished sections).
+Read task information from status.json (the authoritative source of truth).
 
-**Cross-reference with status.json:**
+**Use status.json as primary source:**
 - Use `getTasksByPhase(planPath)` to get organized task data with status
-- Merge markdown task definitions with status.json tracking data
-- Status.json contains actual completion status, not markdown checkboxes
+- status.json contains the actual completion status for all tasks
+- Markdown checkboxes (`- [ ]` / `- [x]`) are reference documentation only and are NOT modified
+
+**Fallback to markdown only if status.json is missing:**
+- Parse task IDs and descriptions from `- [ ] ID Description` patterns
+- Note: checkbox state may not reflect actual completion
 
 **Task data structure from status.json:**
 ```json
@@ -38,7 +113,9 @@ Read the plan file and extract incomplete tasks (`- [ ]` items and unfinished se
 }
 ```
 
-### 3. Present Tasks for Selection
+### 3. Present Tasks for Selection (Interactive Mode)
+
+**Skip this step if arguments were provided in step 1.5.**
 
 Use the **task-selection template** (`.claude/templates/questions/task-selection.md`) with these configuration parameters:
 

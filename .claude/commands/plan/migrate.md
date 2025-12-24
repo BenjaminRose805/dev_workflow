@@ -110,17 +110,20 @@ If user confirms:
 
 **Step 5.1: Initialize Status Tracking**
 
-Use the status-manager to create the output structure:
+Use the status-cli or plan-output-utils to create the output structure:
 
+**Using status-cli (recommended):**
+```bash
+# Initialize and check status
+node scripts/status-cli.js status
+```
+
+**Using JavaScript API:**
 ```javascript
-const { initializePlanStatus } = require('./scripts/lib/status-manager');
+const { initializeStatus, createOutputDir, loadStatus } = require('./scripts/lib/plan-output-utils');
 
-const result = initializePlanStatus(planPath);
-if (!result.success) {
-  console.error(`Failed to initialize status: ${result.error}`);
-  return;
-}
-
+createOutputDir(planPath);
+const status = loadStatus(planPath) || initializeStatus(planPath, planName, parsedTasks);
 console.log('✓ Created output directory structure');
 console.log('✓ Initialized status.json');
 ```
@@ -129,11 +132,18 @@ console.log('✓ Initialized status.json');
 
 For each completed task found in the markdown:
 
+**Using status-cli (recommended):**
+```bash
+node scripts/status-cli.js mark-complete 0.1 --notes "Migrated from markdown"
+node scripts/status-cli.js mark-complete 0.2 --notes "Migrated from markdown"
+```
+
+**Using JavaScript API:**
 ```javascript
-const { markTaskCompleted } = require('./scripts/lib/status-manager');
+const { updateTaskStatus } = require('./scripts/lib/plan-output-utils');
 
 for (const taskId of completedTasks) {
-  markTaskCompleted(planPath, taskId);
+  updateTaskStatus(planPath, taskId, 'completed', { notes: 'Migrated from markdown' });
   console.log(`✓ Marked ${taskId} as completed`);
 }
 ```
@@ -213,14 +223,20 @@ Next steps:
 ═══════════════════════════════════════════════════════
 ```
 
-**Update the current plan output pointer:**
+**Verify the current plan output pointer:**
 
-The `initializePlanStatus()` function already handles this, but verify:
+Check the output directory is correctly set:
 
+```bash
+# The output directory path is stored here
+cat .claude/current-plan-output.txt
+```
+
+Or using JavaScript:
 ```javascript
-const { getCurrentOutputDir } = require('./scripts/lib/status-manager');
-const outputDir = getCurrentOutputDir();
-console.log(`Active output directory: ${outputDir}`);
+const { getOutputDir } = require('./scripts/lib/plan-output-utils');
+const outputDir = getOutputDir(planPath);
+console.log(`Output directory: ${outputDir}`);
 ```
 
 ## Migration Validation

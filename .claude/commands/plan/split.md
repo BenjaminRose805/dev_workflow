@@ -12,6 +12,53 @@ Read `.claude/current-plan.txt` to get the active plan path.
 - Inform the user: "No active plan set. Use /plan:set to choose a plan first."
 - Stop execution
 
+### 1.5. Parse Arguments (if provided)
+
+If arguments are passed to this skill, parse them to determine which task to split:
+
+**Argument formats supported:**
+
+| Format | Example | Behavior |
+|--------|---------|----------|
+| Single task ID | `1.1` | Split task 1.1 directly |
+| No arguments | (empty) | Interactive selection (step 3) |
+
+**Parsing logic:**
+
+```
+args = skill arguments (may be empty)
+
+if args is empty:
+    → Continue to step 2-3 (identify and select task)
+
+if args matches /^\d+\.\d+$/:
+    → Treat as task ID (e.g., "1.1", "2.3")
+    → Validate task ID exists in the plan
+    → If invalid, report: "Task ID 'X.X' not found in plan"
+    → Skip to step 4 with validated task
+
+otherwise:
+    → Treat as search string
+    → Find tasks whose description contains the string
+    → If multiple matches, show them and ask user to select
+    → If single match, proceed with that task
+```
+
+**Validation:**
+- Verify task ID exists in the parsed plan
+- Check task is not already completed (warn but allow)
+- Check task doesn't already have subtasks (warn but allow)
+
+**Examples:**
+
+```bash
+# Split specific task
+/plan:split 1.1
+
+# Search by description
+/plan:split websocket
+```
+
 ### 2. Parse Plan and Identify Splittable Tasks
 
 Read the plan file and find tasks that could benefit from splitting:
@@ -27,7 +74,9 @@ Read the plan file and find tasks that could benefit from splitting:
 - Simple/atomic tasks
 - Tasks already marked complete
 
-### 3. Present Tasks for Single Selection
+### 3. Present Tasks for Single Selection (Interactive Mode)
+
+**Skip this step if arguments were provided in step 1.5.**
 
 Use AskUserQuestion (single-select) to let user choose one task:
 

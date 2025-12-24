@@ -16,12 +16,86 @@ Read `.claude/current-plan.txt` to get the active plan path.
 - Optionally load status tracking: Use `getStatus(planPath, false)` (don't initialize)
 - This allows showing task completion status in explanations
 
+### 1.5. Parse Arguments (if provided)
+
+If arguments are passed to this skill, parse them to determine which tasks to explain:
+
+**Argument formats supported:**
+
+| Format | Example | Behavior |
+|--------|---------|----------|
+| Single task ID | `1.1` | Explain task 1.1 only |
+| Multiple task IDs | `1.1 1.2 1.3` | Explain listed tasks |
+| Phase selector | `phase:1` or `p:1` | All tasks in Phase 1 |
+| All tasks | `all` | All tasks in the plan |
+| No arguments | (empty) | Interactive selection (step 3) |
+
+**Parsing logic:**
+
+```
+args = skill arguments (may be empty)
+
+if args is empty:
+    → Continue to step 3 (interactive selection)
+
+if args == "all":
+    → Select all tasks (pending and completed)
+    → Skip to step 4
+
+if args matches /^p(hase)?:\d+$/i:
+    → Extract phase number
+    → Select all tasks in that phase
+    → Skip to step 4
+
+if args matches /^[\d.]+([\s,]+[\d.]+)*$/:
+    → Split on spaces or commas
+    → Treat each as a task ID (e.g., "1.1", "2.3", "0.1")
+    → Validate each task ID exists in the plan
+    → If any invalid, report: "Task ID 'X.X' not found in plan"
+    → Skip to step 4 with validated tasks
+
+otherwise:
+    → Treat as search string
+    → Find tasks whose description contains the string
+    → If multiple matches, show them and ask user to select
+    → If single match, proceed with that task
+```
+
+**Validation:**
+- For each task ID, verify it exists in the parsed plan
+- Include both pending and completed tasks (unlike implement)
+- Report any invalid IDs before proceeding
+
+**Examples:**
+
+```bash
+# Explain specific task
+/plan:explain 1.1
+
+# Explain multiple tasks
+/plan:explain 1.1 1.2 1.3
+/plan:explain 1.1, 1.2, 1.3
+
+# Explain entire phase
+/plan:explain phase:2
+/plan:explain p:0
+
+# Explain all tasks
+/plan:explain all
+
+# Search by description
+/plan:explain websocket
+```
+
 ### 2. Parse Plan File
 
-Read the plan file and extract incomplete tasks:
+Read the plan file to understand task structure. Use status.json for execution state.
+
+**Important:** status.json is the authoritative source of truth for task status.
+Markdown checkboxes are reference documentation only and may not reflect actual state.
 
 **Find tasks:**
-- Checklist items: `- [ ] Task description`
+- Checklist items: `- [ ] ID Description` (format for parsing - checkbox state is ignored)
 - Numbered sections: `### N.N Task Name` with content below
 
 **For each task, gather:**
@@ -30,7 +104,7 @@ Read the plan file and extract incomplete tasks:
 - Full section content (everything under the task header until next header)
 - Parent phase name
 
-**If status.json exists, merge status information:**
+**Use status.json as primary status source:**
 - Load status using `getStatus(planPath, false)`
 - For each task, add current status (pending/in_progress/completed/failed/skipped)
 - Use `getTaskStatus(planPath, taskId)` to get individual task status

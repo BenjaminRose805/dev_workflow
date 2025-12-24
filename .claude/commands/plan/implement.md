@@ -17,22 +17,99 @@ Read `.claude/current-plan.txt` to get the active plan path.
 - Read `.claude/current-plan-output.txt` to get the output directory path
 - If initialization fails, warn the user but continue (status tracking is optional)
 
+### 1.5. Parse Arguments (if provided)
+
+If arguments are passed to this skill, parse them to determine which tasks to implement:
+
+**Argument formats supported:**
+
+| Format | Example | Behavior |
+|--------|---------|----------|
+| Single task ID | `1.1` | Implement task 1.1 only |
+| Multiple task IDs | `1.1 1.2 1.3` | Implement listed tasks in order |
+| Phase selector | `phase:1` or `p:1` | All pending tasks in Phase 1 |
+| All pending | `all` | All pending tasks (with confirmation) |
+| No arguments | (empty) | Interactive selection (step 3) |
+
+**Parsing logic:**
+
+```
+args = skill arguments (may be empty)
+
+if args is empty:
+    → Continue to step 3 (interactive selection)
+
+if args == "all":
+    → Select all pending tasks
+    → Show confirmation: "Implement all N pending tasks?"
+    → If confirmed, skip to step 4
+
+if args matches /^p(hase)?:\d+$/i:
+    → Extract phase number
+    → Select all pending tasks in that phase
+    → Skip to step 4
+
+if args matches /^[\d.]+([\s,]+[\d.]+)*$/:
+    → Split on spaces or commas
+    → Treat each as a task ID (e.g., "1.1", "2.3", "0.1")
+    → Validate each task ID exists in the plan
+    → If any invalid, report: "Task ID 'X.X' not found in plan"
+    → Skip to step 4 with validated tasks
+
+otherwise:
+    → Treat as search string
+    → Find tasks whose description contains the string
+    → If multiple matches, show them and ask user to select
+    → If single match, confirm and proceed
+```
+
+**Validation:**
+- For each task ID, verify it exists in the parsed plan
+- Check task is not already completed (warn but allow if user insists)
+- Report any invalid IDs before proceeding
+
+**Examples:**
+
+```bash
+# Implement specific task
+/plan:implement 1.1
+
+# Implement multiple tasks
+/plan:implement 1.1 1.2 1.3
+/plan:implement 1.1, 1.2, 1.3
+
+# Implement entire phase
+/plan:implement phase:2
+/plan:implement p:0
+
+# Implement all pending
+/plan:implement all
+
+# Search by description
+/plan:implement websocket
+```
+
 ### 2. Parse Plan File
 
-Read the plan file and extract:
+Read the plan file to understand task structure, but use status.json for execution state.
+
+**Important: Source of Truth**
+- status.json is THE authoritative source for task completion status
+- Markdown checkboxes (`- [ ]` / `- [x]`) are reference documentation only
+- NEVER modify markdown checkboxes during execution
 
 **Phases:** Look for headers matching these patterns:
 - `## Phase N: Title`
 - `### Phase N: Title`
 
-**Tasks:** Within each phase, find incomplete tasks:
-- Checklist items: `- [ ] Task description`
+**Tasks:** Within each phase, identify tasks from:
+- Checklist items: `- [ ] ID Description` (format only - checkbox state is ignored)
 - Numbered sections: `### N.N Task Name` followed by content
 
 **Task identification:**
 - Extract task ID (e.g., "1.1", "2.3", "0.1")
 - Extract task description/title
-- Note the line number for later marking complete
+- Check status.json for actual completion state (not markdown checkbox)
 
 ### 2.1. Handle Template Variables
 
@@ -177,22 +254,53 @@ For each selected task:
 
 3. **Understand the context** - what files need to be created/modified
 
-4. **Generate the implementation** - analyze requirements and produce the code/content
+4. **Analyze task complexity** - determine if single or multiple agents are needed (see Section 5.1)
 
-5. **Return content as output** - DO NOT write files directly; return all generated code/content
+5. **Execute with appropriate agent strategy** - spawn agents based on task requirements
 
-6. **Main conversation writes files** - after reviewing agent output, write files and verify
+6. **Collect and write outputs** - main conversation collects agent output, reviews, then writes files
 
 7. **Mark complete or failed** after verification (see Section 6)
 
-**IMPORTANT - Read-Only Agent Pattern:**
-When using the Task tool to spawn agents for implementation:
-- Instruct agents to RETURN content, not write files
-- Agents should output: file path + complete file content
-- Main conversation collects output, reviews, then writes files
-- This ensures a checkpoint before changes are committed
+### 5.1. Agent Execution Strategy
 
-Example agent prompt addition:
+Even a single task may require multiple agents working in parallel. Analyze each task to determine the optimal execution approach.
+
+**When to use multiple agents for a single task:**
+
+| Scenario | Agent Strategy |
+|----------|----------------|
+| Single file creation | 1 agent |
+| Multiple independent files | Parallel agents (1 per file or file group) |
+| Test file + implementation | Parallel agents (test agent + impl agent) |
+| Refactoring across files | Parallel agents grouped by module |
+| Analysis + code generation | Sequential (analysis first, then code agents) |
+
+**Example: Task "1.1 Add user authentication" might spawn:**
+```
+Agent 1: Create auth middleware (src/middleware/auth.ts)
+Agent 2: Create auth utilities (src/lib/auth-utils.ts)
+Agent 3: Create auth tests (tests/unit/auth.test.ts)
+Agent 4: Update route handlers (src/routes/*.ts)
+```
+
+### 5.2. Parallel Agent Execution Rules
+
+**For parallel tasks, use the Task tool with multiple agents:**
+
+```
+Launching agents for task 1.1:
+- Agent 1: auth middleware
+- Agent 2: auth utilities
+- Agent 3: auth tests
+
+Waiting for all agents to complete...
+```
+
+**IMPORTANT - Read-Only Agent Pattern:**
+Agents should RETURN content, not write files directly. This avoids permission issues and provides a checkpoint before changes are committed.
+
+When launching agents, include this in the prompt:
 ```
 IMPORTANT: Do NOT write files directly. Instead:
 1. Analyze the task requirements
@@ -204,6 +312,51 @@ IMPORTANT: Do NOT write files directly. Instead:
    ```
 4. The main conversation will handle file writing
 ```
+
+**Parallel execution rules:**
+1. Launch all independent agents simultaneously using multiple Task tool calls in a single message
+2. Wait for all agents to complete before proceeding
+3. If one agent fails, continue others but note the failure
+4. Collect all results (generated content) before writing any files
+5. **Main conversation writes files** after collecting all agent outputs
+6. Verify files were written correctly before marking task complete
+
+**Resource awareness:**
+- Maximum 5 parallel agents per task
+- Balance load across agents (don't overload one agent with many files)
+- Group related files to the same agent when they have interdependencies
+
+### 5.3. Sequential vs Parallel Decision
+
+**Run agents in parallel when:**
+- Files are independent (no imports between them)
+- Work can be divided by module/feature
+- Tests and implementation don't share setup code
+
+**Run agents sequentially when:**
+- Later work depends on earlier output (e.g., generate types first, then use them)
+- Files have circular dependencies that need coordinated changes
+- A shared foundation must be established first
+
+**Example sequential flow:**
+```
+Step 1: Agent generates shared types (src/types/auth.ts)
+        ↓ (wait for completion)
+Step 2: Parallel agents use those types:
+        - Agent A: auth middleware
+        - Agent B: auth utilities
+        - Agent C: auth tests
+```
+
+### 5.4. Collecting and Writing Agent Output
+
+After all agents complete:
+
+1. **Review each agent's output** for completeness and correctness
+2. **Check for conflicts** - ensure agents didn't generate conflicting code
+3. **Write files in dependency order** - types/interfaces first, then implementations, then tests
+4. **Run verification** if applicable (type check, lint, test)
+5. **Handle failures** - if writing fails, report which files succeeded/failed
 
 ### 6. Mark Tasks Complete
 

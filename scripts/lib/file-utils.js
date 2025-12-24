@@ -43,6 +43,79 @@ function writeFile(filePath, content) {
 }
 
 /**
+ * Write file contents atomically (crash-safe)
+ * Writes to a temp file first, then renames to target.
+ * This ensures partial writes never corrupt the target file.
+ * @param {string} filePath - Path to file
+ * @param {string} content - Content to write
+ * @returns {boolean} Success status
+ */
+function writeFileAtomic(filePath, content) {
+  const dir = path.dirname(filePath);
+  const basename = path.basename(filePath);
+  // Use process ID and timestamp for unique temp file name
+  const tempPath = path.join(dir, `.${basename}.${process.pid}.${Date.now()}.tmp`);
+
+  try {
+    // Ensure directory exists
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+
+    // Write to temp file
+    fs.writeFileSync(tempPath, content, 'utf-8');
+
+    // Rename atomically (atomic on POSIX systems)
+    fs.renameSync(tempPath, filePath);
+
+    return true;
+  } catch (error) {
+    // Clean up temp file if it exists
+    try {
+      if (fs.existsSync(tempPath)) {
+        fs.unlinkSync(tempPath);
+      }
+    } catch (cleanupError) {
+      // Ignore cleanup errors
+    }
+    return false;
+  }
+}
+
+/**
+ * Write file contents atomically (async version)
+ * @param {string} filePath - Path to file
+ * @param {string} content - Content to write
+ * @returns {Promise<boolean>} Success status
+ */
+async function writeFileAtomicAsync(filePath, content) {
+  const dir = path.dirname(filePath);
+  const basename = path.basename(filePath);
+  const tempPath = path.join(dir, `.${basename}.${process.pid}.${Date.now()}.tmp`);
+
+  try {
+    // Ensure directory exists
+    await fs.promises.mkdir(dir, { recursive: true });
+
+    // Write to temp file
+    await fs.promises.writeFile(tempPath, content, 'utf-8');
+
+    // Rename atomically
+    await fs.promises.rename(tempPath, filePath);
+
+    return true;
+  } catch (error) {
+    // Clean up temp file if it exists
+    try {
+      await fs.promises.unlink(tempPath);
+    } catch (cleanupError) {
+      // Ignore cleanup errors
+    }
+    return false;
+  }
+}
+
+/**
  * Check if file exists
  * @param {string} filePath - Path to file
  * @returns {boolean}
@@ -175,6 +248,8 @@ function resolvePath(...segments) {
 module.exports = {
   readFile,
   writeFile,
+  writeFileAtomic,
+  writeFileAtomicAsync,
   fileExists,
   getFileMtime,
   glob,

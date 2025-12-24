@@ -16,6 +16,78 @@ Read `.claude/current-plan.txt` to get the active plan path.
 - Call `initializePlanStatus(planPath)` to create output directory and status.json
 - Also read from `.claude/current-plan-output.txt` to get the output directory path
 
+### 1.5. Parse Arguments (if provided)
+
+If arguments are passed to this skill, parse them to determine which tasks to batch execute:
+
+**Argument formats supported:**
+
+| Format | Example | Behavior |
+|--------|---------|----------|
+| Single task ID | `1.1` | Execute task 1.1 only |
+| Multiple task IDs | `1.1 1.2 1.3` | Execute listed tasks |
+| Phase selector | `phase:1` or `p:1` | All pending tasks in Phase 1 |
+| All pending | `all` | All pending tasks (with confirmation) |
+| No arguments | (empty) | Interactive selection (step 3) |
+
+**Parsing logic:**
+
+```
+args = skill arguments (may be empty)
+
+if args is empty:
+    → Continue to step 3 (interactive selection)
+
+if args == "all":
+    → Select all pending tasks
+    → Show confirmation: "Execute all N pending tasks?"
+    → If confirmed, skip to step 4
+
+if args matches /^p(hase)?:\d+$/i:
+    → Extract phase number
+    → Select all pending tasks in that phase
+    → Skip to step 4
+
+if args matches /^[\d.]+([\s,]+[\d.]+)*$/:
+    → Split on spaces or commas
+    → Treat each as a task ID (e.g., "1.1", "2.3", "0.1")
+    → Validate each task ID exists in the plan
+    → If any invalid, report: "Task ID 'X.X' not found in plan"
+    → Skip to step 4 with validated tasks
+
+otherwise:
+    → Treat as search string
+    → Find tasks whose description contains the string
+    → If multiple matches, show them and ask user to select
+    → If single match, confirm and proceed
+```
+
+**Validation:**
+- For each task ID, verify it exists in the parsed plan
+- Check task is not already completed (warn but allow if user insists)
+- Report any invalid IDs before proceeding
+
+**Examples:**
+
+```bash
+# Execute specific task
+/plan:batch 1.1
+
+# Execute multiple tasks
+/plan:batch 1.1 1.2 1.3
+/plan:batch 1.1, 1.2, 1.3
+
+# Execute entire phase
+/plan:batch phase:2
+/plan:batch p:1
+
+# Execute all pending
+/plan:batch all
+
+# Search by description
+/plan:batch websocket
+```
+
 ### 2. Parse Plan File
 
 Read the plan and extract:
@@ -26,7 +98,9 @@ Read the plan and extract:
 
 **Optional:** Use `getIncompleteTasks(planPath)` to get tasks from status.json if available, falling back to parsing the markdown file if status tracking isn't initialized yet.
 
-### 3. Present Batch Selection Interface
+### 3. Present Batch Selection Interface (Interactive Mode)
+
+**Skip this step if arguments were provided in step 1.5.**
 
 Use AskUserQuestion with multi-select, featuring quick-select options:
 

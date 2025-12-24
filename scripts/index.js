@@ -51,7 +51,7 @@ const COMMANDS = {
 const DESCRIPTIONS = {
   'scan-plans': 'Scan all plan files in docs/plans/ and generate JSON summary',
   'parse-plan-structure': 'Parse the structure of a specific plan file',
-  'scan-results': 'Scan result files from .claude/ directory',
+  'scan-results': '[DEPRECATED] Scan result files from .claude/ directory (use status-cli.js)',
   'research-for-implement': 'Research tasks before implementation using AI agents',
   'verify-with-agent': 'Verify implementation results with AI agent',
   'parallel-research-pipeline': 'Run parallel research pipeline for batch tasks',

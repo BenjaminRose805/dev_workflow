@@ -35,6 +35,10 @@ First, check if the plan has status tracking enabled by looking for:
 
 If no status.json, read the plan file and extract:
 
+**Important:** status.json is the authoritative source of truth for task execution state.
+Markdown checkboxes (`- [ ]` and `- [x]`) are reference documentation only and may not
+reflect actual completion status. Always prefer status.json when available.
+
 **Metadata:**
 - Plan title (first `#` heading)
 - Template source (if present in Overview section)
@@ -44,9 +48,9 @@ If no status.json, read the plan file and extract:
 - Count total phases (`## Phase N:` or `### Phase N:`)
 - Track phase names
 
-**Tasks:**
-- Count complete tasks: `- [x]`
-- Count incomplete tasks: `- [ ]`
+**Tasks (from markdown - fallback only):**
+- Parse task IDs and descriptions from `- [ ] ID Description` patterns
+- Note: checkbox state may not be accurate; use status.json when available
 - Group by phase
 
 **Success Criteria (if present):**

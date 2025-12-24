@@ -4,9 +4,16 @@
  * Results Scanner
  * Scans .claude/prompt-results/ for execution results and generates JSON summary.
  *
+ * @deprecated This script is deprecated. The prompt-results system has been replaced
+ * by the plan-based workflow. Use plan-output-utils.js and status-cli.js instead.
+ * This file is kept for backwards compatibility and will return empty results
+ * if the deprecated directory is missing.
+ *
  * Usage: node scripts/scan-results.js
  * Output: JSON to stdout
  */
+
+console.warn('DEPRECATED: scan-results.js is deprecated. Use status-cli.js for plan status.');
 
 const path = require('path');
 const { readFile, globSync, resolvePath, getCached, setCached } = require('./lib/file-utils');

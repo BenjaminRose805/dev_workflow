@@ -110,17 +110,28 @@ docs/plan-outputs/{plan-name}/
 ```
 
 **Initialize status.json:**
-Use `scripts/lib/status-manager.js` to:
+Use `scripts/status-cli.js` (preferred) or `scripts/lib/plan-output-utils.js`:
+
+**Using status-cli (recommended):**
+```bash
+# After setting current-plan.txt, run any status command to trigger initialization
+node scripts/status-cli.js status
+```
+
+**Using JavaScript API:**
+```javascript
+const { initializeStatus, createOutputDir } = require('./scripts/lib/plan-output-utils');
+
+// Create output directory and initialize status
+createOutputDir(planPath);
+const status = initializeStatus(planPath, planName, tasks);
+```
+
+This will:
 1. Parse the newly created plan file
 2. Extract all tasks from phases
 3. Create initial status.json with all tasks as "pending"
 4. Set the output pointer (`.claude/current-plan-output.txt`)
-
-**Example Node.js call:**
-```javascript
-const { initializePlanStatus } = require('./scripts/lib/status-manager');
-initializePlanStatus('docs/plans/{filename}.md');
-```
 
 ### 8. Confirm to User
 
