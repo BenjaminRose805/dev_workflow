@@ -3,26 +3,35 @@
   "planPath": "docs/plans/cleanup-deprecated-code.md",
   "planName": "Implementation Plan: Cleanup Deprecated Code",
   "createdAt": "2025-12-24T04:16:52.582Z",
-  "lastUpdatedAt": "2025-12-24T04:16:52.585Z",
+  "lastUpdatedAt": "2025-12-24T04:46:49.598Z",
   "currentPhase": "Phase 0: Pre-Cleanup Verification",
   "tasks": [
     {
       "id": "0.1",
       "phase": "Phase 0: Pre-Cleanup Verification",
       "description": "0.1 Run all existing tests to establish baseline",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-24T04:44:42.593Z",
+      "completedAt": "2025-12-24T04:46:09.085Z",
+      "duration": 86492,
+      "notes": "All tests pass: test-status-cli.js (46/46), test-parallel-updates.js (PASSED), test-recovery.js (17/17), test-orchestrator-e2e.py (6/6)"
     },
     {
       "id": "0.2",
       "phase": "Phase 0: Pre-Cleanup Verification",
       "description": "0.2 Verify zero imports for target files",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-24T04:46:09.571Z",
+      "completedAt": "2025-12-24T04:46:49.122Z",
+      "duration": 39551,
+      "notes": "Confirmed zero imports: result-aggregator.js (0), performance-tracker.js (0), speculative-research.js (0). scan-results.js has expected refs in index.js/benchmark.js (Phase 2 targets)."
     },
     {
       "id": "0.3",
       "phase": "Phase 0: Pre-Cleanup Verification",
       "description": "0.3 Create git commit with current state",
-      "status": "pending"
+      "status": "in_progress",
+      "startedAt": "2025-12-24T04:46:49.597Z"
     },
     {
       "id": "0.4",
@@ -382,9 +391,9 @@
   "runs": [],
   "summary": {
     "totalTasks": 62,
-    "completed": 0,
-    "pending": 62,
-    "in_progress": 0,
+    "completed": 2,
+    "pending": 59,
+    "in_progress": 1,
     "failed": 0,
     "skipped": 0
   }

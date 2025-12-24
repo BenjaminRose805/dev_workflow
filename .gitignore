@@ -1,2 +1,43 @@
+# Dependencies
+node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Runtime/temp files
+*.tmp
+*.temp
+.cache/
+
+# Lock files (status.json locks)
+*.lock
+
+# Claude Code session state (changes frequently)
 .claude/current-plan.txt
 .claude/current-plan-output.txt
+
+# Optional: Ignore plan outputs if you don't want to track execution state
+docs/plan-outputs/*/status.json
+docs/plan-outputs/*/status.json.bak
