@@ -1073,12 +1073,8 @@ class PlanOrchestrator:
                         )
                         self.status_monitor.start()
 
-                # Initialize streaming runner with callbacks
-                self.streaming_runner = StreamingClaudeRunner(
-                    on_tool_start=self._on_tool_start,
-                    on_tool_end=self._on_tool_end,
-                    timeout=self.timeout
-                )
+                # NOTE: StreamingClaudeRunner disabled due to --output-format stream-json bug
+                # The TUI still displays progress via status.json file monitoring
 
                 self.tui.start()
             except Exception as e:
@@ -1200,13 +1196,13 @@ class PlanOrchestrator:
                 prompt = self._build_prompt(status, next_tasks)
 
                 # Run Claude session
+                # NOTE: Always use run_claude_session() - the StreamingClaudeRunner
+                # with --output-format stream-json has a bug causing premature exit.
+                # The TUI still works for progress display via status.json monitoring.
                 if self.use_tui:
                     self.tui.set_claude_running(True)
 
-                if self.use_tui and self.streaming_runner:
-                    success, output = self.streaming_runner.run(prompt)
-                else:
-                    success, output = self.run_claude_session(prompt)
+                success, output = self.run_claude_session(prompt)
 
                 if self.use_tui:
                     self.tui.set_claude_running(False)
