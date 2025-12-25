@@ -501,9 +501,33 @@ function cmdNext(planPath, countStr) {
     }
   }
 
-  // 3. Finally get pending tasks respecting phase order
+  // 3. Get parallel phase information
+  const parallelPhaseSet = new Set();
+  let parallelInfo = null;
+  if (constraints.parallel && constraints.parallel.length > 0) {
+    parallelInfo = constraints.parallel;
+    for (const group of constraints.parallel) {
+      for (const phaseId of group.phaseIds) {
+        parallelPhaseSet.add(phaseId);
+      }
+    }
+  }
+
+  // Helper to check if a phase is in a parallel group with another phase
+  function areInSameParallelGroup(phaseA, phaseB) {
+    if (!parallelInfo) return false;
+    for (const group of parallelInfo) {
+      if (group.phaseIds.includes(phaseA) && group.phaseIds.includes(phaseB)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // 4. Finally get pending tasks respecting phase order (with parallel phase support)
   for (const phase of phases) {
     // Check if previous phases are complete enough (80% threshold)
+    // BUT: if this phase is in a parallel group with a previous phase, allow concurrent work
     const previousPhases = phases.filter(p => p.number < phase.number);
     const previousIncomplete = previousPhases.some(p =>
       p.tasks.some(t => t.status === 'pending' || t.status === 'in_progress')
@@ -513,20 +537,32 @@ function cmdNext(planPath, countStr) {
       return completed >= p.tasks.length * 0.8;
     });
 
-    if (previousIncomplete && !previousMostlyComplete) {
+    // Check if this phase can run in parallel with incomplete previous phases
+    const canRunParallel = previousPhases
+      .filter(p => p.tasks.some(t => t.status === 'pending' || t.status === 'in_progress'))
+      .every(p => areInSameParallelGroup(p.number, phase.number));
+
+    if (previousIncomplete && !previousMostlyComplete && !canRunParallel) {
       continue; // Skip this phase for now
     }
 
     for (const task of phase.tasks) {
       if (task.status === 'pending' && next.length < maxTasks) {
-        next.push({
+        const taskData = {
           id: task.id,
           description: task.description,
           phase: phase.number,
           status: task.status,
           reason: 'pending - ready to implement',
           ...getConstraintMetadata(task.id)
-        });
+        };
+
+        // Mark if this task is from a parallel phase
+        if (parallelPhaseSet.has(phase.number)) {
+          taskData.parallelPhase = true;
+        }
+
+        next.push(taskData);
       }
     }
 
@@ -569,11 +605,25 @@ function cmdNext(planPath, countStr) {
     return task;
   });
 
-  outputJSON({
+  const output = {
     count: tasksWithConflicts.length,
-    tasks: tasksWithConflicts,
-    fileConflicts: conflicts.length > 0 ? conflicts : undefined
-  });
+    tasks: tasksWithConflicts
+  };
+
+  // Include file conflicts if any
+  if (conflicts.length > 0) {
+    output.fileConflicts = conflicts;
+  }
+
+  // Include parallel phase info if applicable
+  if (parallelInfo && parallelInfo.length > 0) {
+    output.parallelPhases = parallelInfo.map(g => ({
+      phases: g.phaseIds,
+      reason: g.reason
+    }));
+  }
+
+  outputJSON(output);
 }
 
 /**
