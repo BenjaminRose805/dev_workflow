@@ -722,6 +722,21 @@ function cmdProgress(planPath) {
   console.log(`Total: ${total} tasks`);
   console.log(`Current Phase: ${status.currentPhase}`);
   console.log(`Last Updated: ${new Date(status.lastUpdatedAt).toLocaleString()}`);
+
+  // Show git queue status if there are pending commits
+  try {
+    const { getCommitQueueStatus } = require('./lib/plan-status.js');
+    const queueStatus = getCommitQueueStatus();
+    if (queueStatus.pendingCount > 0) {
+      console.log('');
+      console.log(`Git Queue: ${queueStatus.pendingCount} commit(s) pending`);
+      if (queueStatus.isProcessing) {
+        console.log(`  ⟳ Processing commit...`);
+      }
+    }
+  } catch (error) {
+    // Git queue not available, skip silently
+  }
 }
 
 /**
