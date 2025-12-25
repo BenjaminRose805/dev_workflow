@@ -386,6 +386,119 @@ When using the Python orchestrator with `--verbose`:
 
 ---
 
+## Execution Constraint Handling
+
+The orchestrator system supports `[SEQUENTIAL]` annotations in plan files to control task execution order. When tasks must run sequentially (e.g., because they modify the same file), this constraint is parsed and enforced throughout the pipeline.
+
+### Constraint Data Flow
+
+```
+Plan File (markdown)           Parse Execution Notes          status.json
+   │                                   │                          │
+   │  **Execution Note:**              │                          │
+   │  Tasks 3.1-3.4 are ──────────────►│  parseExecutionNotes()   │
+   │  [SEQUENTIAL] - reason            │                          │
+   │                                   ▼                          │
+   │                          ┌─────────────────┐                 │
+   │                          │ Constraint Array │                │
+   │                          │ [{                │                │
+   │                          │   taskRange,      │                │
+   │                          │   taskIds,        │                │
+   │                          │   reason          │                │
+   │                          │ }]                │                │
+   │                          └────────┬──────────┘                │
+   │                                   │                          │
+   │                                   ▼                          │
+   │                         ┌──────────────────┐                 │
+   │                         │ initializePlan   │─────────────────►
+   │                         │ Status()         │   task.executionConstraints
+   │                         └──────────────────┘   status.sequentialGroups
+                                       │
+                                       ▼
+                              ┌─────────────────┐
+                              │ cmdNext()       │
+                              │ Returns tasks   │
+                              │ with sequential,│
+                              │ sequentialGroup │
+                              └────────┬────────┘
+                                       │
+                                       ▼
+                           ┌───────────────────────┐
+                           │ plan_orchestrator.py  │
+                           │ _filter_sequential_   │
+                           │ tasks()               │
+                           │ Only batch first task │
+                           │ from each group       │
+                           └───────────────────────┘
+```
+
+### Constraint Annotation Format
+
+In plan markdown files, use this pattern after phase headers:
+
+```markdown
+**Execution Note:** Tasks 3.1-3.4 are [SEQUENTIAL] - all modify same file
+```
+
+The parser extracts:
+- **Task range**: `3.1-3.4` (expanded to `["3.1", "3.2", "3.3", "3.4"]`)
+- **Constraint type**: `[SEQUENTIAL]`
+- **Reason**: `all modify same file`
+
+### Constraint Storage
+
+**In status.json:**
+
+```json
+{
+  "sequentialGroups": [
+    {
+      "taskRange": "3.1-3.4",
+      "taskIds": ["3.1", "3.2", "3.3", "3.4"],
+      "reason": "all modify same file"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "3.1",
+      "executionConstraints": {
+        "sequential": true,
+        "sequentialGroup": "3.1-3.4",
+        "reason": "all modify same file"
+      }
+    }
+  ]
+}
+```
+
+### Orchestrator Constraint Enforcement
+
+The Python orchestrator (`plan_orchestrator.py`) enforces constraints via `_filter_sequential_tasks()`:
+
+1. Get next N tasks from `status-cli.js next`
+2. For each task with a `sequentialGroup`:
+   - If another task from the same group is already in the batch, hold back
+   - Only include the first task from each sequential group
+3. Log held-back tasks for visibility
+4. Include constraint information in the Claude prompt
+
+**Example:**
+```
+# Original: [3.1, 3.2, 3.3, 4.1, 4.2]  (3.1-3.3 are sequential)
+# Filtered: [3.1, 4.1, 4.2]             (3.2, 3.3 held back)
+```
+
+### Refreshing Constraints
+
+If a plan is edited after initialization to add/remove `[SEQUENTIAL]` annotations:
+
+```javascript
+const { refreshConstraints } = require('./scripts/lib/plan-status');
+refreshConstraints(planPath);  // Re-parses plan and updates status.json
+```
+
+---
+
 ## Key Design Decisions
 
 ### status.json is Source of Truth
