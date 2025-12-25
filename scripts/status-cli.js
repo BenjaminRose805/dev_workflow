@@ -741,14 +741,133 @@ function cmdCheck(planPath, taskId) {
 }
 
 /**
+ * progress-watch - Continuously poll status.json and output progress changes
+ *
+ * Polls every 2 seconds, outputs changes as progress markers.
+ * Exit when plan completes or on Ctrl+C.
+ */
+function cmdProgressWatch(planPath, options = {}) {
+  const POLL_INTERVAL_MS = 2000;
+  const format = options.format || 'markers';
+
+  let lastStatus = null;
+  let lastSummaryStr = '';
+
+  // Track what we've emitted to avoid duplicates
+  const emittedTasks = new Map(); // taskId -> status
+
+  console.error(`Watching progress for: ${planPath}`);
+  console.error(`Polling every ${POLL_INTERVAL_MS / 1000} seconds. Press Ctrl+C to stop.\n`);
+
+  function poll() {
+    const status = loadStatus(planPath);
+    if (!status) {
+      console.error('Error: status.json not found');
+      return;
+    }
+
+    const summary = status.summary;
+    const total = summary.totalTasks || 0;
+    const completed = summary.completed || 0;
+    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+    // Determine plan status
+    let planStatus = 'pending';
+    if (completed === total && total > 0) {
+      planStatus = 'completed';
+    } else if (completed > 0 || (summary.in_progress || 0) > 0) {
+      planStatus = 'in_progress';
+    }
+
+    // Check for task status changes
+    for (const task of status.tasks) {
+      const prevStatus = emittedTasks.get(task.id);
+      if (prevStatus !== task.status) {
+        // Emit task status change
+        if (format === 'markers') {
+          let statusStr = task.status;
+          if (statusStr === 'in_progress') statusStr = 'started';
+          console.log(`[PROGRESS] task=${task.id} status=${statusStr}`);
+        } else if (format === 'json') {
+          console.log(JSON.stringify({
+            type: 'task',
+            id: task.id,
+            status: task.status,
+            timestamp: new Date().toISOString()
+          }));
+        }
+        emittedTasks.set(task.id, task.status);
+      }
+    }
+
+    // Check for summary changes
+    const currentSummaryStr = `${completed}/${total}/${summary.failed || 0}`;
+    if (currentSummaryStr !== lastSummaryStr) {
+      if (format === 'markers') {
+        console.log(`[PROGRESS] plan status=${planStatus} percent=${percentage}`);
+        console.log(`[PROGRESS] summary completed=${completed} pending=${summary.pending || 0} failed=${summary.failed || 0}`);
+      } else if (format === 'json') {
+        console.log(JSON.stringify({
+          type: 'summary',
+          status: planStatus,
+          percentage,
+          completed,
+          pending: summary.pending || 0,
+          failed: summary.failed || 0,
+          timestamp: new Date().toISOString()
+        }));
+      }
+      lastSummaryStr = currentSummaryStr;
+    }
+
+    // Check if plan is complete
+    if (planStatus === 'completed') {
+      if (format === 'markers') {
+        console.log(`[PROGRESS] plan status=completed percent=100`);
+      } else if (format === 'json') {
+        console.log(JSON.stringify({
+          type: 'complete',
+          message: 'Plan execution completed',
+          timestamp: new Date().toISOString()
+        }));
+      }
+      console.error('\nPlan execution completed.');
+      process.exit(0);
+    }
+
+    lastStatus = status;
+  }
+
+  // Initial poll
+  poll();
+
+  // Set up interval polling
+  const intervalId = setInterval(poll, POLL_INTERVAL_MS);
+
+  // Handle Ctrl+C gracefully
+  process.on('SIGINT', () => {
+    clearInterval(intervalId);
+    console.error('\nWatch mode stopped.');
+    process.exit(0);
+  });
+}
+
+/**
  * progress - Show formatted progress bar
  *
  * Options:
  *   --format=text (default): Human-readable output with progress bar
  *   --format=json: Full structured JSON
  *   --format=markers: Progress marker format for parsing
+ *   --watch: Continuously poll status.json and output changes
  */
 function cmdProgress(planPath, options = {}) {
+  // Handle watch mode
+  if (options.watch) {
+    cmdProgressWatch(planPath, options);
+    return;
+  }
+
   const status = loadStatus(planPath);
   if (!status) {
     exitWithError('No status.json found.');
@@ -1209,7 +1328,7 @@ Commands:
   next [count]                        Get next N recommended tasks (JSON)
   phases                              List all phases with completion status (JSON)
   check <task-id>                     Check if a specific task can be started (JSON)
-  progress [--format=<fmt>]           Show progress (text|json|markers)
+  progress [--format=<fmt>] [--watch]  Show progress (text|json|markers), --watch polls
   validate                            Validate and repair status.json
   sync-check                          Compare markdown vs status.json (read-only)
   retryable                           Get failed tasks that can be retried
