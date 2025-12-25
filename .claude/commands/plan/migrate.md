@@ -223,20 +223,15 @@ Next steps:
 ═══════════════════════════════════════════════════════
 ```
 
-**Verify the current plan output pointer:**
+**Verify the output directory:**
 
-Check the output directory is correctly set:
+The output directory is derived from the plan name:
 
-```bash
-# The output directory path is stored here
-cat .claude/current-plan-output.txt
-```
-
-Or using JavaScript:
 ```javascript
-const { getOutputDir } = require('./scripts/lib/plan-output-utils');
+const { getOutputDir } = require('./scripts/lib/plan-status');
 const outputDir = getOutputDir(planPath);
 console.log(`Output directory: ${outputDir}`);
+// Example: docs/plan-outputs/test-suite-implementation/
 ```
 
 ## Migration Validation
