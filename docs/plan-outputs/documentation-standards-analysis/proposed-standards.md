@@ -50,6 +50,13 @@ PLAN-STANDARDS.md
 │   ├── Template Variables
 │   ├── Template Inheritance
 │   └── Template-to-Standard Relationship
+├── 7. Orchestration Standards (PRIMARY CONCERN)
+│   ├── Orchestration Model
+│   ├── Task Isolation Requirements
+│   ├── Parallel vs Sequential Execution
+│   ├── File Conflict Rules
+│   ├── Autonomous Execution Readiness
+│   └── Batch Size Guidance
 └── Appendices
     ├── A. Quick Reference Card
     ├── B. Validation Checklist
@@ -217,6 +224,8 @@ Skip Phase 0 when:
    - P0 tasks cannot depend on P1 or P2 tasks
    - P1 tasks cannot depend on P2 tasks
 
+**Orchestration Impact:** The orchestrator executes phases sequentially. Tasks within the same phase may run in parallel (see Section 7 for isolation rules).
+
 ### 3.5 VERIFY Section Requirements
 
 **Placement:** Immediately after all tasks in a phase
@@ -308,7 +317,37 @@ pending ─────────┬──→ in_progress ──→ completed
 
 **Important:** Checkboxes are **read-only documentation**. Actual state lives in `status.json`.
 
-### 4.5 Findings File Format
+### 4.5 Task Isolation Requirements (Orchestration)
+
+**Every task MUST be designed for autonomous execution.** The orchestrator runs tasks without human intervention, so tasks must be:
+
+| Requirement | Description | Example |
+|-------------|-------------|---------|
+| **Self-contained** | Task has all information needed to execute | Include file paths, not "the file from task 1.1" |
+| **Idempotent** | Running twice produces same result | Check if file exists before creating |
+| **Isolated** | No hidden dependencies on other tasks in same phase | Don't assume task 1.1 ran before 1.2 |
+| **Explicit files** | List files to be modified | "Update src/auth.ts" not "update the auth module" |
+
+**File Conflict Annotation:**
+
+When multiple tasks in the same phase modify the same file, annotate with `[SEQUENTIAL]`:
+
+```markdown
+**Execution Note:** Tasks 3.1-3.4 are [SEQUENTIAL] - all modify orchestrator-system.md
+```
+
+The orchestrator will run `[SEQUENTIAL]` tasks one at a time, not in parallel.
+
+**Anti-patterns to avoid:**
+
+| Anti-pattern | Problem | Fix |
+|--------------|---------|-----|
+| "Continue from previous task" | Assumes execution order | Make task self-contained |
+| "Use the output from 1.1" | Hidden dependency | Reference specific file path |
+| "Update the same file as 1.2" | Parallel conflict | Mark as [SEQUENTIAL] |
+| Vague file references | Agent can't find files | Use exact paths |
+
+### 4.6 Findings File Format
 
 Every completed task SHOULD have a findings file at `findings/{task-id}.md`:
 
@@ -442,6 +481,239 @@ Templates MAY:
 
 ---
 
+## Section 7: Orchestration Standards
+
+**Plans are designed for autonomous orchestrated execution.** This section defines how plans must be structured to work correctly with the plan orchestrator (`scripts/plan_orchestrator.py`).
+
+### 7.1 Orchestration Model
+
+The orchestrator executes plans through repeated Claude Code sessions:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     ORCHESTRATION FLOW                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   plan_orchestrator.py                                          │
+│         │                                                        │
+│         ▼                                                        │
+│   ┌─────────────────────┐                                       │
+│   │  Get next tasks     │◄──── status.json (pending tasks)      │
+│   │  (batch of N)       │                                       │
+│   └──────────┬──────────┘                                       │
+│              │                                                   │
+│              ▼                                                   │
+│   ┌─────────────────────┐     ┌─────────────────────┐          │
+│   │  Spawn Claude Code  │────►│  /plan:implement    │          │
+│   │  Session (isolated) │     │  task1 task2 ...    │          │
+│   └──────────┬──────────┘     │  --autonomous       │          │
+│              │                 └─────────────────────┘          │
+│              ▼                                                   │
+│   ┌─────────────────────┐                                       │
+│   │  Session completes  │────► status.json updated              │
+│   │  (success/fail)     │                                       │
+│   └──────────┬──────────┘                                       │
+│              │                                                   │
+│              ▼                                                   │
+│   ┌─────────────────────┐                                       │
+│   │  Loop until done    │                                       │
+│   │  or max iterations  │                                       │
+│   └─────────────────────┘                                       │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Key properties:**
+- Each session is **fully isolated** (fresh Claude Code instance)
+- Sessions have no memory of previous sessions
+- `status.json` is the **only shared state** between sessions
+- Tasks within a batch may execute in parallel (via Task tool agents)
+
+### 7.2 Task Isolation Levels
+
+| Level | Scope | Isolation | Shared State |
+|-------|-------|-----------|--------------|
+| **Session** | Orchestrator iteration | Full | status.json, filesystem |
+| **Task** | Within session | Partial | Filesystem, session context |
+| **Agent** | Task tool subprocess | Full | Filesystem only |
+
+**Implications for plan authors:**
+
+1. **Cross-session state:** Tasks cannot pass data to future sessions except via:
+   - Files on disk
+   - status.json notes/findings
+   - Git commits
+
+2. **Within-session parallelism:** Tasks in the same phase may run in parallel unless marked `[SEQUENTIAL]`
+
+3. **Agent isolation:** Agents spawned via Task tool are fully isolated and should return content, not write files directly
+
+### 7.3 Parallel vs Sequential Execution Rules
+
+**Default behavior:**
+- **Phases:** Always sequential (Phase 1 → Phase 2 → Phase 3)
+- **Tasks within phase:** Parallel by default, unless conflicts exist
+
+**When tasks MUST be sequential:**
+
+| Condition | Reason | Annotation |
+|-----------|--------|------------|
+| Same file modified | Write conflicts | `[SEQUENTIAL]` |
+| Output → Input dependency | Data flow | `[SEQUENTIAL]` or separate phases |
+| Ordered operations | Logic requires order | `[SEQUENTIAL]` |
+
+**Annotation format:**
+
+```markdown
+## Phase 3: Database Migration
+
+**Execution Note:** Tasks 3.1-3.3 are [SEQUENTIAL] - migrations must run in order
+
+- [ ] 3.1 Create users table
+- [ ] 3.2 Add foreign key constraints
+- [ ] 3.3 Seed initial data
+```
+
+**When tasks CAN be parallel:**
+
+| Condition | Example |
+|-----------|---------|
+| Different files | Task A: auth.ts, Task B: config.ts |
+| Independent operations | Task A: create file, Task B: update unrelated file |
+| Read-only analysis | Multiple analysis tasks reading different areas |
+
+### 7.4 File Conflict Detection
+
+**Before creating a plan, identify file conflicts:**
+
+```
+Phase 1 tasks:
+  1.1 Update src/auth.ts      ─┐
+  1.2 Update src/config.ts     │ No conflict (different files)
+  1.3 Add src/utils.ts        ─┘
+
+Phase 2 tasks:
+  2.1 Refactor src/auth.ts    ─┬─ CONFLICT! Same file
+  2.2 Add tests for auth.ts   ─┘   Mark as [SEQUENTIAL]
+```
+
+**Resolution strategies:**
+
+| Strategy | When to use |
+|----------|-------------|
+| Mark `[SEQUENTIAL]` | Tasks must stay in same phase |
+| Split to separate phases | Tasks have natural ordering |
+| Combine into single task | Tasks are tightly coupled |
+| Use subtasks | Parent task coordinates children |
+
+### 7.5 Autonomous Execution Checklist
+
+Every task description MUST pass this checklist:
+
+- [ ] **Complete context:** Task has all file paths, not references to "previous task"
+- [ ] **Verifiable outcome:** Clear success criteria (file exists, test passes, etc.)
+- [ ] **No prompts needed:** Can execute without asking user questions
+- [ ] **Failure handling:** Clear what to do if blocked (skip, fail, or retry)
+- [ ] **Idempotent:** Running twice doesn't cause errors
+
+**Good task description:**
+```markdown
+- [ ] 2.1 Update docs/ORCHESTRATOR.md to remove plan-runner.sh from architecture
+      diagram (line 36) and update flow to show: plan_orchestrator.py → status-cli.js
+```
+
+**Bad task description:**
+```markdown
+- [ ] 2.1 Fix the documentation issues we discussed
+```
+
+### 7.6 Batch Size Guidance
+
+The orchestrator batches tasks for efficiency. Design phases with batching in mind:
+
+| Batch Size | Best For | Task Characteristics |
+|------------|----------|---------------------|
+| 1-2 | Complex tasks | Multi-file changes, require careful review |
+| 3-5 | Standard tasks | Independent, well-defined scope |
+| 5-10 | Simple tasks | Single file, mechanical changes |
+
+**Phase design for batching:**
+
+```markdown
+## Phase 1: Quick Fixes (batch-friendly: 5-10 tasks)
+- [ ] 1.1 Delete backup files
+- [ ] 1.2 Remove empty directory
+- [ ] 1.3 Archive guide A
+- [ ] 1.4 Archive guide B
+...
+
+## Phase 2: Complex Refactoring (batch size: 1-2)
+- [ ] 2.1 Merge orchestrator documentation (complex, multi-source)
+- [ ] 2.2 Restructure config system (many interdependencies)
+```
+
+### 7.7 Recovery and Retry
+
+The orchestrator handles failures gracefully:
+
+| Scenario | Orchestrator Behavior | Task Requirements |
+|----------|----------------------|-------------------|
+| Task fails | Mark failed, continue batch | Include error context in status.json |
+| Session timeout | Mark in_progress tasks as stuck | Tasks should be resumable |
+| Partial completion | Resume from last completed | Tasks must be atomic |
+| Retry attempt | Reset to pending, re-execute | Tasks must be idempotent |
+
+**Designing for recovery:**
+
+1. **Atomic tasks:** Either fully complete or fully fail (no partial states)
+2. **Checkpoints:** For long tasks, record progress in findings
+3. **Idempotency:** Check state before acting (if file exists, skip creation)
+4. **Clear errors:** Provide actionable error messages for retry decisions
+
+### 7.8 Plan Validation for Orchestration
+
+Before a plan is ready for orchestration, validate:
+
+```markdown
+## Orchestration Readiness Checklist
+
+- [ ] All tasks have explicit file paths (no "the file from X")
+- [ ] Tasks in same phase checked for file conflicts
+- [ ] [SEQUENTIAL] annotations added where needed
+- [ ] Each task is self-contained (no cross-task references)
+- [ ] VERIFY sections have measurable, automatable criteria
+- [ ] No tasks require interactive user input
+- [ ] Complex multi-file tasks broken into subtasks or agents
+- [ ] Batch-appropriate phase grouping
+```
+
+### 7.9 Implementation Requirements
+
+**These standards require corresponding implementation in the orchestration components:**
+
+| Component | Requirement | Current Status |
+|-----------|-------------|----------------|
+| `/plan:implement` Step 2 | Parse `[SEQUENTIAL]` annotations from phase sections | **GAP** - not implemented |
+| `/plan:implement` Step 4 | Check constraints before assuming parallel execution | **GAP** - assumes parallel OK |
+| `/plan:implement` Rules | Prioritize `[SEQUENTIAL]` over default parallelism | **GAP** - not documented |
+| `plan_orchestrator.py` | Include execution constraints in prompt | **GAP** - only sends task IDs |
+| `status-cli.js next` | Return constraint metadata with tasks | **GAP** - no constraint detection |
+| `plan-status.json` | Optional fields for execution constraints | **GAP** - not in schema |
+
+**Minimum Viable Implementation:**
+1. Update `/plan:implement` to parse and respect `[SEQUENTIAL]` annotations
+2. Update orchestrator prompt to remind about constraint checking
+
+**Complete Implementation:**
+1. All documentation updates to `/plan:implement`
+2. Code changes to `plan_orchestrator.py` prompt building
+3. Code changes to `status-cli.js` for constraint metadata
+4. Schema extension for structured constraint storage
+
+See: `findings/orchestration-flow-analysis.md` for detailed gap analysis.
+
+---
+
 ## Appendix A: Quick Reference Card
 
 ### Plan File Naming
@@ -487,6 +759,7 @@ docs/plan-outputs/{plan-name}/
 
 Use this checklist to validate a plan:
 
+### Structure Validation
 - [ ] Title follows format: `# Implementation Plan: [Name]`
 - [ ] Overview contains: Goal, Priority (P0/P1/P2), Created, Output
 - [ ] Dependencies section has: Upstream, Downstream, External Tools
@@ -496,6 +769,16 @@ Use this checklist to validate a plan:
 - [ ] VERIFY sections are specific and measurable
 - [ ] Success Criteria section exists with checkboxes
 - [ ] Risks table exists with Impact, Likelihood, Mitigation columns
+
+### Orchestration Readiness (Required for autonomous execution)
+- [ ] All tasks have explicit file paths (no references to "previous task output")
+- [ ] Tasks in same phase checked for file conflicts
+- [ ] `[SEQUENTIAL]` annotations added where multiple tasks modify same file
+- [ ] Each task is self-contained with complete context
+- [ ] VERIFY criteria are automatable (commands, not subjective assessment)
+- [ ] No tasks require interactive user prompts
+- [ ] Complex multi-file tasks use subtasks or agent delegation
+- [ ] Phase grouping aligns with recommended batch sizes
 
 ---
 
@@ -525,6 +808,13 @@ This unified document addresses the following gaps from the analysis:
 | Error handling | Added execution standards section |
 | Status.json evolution | Defined canonical schema |
 | Batch execution semantics | Documented in execution standards |
+| **Orchestration model** | **Added Section 7: Orchestration Standards** |
+| **Task isolation requirements** | **Added Section 4.5 and 7.2** |
+| **Parallel vs sequential rules** | **Added Section 7.3 with [SEQUENTIAL] annotation** |
+| **File conflict detection** | **Added Section 7.4** |
+| **Autonomous execution readiness** | **Added Section 7.5 with checklist** |
+| **Batch size guidance** | **Added Section 7.6** |
+| **Recovery and retry design** | **Added Section 7.7** |
 
 ---
 

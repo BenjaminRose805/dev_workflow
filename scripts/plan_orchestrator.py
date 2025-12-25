@@ -631,6 +631,8 @@ Run: /plan:implement {task_ids} --autonomous
 ## Rules
 
 - Execute autonomously - do NOT ask for confirmation
+- Check for [SEQUENTIAL] annotations in the plan - run marked tasks one at a time
+- Detect file conflicts - if multiple tasks modify the same file, run sequentially
 - Stop after completing this batch or if blocked by unrecoverable error
 - If a task fails, the command will mark it failed and continue to next task
 - Check progress: `node scripts/status-cli.js progress`"""

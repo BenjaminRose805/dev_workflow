@@ -150,6 +150,11 @@ Read the plan file to understand task structure, but use status.json for executi
 - Extract task description/title
 - Check status.json for actual completion state (not markdown checkbox)
 
+**Execution constraints:** Look for `**Execution Note:**` blocks after phase headers:
+- Pattern: `**Execution Note:** Tasks X.Y-X.Z are [SEQUENTIAL] - reason`
+- Extract task ID ranges from annotations (e.g., "3.1-3.4" → tasks 3.1, 3.2, 3.3, 3.4)
+- Store constraints for use in Step 4 execution planning
+
 ### 2.1. Handle Template Variables
 
 If the plan was created from a template, it may contain `{{variable}}` placeholders.
@@ -251,9 +256,28 @@ Phase 1: Critical Unit Tests (5 tasks)
 
 After user selects tasks:
 
-**Group by phase for execution:**
-- Tasks within the SAME phase can run in parallel (use Task tool with multiple agents)
-- Tasks in DIFFERENT phases must run sequentially (phase order matters)
+**CRITICAL: Check for Execution Constraints**
+
+Before grouping tasks, scan the phase section for execution notes:
+
+1. **Look for `[SEQUENTIAL]` annotation** in the phase:
+   ```markdown
+   **Execution Note:** Tasks 3.1-3.4 are [SEQUENTIAL] - all modify same file
+   ```
+
+2. **Parse the constraint:**
+   - Extract task ID range (e.g., "3.1-3.4" → tasks 3.1, 3.2, 3.3, 3.4)
+   - Mark these tasks as requiring sequential execution
+
+3. **Detect file conflicts** (even without annotation):
+   - If multiple selected tasks mention the same file path, treat as sequential
+   - Example: Tasks both mentioning "orchestrator-system.md" → sequential
+
+**Group by phase for execution (respecting constraints):**
+- Tasks in DIFFERENT phases: Always sequential (phase order matters)
+- Tasks in SAME phase with `[SEQUENTIAL]`: Run one at a time
+- Tasks in SAME phase with file conflicts: Run one at a time
+- Tasks in SAME phase, independent: Can run in parallel
 
 **Show execution preview:**
 ```
@@ -264,6 +288,11 @@ Execution Plan:
 │   ├── 1.1 websocket-connection.test.ts
 │   ├── 1.2 preferences-store.test.ts
 │   └── 1.3 api-utils.test.ts
+├── Sequential Group 3 (Phase 3) [SEQUENTIAL]:
+│   ├── 3.1 Merge ORCHESTRATOR.md content
+│   ├── 3.2 Merge ARCHITECTURE.md content
+│   ├── 3.3 Create redirect file
+│   └── 3.4 Remove duplicate section
 ```
 
 **Confirm before executing** if more than 3 tasks selected (skip in `--autonomous` mode).
@@ -551,10 +580,22 @@ try {
 
 ## Parallel Execution Rules
 
-1. **Same phase = parallel OK** - Tasks in the same phase typically don't depend on each other
-2. **Different phases = sequential** - Later phases often depend on earlier ones
-3. **Explicit dependencies** - If task B mentions task A, run A first
-4. **Shared files** - If two tasks modify the same file, run sequentially
+1. **`[SEQUENTIAL]` annotation** - Tasks marked with `[SEQUENTIAL]` in **Execution Note:** blocks MUST run one at a time, in order
+2. **File conflicts** - If multiple tasks mention the same file path, treat as sequential (even without annotation)
+3. **Same phase = parallel OK** - Tasks in the same phase typically don't depend on each other (unless rules 1-2 apply)
+4. **Different phases = sequential** - Later phases often depend on earlier ones
+5. **Explicit dependencies** - If task B mentions task A, run A first
+
+**Example with [SEQUENTIAL]:**
+```
+Phase 3 has: **Execution Note:** Tasks 3.1-3.4 are [SEQUENTIAL] - all modify same file
+
+Execution:
+├── 3.1 (wait for completion)
+├── 3.2 (wait for completion)
+├── 3.3 (wait for completion)
+└── 3.4 (final task in sequence)
+```
 
 ## Structured Progress Output
 
