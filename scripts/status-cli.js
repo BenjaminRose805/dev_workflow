@@ -66,7 +66,10 @@ const {
   ensureSummaryKeys,
   // Constraint parsing
   parseExecutionNotes,
-  getTaskConstraints
+  getTaskConstraints,
+  // File conflict detection
+  extractFileReferences,
+  detectFileConflicts
 } = require('./lib/plan-status.js');
 
 // =============================================================================
@@ -442,9 +445,42 @@ function cmdNext(planPath, countStr) {
   }
 
   if (next.length > 0) {
+    const inProgressTasks = next.slice(0, maxTasks);
+    // Detect conflicts even for in-progress tasks
+    const conflicts = detectFileConflicts(inProgressTasks);
+    const conflictMap = new Map();
+    for (const conflict of conflicts) {
+      for (const taskId of conflict.taskIds) {
+        if (!conflictMap.has(taskId)) {
+          conflictMap.set(taskId, {
+            files: [],
+            conflictsWith: new Set()
+          });
+        }
+        conflictMap.get(taskId).files.push(conflict.file);
+        for (const otherId of conflict.taskIds) {
+          if (otherId !== taskId) {
+            conflictMap.get(taskId).conflictsWith.add(otherId);
+          }
+        }
+      }
+    }
+    const tasksWithConflicts = inProgressTasks.map(task => {
+      const conflict = conflictMap.get(task.id);
+      if (conflict) {
+        return {
+          ...task,
+          fileConflict: true,
+          conflictsWith: Array.from(conflict.conflictsWith),
+          conflictingFiles: conflict.files
+        };
+      }
+      return task;
+    });
     outputJSON({
-      count: Math.min(next.length, maxTasks),
-      tasks: next.slice(0, maxTasks)
+      count: tasksWithConflicts.length,
+      tasks: tasksWithConflicts,
+      fileConflicts: conflicts.length > 0 ? conflicts : undefined
     });
     return;
   }
@@ -497,9 +533,46 @@ function cmdNext(planPath, countStr) {
     if (next.length >= maxTasks) break;
   }
 
+  // 4. Detect file conflicts among selected tasks
+  const conflicts = detectFileConflicts(next);
+
+  // Build lookup of task ID -> conflicting task IDs
+  const conflictMap = new Map();
+  for (const conflict of conflicts) {
+    for (const taskId of conflict.taskIds) {
+      if (!conflictMap.has(taskId)) {
+        conflictMap.set(taskId, {
+          files: [],
+          conflictsWith: new Set()
+        });
+      }
+      conflictMap.get(taskId).files.push(conflict.file);
+      for (const otherId of conflict.taskIds) {
+        if (otherId !== taskId) {
+          conflictMap.get(taskId).conflictsWith.add(otherId);
+        }
+      }
+    }
+  }
+
+  // Add conflict information to each task
+  const tasksWithConflicts = next.map(task => {
+    const conflict = conflictMap.get(task.id);
+    if (conflict) {
+      return {
+        ...task,
+        fileConflict: true,
+        conflictsWith: Array.from(conflict.conflictsWith),
+        conflictingFiles: conflict.files
+      };
+    }
+    return task;
+  });
+
   outputJSON({
-    count: next.length,
-    tasks: next
+    count: tasksWithConflicts.length,
+    tasks: tasksWithConflicts,
+    fileConflicts: conflicts.length > 0 ? conflicts : undefined
   });
 }
 
