@@ -19,6 +19,36 @@ Set the current working plan file for subsequent `/plan:*` commands.
    - Confirm the selection to the user
    - Show a brief summary of the plan's contents (phases/sections and task counts)
 
+### 3.0.1 Check for Uncommitted Changes (Before Branch Switch)
+
+Before switching branches (when git is available), check for uncommitted changes:
+
+```bash
+# Check if git is available
+git --version 2>/dev/null
+
+# If git available, check for uncommitted changes
+git status --porcelain
+```
+
+**Detection logic:**
+1. Run `git status --porcelain` to get list of uncommitted changes
+2. Count the number of modified/untracked files
+3. Store the result for the branch switching step (3.0.2)
+
+**When uncommitted changes are detected:**
+- If switching to a different plan branch, the branch switch step (3.0.2) will handle this
+- The detection step only identifies changes; subsequent steps determine what to do
+
+**Output format:**
+```
+Detected N uncommitted changes in working directory.
+```
+
+**Skip this check if:**
+- Git is not available (not a git repository or git not installed)
+- The selected plan is the same as the current plan (no branch switch needed)
+
 ### 3.1. Initialize Status Tracking
 
 **See:** `.claude/commands/plan/_common/status-tracking.md` for complete status tracking reference.
