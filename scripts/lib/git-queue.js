@@ -13,6 +13,11 @@
  * // Queue a commit (returns promise)
  * await commitWithQueue('feat: add new feature', ['src/feature.js']);
  *
+ * // Bypass queue for manual/direct commits (--no-queue flag)
+ * await commitWithQueue('manual: direct commit', [], { noQueue: true });
+ * // Or use the convenience function:
+ * await commitDirect('manual: direct commit', []);
+ *
  * // Check queue status
  * const status = getQueueStatus();
  * console.log(`Pending: ${status.pendingCount}`);
@@ -476,6 +481,22 @@ function recoverFromCrash() {
   return 0;
 }
 
+/**
+ * Direct commit without queue (--no-queue convenience function)
+ * Use this for manual operations that should bypass the queue.
+ *
+ * @param {string} message - Commit message
+ * @param {string[]} files - Files to stage (empty for all)
+ * @returns {Promise<{success: boolean, commitHash: string|null, error: string|null, queued: boolean}>}
+ *
+ * @example
+ * // Bypass queue for manual operations
+ * await commitDirect('manual: fix typo', ['README.md']);
+ */
+async function commitDirect(message, files = []) {
+  return commitWithQueue(message, files, { noQueue: true });
+}
+
 // =============================================================================
 // Exports
 // =============================================================================
@@ -483,6 +504,7 @@ function recoverFromCrash() {
 module.exports = {
   // Main API
   commitWithQueue,
+  commitDirect,
   queueCommit,
   getQueueStatus,
   waitForDrain,
