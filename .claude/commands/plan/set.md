@@ -97,6 +97,71 @@ Git branch: plan/my-feature-plan
   Created new branch 'plan/my-feature-plan'
 ```
 
+### 3.0.3 Handle Uncommitted Changes (User Options)
+
+When uncommitted changes are detected (from step 3.0.1) and a branch switch is needed, present the user with options:
+
+**Use AskUserQuestion to present options:**
+
+```
+Uncommitted changes detected (N files). Choose how to proceed:
+
+○ Commit changes - Commit all changes to current branch before switching
+○ Stash changes - Stash changes (can be restored later with `git stash pop`)
+○ Cancel - Abort plan switch, keep working on current branch
+```
+
+**Option behaviors:**
+
+**1. Commit changes:**
+```bash
+git add -A
+git commit -m "WIP: Save changes before switching to plan/{new-plan-name}"
+```
+- Commits all changes with a descriptive WIP message
+- Then proceed with branch switch (step 3.0.2)
+- Log: `Committed N changes to {current-branch}`
+
+**2. Stash changes:**
+```bash
+git stash push -m "plan-switch: {old-plan} -> {new-plan}"
+```
+- Stashes changes with descriptive message for later retrieval
+- Then proceed with branch switch (step 3.0.2)
+- Log: `Stashed N changes. Restore with: git stash pop`
+
+**3. Cancel:**
+- Abort the plan switch operation
+- Keep the current plan active
+- Log: `Plan switch cancelled. Staying on {current-plan}`
+- Exit the command gracefully
+
+**Skip this step if:**
+- No uncommitted changes detected
+- Git is not available
+- Already on the target branch (no switch needed)
+- Running in autonomous mode (`--autonomous` flag) - auto-stash in this case
+
+**Autonomous mode behavior:**
+When `--autonomous` flag is present, skip the interactive prompt and automatically stash:
+```bash
+git stash push -m "auto-stash: plan-switch to {new-plan}"
+```
+Log: `Auto-stashed N changes for autonomous plan switch`
+
+**Example interaction:**
+```
+Uncommitted changes detected (3 files):
+  M src/lib/auth.ts
+  M tests/auth.test.ts
+  ? src/lib/new-file.ts
+
+Choose how to proceed:
+○ Commit changes (Recommended)
+○ Stash changes
+○ Cancel
+```
+
 ### 3.1. Initialize Status Tracking
 
 **See:** `.claude/commands/plan/_common/status-tracking.md` for complete status tracking reference.
