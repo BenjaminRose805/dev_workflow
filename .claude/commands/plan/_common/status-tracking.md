@@ -105,6 +105,96 @@ try {
 }
 ```
 
+## Execution Annotations
+
+Plan files can include execution annotations to control how tasks and phases are run.
+
+### `[SEQUENTIAL]` - Task-Level Constraint
+
+Use `[SEQUENTIAL]` to mark tasks that must run one at a time, typically because they modify the same file.
+
+**Syntax:**
+```markdown
+**Execution Note:** Tasks X.Y-X.Z are [SEQUENTIAL] - reason
+
+## Phase 3: Database Migration
+- [ ] 3.1 Add users table migration
+- [ ] 3.2 Add indexes to users table
+- [ ] 3.3 Add foreign key constraints
+- [ ] 3.4 Run migration validation
+
+**Execution Note:** Tasks 3.1-3.4 are [SEQUENTIAL] - all modify database schema
+```
+
+**Behavior:**
+- Tasks in the range must be executed one at a time, in order
+- The orchestrator will not start task 3.2 until 3.1 completes
+- Prevents race conditions when multiple tasks modify the same resource
+
+**Range formats supported:**
+- `Tasks 3.1-3.4` - Range of tasks (3.1, 3.2, 3.3, 3.4)
+- `Tasks 3.1, 3.3, 3.5` - Comma-separated list
+- `Tasks 3.1-3.4 and 4.1-4.3` - Multiple ranges
+
+### `[PARALLEL]` - Phase-Level Constraint
+
+Use `[PARALLEL]` to mark phases that can run concurrently, enabling parallel execution across phase boundaries.
+
+**Syntax:**
+```markdown
+**Execution Note:** Phases X-Y are [PARALLEL] - reason
+
+## Phase 1: API Development
+- [ ] 1.1 Create user endpoints
+- [ ] 1.2 Add authentication
+
+## Phase 2: Frontend Development
+- [ ] 2.1 Create user components
+- [ ] 2.2 Add auth UI
+
+## Phase 3: Testing
+- [ ] 3.1 Write API tests
+- [ ] 3.2 Write frontend tests
+
+**Execution Note:** Phases 1-3 are [PARALLEL] - independent modules
+```
+
+**Behavior:**
+- Tasks from parallel phases can be returned together by `next` command
+- The orchestrator can work on Phase 2 tasks while Phase 1 is still in progress
+- File conflict detection warns if parallel phases touch the same files
+- Sequential task annotations within parallel phases are still respected
+
+**Range formats supported:**
+- `Phases 1-3` - Range of phases (1, 2, 3)
+- `Phases 1, 2, 3` - Comma-separated list
+- `Phases 1-3, 5` - Mixed range and list
+
+### Conflict Detection
+
+The system automatically detects file conflicts:
+
+1. **Within tasks:** If multiple tasks reference the same file, they're flagged with `fileConflict: true`
+2. **Between parallel phases:** `getParallelPhases()` checks for files referenced by multiple parallel phases
+
+**Example conflict warning:**
+```json
+{
+  "parallelGroups": [{"phaseIds": [1, 2, 3]}],
+  "hasConflicts": true,
+  "conflicts": [{"file": "src/api.ts", "phases": [1, 3]}]
+}
+```
+
+### API Functions for Constraints
+
+| Function | Description |
+|----------|-------------|
+| `parseExecutionNotes(content)` | Parse both `[SEQUENTIAL]` and `[PARALLEL]` annotations |
+| `getTaskConstraints(planPath, taskId)` | Get constraints for a specific task |
+| `getParallelPhases(planPath)` | Get parallel phase groups with conflict detection |
+| `detectFileConflicts(tasks)` | Detect file conflicts between tasks |
+
 ## CLI Integration
 
 The `scripts/status-cli.js` script provides command-line access to status tracking:
@@ -119,4 +209,7 @@ node scripts/status-cli.js mark-failed TASK_ID --error "Error message"
 node scripts/status-cli.js status
 node scripts/status-cli.js progress
 node scripts/status-cli.js task TASK_ID
+
+# Get next tasks (respects parallel phases and sequential annotations)
+node scripts/status-cli.js next 5
 ```
