@@ -269,17 +269,19 @@ The following items from the analysis are deferred to a future plan:
 - Recommendation: Update CANONICAL-COMMAND-TEMPLATE.md, reduce individual templates to core-only content
 - Priority: Low - maintenance improvement, not urgent
 
-### Orchestration Code Changes (Future Enhancement)
-Phase 6 of this plan implements the **minimum viable fix** (documentation updates).
-The following **code changes** are deferred for complete implementation:
+### Orchestration Code Changes (COMPLETED)
 
-| Component | Change Required | Priority |
-|-----------|-----------------|----------|
-| `scripts/status-cli.js` | Add `[SEQUENTIAL]` parsing to `cmdNext()` | Medium |
-| `scripts/status-cli.js` | Return constraint metadata with tasks | Medium |
-| `scripts/lib/schemas/plan-status.json` | Add optional `executionConstraints` field | Low |
-| Plan initialization | Populate constraints during `init` | Low |
+~~Phase 6 of this plan implements the **minimum viable fix** (documentation updates).~~
+~~The following **code changes** are deferred for complete implementation:~~
 
-**Why deferred:** These require code changes and testing. The minimum viable fix (documentation updates) enables Claude to recognize and respect `[SEQUENTIAL]` annotations when it reads the plan file. The code changes would make this more robust by building constraints into the data pipeline.
+**Status: COMPLETED** - Implemented in `docs/plans/implement-orchestration-constraints.md`
 
-See: `docs/plan-outputs/documentation-standards-analysis/findings/orchestration-flow-analysis.md` for complete gap analysis.
+| Component | Change | Status |
+|-----------|--------|--------|
+| `scripts/lib/plan-status.js` | `parseExecutionNotes()`, `expandTaskRange()`, `getTaskConstraints()` | ✓ Complete |
+| `scripts/status-cli.js` | `cmdNext()` returns constraint metadata | ✓ Complete |
+| `scripts/lib/plan-status.js` | `initializePlanStatus()` populates `executionConstraints` | ✓ Complete |
+| `scripts/plan_orchestrator.py` | `_filter_sequential_tasks()`, `_build_constraints_section()` | ✓ Complete |
+| Documentation | `docs/architecture/orchestrator-system.md` - Execution Constraint Handling section | ✓ Complete |
+
+See: `docs/plans/implement-orchestration-constraints.md` for the complete implementation plan.
