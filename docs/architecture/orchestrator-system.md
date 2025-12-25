@@ -308,6 +308,84 @@ Process A                              Process B
 }
 ```
 
+## Troubleshooting
+
+### Common Issues
+
+#### "No active plan set"
+
+Set the active plan first:
+```bash
+# Using the plan:set command
+/plan:set
+
+# Or manually
+echo "docs/plans/my-plan.md" > .claude/current-plan.txt
+```
+
+#### "Failed to acquire lock"
+
+Another process may be writing to status.json. The lock system uses:
+- 10 second timeout for lock acquisition
+- 60 second stale lock detection
+- Automatic stale lock cleanup
+
+If stuck, manually remove the lock:
+```bash
+rm docs/plan-outputs/<plan>/status.json.lock
+```
+
+#### "Summary mismatch detected"
+
+The summary counts don't match actual task counts. This is auto-fixed on load, but you can force validation:
+```bash
+node scripts/status-cli.js validate
+```
+
+#### "Stuck task detected"
+
+Tasks in_progress for >30 minutes are auto-marked as failed. This prevents infinite loops. Check the error message for details.
+
+#### Corrupt status.json
+
+Recovery attempts in order:
+1. Restore from `status.json.bak` (automatic backup)
+2. Rebuild from markdown (all tasks reset to pending)
+
+Force rebuild:
+```bash
+rm docs/plan-outputs/<plan>/status.json
+# Next status-cli command will rebuild from markdown
+```
+
+### Debug Commands
+
+```bash
+# Check what status-cli sees
+node scripts/status-cli.js status | jq .
+
+# Verify summary matches actual counts
+node scripts/status-cli.js validate
+
+# Compare markdown vs status.json
+node scripts/status-cli.js sync-check
+
+# Check for stuck tasks
+node scripts/status-cli.js detect-stuck
+
+# View task that can be retried
+node scripts/status-cli.js retryable
+```
+
+### Log Analysis
+
+When using the Python orchestrator with `--verbose`:
+- Check for "Lock timeout" messages
+- Look for "Summary drift" warnings
+- Monitor "Stuck task" detections
+
+---
+
 ## Configuration
 
 ### Lock Settings
@@ -329,6 +407,15 @@ Process A                              Process B
 | `maxTimeout` | 2000 | Maximum wait between retries (ms) |
 | `randomize` | true | Add jitter to prevent thundering herd |
 
+### Orchestrator Settings (plan_orchestrator.py)
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `DEFAULT_MAX_ITERATIONS` | 50 | Maximum Claude invocations |
+| `DEFAULT_TIMEOUT` | 600 | Seconds per session |
+| `DEFAULT_BATCH_SIZE` | 5 | Tasks per iteration hint |
+| `STATUS_CHECK_INTERVAL` | 2 | Seconds between status checks |
+
 ## Component Responsibilities
 
 | Component | Responsibility |
@@ -342,5 +429,6 @@ Process A                              Process B
 
 ## See Also
 
-- [Orchestrator README](../ORCHESTRATOR.md) - Quick reference and troubleshooting
 - [Plan Commands](../../.claude/commands/plan/) - Claude Code command documentation
+- [Plan Templates](../plan-templates/) - Creating new plans
+- [Architecture Overview](../ARCHITECTURE.md) - System design documentation
