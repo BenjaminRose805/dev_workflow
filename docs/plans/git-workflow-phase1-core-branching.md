@@ -10,6 +10,22 @@
 
 > Task findings are written to the `findings/` subdirectory. Use `/plan:status` to view progress.
 
+## Dependencies
+
+### Upstream
+- None (foundation phase)
+
+### Downstream
+- **git-workflow-phase2-completion.md** - Merge workflow and branch cleanup
+- **git-workflow-phase3-safety.md** - Safety checks and rollback mechanisms
+- **git-workflow-phase4-advanced.md** - Advanced features (stash, cherry-pick)
+- **git-workflow-phase5-worktrees.md** - Parallel worktree execution
+
+### External Tools
+- Git (required for all branch operations)
+
+---
+
 ## Phase 1: Branch Management in /plan:set
 
 - [ ] 1.1 Implement complete branch management in `/plan:set` command
@@ -77,12 +93,6 @@
 - [ ] Every task creates exactly one commit with proper format
 - [ ] `/plan:status` shows git branch and commit info
 - [ ] Works gracefully when git unavailable
-
-## Dependencies
-
-- Existing `/plan:set` command
-- Existing `/plan:implement` command with commit step
-- Git installed and repository initialized
 
 ## Risks
 
