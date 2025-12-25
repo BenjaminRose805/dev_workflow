@@ -2,6 +2,8 @@
 
 This document describes the format and conventions for plan templates used with `/plan:create`.
 
+> **Standards Reference:** See [PLAN-STANDARDS.md](../standards/PLAN-STANDARDS.md) for the authoritative specification of plan structure, phases, tasks, and orchestration requirements.
+
 ## Template Variables
 
 Templates use `{{variable_name}}` syntax for substitution. Common variables:
