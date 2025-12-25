@@ -212,4 +212,93 @@ node scripts/status-cli.js task TASK_ID
 
 # Get next tasks (respects parallel phases and sequential annotations)
 node scripts/status-cli.js next 5
+
+# Progress in different formats
+node scripts/status-cli.js progress                   # Human-readable text (default)
+node scripts/status-cli.js progress --format=json     # Full structured JSON
+node scripts/status-cli.js progress --format=markers  # Parseable progress markers
+
+# Watch mode for continuous updates
+node scripts/status-cli.js progress --watch                     # Markers format (default)
+node scripts/status-cli.js progress --watch --format=json       # JSON format
+```
+
+## Progress Marker Format (TUI Integration)
+
+The `--format=markers` output provides parseable progress markers for TUI integration. Each marker follows the format:
+
+```
+[PROGRESS] <entity>=<id> <key>=<value> [<key>=<value>...]
+```
+
+### Marker Types
+
+| Marker | Format | Description |
+|--------|--------|-------------|
+| Plan | `[PROGRESS] plan status=<status> percent=<N>` | Overall plan progress |
+| Phase | `[PROGRESS] phase=<N> status=<status> percent=<N>` | Phase-level progress |
+| Task | `[PROGRESS] task=<id> status=<status>` | Task status change |
+| Summary | `[PROGRESS] summary completed=<N> pending=<N> failed=<N>` | Count summary |
+
+### Status Values
+
+| Entity | Valid Status Values |
+|--------|---------------------|
+| Plan | `pending`, `in_progress`, `completed` |
+| Phase | `pending`, `in_progress`, `completed` |
+| Task | `pending`, `started`, `completed`, `failed`, `skipped` |
+
+### Example Output
+
+```
+[PROGRESS] plan status=in_progress percent=77
+[PROGRESS] phase=0 status=completed percent=100
+[PROGRESS] phase=1 status=completed percent=100
+[PROGRESS] phase=2 status=in_progress percent=60
+[PROGRESS] phase=3 status=pending percent=0
+[PROGRESS] task=2.3 status=started
+[PROGRESS] summary completed=10 pending=5 failed=0
+```
+
+### Watch Mode
+
+The `--watch` flag enables continuous polling (every 2 seconds) and outputs only changes:
+
+```bash
+node scripts/status-cli.js progress --watch
+```
+
+**Behavior:**
+- Emits task status changes as they occur
+- Emits summary updates when counts change
+- Automatically exits when plan status becomes `completed`
+- Handles Ctrl+C gracefully
+
+### JSON Format (Alternative)
+
+For richer structured data, use `--format=json`:
+
+```json
+{
+  "plan": {
+    "path": "docs/plans/my-plan.md",
+    "name": "My Plan",
+    "status": "in_progress"
+  },
+  "summary": {
+    "total": 15,
+    "completed": 10,
+    "in_progress": 1,
+    "pending": 4,
+    "failed": 0,
+    "skipped": 0,
+    "percentage": 67
+  },
+  "phases": [
+    {"number": 0, "name": "Phase 0: Setup", "total": 3, "completed": 3, "percentage": 100},
+    {"number": 1, "name": "Phase 1: Implementation", "total": 5, "completed": 3, "percentage": 60}
+  ],
+  "currentPhase": "Phase 1: Implementation",
+  "lastUpdated": "2025-12-25T22:00:00.000Z"
+}
 ```
