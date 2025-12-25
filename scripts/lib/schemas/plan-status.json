@@ -89,6 +89,24 @@
           "skipReason": {
             "type": "string",
             "description": "Reason for skipping the task if status is 'skipped'"
+          },
+          "executionConstraints": {
+            "type": "object",
+            "description": "Execution constraints for this task (e.g., sequential ordering)",
+            "properties": {
+              "sequential": {
+                "type": "boolean",
+                "description": "If true, this task must run sequentially (not in parallel with others in same group)"
+              },
+              "sequentialGroup": {
+                "type": "string",
+                "description": "Identifier for the sequential group (e.g., '3.1-3.4')"
+              },
+              "reason": {
+                "type": "string",
+                "description": "Reason for the constraint (e.g., 'all modify same file')"
+              }
+            }
           }
         }
       }
