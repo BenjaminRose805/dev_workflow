@@ -241,53 +241,27 @@ def find_next_plan():
     """Find the next incomplete plan based on execution order."""
     paths = get_paths()
 
-    # Priority order from PLAN-EXECUTION-TRACKER.md
+    # Priority order from docs/plans/EXECUTION-ORDER.md
+    # These implement parallel execution and git workflow features
     priority_order = [
-        # In progress
-        'output-separation-implementation',
-        'fix-implementation-plan-inconsistencies',
+        # Parallel Execution & Git Workflow (ordered by dependencies)
+        'parallel-execution-foundation',
+        'git-workflow-phase1-core-branching',
+        'git-workflow-phase2-completion',
+        'parallel-execution-dependencies',
+        'git-workflow-phase3-safety',
+        'git-workflow-phase4-advanced',
+        'git-workflow-phase5-worktrees',
+        # Other active plans
         'tui-integration-implementation',
-        # P0 Commands
-        'implement-implement-command',
-        'implement-explore-command',
-        'implement-clarify-command',
-        # Infrastructure
-        'implement-artifact-registry',
-        'implement-artifact-storage-hook',
-        'implement-context-loading-hook',
-        'implement-error-recovery-hooks',
-        'implement-notification-hooks',
-        # P1 Commands
-        'implement-design-command',
-        'implement-spec-command',
-        'implement-architect-command',
-        'implement-debug-command',
-        'implement-refactor-command',
-        'implement-validate-command',
-        'implement-review-command',
-        'implement-fix-command',
-        'implement-test-command',
-        # Agents
-        'implement-analyze-agent',
-        'implement-debug-agent',
-        'implement-deploy-agent',
-        'implement-review-agent',
-        # Workflow
-        'implement-workflow-branching',
-        'implement-workflow-composition',
-        'implement-fan-in-fan-out',
-        # P2 Commands
-        'implement-model-command',
-        'implement-brainstorm-command',
-        'implement-research-command',
-        'implement-document-command',
-        'implement-explain-command',
-        'implement-audit-command',
-        'implement-template-command',
-        'implement-workflow-command',
-        'implement-deploy-command',
-        'implement-migrate-command',
-        'implement-release-command',
+        'documentation-cleanup',
+        'documentation-standards-analysis',
+        'fix-plan-compliance',
+        'high-priority-fixes',
+        'implement-orchestration-constraints',
+        'medium-priority-fixes',
+        'parallel-execution-architecture',
+        'plan-system-analysis',
     ]
 
     for name in priority_order:
