@@ -33,7 +33,7 @@
 ## Phase 2: Plan Status Injection
 **Objective:** Integrate active plan status into command context for plan-aware execution
 
-- [ ] 2.1 Create plan status reader that loads active plan from `.claude/current-plan.txt` and `.claude/current-plan-output.txt`
+- [ ] 2.1 Create plan status reader that loads active plan from `.claude/current-plan.txt` (output dir derived from plan name)
 - [ ] 2.2 Implement plan status parser that extracts current task, completed tasks, pending tasks, and plan metadata
 - [ ] 2.3 Add plan findings loader that reads task outputs from `docs/plan-outputs/{plan}/findings/` directory
 - [ ] 2.4 Create plan context structure with fields: plan_id, active_task, completed_tasks, pending_tasks, findings, status_file_path
