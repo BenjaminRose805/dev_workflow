@@ -323,6 +323,9 @@ function loadStatus(planPath, options = {}) {
 /**
  * Save status.json for a plan
  * Uses atomic write to prevent corruption from partial writes.
+ * Preserves all fields including:
+ * - task.executionConstraints (per-task constraint metadata)
+ * - status.sequentialGroups (plan-level constraint summary)
  * @param {string} planPath - Path to plan file
  * @param {object} status - Status object to save
  * @returns {boolean} Success status
@@ -330,6 +333,12 @@ function loadStatus(planPath, options = {}) {
 function saveStatus(planPath, status) {
   const statusPath = getStatusPath(planPath);
   status.lastUpdatedAt = new Date().toISOString();
+
+  // Clean up undefined sequentialGroups (don't write null/undefined to JSON)
+  if (status.sequentialGroups === undefined || status.sequentialGroups === null) {
+    delete status.sequentialGroups;
+  }
+
   return writeFileAtomic(statusPath, JSON.stringify(status, null, 2));
 }
 
