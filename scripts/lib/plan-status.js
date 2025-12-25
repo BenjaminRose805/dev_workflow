@@ -764,6 +764,139 @@ function completeRun(planPath, runId, completed, failed) {
 }
 
 // =============================================================================
+// Constraint Parsing
+// =============================================================================
+
+/**
+ * Expand a task range string into an array of task IDs
+ * @param {string} rangeStr - Range string (e.g., "3.1-3.4", "3.1", "3.1,3.3")
+ * @returns {string[]} Array of task IDs
+ * @example
+ * expandTaskRange("3.1-3.4") // ["3.1", "3.2", "3.3", "3.4"]
+ * expandTaskRange("3.1") // ["3.1"]
+ * expandTaskRange("3.1,3.3") // ["3.1", "3.3"]
+ */
+function expandTaskRange(rangeStr) {
+  if (!rangeStr || typeof rangeStr !== 'string') {
+    return [];
+  }
+
+  const trimmed = rangeStr.trim();
+
+  // Handle comma-separated list: "3.1,3.3,3.5"
+  if (trimmed.includes(',')) {
+    return trimmed.split(',').map(s => s.trim()).filter(Boolean);
+  }
+
+  // Handle range: "3.1-3.4"
+  const rangeMatch = trimmed.match(/^(\d+)\.(\d+)-(\d+)\.(\d+)$/);
+  if (rangeMatch) {
+    const [, startPhase, startTask, endPhase, endTask] = rangeMatch;
+    const phase = parseInt(startPhase);
+    const start = parseInt(startTask);
+    const end = parseInt(endTask);
+
+    // Only expand if same phase and valid range
+    if (startPhase === endPhase && start <= end) {
+      const tasks = [];
+      for (let i = start; i <= end; i++) {
+        tasks.push(`${phase}.${i}`);
+      }
+      return tasks;
+    }
+    // Different phases or invalid range - return as-is (start and end)
+    return [`${startPhase}.${startTask}`, `${endPhase}.${endTask}`];
+  }
+
+  // Single task: "3.1"
+  if (/^\d+\.\d+$/.test(trimmed)) {
+    return [trimmed];
+  }
+
+  return [];
+}
+
+/**
+ * Parse execution notes from plan content to extract sequential constraints
+ * @param {string} planContent - Full markdown content of the plan
+ * @returns {Array<{taskRange: string, taskIds: string[], reason: string}>} Array of constraint objects
+ * @example
+ * const constraints = parseExecutionNotes(planContent);
+ * // Returns: [{ taskRange: "3.1-3.4", taskIds: ["3.1","3.2","3.3","3.4"], reason: "all modify same file" }]
+ */
+function parseExecutionNotes(planContent) {
+  if (!planContent || typeof planContent !== 'string') {
+    return [];
+  }
+
+  const constraints = [];
+
+  // Match pattern: **Execution Note:** Tasks X.Y-X.Z are [SEQUENTIAL] - reason
+  // Also handle: **Execution Note:** Tasks X.Y-X.Z are [SEQUENTIAL] (reason)
+  // And multiple task ranges in same note
+  const notePattern = /\*\*Execution Note:\*\*\s*Tasks?\s+([\d.,\s-]+)\s+(?:are|is)\s+\[SEQUENTIAL\]\s*[-–—]?\s*(.+?)(?:\n|$)/gi;
+
+  let match;
+  while ((match = notePattern.exec(planContent)) !== null) {
+    const taskRangeStr = match[1].trim();
+    const reason = match[2].trim();
+
+    // Handle multiple ranges separated by "and" or ","
+    // e.g., "Tasks 2.1-2.3 and 3.1-3.4 are [SEQUENTIAL]"
+    const ranges = taskRangeStr.split(/\s+and\s+|,\s*(?=\d)/i);
+
+    for (const range of ranges) {
+      const cleanRange = range.trim();
+      if (cleanRange) {
+        const taskIds = expandTaskRange(cleanRange);
+        if (taskIds.length > 0) {
+          constraints.push({
+            taskRange: cleanRange,
+            taskIds,
+            reason
+          });
+        }
+      }
+    }
+  }
+
+  return constraints;
+}
+
+/**
+ * Get execution constraints for a specific task
+ * @param {string} planPath - Path to plan file
+ * @param {string} taskId - Task identifier (e.g., "3.1")
+ * @returns {{sequential: boolean, sequentialGroup: string|null, reason: string|null}|null} Constraint object or null
+ */
+function getTaskConstraints(planPath, taskId) {
+  try {
+    const absolutePath = path.isAbsolute(planPath) ? planPath : resolvePath(planPath);
+    const content = readFile(absolutePath);
+    if (!content) {
+      return null;
+    }
+
+    const constraints = parseExecutionNotes(content);
+
+    for (const constraint of constraints) {
+      if (constraint.taskIds.includes(taskId)) {
+        return {
+          sequential: true,
+          sequentialGroup: constraint.taskRange,
+          reason: constraint.reason
+        };
+      }
+    }
+
+    return null;
+  } catch (error) {
+    console.error(`Failed to get task constraints: ${error.message}`);
+    return null;
+  }
+}
+
+// =============================================================================
 // Validation
 // =============================================================================
 
@@ -857,5 +990,10 @@ module.exports = {
   createEmptySummary,
   recalculateSummary,
   ensureSummaryKeys,
-  validateSummary
+  validateSummary,
+
+  // Constraint Parsing
+  expandTaskRange,
+  parseExecutionNotes,
+  getTaskConstraints
 };
