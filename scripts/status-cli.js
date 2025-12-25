@@ -62,7 +62,10 @@ const {
   // Validation
   recalculateSummary,
   validateSummary,
-  ensureSummaryKeys
+  ensureSummaryKeys,
+  // Constraint parsing
+  parseExecutionNotes,
+  getTaskConstraints
 } = require('./lib/plan-status.js');
 
 // =============================================================================
@@ -377,6 +380,30 @@ function cmdNext(planPath, countStr) {
     exitWithError('No status.json found.');
   }
 
+  // Read plan file and parse execution constraints
+  let constraints = [];
+  try {
+    const absolutePath = path.isAbsolute(planPath) ? planPath : path.resolve(process.cwd(), planPath);
+    const planContent = fs.readFileSync(absolutePath, 'utf8');
+    constraints = parseExecutionNotes(planContent);
+  } catch (error) {
+    // Plan file may not exist; constraints will be empty (backward compatible)
+  }
+
+  // Helper to get constraint metadata for a task
+  function getConstraintMetadata(taskId) {
+    for (const constraint of constraints) {
+      if (constraint.taskIds.includes(taskId)) {
+        return {
+          sequential: true,
+          sequentialGroup: constraint.taskRange,
+          sequentialReason: constraint.reason
+        };
+      }
+    }
+    return { sequential: false };
+  }
+
   const next = [];
 
   // Group tasks by phase for phase-order logic
@@ -406,7 +433,8 @@ function cmdNext(planPath, countStr) {
           description: task.description,
           phase: phase.number,
           status: task.status,
-          reason: 'in_progress - should be completed first'
+          reason: 'in_progress - should be completed first',
+          ...getConstraintMetadata(task.id)
         });
       }
     }
@@ -429,7 +457,8 @@ function cmdNext(planPath, countStr) {
           description: task.description,
           phase: phase.number,
           status: task.status,
-          reason: 'failed - needs retry or manual intervention'
+          reason: 'failed - needs retry or manual intervention',
+          ...getConstraintMetadata(task.id)
         });
       }
     }
@@ -458,7 +487,8 @@ function cmdNext(planPath, countStr) {
           description: task.description,
           phase: phase.number,
           status: task.status,
-          reason: 'pending - ready to implement'
+          reason: 'pending - ready to implement',
+          ...getConstraintMetadata(task.id)
         });
       }
     }
