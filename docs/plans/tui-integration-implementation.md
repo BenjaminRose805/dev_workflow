@@ -64,6 +64,8 @@
 
 **Effort:** ~3 days | **Value:** 60% (cumulative)
 
+**Execution Note:** Tasks 2.1-2.6 are [SEQUENTIAL] - all modify TUI layout in `scripts/tui/` and must be integrated one at a time to avoid layout conflicts
+
 - [ ] 2.1 Implement Phase Progress Bars (Gap G1)
   - [ ] 2.1.1 Parse phases from `plan-orchestrator.js phases` output
   - [ ] 2.1.2 Create mini progress bars for each phase
@@ -148,6 +150,8 @@
 
 **Effort:** ~1-2 weeks | **Value:** 95% (cumulative)
 
+**Execution Note:** Tasks 4.1-4.5 are [SEQUENTIAL] - all add visualization panels to TUI layout and must be integrated one at a time
+
 - [ ] 4.1 Implement Dependency Graph Panel (Gap B1)
   - [ ] 4.1.1 Create `DependencyGraphPanel` with box-drawing characters
   - [ ] 4.1.2 Implement vertical tree layout (not horizontal DAG)
@@ -191,6 +195,8 @@
 **Objective:** Production quality with edge case handling.
 
 **Effort:** Varies | **Value:** 100%
+
+**Execution Note:** Tasks 5.2 and 5.4 are [SEQUENTIAL] - both modify TUI layout handling in `scripts/tui/` and should not run in parallel
 
 - [ ] 5.1 Implement Search Mode
   - [ ] 5.1.1 Add `/` key to enter search mode
