@@ -1,5 +1,7 @@
 # Plan System Migration Guide
 
+> **See also:** [COMPLETED-PLANS.md](COMPLETED-PLANS.md) for understanding when and why to archive plans
+
 ## Overview
 
 This guide explains how to migrate plans between different formats and systems.
@@ -28,7 +30,7 @@ This guide explains how to migrate plans between different formats and systems.
 
 ### 2. Completed Plan → New System
 
-**When:** You have a plan in `docs/completed plans/` you want to query with new tools.
+**When:** You have a plan in `docs/plans/archive/` you want to query with new tools.
 
 **Command:**
 ```bash
@@ -38,14 +40,14 @@ This guide explains how to migrate plans between different formats and systems.
 
 **Or directly:**
 ```bash
-node scripts/migrate-completed-plan.js "docs/completed plans/plan-name.md"
+node scripts/migrate-completed-plan.js "docs/plans/archive/plan-name.md"
 ```
 
 **What it does:**
 1. Creates `docs/plan-outputs/{plan-name}/` directory
 2. Generates `status.json` with all tasks marked complete
 3. Sets `migrated: true` flag
-4. Preserves original in `docs/completed plans/` (no changes)
+4. Preserves original in `docs/plans/archive/` (no changes)
 
 **Result:** Archived plan queryable via `/plan:status`, original preserved.
 
@@ -56,7 +58,7 @@ node scripts/migrate-completed-plan.js "docs/completed plans/plan-name.md"
 **When:** You want to reuse an old completed plan for new work.
 
 **Steps:**
-1. Copy plan from `docs/completed plans/` to `docs/plans/`
+1. Copy plan from `docs/plans/archive/` to `docs/plans/`
 2. Reset checkboxes: `- [x]` → `- [ ]`
 3. Initialize output tracking:
    ```bash
@@ -80,7 +82,7 @@ By default, `/plan:migrate` only migrates active plans. To include archived plan
 
 This will:
 1. Migrate all plans in `docs/plans/`
-2. Migrate all plans in `docs/completed plans/`
+2. Migrate all plans in `docs/plans/archive/`
 3. Create output directories for all
 4. Preserve all original files
 
@@ -89,7 +91,7 @@ This will:
 Preview migration without creating files:
 
 ```bash
-node scripts/migrate-completed-plan.js "docs/completed plans/plan.md" --dry-run
+node scripts/migrate-completed-plan.js "docs/plans/archive/plan.md" --dry-run
 ```
 
 Output shows what would be created without actually creating it.
@@ -166,7 +168,7 @@ rm -rf docs/plan-outputs/{plan-name}/
 **Cause:** Path is incorrect or file moved.
 
 **Solutions:**
-- Verify path: `ls "docs/completed plans/"`
+- Verify path: `ls "docs/plans/archive/"`
 - Use tab completion for paths
 - Check for typos in filename
 
@@ -208,14 +210,14 @@ docs/
 ├── plan-outputs/             # Execution tracking
 │   ├── current-feature/
 │   └── next-sprint/
-└── completed plans/          # Historical archive
+└── plans/archive/          # Historical archive
     └── old-work.md
 ```
 
 Migration flow:
 1. Create plan in `docs/plans/`
 2. Execute with output separation
-3. When complete, move to `docs/completed plans/`
+3. When complete, move to `docs/plans/archive/`
 4. Output stays in `docs/plan-outputs/` for history
 
 ---

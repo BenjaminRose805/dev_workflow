@@ -1,12 +1,14 @@
 # Completed Plans Archive
 
+> **See also:** [MIGRATION-GUIDE.md](MIGRATION-GUIDE.md) for step-by-step migration commands
+
 ## Overview
 
-The `docs/completed plans/` directory contains historical plans that have been fully completed. These use the legacy inline checkbox format and are preserved for reference.
+The `docs/plans/archive/` directory contains historical plans that have been fully completed. These use the legacy inline checkbox format and are preserved for reference.
 
 ## Directory Contents
 
-Located at: `docs/completed plans/`
+Located at: `docs/plans/archive/`
 
 Current archived plans:
 1. **claude-commands-enhancement.md** - Enhanced Claude Commands system with agents and templates
@@ -40,44 +42,19 @@ Consider migrating if you want:
 
 ### How to Migrate
 
-#### Option 1: Interactive Command
-
-```bash
-/plan:archive
-```
-
-Then select "Migrate all archived plans" option.
-
-#### Option 2: Direct Script
-
-Migrate all:
-```bash
-for plan in docs/completed\ plans/*.md; do
-  node scripts/migrate-completed-plan.js "$plan"
-done
-```
-
-Migrate one:
-```bash
-node scripts/migrate-completed-plan.js "docs/completed plans/test-suite-implementation.md"
-```
-
-Dry run (preview):
-```bash
-node scripts/migrate-completed-plan.js "docs/completed plans/test-suite-implementation.md" --dry-run
-```
+See [MIGRATION-GUIDE.md](MIGRATION-GUIDE.md) for complete commands.
 
 ### What Migration Does
 
 1. Creates `docs/plan-outputs/{plan-name}/` directory
 2. Generates `status.json` with all tasks marked complete
 3. Sets `migrated: true` flag with timestamp
-4. Preserves original file in `docs/completed plans/` (no changes)
+4. Preserves original file in `docs/plans/archive/` (no changes)
 
 ### What Migration Does NOT Do
 
 - Modify original plan files
-- Move files out of `docs/completed plans/`
+- Move files out of `docs/plans/archive/`
 - Create findings files (completed tasks have no new findings)
 - Change any active plans
 
@@ -153,7 +130,7 @@ docs/
 ├── plan-outputs/                   # Execution outputs
 │   └── {plan-name}/
 │       └── status.json
-└── completed plans/                # Archived plans (legacy)
+└── plans/archive/                # Archived plans (legacy)
     ├── claude-commands-enhancement.md
     ├── plan-commands.md
     ├── stdin-lifecycle-tests.md
@@ -172,7 +149,7 @@ docs/
 │   │   └── status.json             # All tasks marked complete
 │   └── test-suite-implementation/  # Migrated archived plan
 │       └── status.json
-└── completed plans/                # Archived plans (unchanged)
+└── plans/archive/                # Archived plans (unchanged)
     └── *.md                        # Original files preserved
 ```
 
