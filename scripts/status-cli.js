@@ -40,6 +40,7 @@ const path = require('path');
 const {
   // Path resolution
   getActivePlanPath,
+  getPlanPathFromArgs,
   getOutputDir,
   getStatusPath,
   getFindingsDir,
@@ -952,60 +953,24 @@ Examples:
 // Main Entry Point
 // =============================================================================
 
-/**
- * Extract --plan argument from args array before normal parsing.
- * Returns the plan path and filtered args with --plan removed.
- * @param {string[]} args - Command line arguments
- * @returns {{ planArg: string|null, filteredArgs: string[] }}
- */
-function extractPlanArg(args) {
-  let planArg = null;
-  const filteredArgs = [];
-
-  for (let i = 0; i < args.length; i++) {
-    if (args[i] === '--plan' && i + 1 < args.length) {
-      planArg = args[i + 1];
-      i++; // Skip the next arg (the plan path)
-    } else if (args[i].startsWith('--plan=')) {
-      planArg = args[i].slice('--plan='.length);
-    } else {
-      filteredArgs.push(args[i]);
-    }
-  }
-
-  return { planArg, filteredArgs };
-}
-
 function main() {
   const rawArgs = process.argv.slice(2);
 
-  // Extract --plan argument before other parsing
-  const { planArg, filteredArgs } = extractPlanArg(rawArgs);
+  // Use library helper to extract --plan and resolve plan path
+  const { planPath, error, remainingArgs } = getPlanPathFromArgs(rawArgs);
 
-  if (filteredArgs.length === 0 || filteredArgs[0] === '--help' || filteredArgs[0] === '-h') {
+  if (remainingArgs.length === 0 || remainingArgs[0] === '--help' || remainingArgs[0] === '-h') {
     showHelp();
     process.exit(0);
   }
 
-  const parsed = parseArgs(filteredArgs);
-  const { command, positional, options } = parsed;
-
-  // Determine plan path: --plan argument takes precedence over current-plan.txt
-  let planPath;
-  if (planArg) {
-    // Validate the provided plan path exists
-    const absolutePlanPath = path.isAbsolute(planArg) ? planArg : path.resolve(process.cwd(), planArg);
-    if (!fs.existsSync(absolutePlanPath)) {
-      exitWithError(`Plan file not found: ${planArg}`);
-    }
-    planPath = planArg;
-  } else {
-    // Fall back to active plan from current-plan.txt
-    planPath = getActivePlanPath();
-    if (!planPath) {
-      exitWithError('No active plan set. Use --plan <path> or /plan:set to choose a plan first.');
-    }
+  // Check for plan resolution errors
+  if (error) {
+    exitWithError(error);
   }
+
+  const parsed = parseArgs(remainingArgs);
+  const { command, positional, options } = parsed;
 
   // Dispatch to command handler
   switch (command) {
