@@ -386,6 +386,30 @@ When using the Python orchestrator with `--verbose`:
 
 ---
 
+## Key Design Decisions
+
+### status.json is Source of Truth
+- The markdown plan file is **read-only** during execution
+- All task state lives in `status.json`
+- No checkbox updates to plan files
+
+### Derived Path Resolution
+- Output path: `docs/plan-outputs/{basename(plan-file, '.md')}/`
+- No separate output pointer file needed
+- Single pointer: `.claude/current-plan.txt` → plan file path
+
+### Atomic Writes
+- All status updates use atomic write (temp file + rename)
+- Prevents corruption from interrupted writes
+- Safe for concurrent access
+
+### Summary Auto-Fix
+- Summary counts validated on load
+- Mismatches auto-corrected from actual task counts
+- Prevents summary drift over time
+
+---
+
 ## Configuration
 
 ### Lock Settings
