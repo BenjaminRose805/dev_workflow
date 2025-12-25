@@ -49,6 +49,54 @@ Detected N uncommitted changes in working directory.
 - Git is not available (not a git repository or git not installed)
 - The selected plan is the same as the current plan (no branch switch needed)
 
+### 3.0.2 Git Branch Check and Switch
+
+After detecting uncommitted changes, check if the plan branch exists and switch to it:
+
+```bash
+# Derive branch name from plan name (e.g., "my-feature-plan" -> "plan/my-feature-plan")
+PLAN_NAME=$(basename "$PLAN_PATH" .md)
+BRANCH_NAME="plan/$PLAN_NAME"
+
+# Check if branch exists
+git rev-parse --verify "$BRANCH_NAME" 2>/dev/null
+```
+
+**Branch existence check:**
+1. Run `git rev-parse --verify plan/{plan-name} 2>/dev/null`
+2. Exit code 0 = branch exists, non-zero = branch does not exist
+
+**If branch does NOT exist:**
+1. Create new branch: `git checkout -b plan/{plan-name}`
+2. Log: `Created new plan branch: plan/{plan-name}`
+
+**If branch exists:**
+1. Switch to branch: `git checkout plan/{plan-name}`
+2. Log: `Switched to existing plan branch: plan/{plan-name}`
+
+**Handling uncommitted changes during switch:**
+- If uncommitted changes were detected in step 3.0.1, see step 3.0.3 for options
+- Branch operations may fail if changes conflict with the target branch
+
+**Skip branch operations if:**
+- Git is not available (set `GIT_AVAILABLE=false` flag at start)
+- Already on the correct branch (`git branch --show-current` equals `plan/{plan-name}`)
+
+**Example output:**
+```
+Git branch: plan/my-feature-plan
+  ✓ Branch exists, switching...
+  Switched to branch 'plan/my-feature-plan'
+```
+
+or:
+
+```
+Git branch: plan/my-feature-plan
+  ○ Branch does not exist, creating...
+  Created new branch 'plan/my-feature-plan'
+```
+
 ### 3.1. Initialize Status Tracking
 
 **See:** `.claude/commands/plan/_common/status-tracking.md` for complete status tracking reference.
