@@ -1,5 +1,8 @@
 # Implementation Plan Standards
 
+> **Note:** This document is being superseded by [PLAN-STANDARDS.md](PLAN-STANDARDS.md).
+> For the unified specification, see the new document.
+
 This document defines the authoritative standards for all implementation plans in `docs/plans/implement-*.md`. These standards ensure consistency, enable automation, and improve maintainability across the command library.
 
 **Version:** 1.0
