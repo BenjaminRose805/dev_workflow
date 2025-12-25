@@ -1,12 +1,13 @@
 # Implementation Plan: Git Workflow Phase 1 - Core Branching
 
 ## Overview
-- **Objective:** Enable branch-per-plan workflow with commit-per-task enforcement
-- **Dependencies:** None (foundation phase)
-- **Builds On:** Existing `/plan:implement` commit step
+
+- **Goal:** Enable branch-per-plan workflow with commit-per-task enforcement
+- **Priority:** P2
 - **Created:** 2024-12-25
-- **Restructured:** 2024-12-25 (consolidated for orchestrator isolation)
 - **Output:** `docs/plan-outputs/git-workflow-phase1-core-branching/`
+
+> Builds on existing `/plan:implement` commit step. Restructured 2024-12-25 for orchestrator isolation.
 
 > Task findings are written to the `findings/` subdirectory. Use `/plan:status` to view progress.
 
