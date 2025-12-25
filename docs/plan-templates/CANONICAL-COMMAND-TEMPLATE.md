@@ -1,5 +1,7 @@
 # Implementation Plan: {{command_name}}
 
+> **Standards Reference:** This template follows [PLAN-STANDARDS.md](../standards/PLAN-STANDARDS.md) for structure, phases, tasks, and orchestration requirements.
+
 ## Overview
 
 - **Goal:** {{goal_description}}
