@@ -742,8 +742,13 @@ function cmdCheck(planPath, taskId) {
 
 /**
  * progress - Show formatted progress bar
+ *
+ * Options:
+ *   --format=text (default): Human-readable output with progress bar
+ *   --format=json: Full structured JSON
+ *   --format=markers: Progress marker format for parsing
  */
-function cmdProgress(planPath) {
+function cmdProgress(planPath, options = {}) {
   const status = loadStatus(planPath);
   if (!status) {
     exitWithError('No status.json found.');
@@ -754,6 +759,155 @@ function cmdProgress(planPath) {
   const completed = summary.completed || 0;
   const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
 
+  const format = options.format || 'text';
+
+  // JSON format - full structured output
+  if (format === 'json') {
+    // Calculate phase progress
+    const phaseMap = new Map();
+    for (const task of status.tasks) {
+      const phaseName = task.phase || 'Unknown Phase';
+      if (!phaseMap.has(phaseName)) {
+        const phaseMatch = phaseName.match(/Phase\s+(\d+)/);
+        const phaseNumber = phaseMatch ? parseInt(phaseMatch[1]) : 0;
+        phaseMap.set(phaseName, {
+          number: phaseNumber,
+          name: phaseName,
+          total: 0,
+          completed: 0,
+          in_progress: 0,
+          pending: 0,
+          failed: 0,
+          skipped: 0
+        });
+      }
+      const phase = phaseMap.get(phaseName);
+      phase.total++;
+      if (summary[task.status] !== undefined) {
+        phase[task.status]++;
+      } else {
+        phase.pending++;
+      }
+    }
+
+    const phases = Array.from(phaseMap.values())
+      .sort((a, b) => a.number - b.number)
+      .map(p => ({
+        number: p.number,
+        name: p.name,
+        total: p.total,
+        completed: p.completed,
+        in_progress: p.in_progress,
+        pending: p.pending,
+        failed: p.failed,
+        skipped: p.skipped,
+        percentage: p.total > 0 ? Math.round((p.completed / p.total) * 100) : 0
+      }));
+
+    // Determine plan status
+    let planStatus = 'pending';
+    if (completed === total && total > 0) {
+      planStatus = 'completed';
+    } else if (completed > 0 || (summary.in_progress || 0) > 0) {
+      planStatus = 'in_progress';
+    }
+
+    const jsonOutput = {
+      plan: {
+        path: status.planPath,
+        name: status.planName,
+        status: planStatus
+      },
+      summary: {
+        total,
+        completed,
+        in_progress: summary.in_progress || 0,
+        pending: summary.pending || 0,
+        failed: summary.failed || 0,
+        skipped: summary.skipped || 0,
+        percentage
+      },
+      phases,
+      currentPhase: status.currentPhase,
+      lastUpdated: status.lastUpdatedAt
+    };
+
+    // Include git queue status if available
+    try {
+      const { getCommitQueueStatus } = require('./lib/plan-status.js');
+      const queueStatus = getCommitQueueStatus();
+      if (queueStatus.pendingCount > 0) {
+        jsonOutput.gitQueue = {
+          pending: queueStatus.pendingCount,
+          isProcessing: queueStatus.isProcessing
+        };
+      }
+    } catch (error) {
+      // Git queue not available, skip silently
+    }
+
+    outputJSON(jsonOutput);
+    return;
+  }
+
+  // Markers format - parseable progress markers for TUI integration
+  if (format === 'markers') {
+    // Determine plan status
+    let planStatus = 'pending';
+    if (completed === total && total > 0) {
+      planStatus = 'completed';
+    } else if (completed > 0 || (summary.in_progress || 0) > 0) {
+      planStatus = 'in_progress';
+    }
+
+    // Plan-level marker
+    console.log(`[PROGRESS] plan status=${planStatus} percent=${percentage}`);
+
+    // Phase-level markers
+    const phaseMap = new Map();
+    for (const task of status.tasks) {
+      const phaseName = task.phase || 'Unknown Phase';
+      if (!phaseMap.has(phaseName)) {
+        const phaseMatch = phaseName.match(/Phase\s+(\d+)/);
+        const phaseNumber = phaseMatch ? parseInt(phaseMatch[1]) : 0;
+        phaseMap.set(phaseName, {
+          number: phaseNumber,
+          total: 0,
+          completed: 0
+        });
+      }
+      const phase = phaseMap.get(phaseName);
+      phase.total++;
+      if (task.status === 'completed' || task.status === 'skipped') {
+        phase.completed++;
+      }
+    }
+
+    const phases = Array.from(phaseMap.values()).sort((a, b) => a.number - b.number);
+    for (const phase of phases) {
+      const phasePercent = phase.total > 0 ? Math.round((phase.completed / phase.total) * 100) : 0;
+      let phaseStatus = 'pending';
+      if (phase.completed === phase.total && phase.total > 0) {
+        phaseStatus = 'completed';
+      } else if (phase.completed > 0) {
+        phaseStatus = 'in_progress';
+      }
+      console.log(`[PROGRESS] phase=${phase.number} status=${phaseStatus} percent=${phasePercent}`);
+    }
+
+    // Task-level markers for in-progress tasks
+    for (const task of status.tasks) {
+      if (task.status === 'in_progress') {
+        console.log(`[PROGRESS] task=${task.id} status=started`);
+      }
+    }
+
+    // Summary marker
+    console.log(`[PROGRESS] summary completed=${completed} pending=${summary.pending || 0} failed=${summary.failed || 0}`);
+    return;
+  }
+
+  // Default: text format - human-readable output
   // Create progress bar
   const barWidth = 40;
   const filled = Math.round((percentage / 100) * barWidth);
@@ -1055,7 +1209,7 @@ Commands:
   next [count]                        Get next N recommended tasks (JSON)
   phases                              List all phases with completion status (JSON)
   check <task-id>                     Check if a specific task can be started (JSON)
-  progress                            Show formatted progress bar
+  progress [--format=<fmt>]           Show progress (text|json|markers)
   validate                            Validate and repair status.json
   sync-check                          Compare markdown vs status.json (read-only)
   retryable                           Get failed tasks that can be retried
@@ -1172,7 +1326,7 @@ function main() {
       break;
 
     case 'progress':
-      cmdProgress(planPath);
+      cmdProgress(planPath, options);
       break;
 
     case 'validate':
