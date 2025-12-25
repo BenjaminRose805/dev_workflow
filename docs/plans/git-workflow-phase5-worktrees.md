@@ -2,6 +2,7 @@
 
 ## Overview
 - **Objective:** Enable parallel plan execution using git worktrees
+- **Priority:** P2
 - **Created:** 2024-12-25
 - **Restructured:** 2024-12-25 (consolidated for orchestrator isolation)
 - **Output:** `docs/plan-outputs/git-workflow-phase5-worktrees/`
