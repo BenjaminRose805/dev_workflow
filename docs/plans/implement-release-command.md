@@ -6,6 +6,21 @@
 - **Created:** 2025-12-22
 - **Output:** `docs/plan-outputs/release-command/`
 
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `release:prepare` | P0 | MVP | Automatic version bump detection, release branch creation, and changelog generation |
+| `release:notes` | P0 | MVP | Release notes generation from commits with PR/issue linking and contributor attribution |
+| `release:tag` | P0 | MVP | Git tag creation with annotation, GPG signing, and remote push capabilities |
+| `release:changelog` | P0 | MVP | CHANGELOG.md parsing and updating following Keep a Changelog format |
+| `release:validate` | P0 | MVP | Release readiness validation including git status, tests, documentation, and security checks |
+| `release:version` | P0 | MVP | Version bumping (major/minor/patch), prerelease handling, and multi-file synchronization |
+| `release:compare` | P1 | Core | Version comparison with commit diff, file changes, and breaking change detection |
+| `release:publish` | P1 | Core | Publishing to npm/PyPI registries and GitHub releases with validation and rollback |
+| `release:rollback` | P1 | Core | Release rollback with tag deletion, changelog revert, and registry unpublish |
+| `release:schedule` | P2 | Enhancement | Release calendar management, reminders, freeze periods, and cadence configuration |
+
 ---
 
 

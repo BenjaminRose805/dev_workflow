@@ -382,6 +382,22 @@ Specialized agents for complex tasks:
 
 ---
 
+#### /debug
+**Artifact Type:** `debug-log.md`, `hypothesis.md`, `root-cause.md`, `fix-suggestion.md`
+
+**Upstream Dependencies:**
+- `/explore` - Uses exploration data to understand affected code areas
+- `/analyze` - Leverages analysis results for pattern detection and metrics
+
+**Downstream Consumers:**
+- `/fix` - Consumes fix-suggestion.md artifacts for automated fixing
+- `/test` - Debugging sessions may generate test recommendations
+- `/validate` - Verification of fixes triggers validation
+
+**Priority:** P0 (CRITICAL - Analysis & Quality)
+
+---
+
 ### Documentation Layer
 
 #### /document
@@ -492,8 +508,9 @@ Specialized agents for complex tasks:
 
 **Downstream Consumers:**
 - ALL commands - Provides error handling and recovery mechanisms
+- `/artifact-registry` - Required for registry error handling
 
-**Priority:** P0 (CRITICAL - Infrastructure)
+**Priority:** P0 (CRITICAL - Infrastructure, required by artifact-registry)
 
 ---
 
@@ -506,7 +523,7 @@ Specialized agents for complex tasks:
 **Downstream Consumers:**
 - ALL commands - Provides artifact consumption and context management
 
-**Priority:** P0 (Infrastructure)
+**Priority:** P0 (Critical Infrastructure - essential for artifact consumption)
 
 ---
 
@@ -519,7 +536,7 @@ Specialized agents for complex tasks:
 **Downstream Consumers:**
 - ALL commands - Provides artifact persistence and versioning
 
-**Priority:** P0 (Infrastructure)
+**Priority:** P0 (Critical Infrastructure - essential for artifact persistence)
 
 ---
 
@@ -574,7 +591,7 @@ Specialized agents for complex tasks:
 **Downstream Consumers:**
 - Used by conditional workflows
 
-**Priority:** P0 (Workflow)
+**Priority:** P1 (Workflow Extension - same tier as workflow-loops)
 
 ---
 
@@ -760,6 +777,7 @@ All identified circular relationships are either:
 14. `/test` - Test generation and execution
 15. `/validate` - Specification validation
 16. `/analyze` - Code analysis
+17. `/debug` - Systematic debugging
 
 **Rationale:** Core development workflow commands that enable code creation and quality verification.
 
@@ -769,10 +787,10 @@ All identified circular relationships are either:
 **Duration:** 3-4 weeks
 **Dependencies:** Wave 4
 
-17. `/review` - Code review
-18. `/audit` - Compliance auditing
-19. `/fix` - Bug fixing
-20. `/refactor` - Code refactoring
+18. `/review` - Code review
+19. `/audit` - Compliance auditing
+20. `/fix` - Bug fixing
+21. `/refactor` - Code refactoring
 
 **Rationale:** Enhanced quality and improvement commands.
 
@@ -782,11 +800,11 @@ All identified circular relationships are either:
 **Duration:** 3-4 weeks
 **Dependencies:** Wave 4, Wave 5
 
-21. `/document` - Documentation generation
-22. `/explain` - Explanations
-23. `/deploy` - Deployment automation
-24. `/migrate` - Migration tools
-25. `/release` - Release management
+22. `/document` - Documentation generation
+23. `/explain` - Explanations
+24. `/deploy` - Deployment automation
+25. `/migrate` - Migration tools
+26. `/release` - Release management
 
 **Rationale:** Commands for release preparation and deployment.
 
@@ -796,11 +814,11 @@ All identified circular relationships are either:
 **Duration:** 4-5 weeks
 **Dependencies:** Wave 1-6
 
-26. `/workflow-command` - Base workflow orchestration
-27. `/workflow-branching` - Conditional workflows
-28. `/workflow-loops` - Iterative workflows
-29. `/workflow-composition` - Workflow reuse
-30. `/fan-in-fan-out` - Parallel execution
+27. `/workflow-command` - Base workflow orchestration
+28. `/workflow-branching` - Conditional workflows
+29. `/workflow-loops` - Iterative workflows
+30. `/workflow-composition` - Workflow reuse
+31. `/fan-in-fan-out` - Parallel execution
 
 **Rationale:** Advanced workflow features depend on having functional commands to orchestrate.
 
@@ -810,11 +828,11 @@ All identified circular relationships are either:
 **Duration:** 3-4 weeks
 **Dependencies:** Corresponding base commands
 
-31. `/explore-agent` - Enhanced exploration
-32. `/analyze-agent` - Deep analysis
-33. `/review-agent` - Automated reviews
-34. `/debug-agent` - Interactive debugging
-35. `/deploy-agent` - Deployment automation
+32. `/explore-agent` - Enhanced exploration
+33. `/analyze-agent` - Deep analysis
+34. `/review-agent` - Automated reviews
+35. `/debug-agent` - Interactive debugging
+36. `/deploy-agent` - Deployment automation
 
 **Rationale:** Agents enhance existing commands and can be implemented incrementally.
 
@@ -824,7 +842,7 @@ All identified circular relationships are either:
 **Duration:** 1-2 weeks
 **Dependencies:** Wave 1
 
-36. `/notification-hooks` - Event notifications
+37. `/notification-hooks` - Event notifications
 
 **Rationale:** Nice-to-have infrastructure enhancements.
 
@@ -882,6 +900,7 @@ graph TB
     review[review]
     analyze[analyze]
     audit[audit]
+    debug[debug]
 
     %% Documentation
     document[document]
@@ -966,6 +985,13 @@ graph TB
     audit --> validate
     audit --> release
 
+    %% Debug dependencies
+    explore --> debug
+    analyze --> debug
+    debug --> fix
+    debug --> test
+    debug --> validate
+
     %% Improvement Cycle
     fix --> test
     fix --> review
@@ -1032,7 +1058,7 @@ graph TB
     class registry,errors,context,storage infrastructure
     class architect,design,spec,model design
     class implement,refactor,fix implementation
-    class test,validate,review,analyze,audit quality
+    class test,validate,review,analyze,audit,debug quality
     class document,explain docs
     class deploy,release,migrate deployment
     class workflow,loops,branches,compose,fanout workflow
@@ -1204,4 +1230,5 @@ If a new circular dependency is introduced:
 
 ## Version History
 
+- **v1.1** (2025-12-24): Added missing /debug command section and updated Mermaid diagram
 - **v1.0** (2025-12-23): Initial dependency graph creation with 38 implementation plans mapped

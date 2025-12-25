@@ -10,18 +10,43 @@
 
 > Implement the /spec command to generate formal, machine-readable specifications (OpenAPI, JSON Schema, AsyncAPI, GraphQL SDL) that serve as the source of truth for implementation, testing, and documentation. The command focuses on contract-first development by creating validatable specification artifacts that can drive code generation and runtime validation.
 
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `spec:api` | P0 | MVP | Generates OpenAPI 3.1 specifications for REST APIs with complete endpoint definitions |
+| `spec:schema` | P0 | MVP | Generates JSON Schema (draft 2020-12) definitions for data structures and validation |
+| `spec:graphql` | P1 | Core | Generates GraphQL Schema Definition Language for query/mutation/subscription APIs |
+| `spec:events` | P1 | Core | Generates AsyncAPI specifications for event-driven architectures and message brokers |
+| `spec:data` | P1 | Core | Generates data model specifications with entity relationships and database mappings |
+
 ---
 
 
 ---
 
 ## Dependencies
-- Skill system must support sub-commands (`:` notation)
-- WebSearch tool must be available for standards lookup
-- File I/O tools (Read, Write) must support YAML and JSON formats
-- Bash tool access for running validation CLI tools (redocly, ajv, asyncapi)
-- Upstream commands: /clarify, /design, /architect, /model
-- Downstream commands: /implement, /test, /document, /validate
+
+### Upstream
+- `/clarify` - Consumes requirements for API design guidance
+- `/design` - Consumes design-spec.md for interface definitions
+- `/architect` - Consumes architecture decisions for system boundaries
+- `/model` - Consumes domain models for schema generation
+
+### Downstream
+- `/implement` - Generates code from OpenAPI/AsyncAPI specs
+- `/test` - Generates tests from schema examples
+- `/document` - Uses specs for API documentation
+- `/validate` - Uses schemas for validation
+
+### External Tools
+- Skill system with sub-command support (`:` notation)
+- WebSearch tool for standards lookup
+- File I/O tools (Read, Write) for YAML and JSON formats
+- Bash tool for validation CLI tools (redocly, ajv, asyncapi)
+
+### Artifact Compatibility
+See `docs/architecture/artifact-compatibility-matrix.md` for detailed artifact schemas and producer-consumer relationships.
 
 ---
 

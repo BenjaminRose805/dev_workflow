@@ -6,6 +6,18 @@
 - **Created:** 2025-12-22
 - **Output:** `docs/plan-outputs/fix-command/`
 
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `fix:bug` | P0 | MVP | Fix runtime errors and logical bugs with regression tests |
+| `fix:type-error` | P0 | MVP | Resolve TypeScript type errors and inference issues |
+| `fix:security` | P0 | Core | Patch security vulnerabilities and CVEs |
+| `fix:lint` | P0 | Core | Auto-fix linting and style errors |
+| `fix:performance` | P1 | Core | Optimize bottlenecks and improve performance |
+| `fix:test` | P1 | Core | Fix failing or flaky tests |
+| `fix:dependency` | P1 | Core | Resolve dependency conflicts and version issues |
+
 ---
 
 ## Dependencies

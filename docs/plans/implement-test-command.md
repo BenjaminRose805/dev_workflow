@@ -8,6 +8,21 @@
 
 > Implement the /test command system that provides intelligent test generation, planning, execution, and analysis capabilities. Supports Jest, Vitest, Playwright, Cypress, Mocha, and Pact with automatic framework detection. Generates structured artifacts including test plans, coverage matrices, and gap analysis reports.
 
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `test:unit` | P0 | MVP | Generate unit tests for functions and classes |
+| `test:run` | P0 | MVP | Execute tests using detected framework |
+| `test:integration` | P0 | Core | Generate integration tests for services and APIs |
+| `test:e2e` | P0 | Core | Generate end-to-end user flow tests |
+| `test:coverage` | P0 | Core | Analyze test coverage and identify gaps |
+| `test:plan` | P1 | Core | Generate comprehensive test plan and strategy |
+| `test:generate` | P1 | Core | AI-powered test case generation from specs |
+| `test:analyze` | P1 | Core | Deep analysis of test quality and effectiveness |
+| `test:watch` | P1 | Enhancement | Run tests in watch mode with live feedback |
+| `test:report` | P1 | Enhancement | Generate formatted test reports and summaries |
+
 ## Dependencies
 
 ### Upstream
@@ -27,6 +42,73 @@
 - Mocha/Chai - Alternative test frameworks
 - Pact - Contract testing
 - Istanbul/c8 - Coverage reporting
+
+---
+
+## Command Boundaries
+
+### Scope Definition
+The `/test` command focuses on **test generation, execution, and coverage analysis**. It creates and runs tests to verify code behavior.
+
+### Primary Focus
+- **Test generation**: Unit, integration, E2E, contract tests
+- **Test execution**: Run tests with detected frameworks
+- **Coverage analysis**: Identify gaps, report metrics
+- **Test quality**: Plan tests, analyze effectiveness
+
+### Related Commands
+
+| Command | Purpose | Scope | Artifacts |
+|---------|---------|-------|-----------|
+| `/test` | Test generation & execution | Code behavior verification | test-plan.md, coverage-gaps.json |
+| `/validate` | Specification validation | Type checking, schema validation | validation-report.md, deviations.json |
+| `/analyze` | Code analysis | Static metrics, patterns | metrics.json, findings.json |
+| `/audit` | Compliance verification | Policy enforcement | compliance-report.md |
+
+### Boundary Rules
+1. `/test` verifies **runtime behavior**, `/validate` verifies **static conformance**
+2. `/test` runs code, `/validate` checks specifications
+3. `/test` focuses on correctness, `/validate` focuses on compliance
+4. `/analyze` informs both `/test` (coverage gaps) and `/validate` (metrics)
+
+### When to Use /test vs /validate vs /analyze
+
+| Scenario | Use This Command | Rationale |
+|----------|------------------|-----------|
+| "Generate unit tests" | `/test:unit` | Test generation |
+| "Run my tests" | `/test:run` | Test execution |
+| "Check test coverage" | `/test:coverage` | Coverage analysis |
+| "Generate E2E tests" | `/test:e2e` | User flow testing |
+| "Check types" | `/validate:types` | Type validation |
+| "Validate OpenAPI spec" | `/validate:schema` | Schema validation |
+| "Check build" | `/validate:build` | Build validation |
+| "Verify requirements" | `/validate:requirements` | Requirements traceability |
+| "Measure complexity" | `/analyze:quality` | Static metrics |
+| "Find vulnerabilities" | `/analyze:security` | Pattern detection |
+
+### Test vs Validate Distinction
+
+| Aspect | /test | /validate |
+|--------|-------|-----------|
+| Runtime | Executes code | Static analysis |
+| Focus | Behavior correctness | Specification compliance |
+| Failure mode | Test failures | Validation errors |
+| Framework | Jest, Vitest, Playwright | tsc, mypy, JSON Schema |
+| Output | Test results, coverage | Validation report, deviations |
+
+### Handoff Points
+
+**Analyze → Test:**
+- analyze:quality identifies complexity → test:unit prioritizes high-complexity
+- analyze:coverage shows gaps → test:generate fills gaps
+
+**Validate → Test:**
+- validate:schema validates API spec → test:contract generates contract tests
+- validate:types passes → test:run executes tests safely
+
+**Test → Deploy:**
+- test:run passes → deploy can proceed
+- test:coverage meets threshold → quality gate passed
 
 ---
 

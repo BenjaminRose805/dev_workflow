@@ -6,6 +6,18 @@
 - **Created:** 2025-12-22
 - **Output:** `docs/plan-outputs/migrate-command/`
 
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `migrate:schema` | P0 | MVP | Database schema migrations with DDL generation, dependency analysis, and zero-downtime support |
+| `migrate:data` | P0 | MVP | Data transformation and migration with validation, batch processing, and integrity verification |
+| `migrate:api` | P1 | Core | API version migration with breaking change detection, adapter generation, and parallel version support |
+| `migrate:config` | P1 | Core | Configuration format conversion, environment merging, and secret migration with encryption handling |
+| `migrate:code` | P1 | Core | Code modernization with deprecated API detection, AST transformations, and library upgrades |
+| `migrate:env` | P2 | Enhancement | Environment synchronization, data subset migration, and environment-specific configuration |
+| `migrate:platform` | P2 | Enhancement | Cloud provider migration, architecture transformation, and platform-specific feature mapping |
+
 ---
 
 

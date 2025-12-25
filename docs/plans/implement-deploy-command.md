@@ -6,6 +6,20 @@
 - **Created:** 2025-12-22
 - **Output:** `docs/plan-outputs/deploy-command/`
 
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `deploy:app` | P0 | MVP | Core deployment execution to target environment |
+| `deploy:status` | P0 | MVP | View current deployment state and history |
+| `deploy:rollback` | P0 | MVP | Revert to previous deployment version |
+| `deploy:config` | P0 | Core | Manage and sync configuration across environments |
+| `deploy:verify` | P0 | Core | Post-deployment health checks and validation |
+| `deploy:preview` | P1 | Core | Create branch-based preview deployments |
+| `deploy:promote` | P1 | Core | Promote staging deployment to production |
+| `deploy:canary` | P2 | Enhancement | Gradual traffic shifting for safe rollouts |
+| `deploy:blue-green` | P2 | Enhancement | Zero-downtime deployment with instant rollback |
+
 ---
 
 ## Dependencies

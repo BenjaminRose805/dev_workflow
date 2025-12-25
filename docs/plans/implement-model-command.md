@@ -10,6 +10,18 @@
 
 > The /model command is a specialized tool for data modeling and schema design. It helps developers design entity-relationship models, database schemas, domain models, and ORM configurations. It bridges the gap between requirements and implementation by creating structured, validated data models that support multiple database systems (PostgreSQL, MySQL, SQLite, MongoDB) and ORM frameworks (Prisma, Drizzle, TypeORM).
 
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `model:erd` | P0 | MVP | Visual-first entity-relationship diagram design with Mermaid output |
+| `model:schema` | P0 | MVP | Generate database DDL statements for multiple database systems |
+| `model:migration` | P0 | MVP | Generate up/down migration files with timestamp-based naming |
+| `model:domain` | P1 | Core | Domain-Driven Design modeling with aggregates and domain events |
+| `model:normalize` | P1 | Core | Analyze and recommend schema normalization improvements |
+| `model:orm` | P1 | Core | Generate ORM schemas for Prisma, Drizzle, and TypeORM |
+| `model:validate` | P2 | Enhancement | Validate schema integrity, naming conventions, and best practices |
+
 ---
 
 

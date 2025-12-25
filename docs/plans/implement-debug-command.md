@@ -10,6 +10,19 @@
 
 > The /debug command provides systematic debugging assistance with a hypothesis-driven approach. It generates ranked debugging hypotheses, conducts systematic investigation, identifies root causes, and proposes fixes with risk assessment. Supports error/exception analysis, performance debugging, unexpected behavior, test failures, memory leaks, network issues, race conditions, and data corruption.
 
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `debug:error` | P0 | MVP | Error and exception analysis with stack trace parsing and fix generation |
+| `debug:performance` | P0 | MVP | Performance debugging with bottleneck identification and optimization plans |
+| `debug:behavior` | P0 | MVP | Unexpected behavior analysis with control flow tracing and logic corrections |
+| `debug:test` | P1 | Core | Test failure debugging including flakiness analysis and isolation improvements |
+| `debug:memory` | P1 | Core | Memory leak detection with object lifecycle analysis (uses Opus model) |
+| `debug:network` | P1 | Core | Network and API debugging with request/response analysis and contract validation |
+| `debug:concurrency` | P1 | Core | Race condition and deadlock debugging (uses Opus model for complex reasoning) |
+| `debug:data` | P2 | Enhancement | Data corruption debugging with flow tracing and validation analysis |
+
 ---
 
 ## Dependencies

@@ -10,6 +10,19 @@
 
 > The /document command provides comprehensive documentation generation capabilities across multiple documentation types and audiences. It transforms code, design artifacts, and architectural decisions into clear, well-structured documentation following the Diátaxis framework.
 
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `document:api` | P0 | MVP | Generate API reference documentation from routes/OpenAPI specs with examples |
+| `document:user` | P0 | MVP | Create user guides, tutorials, and getting started documentation |
+| `document:developer` | P0 | MVP | Generate README, CONTRIBUTING, and development setup docs |
+| `document:architecture` | P1 | Core | Document system architecture, components, and ADRs with diagrams |
+| `document:changelog` | P1 | Core | Generate CHANGELOG.md from Git history using conventional commits |
+| `document:inline` | P1 | Core | Add JSDoc/docstrings and type annotations to source code |
+| `document:diagrams` | P2 | Enhancement | Generate Mermaid diagrams for architecture and workflows |
+| `document:runbook` | P2 | Enhancement | Create operational runbooks for deployment and incident response |
+
 ---
 
 
@@ -34,6 +47,73 @@
 
 ---
 
+## Command Boundaries
+
+### Scope Definition
+The `/document` command focuses on **generating reference documentation** for external consumption. It produces structured, persistent documentation artifacts.
+
+### Primary Focus
+- **Reference documentation**: API docs, READMEs, CONTRIBUTING, changelogs
+- **Structured artifacts**: Follows Diátaxis framework (tutorials, how-to, reference, explanation)
+- **Audience-specific**: User guides, developer docs, operator runbooks
+- **Persistent output**: Files meant to be committed and maintained
+
+### Related Commands
+
+| Command | Purpose | Output | Audience |
+|---------|---------|--------|----------|
+| `/document` | Generate reference docs | README.md, api-reference.md, CHANGELOG.md | End users, developers |
+| `/explain` | Educational understanding | code-explanation.md, flow-explanation.md | Team members learning codebase |
+| `/explore` | Discovery and navigation | codebase-overview.md (ephemeral) | Developers navigating code |
+| `plan:explain` | Task understanding | Task explanations in conversation | Plan implementers |
+
+### Boundary Rules
+1. `/document` generates **persistent reference docs**, `/explain` generates **educational content**
+2. `/document` is for **external audiences**, `/explain` is for **internal understanding**
+3. `/document` follows Diátaxis framework, `/explain` follows Why→What→How→Context→Gotchas
+4. `/explore` discovers, `/explain` teaches, `/document` references
+
+### When to Use /document vs /explain vs /explore
+
+| Scenario | Use This Command | Rationale |
+|----------|------------------|-----------|
+| "Generate API documentation" | `/document:api` | Reference documentation |
+| "Create README for project" | `/document:developer` | Persistent reference |
+| "Generate changelog" | `/document:changelog` | Release documentation |
+| "Explain how this code works" | `/explain:code` | Educational content |
+| "How does authentication work?" | `/explain:architecture` | Understanding patterns |
+| "What patterns are used?" | `/explain:pattern` | Learning codebase |
+| "Find where errors are handled" | `/explore` | Codebase discovery |
+| "What does this plan task mean?" | `plan:explain` | Task clarification |
+| "Create user guide" | `/document:user` | Tutorial documentation |
+| "Document this function inline" | `/document:inline` | JSDoc/docstrings |
+
+### Diátaxis Framework Alignment
+
+| Diátaxis Category | Command | Sub-Command |
+|-------------------|---------|-------------|
+| Tutorials (learning-oriented) | `/document` | document:user |
+| How-to guides (problem-oriented) | `/document` | document:user |
+| Reference (information-oriented) | `/document` | document:api, document:developer |
+| Explanation (understanding-oriented) | `/explain` | explain:code, explain:architecture |
+
+### Handoff Points
+
+**Architect/Design → Document:**
+- architecture.md → document:architecture (architecture documentation)
+- design-spec.md → document:api (API reference)
+- openapi.yaml → document:api (API examples)
+
+**Implement → Document:**
+- Source code → document:inline (JSDoc/docstrings)
+- Git history → document:changelog (release notes)
+
+**Explain → Document:**
+- explain:architecture → document:architecture (promote to reference)
+- explain:code → document:inline (add docstrings)
+
+---
+
 ## Risks
 
 | Risk | Impact | Mitigation |
@@ -45,6 +125,9 @@
 | Missing public API coverage | Medium | Scan for undocumented exports, report coverage metrics |
 | Changelog generation errors | Medium | Validate conventional commit format, handle malformed commits gracefully |
 | Audience mismatch | Medium | Clear audience selection prompts, validate language complexity |
+
+---
+
 ## Phase 1: Core Command Setup
 
 **Objective:** Establish base /document command with YAML configuration and core prompt structure

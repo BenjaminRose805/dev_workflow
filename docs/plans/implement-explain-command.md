@@ -10,6 +10,18 @@
 
 > The /explain command provides intelligent code and concept explanation capabilities for onboarding, documentation, code review, and knowledge transfer. Unlike `plan:explain` which explains plan tasks, /explain focuses on explaining existing code, architecture patterns, design decisions, and technical concepts within a codebase.
 
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `explain:code` | P0 | MVP | Explain functions, classes, and modules with purpose and usage examples |
+| `explain:architecture` | P0 | MVP | Explain system architecture, components, and design patterns with diagrams |
+| `explain:pattern` | P1 | Core | Identify and explain design patterns used in the codebase |
+| `explain:decision` | P1 | Core | Explain architectural decisions and trade-offs from ADRs and code |
+| `explain:flow` | P1 | Core | Trace and explain execution flows through code with sequence diagrams |
+| `explain:api` | P2 | Enhancement | Explain API contracts, authentication, and usage patterns |
+| `explain:diff` | P2 | Enhancement | Explain Git diffs, PR changes, and their impacts |
+
 ---
 
 
@@ -33,6 +45,73 @@
 
 ---
 
+## Command Boundaries
+
+### Scope Definition
+The `/explain` command focuses on **educational explanations for understanding code**. It helps developers learn and understand existing codebases through deep-dive explanations.
+
+### Primary Focus
+- **Educational content**: Teaching how code works, why decisions were made
+- **Code understanding**: Functions, classes, modules, patterns, flows
+- **Audience-adaptive**: Junior, senior, external audience levels
+- **Learning-oriented**: Why→What→How→Context→Gotchas structure
+
+### Related Commands
+
+| Command | Purpose | Output | Audience |
+|---------|---------|--------|----------|
+| `/explain` | Educational understanding | code-explanation.md, flow-explanation.md | Team members learning codebase |
+| `/document` | Generate reference docs | README.md, api-reference.md, CHANGELOG.md | End users, developers |
+| `/explore` | Discovery and navigation | codebase-overview.md (ephemeral) | Developers navigating code |
+| `plan:explain` | Task understanding | Task explanations in conversation | Plan implementers |
+
+### Boundary Rules
+1. `/explain` generates **educational content**, `/document` generates **reference docs**
+2. `/explain` focuses on **understanding**, `/document` focuses on **usage**
+3. `/explain` follows Why→What→How→Context→Gotchas, `/document` follows Diátaxis
+4. `/explore` is **ephemeral discovery**, `/explain` is **persistent education**
+
+### When to Use /explain vs /document vs /explore vs plan:explain
+
+| Scenario | Use This Command | Rationale |
+|----------|------------------|-----------|
+| "Explain how this code works" | `/explain:code` | Educational content |
+| "How does authentication work?" | `/explain:architecture` | Understanding patterns |
+| "What patterns are used?" | `/explain:pattern` | Learning codebase |
+| "Why was this decision made?" | `/explain:decision` | Understanding rationale |
+| "Trace this execution flow" | `/explain:flow` | Understanding data flow |
+| "Explain this PR" | `/explain:diff` | Change understanding |
+| "Generate API documentation" | `/document:api` | Reference documentation |
+| "Create README for project" | `/document:developer` | Persistent reference |
+| "Find where errors are handled" | `/explore` | Codebase discovery |
+| "What does this plan task mean?" | `plan:explain` | Task clarification |
+
+### Differentiation from plan:explain
+
+| Aspect | `/explain` | `plan:explain` |
+|--------|-----------|----------------|
+| Subject | Existing code and architecture | Plan tasks and implementation steps |
+| Purpose | Learn codebase | Understand what to implement |
+| Output | Explanation artifacts (*.md) | Conversational clarification |
+| Timing | Any time during development | During plan execution |
+
+### Handoff Points
+
+**Explore → Explain:**
+- /explore identifies interesting code → /explain provides deep understanding
+- codebase-overview.md → explain:architecture for detailed explanation
+
+**Explain → Document:**
+- explain:architecture → document:architecture (promote to reference)
+- explain:code → document:inline (add docstrings)
+- explain:api → document:api (generate reference)
+
+**Explain → Onboarding:**
+- explain:architecture + explain:pattern + explain:flow = onboarding path
+- Generate learning progression for new team members
+
+---
+
 ## Risks
 
 | Risk | Impact | Mitigation |
@@ -44,6 +123,9 @@
 | Over-simplification for seniors | Low | Provide depth options, focus on decisions and trade-offs for senior audience |
 | Under-explanation for juniors | Medium | Include more context, examples, and prerequisites for junior audience |
 | Pattern misidentification | Medium | Validate pattern detection with multiple examples, allow user correction |
+
+---
+
 ## Phase 1: Core Command Setup
 
 **Objective:** Establish base /explain command with YAML configuration and core prompt structure

@@ -1,0 +1,225 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "validation-report.json",
+  "title": "Validation Report Schema",
+  "description": "Schema for validation reports produced by /validate command",
+  "type": "object",
+  "required": ["artifact_type", "version", "created_at", "created_by", "command", "status", "summary", "checks"],
+  "properties": {
+    "artifact_type": {
+      "type": "string",
+      "const": "validation-report"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "string",
+      "enum": ["sonnet", "opus", "haiku"]
+    },
+    "command": {
+      "type": "string",
+      "const": "/validate"
+    },
+    "subcommand": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "active", "superseded", "archived"]
+    },
+    "summary": {
+      "type": "object",
+      "description": "Summary of validation results",
+      "required": ["passed", "total_checks", "passed_checks", "failed_checks"],
+      "properties": {
+        "passed": {
+          "type": "boolean",
+          "description": "Whether all required checks passed"
+        },
+        "total_checks": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "passed_checks": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed_checks": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "skipped_checks": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "duration_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total validation duration in milliseconds"
+        },
+        "exit_code": {
+          "type": "integer",
+          "description": "Exit code per quality gate standards (0=success, 1=critical, 2=error, 3=threshold, 10=warnings)"
+        }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "description": "Quality gate results",
+      "properties": {
+        "config": {
+          "type": "object",
+          "description": "Gate configuration used",
+          "properties": {
+            "critical": { "type": "integer" },
+            "high": { "type": "integer" },
+            "medium": { "type": "integer" },
+            "coverage": { "type": "number" }
+          }
+        },
+        "results": {
+          "type": "object",
+          "description": "Actual counts vs thresholds",
+          "properties": {
+            "critical": {
+              "type": "object",
+              "properties": {
+                "count": { "type": "integer" },
+                "threshold": { "type": "integer" },
+                "passed": { "type": "boolean" }
+              }
+            },
+            "high": {
+              "type": "object",
+              "properties": {
+                "count": { "type": "integer" },
+                "threshold": { "type": "integer" },
+                "passed": { "type": "boolean" }
+              }
+            },
+            "medium": {
+              "type": "object",
+              "properties": {
+                "count": { "type": "integer" },
+                "threshold": { "type": "integer" },
+                "passed": { "type": "boolean" }
+              }
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "value": { "type": "number" },
+                "threshold": { "type": "number" },
+                "passed": { "type": "boolean" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "description": "Individual validation checks",
+      "items": {
+        "type": "object",
+        "required": ["name", "status"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Check identifier"
+          },
+          "category": {
+            "type": "string",
+            "description": "Check category",
+            "enum": ["type-check", "lint", "test", "build", "security", "format", "custom"]
+          },
+          "status": {
+            "type": "string",
+            "description": "Check result",
+            "enum": ["passed", "failed", "skipped", "error"]
+          },
+          "duration_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "command": {
+            "type": "string",
+            "description": "Command executed for this check"
+          },
+          "details": {
+            "type": "object",
+            "description": "Check-specific details",
+            "properties": {
+              "errors": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "file": { "type": "string" },
+                    "line": { "type": "integer" },
+                    "column": { "type": "integer" },
+                    "severity": {
+                      "type": "string",
+                      "enum": ["critical", "high", "medium", "low", "info"]
+                    },
+                    "message": { "type": "string" },
+                    "rule": { "type": "string" }
+                  }
+                }
+              },
+              "warnings": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "file": { "type": "string" },
+                    "line": { "type": "integer" },
+                    "message": { "type": "string" }
+                  }
+                }
+              },
+              "output": {
+                "type": "string",
+                "description": "Raw command output"
+              }
+            }
+          }
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "description": "Test coverage details if applicable",
+      "properties": {
+        "overall": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "statements": { "type": "number" },
+        "branches": { "type": "number" },
+        "functions": { "type": "number" },
+        "lines": { "type": "number" },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": { "type": "string" },
+              "statements": { "type": "number" },
+              "branches": { "type": "number" },
+              "functions": { "type": "number" },
+              "lines": { "type": "number" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "requirements-spec.json",
+  "title": "Requirements Specification Schema",
+  "description": "Schema for requirements specifications produced by /clarify command",
+  "type": "object",
+  "required": ["artifact_type", "version", "created_at", "created_by", "command", "status", "requirements"],
+  "properties": {
+    "artifact_type": {
+      "type": "string",
+      "const": "requirements-spec"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "string",
+      "enum": ["sonnet", "opus", "haiku"]
+    },
+    "command": {
+      "type": "string",
+      "const": "/clarify"
+    },
+    "subcommand": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "active", "superseded", "archived"]
+    },
+    "summary": {
+      "type": "object",
+      "description": "Summary counts of requirements by type and priority",
+      "properties": {
+        "total_requirements": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "by_type": {
+          "type": "object",
+          "properties": {
+            "functional": { "type": "integer", "minimum": 0 },
+            "non_functional": { "type": "integer", "minimum": 0 },
+            "constraint": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "by_priority": {
+          "type": "object",
+          "properties": {
+            "must": { "type": "integer", "minimum": 0 },
+            "should": { "type": "integer", "minimum": 0 },
+            "could": { "type": "integer", "minimum": 0 },
+            "wont": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "description": "List of requirements",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "priority", "description"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique requirement identifier",
+            "pattern": "^REQ-\\d{3,}$"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of requirement",
+            "enum": ["functional", "non_functional", "constraint"]
+          },
+          "priority": {
+            "type": "string",
+            "description": "MoSCoW priority",
+            "enum": ["must", "should", "could", "wont"]
+          },
+          "description": {
+            "type": "string",
+            "description": "Requirement description"
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Why this requirement exists"
+          },
+          "acceptance_criteria": {
+            "type": "array",
+            "description": "Criteria for verifying requirement is met",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dependencies": {
+            "type": "array",
+            "description": "IDs of requirements this depends on",
+            "items": {
+              "type": "string",
+              "pattern": "^REQ-\\d{3,}$"
+            }
+          },
+          "source": {
+            "type": "string",
+            "description": "Source of the requirement (user story, stakeholder, etc.)"
+          },
+          "status": {
+            "type": "string",
+            "description": "Implementation status",
+            "enum": ["proposed", "approved", "implemented", "verified", "rejected"]
+          }
+        }
+      }
+    },
+    "clarifications": {
+      "type": "array",
+      "description": "Clarification questions asked and answers received",
+      "items": {
+        "type": "object",
+        "required": ["question", "answer"],
+        "properties": {
+          "question": { "type": "string" },
+          "answer": { "type": "string" },
+          "impact": {
+            "type": "array",
+            "description": "Requirement IDs affected by this clarification",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

@@ -10,6 +10,19 @@
 
 > The /audit command suite provides comprehensive compliance, security, and quality auditing capabilities. It enables systematic verification of security posture, regulatory compliance, access controls, credential management, and license obligations with evidence-based findings and framework-aligned reporting.
 
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `audit:security` | P0 | MVP | OWASP Top 10 and CWE pattern detection with CVSS scoring |
+| `audit:secrets` | P0 | MVP | Detect exposed credentials, API keys, and secrets with entropy analysis |
+| `audit:dependencies` | P0 | MVP | Vulnerability scanning for packages with CVE database checks and supply chain assessment |
+| `audit:compliance` | P1 | Core | Framework-specific checks for SOC2, GDPR, HIPAA, PCI-DSS, ISO27001 |
+| `audit:access` | P1 | Core | RBAC/ABAC policy review with privilege escalation detection |
+| `audit:licenses` | P1 | Core | License detection, compatibility analysis, and SBOM generation |
+| `audit:privacy` | P2 | Enhancement | PII/PHI detection with data flow mapping and privacy control assessment |
+| `audit:infrastructure` | P2 | Enhancement | IaC security scanning for Terraform, Kubernetes, Docker, and cloud configurations |
+
 ## Dependencies
 
 ### Upstream
@@ -27,6 +40,46 @@
 - License databases - SPDX license identification
 - Secret scanning tools (trufflehog patterns)
 - SBOM generators (CycloneDX, SPDX)
+
+---
+
+## Command Boundaries
+
+### Scope Definition
+The `/audit` command focuses on **compliance verification and policy enforcement**. It validates adherence to security frameworks, regulatory requirements, and organizational policies with evidence-based findings.
+
+### Primary Focus
+- **Compliance verification**: SOC2, GDPR, HIPAA, PCI-DSS, ISO27001 framework alignment
+- **Policy enforcement**: Security policies, access controls, data governance rules
+- **Evidence-based findings**: Full OWASP audit with control mapping, CVSS scoring
+- **Regulatory reporting**: Audit-ready documentation and attestation artifacts
+
+### Relationship to Other Commands
+
+| Command | Scope | Key Differentiator |
+|---------|-------|-------------------|
+| `/analyze` | Automated metrics and patterns | **Objective, tool-driven findings** - produces raw data |
+| `/review` | AI-powered suggestions | **Subjective, improvement-focused** - interprets and suggests |
+| `/audit` | Compliance verification | **Policy-driven, evidence-based** - validates against standards |
+
+### Boundary Rules
+1. `/audit` **validates against standards**, `/analyze` **detects patterns**
+2. `/audit` produces compliance reports with attestation, `/analyze` produces metrics
+3. Security in `/audit:security` maps to OWASP/CWE/CVSS frameworks, in `/analyze:security` detects patterns
+4. `/audit` is for regulatory/compliance, `/analyze` is for quality metrics
+
+### When to Use /audit vs /analyze vs /review
+
+| Scenario | Use This Command | Rationale |
+|----------|------------------|-----------|
+| "Are we SOC2 compliant?" | `/audit:compliance` | Policy verification |
+| "Are we OWASP Top 10 compliant?" | `/audit:security` | Compliance mapping |
+| "Any security vulnerabilities?" | `/analyze:security` | Pattern detection |
+| "Check for secrets exposure" | `/audit:secrets` | Policy enforcement |
+| "What's my code complexity?" | `/analyze:quality` | Objective metrics |
+| "Is this PR ready to merge?" | `/review:pr` | Holistic assessment |
+| "Review for PCI compliance" | `/audit:compliance` | Regulatory requirements |
+| "License compliance check" | `/audit:licenses` | Legal/policy verification |
 
 ---
 

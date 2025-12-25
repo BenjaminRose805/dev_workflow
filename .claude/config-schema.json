@@ -1,0 +1,308 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "config-schema.json",
+  "title": "Dev Workflow Command Configuration Schema",
+  "description": "Configuration schema for all commands in the dev workflow system",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to this schema"
+    },
+    "version": {
+      "type": "string",
+      "description": "Configuration version",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "default": "1.0.0"
+    },
+    "defaults": {
+      "type": "object",
+      "description": "Default settings for all commands",
+      "properties": {
+        "model": {
+          "type": "string",
+          "description": "Default model to use",
+          "enum": ["sonnet", "opus", "haiku"],
+          "default": "sonnet"
+        },
+        "output_dir": {
+          "type": "string",
+          "description": "Base directory for command outputs",
+          "default": "docs/plan-outputs"
+        },
+        "timeout": {
+          "type": "object",
+          "description": "Default timeout settings",
+          "properties": {
+            "quick": { "type": "integer", "default": 30000, "description": "Quick operations (ms)" },
+            "standard": { "type": "integer", "default": 120000, "description": "Standard operations (ms)" },
+            "deep": { "type": "integer", "default": 600000, "description": "Deep operations (ms)" },
+            "extended": { "type": "integer", "default": 1800000, "description": "Extended operations (ms)" }
+          }
+        },
+        "verbose": {
+          "type": "boolean",
+          "description": "Enable verbose output",
+          "default": false
+        }
+      }
+    },
+    "quality_gates": {
+      "type": "object",
+      "description": "Quality gate configuration",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "description": "Quality gate mode",
+          "enum": ["strict", "standard", "permissive"],
+          "default": "standard"
+        },
+        "thresholds": {
+          "type": "object",
+          "properties": {
+            "critical": { "type": "integer", "default": 0 },
+            "high": { "type": "integer", "default": 5 },
+            "medium": { "type": "integer", "default": 20 },
+            "coverage": { "type": "number", "default": 85 }
+          }
+        },
+        "block_on_failure": {
+          "type": "boolean",
+          "description": "Block merge/deploy on gate failure",
+          "default": true
+        }
+      }
+    },
+    "commands": {
+      "type": "object",
+      "description": "Per-command configuration",
+      "properties": {
+        "explore": {
+          "$ref": "#/definitions/explore_config"
+        },
+        "analyze": {
+          "$ref": "#/definitions/analyze_config"
+        },
+        "validate": {
+          "$ref": "#/definitions/validate_config"
+        },
+        "test": {
+          "$ref": "#/definitions/test_config"
+        },
+        "review": {
+          "$ref": "#/definitions/review_config"
+        },
+        "deploy": {
+          "$ref": "#/definitions/deploy_config"
+        }
+      }
+    },
+    "artifact_registry": {
+      "type": "object",
+      "description": "Artifact registry configuration",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "path": {
+          "type": "string",
+          "default": "docs/.artifact-registry.json"
+        },
+        "auto_register": {
+          "type": "boolean",
+          "description": "Auto-register artifacts on creation",
+          "default": true
+        },
+        "retention_days": {
+          "type": "integer",
+          "description": "Days to retain draft artifacts",
+          "default": 30
+        }
+      }
+    },
+    "hooks": {
+      "type": "object",
+      "description": "Hook configuration",
+      "properties": {
+        "context_loading": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean", "default": true },
+            "cache_ttl_seconds": { "type": "integer", "default": 300 },
+            "max_artifacts": { "type": "integer", "default": 10 }
+          }
+        },
+        "artifact_storage": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean", "default": true },
+            "validate_schema": { "type": "boolean", "default": true }
+          }
+        },
+        "notifications": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean", "default": false },
+            "channels": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": { "type": "string", "enum": ["slack", "email", "webhook"] },
+                  "url": { "type": "string" },
+                  "events": { "type": "array", "items": { "type": "string" } }
+                }
+              }
+            }
+          }
+        },
+        "error_recovery": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean", "default": true },
+            "max_retries": { "type": "integer", "default": 3 },
+            "backoff_multiplier": { "type": "number", "default": 2.0 }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "explore_config": {
+      "type": "object",
+      "properties": {
+        "default_depth": {
+          "type": "string",
+          "enum": ["quick", "standard", "deep"],
+          "default": "standard"
+        },
+        "exclude_patterns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["node_modules", ".git", "dist", "build"]
+        },
+        "max_files": {
+          "type": "integer",
+          "description": "Maximum files to analyze",
+          "default": 1000
+        }
+      }
+    },
+    "analyze_config": {
+      "type": "object",
+      "properties": {
+        "default_type": {
+          "type": "string",
+          "enum": ["security", "performance", "quality", "dependency"],
+          "default": "quality"
+        },
+        "depth": {
+          "type": "string",
+          "enum": ["quick", "standard", "deep"],
+          "default": "standard"
+        },
+        "security": {
+          "type": "object",
+          "properties": {
+            "owasp_checks": { "type": "boolean", "default": true },
+            "cwe_mapping": { "type": "boolean", "default": true }
+          }
+        }
+      }
+    },
+    "validate_config": {
+      "type": "object",
+      "properties": {
+        "checks": {
+          "type": "object",
+          "properties": {
+            "types": { "type": "boolean", "default": true },
+            "lint": { "type": "boolean", "default": true },
+            "format": { "type": "boolean", "default": true },
+            "build": { "type": "boolean", "default": true },
+            "test": { "type": "boolean", "default": false }
+          }
+        },
+        "fix_on_fail": {
+          "type": "boolean",
+          "description": "Attempt auto-fix on failure",
+          "default": false
+        }
+      }
+    },
+    "test_config": {
+      "type": "object",
+      "properties": {
+        "framework": {
+          "type": "string",
+          "enum": ["vitest", "jest", "mocha", "auto"],
+          "default": "auto"
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean", "default": true },
+            "threshold": { "type": "number", "default": 85 },
+            "reporters": {
+              "type": "array",
+              "items": { "type": "string" },
+              "default": ["text", "lcov"]
+            }
+          }
+        },
+        "parallel": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "review_config": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "type": "string",
+          "enum": ["sonnet", "opus"],
+          "default": "sonnet"
+        },
+        "focus_areas": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["security", "performance", "maintainability", "style", "bugs"]
+          },
+          "default": ["bugs", "security", "maintainability"]
+        },
+        "diff_context_lines": {
+          "type": "integer",
+          "default": 5
+        }
+      }
+    },
+    "deploy_config": {
+      "type": "object",
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "enum": ["direct", "canary", "blue-green", "rolling"],
+          "default": "direct"
+        },
+        "require_validation": {
+          "type": "boolean",
+          "default": true
+        },
+        "environments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "url": { "type": "string" },
+              "protected": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

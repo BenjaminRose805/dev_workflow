@@ -9,7 +9,20 @@
 
 ## Description
 
-This meta-command provides automated command sequencing with conditional branching, parallel execution, error handling, and artifact-based dependencies. The `/workflow` command enables chaining commands together into reusable, executable workflows that can be shared, versioned, and composed.
+> This meta-command provides automated command sequencing with conditional branching, parallel execution, error handling, and artifact-based dependencies. The `/workflow` command enables chaining commands together into reusable, executable workflows that can be shared, versioned, and composed.
+
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `workflow:create` | P0 | MVP | Interactively create workflow definitions with step configuration |
+| `workflow:run` | P0 | MVP | Execute workflow with dependency resolution and progress tracking |
+| `workflow:list` | P0 | MVP | List available workflows with metadata and usage statistics |
+| `workflow:status` | P0 | MVP | Show real-time status of running workflows with step details |
+| `workflow:visualize` | P1 | Core | Generate Mermaid diagrams and visual workflow representations |
+| `workflow:validate` | P1 | Core | Validate workflow syntax, dependencies, and command existence |
+| `workflow:resume` | P2 | Enhancement | Resume interrupted workflows from last checkpoint |
+| `workflow:template` | P2 | Enhancement | Manage built-in workflow templates and customizations |
 
 ---
 

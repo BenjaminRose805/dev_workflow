@@ -10,6 +10,17 @@
 
 > The /explore command is a specialized codebase exploration tool that helps developers understand unfamiliar code through automated analysis, progressive depth exploration (quick/standard/deep), and structured artifact generation. It wraps the existing Explore agent while adding specialized sub-commands for architecture, patterns, dependencies, and data flow analysis.
 
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `explore:quick` | P0 | MVP | Quick 30-second summary of codebase essentials |
+| `explore:deep` | P0 | MVP | Comprehensive 5-minute analysis with full artifacts |
+| `explore:architecture` | P1 | Core | Specialized component and dependency graph analysis |
+| `explore:patterns` | P1 | Core | Design patterns, conventions, and anti-pattern detection |
+| `explore:dependencies` | P1 | Core | External/internal dependency analysis with impact assessment |
+| `explore:flow` | P1 | Core | Request/response flows and execution path tracing |
+
 ---
 
 ## Dependencies

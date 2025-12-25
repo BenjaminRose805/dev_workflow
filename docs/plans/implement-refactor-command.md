@@ -6,6 +6,23 @@
 - **Created:** 2025-12-22
 - **Output:** `docs/plan-outputs/refactor-command/`
 
+> The /refactor command provides intelligent, safe code refactoring with automated impact analysis, safety protocols, and verification. It supports extraction, renaming, simplification, pattern application, modernization, and security hardening with built-in rollback capabilities.
+
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `refactor:extract` | P0 | MVP | Extract methods, components, and modules with dependency resolution |
+| `refactor:rename` | P0 | MVP | Rename symbols across codebase with import/export updates |
+| `refactor:simplify` | P0 | MVP | Reduce complexity through early returns, guard clauses, and deduplication |
+| `refactor:patterns` | P1 | Core | Apply design patterns and remediate anti-patterns (Opus model) |
+| `refactor:modernize` | P1 | Core | Update to modern syntax and migrate deprecated APIs |
+| `refactor:organize` | P1 | Core | Reorganize file structure and optimize imports |
+| `refactor:types` | P1 | Core | Add type annotations and improve type safety |
+| `refactor:security` | P1 | Core | Detect vulnerabilities and apply security hardening (Opus model) |
+| `refactor:performance` | P2 | Enhancement | Optimize bottlenecks with memoization and efficiency improvements |
+| `refactor:test` | P2 | Enhancement | Refactor test structure and reduce test duplication |
+
 ---
 
 ## Dependencies
@@ -323,6 +340,61 @@
 - [ ] Helpful error messages with recovery suggestions
 - [ ] Dry-run mode allows safe exploration
 - [ ] Preview mode shows changes before applying
+
+---
+
+## Command Boundaries
+
+### Scope Definition
+The `/refactor` command focuses on **code-level structural changes** within existing modules. It modifies implementation details while preserving behavior and interfaces.
+
+### Primary Focus
+- **Function/class level**: Extract methods, rename symbols, simplify complexity
+- **Implementation restructuring**: Early returns, guard clauses, deduplication
+- **Code modernization**: Modern syntax, deprecated API migration
+- **Type improvements**: Add annotations, improve type safety
+
+### Scope Hierarchy
+
+| Command | Scope Level | Focus | Artifacts |
+|---------|-------------|-------|-----------|
+| `/refactor` | Function/Class | Implementation structure | refactoring-plan.md, impact-analysis.json |
+| `/design` | Component/Module | Interfaces and contracts | design-spec.md, interfaces.md |
+| `/architect` | System/Service | Architecture decisions | architecture.md, components.json |
+
+### Boundary Rules
+1. `/refactor` changes **how code works**, `/design` defines **what code does**
+2. `/refactor` preserves interfaces, `/design` defines interfaces
+3. `/refactor` produces code changes, `/design` produces specifications
+4. `/architect` sets constraints that `/design` must follow, which `/refactor` implements
+
+### When to Use /refactor vs /design vs /architect
+
+| Scenario | Use This Command | Rationale |
+|----------|------------------|-----------|
+| "Extract this method" | `/refactor:extract` | Code-level change |
+| "Rename this class" | `/refactor:rename` | Symbol renaming |
+| "Reduce complexity" | `/refactor:simplify` | Implementation optimization |
+| "Design component interface" | `/design:component` | Interface specification |
+| "Define API contracts" | `/design:api` | Contract definition |
+| "Plan system architecture" | `/architect:system` | High-level design |
+| "Document architecture decisions" | `/architect:adr` | Decision records |
+| "Modernize syntax" | `/refactor:modernize` | Implementation update |
+| "Design data model" | `/design:data` | Schema specification |
+| "Define deployment topology" | `/architect:deployment` | Infrastructure design |
+
+### Handoff Points
+
+**Architect → Design:**
+- architecture.md provides component boundaries for design-spec.md
+- components.json defines what /design needs to detail
+
+**Design → Refactor:**
+- design-spec.md guides pattern application in refactor:patterns
+- interfaces.md informs refactor:types for type improvements
+
+**Refactor → Validate:**
+- refactored code triggers /validate:types and /validate:build
 
 ---
 

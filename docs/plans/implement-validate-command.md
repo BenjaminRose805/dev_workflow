@@ -8,6 +8,19 @@
 
 > Implement the /validate command with 8 sub-commands (validate:spec, validate:schema, validate:requirements, validate:contracts, validate:types, validate:build, validate:accessibility, validate:security) that provide systematic verification with severity-based findings (critical/high/medium/low/info), traceability matrices, and quality gate enforcement for CI/CD integration.
 
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `validate:types` | P0 | MVP | Type checking for TypeScript, Python, Go, Java with coverage analysis |
+| `validate:build` | P0 | MVP | Build validation with dependency and reproducibility checks |
+| `validate:spec` | P0 | MVP | Specification validation with completeness checking and deviation detection |
+| `validate:schema` | P1 | Core | Schema validation for JSON Schema, OpenAPI, GraphQL with version support |
+| `validate:requirements` | P1 | Core | Requirements validation with traceability matrix and coverage analysis |
+| `validate:contracts` | P1 | Core | API contract validation for REST endpoints and service boundaries |
+| `validate:security` | P2 | Enhancement | Security validation with vulnerability scanning and secrets detection |
+| `validate:accessibility` | P2 | Enhancement | WCAG compliance checking and accessibility validation |
+
 ## Dependencies
 
 ### Upstream
@@ -27,6 +40,78 @@
 - Type checkers (tsc, mypy, go vet)
 - Build systems (npm, gradle, maven, cargo)
 - Accessibility tools (axe-core patterns)
+
+---
+
+## Command Boundaries
+
+### Scope Definition
+The `/validate` command focuses on **specification validation and static conformance checking**. It verifies that code and artifacts meet defined specifications without executing runtime code.
+
+### Primary Focus
+- **Type checking**: TypeScript, Python (mypy), Go, Java type validation
+- **Schema validation**: JSON Schema, OpenAPI, GraphQL, Protobuf
+- **Build validation**: Compilation, dependencies, reproducibility
+- **Requirements traceability**: Specification to implementation mapping
+
+### Related Commands
+
+| Command | Purpose | Scope | Artifacts |
+|---------|---------|-------|-----------|
+| `/validate` | Specification validation | Type checking, schema validation | validation-report.md, deviations.json |
+| `/test` | Test generation & execution | Code behavior verification | test-plan.md, coverage-gaps.json |
+| `/analyze` | Code analysis | Static metrics, patterns | metrics.json, findings.json |
+| `/audit` | Compliance verification | Policy enforcement | compliance-report.md |
+
+### Boundary Rules
+1. `/validate` verifies **static conformance**, `/test` verifies **runtime behavior**
+2. `/validate` checks specifications, `/test` runs code
+3. `/validate` focuses on compliance, `/test` focuses on correctness
+4. `/audit` validates against external standards, `/validate` validates against project specs
+
+### When to Use /validate vs /test vs /audit
+
+| Scenario | Use This Command | Rationale |
+|----------|------------------|-----------|
+| "Check types" | `/validate:types` | Type validation |
+| "Validate OpenAPI spec" | `/validate:schema` | Schema validation |
+| "Check build" | `/validate:build` | Build validation |
+| "Verify requirements" | `/validate:requirements` | Requirements traceability |
+| "Run my tests" | `/test:run` | Test execution |
+| "Generate unit tests" | `/test:unit` | Test generation |
+| "Check test coverage" | `/test:coverage` | Coverage analysis |
+| "SOC2 compliance" | `/audit:compliance` | Regulatory compliance |
+| "OWASP compliance" | `/audit:security` | Security standards |
+| "License check" | `/audit:licenses` | License policy |
+
+### Validate vs Test vs Audit Distinction
+
+| Aspect | /validate | /test | /audit |
+|--------|-----------|-------|--------|
+| Runtime | Static analysis | Executes code | Static + policy check |
+| Focus | Spec compliance | Behavior correctness | Regulatory compliance |
+| Standards | Project-defined | Code behavior | External (OWASP, SOC2) |
+| Exit codes | 0/1/2/3/10 | Pass/fail | Compliance level |
+| Artifacts | deviations.json | coverage.json | compliance-report.md |
+
+### Handoff Points
+
+**Validate → Test:**
+- validate:types passes → test:run can execute safely
+- validate:schema validates API → test:contract generates tests
+- validate:build succeeds → test:integration can run
+
+**Validate → Deploy:**
+- validate:types + validate:build → deployment prerequisites
+- Quality gates enforce thresholds before deploy
+
+**Analyze → Validate:**
+- analyze:quality metrics → validate thresholds
+- analyze:dependencies CVEs → validate:security checks
+
+**Audit → Validate:**
+- audit:security requirements → validate:security checks
+- audit:compliance requirements → validate:requirements mapping
 
 ---
 
@@ -261,7 +346,7 @@
 
 **Tasks:**
 - [ ] 16.1 Create quality gate configuration schema (.claude/validate-thresholds.yaml)
-- [ ] 16.2 Implement threshold checker for severity levels (max_critical: 0, max_major: 5, max_minor: 20)
+- [ ] 16.2 Implement threshold checker for severity levels (max_critical: 0, max_high: 5, max_medium: 20)
 - [ ] 16.3 Build quality gate evaluator that determines pass/fail based on thresholds
 - [ ] 16.4 Create quality gate reporter that explains which threshold was exceeded
 - [ ] 16.5 Implement override mechanism for emergency situations (with audit logging)

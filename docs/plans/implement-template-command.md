@@ -6,6 +6,21 @@
 - **Created:** 2025-12-22
 - **Output:** `docs/plan-outputs/template-command/`
 
+> The /template command provides comprehensive template management for reusable artifacts across plans, commands, workflows, and documentation. It enables teams to create, apply, validate, and share standardized templates that accelerate development while maintaining consistency.
+
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `template:list` | P0 | MVP | Discover and list available templates with filtering and search |
+| `template:create` | P0 | MVP | Create new templates from existing artifacts with variable detection |
+| `template:apply` | P0 | MVP | Apply templates with variable substitution to generate artifacts |
+| `template:edit` | P1 | Core | Edit template definitions and variable configurations |
+| `template:validate` | P1 | Core | Validate template syntax, variables, and dependencies |
+| `template:import` | P2 | Enhancement | Import templates from URLs or local files |
+| `template:export` | P2 | Enhancement | Export templates as shareable bundles |
+| `template:delete` | P2 | Enhancement | Safely delete templates with dependency checking |
+
 ---
 
 

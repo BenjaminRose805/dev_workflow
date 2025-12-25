@@ -10,6 +10,15 @@
 
 > The /research command helps developers make informed decisions by systematically researching technologies, patterns, architectures, and best practices. It uses web search, documentation fetching, and codebase analysis to gather information, compare options, and provide data-driven recommendations.
 
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `research:technology` | P0 | MVP | Technology and library comparison with feature analysis, benchmarks, and community metrics |
+| `research:patterns` | P0 | MVP | Design pattern research with implementation examples and context-specific guidance |
+| `research:security` | P1 | Core | Security best practices research with OWASP guidance, CVE analysis, and compliance considerations |
+| `research:performance` | P1 | Core | Performance optimization research with benchmarks, techniques, and measurement guidance |
+
 ---
 
 

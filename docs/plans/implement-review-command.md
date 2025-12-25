@@ -8,6 +8,20 @@
 
 > Implement the /review command system that provides intelligent code review capabilities for pull requests, diffs, commits, and files. Supports automated bug detection, security analysis, performance optimization, and standards compliance checking. Generates structured artifacts including review comments, suggestions, summaries, and merge blockers.
 
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `review:pr` | P0 | MVP | Pull request review with bug/security/quality detection |
+| `review:diff` | P0 | MVP | Git diff analysis for staged and unstaged changes |
+| `review:file` | P0 | MVP | Deep single-file analysis with complexity and refactoring suggestions |
+| `review:commit` | P1 | Core | Commit history and message quality analysis |
+| `review:standards` | P1 | Core | Coding standards compliance checking against ESLint/Prettier |
+| `review:security` | P1 | Core | Security-focused review with OWASP Top 10 and threat modeling |
+| `review:performance` | P1 | Core | Performance bottleneck detection and optimization suggestions |
+
+---
+
 ## Dependencies
 
 ### Upstream
@@ -24,6 +38,44 @@
 - `gh` CLI - GitHub PR interactions
 - Git - Diff parsing, commit history
 - ESLint/Prettier - Standards detection
+
+---
+
+## Command Boundaries
+
+### Scope Definition
+The `/review` command focuses on **AI-powered code review with subjective suggestions**. It interprets code quality and provides constructive improvement recommendations.
+
+### Primary Focus
+- **AI-powered review**: Intelligent interpretation of code patterns and practices
+- **Subjective suggestions**: Refactoring recommendations, best practice guidance
+- **Contextual feedback**: Consider project patterns, team conventions, and codebase context
+- **PR/diff-centric**: Focused on changes rather than full codebase
+
+### Relationship to Other Commands
+
+| Command | Scope | Key Differentiator |
+|---------|-------|-------------------|
+| `/analyze` | Automated metrics and patterns | **Objective, tool-driven findings** - produces raw data |
+| `/review` | AI-powered suggestions | **Subjective, improvement-focused** - interprets and suggests |
+| `/audit` | Compliance verification | **Policy-driven, evidence-based** - validates against standards |
+
+### Boundary Rules
+1. `/review` **interprets and suggests**, `/analyze` **measures and detects**
+2. `/review` uses AI reasoning for quality assessment, `/analyze` uses static tools
+3. `/review` generates suggestions.json + review-comments.md, `/analyze` generates metrics.json
+4. Security in `/review:security` is about code improvement; in `/audit:security` is about compliance
+
+### When to Use /review vs /analyze vs /audit
+
+| Scenario | Use This Command | Rationale |
+|----------|------------------|-----------|
+| "Is this PR ready to merge?" | `/review:pr` | Holistic assessment |
+| "How can I improve this code?" | `/review:file` | Subjective suggestions |
+| "What's my code complexity?" | `/analyze:quality` | Objective metrics |
+| "Are we SOC2 compliant?" | `/audit:compliance` | Policy verification |
+| "Review my security practices" | `/review:security` | Improvement suggestions |
+| "Check for vulnerabilities" | `/analyze:security` | Pattern detection |
 
 ---
 

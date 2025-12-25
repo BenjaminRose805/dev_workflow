@@ -3,7 +3,7 @@
 ## Overview
 
 - **Goal:** Implement pre-command context loading hook that automatically injects relevant artifacts, plan status, and environment metadata before command execution
-- **Priority:** P1 (Infrastructure)
+- **Priority:** P0 (Critical Infrastructure - essential for artifact consumption)
 - **Created:** 2025-12-22
 - **Output:** `docs/plan-outputs/context-loading-hook/`
 - **Model:** haiku (fast context loading)

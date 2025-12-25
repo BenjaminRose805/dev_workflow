@@ -2,7 +2,7 @@
   "planPath": "docs/plans/fix-implementation-plan-inconsistencies.md",
   "planName": "Implementation Plan: Fix Implementation Plan Inconsistencies",
   "createdAt": "2025-12-23T17:12:42.617Z",
-  "lastUpdatedAt": "2025-12-24T05:35:42.517Z",
+  "lastUpdatedAt": "2025-12-25T02:40:46.415Z",
   "currentPhase": "Phase 3: Fix Structural Inconsistencies",
   "tasks": [
     {
@@ -105,170 +105,280 @@
       "id": "3.4",
       "phase": "Phase 3: Fix Structural Inconsistencies",
       "description": "Standardize Output Directory Specifications",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T01:24:36.571Z",
+      "completedAt": "2025-12-25T01:25:17.350Z",
+      "duration": 40779,
+      "notes": "All 38 implementation plans have correct output directory specifications following docs/plan-outputs/{plan-name}/ convention. No changes needed."
     },
     {
       "id": "4.1",
       "phase": "Phase 4: Fix Naming Inconsistencies",
       "description": "Standardize Sub-Command Naming",
-      "status": "pending",
-      "findings": "docs/plan-outputs/fix-implementation-plan-inconsistencies/findings/4.1-subcommand-naming-verification.md"
+      "status": "completed",
+      "findings": "docs/plan-outputs/fix-implementation-plan-inconsistencies/findings/4.1-subcommand-naming-verification.md",
+      "startedAt": "2025-12-25T01:25:17.350Z",
+      "completedAt": "2025-12-25T01:25:37.262Z",
+      "duration": 19912,
+      "notes": "Already completed. All 38 plans use colon notation. Reference table at docs/standards/subcommand-naming-reference.md."
     },
     {
       "id": "4.2",
       "phase": "Phase 4: Fix Naming Inconsistencies",
       "description": "Standardize Model Identifiers",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T01:25:37.263Z",
+      "completedAt": "2025-12-25T01:26:11.163Z",
+      "duration": 33900,
+      "notes": "All 38 plans already use short-form model identifiers (sonnet, opus, haiku). No full model IDs found. Model selection guidelines already documented in docs/standards/implementation-plan-standards.md."
     },
     {
       "id": "4.3",
       "phase": "Phase 4: Fix Naming Inconsistencies",
       "description": "Standardize Artifact Type Names",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T01:26:11.164Z",
+      "completedAt": "2025-12-25T01:26:47.565Z",
+      "duration": 36401,
+      "notes": "All artifact types use kebab-case (e.g., debug-log, root-cause, architecture-document). No snake_case artifact types found. Registry at docs/standards/artifact-type-registry.md."
     },
     {
       "id": "4.4",
       "phase": "Phase 4: Fix Naming Inconsistencies",
       "description": "Standardize Severity Classifications",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T01:26:47.565Z",
+      "completedAt": "2025-12-25T01:28:23.455Z",
+      "duration": 95890,
+      "notes": "All 4 target plans (analyze, audit, validate, review) use canonical severity levels (critical, high, medium, low, info). Fixed one inconsistency: max_major/max_minor → max_high/max_medium in implement-validate-command.md:264. Standards document already has complete severity definitions."
     },
     {
       "id": "5.1",
       "phase": "Phase 5: Fix Dependency & Cross-Reference Issues",
       "description": "Create Dependency Graph",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T01:28:57.290Z",
+      "completedAt": "2025-12-25T01:30:53.928Z",
+      "duration": 116638,
+      "notes": "Dependency graph already existed at docs/architecture/command-dependency-graph.md. Updated to add missing /debug command section, updated Mermaid diagram to include debug node and edges, and renumbered Wave implementation order. All 38 plans now covered."
     },
     {
       "id": "5.2",
       "phase": "Phase 5: Fix Dependency & Cross-Reference Issues",
       "description": "Add Dependency Sections to All Plans",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T01:30:54.323Z",
+      "completedAt": "2025-12-25T01:31:41.932Z",
+      "duration": 47609,
+      "notes": "All 38 plans already have complete Dependencies sections with Upstream, Downstream, and External Tools subsections. Verified during Phase 3.2 completion. No additional updates needed."
     },
     {
       "id": "5.3",
       "phase": "Phase 5: Fix Dependency & Cross-Reference Issues",
       "description": "Fix Cross-Command Artifact References",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T01:31:42.332Z",
+      "completedAt": "2025-12-25T01:33:13.975Z",
+      "duration": 91643,
+      "notes": "Artifact compatibility matrix already exists at docs/architecture/artifact-compatibility-matrix.md. Added 'Artifact Compatibility' subsection with reference to the matrix in implement-architect-command.md, implement-design-command.md, implement-spec-command.md, and implement-implement-command.md. All artifacts across the chain are compatible as documented."
     },
     {
       "id": "5.4",
       "phase": "Phase 5: Fix Dependency & Cross-Reference Issues",
       "description": "Fix Invalid Plan References",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T01:33:14.372Z",
+      "completedAt": "2025-12-25T01:34:46.701Z",
+      "duration": 92329,
+      "notes": "Audited all cross-plan references. All 38 implement-*.md files exist. All referenced architecture docs (artifact-compatibility-matrix.md, command-dependency-graph.md) exist. All referenced standards docs exist. Files that don't exist yet (README.md, implementation-roadmap.md, ADR directory) are correctly documented as future task deliverables. No invalid plan references found."
     },
     {
       "id": "6.1",
       "phase": "Phase 6: Fix Priority & Ordering Issues",
       "description": "Review and Align Priority Assignments",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T01:35:36.733Z",
+      "completedAt": "2025-12-25T01:37:59.420Z",
+      "duration": 142687
     },
     {
       "id": "6.2",
       "phase": "Phase 6: Fix Priority & Ordering Issues",
       "description": "Define Implementation Phases",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T01:38:07.664Z",
+      "completedAt": "2025-12-25T01:39:19.146Z",
+      "duration": 71482
     },
     {
       "id": "6.3",
       "phase": "Phase 6: Fix Priority & Ordering Issues",
       "description": "Standardize Sub-Command Priorities",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T01:39:26.024Z",
+      "completedAt": "2025-12-25T02:09:32.714Z",
+      "duration": 1806690,
+      "notes": "Added Sub-Command Priorities section to implementation-plan-standards.md with format guidelines. Updated all 24 implement-*-command.md files with explicit sub-command priority tables. Each table includes Priority (P0/P1/P2), Scope (MVP/Core/Enhancement), and Description. Priorities respect internal dependencies (P0 MVP first, then P0 Core, P1, P2)."
     },
     {
       "id": "7.1",
       "phase": "Phase 7: Resolve Overlapping Scope",
       "description": "Clarify Analysis Command Boundaries",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T02:10:44.348Z",
+      "completedAt": "2025-12-25T02:12:41.186Z",
+      "duration": 116838,
+      "notes": "Added Command Boundaries section to implement-analyze-command.md, implement-review-command.md, and implement-audit-command.md. Created analysis-command-selection-guide.md in docs/standards/. All three plans now have clear non-overlapping boundaries."
     },
     {
       "id": "7.2",
       "phase": "Phase 7: Resolve Overlapping Scope",
       "description": "Clarify Architecture Command Boundaries",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T02:12:41.189Z",
+      "completedAt": "2025-12-25T02:14:58.087Z",
+      "duration": 136898,
+      "notes": "Added Command Boundaries section to implement-refactor-command.md, implement-design-command.md, and implement-architect-command.md. Created architecture-command-selection-guide.md in docs/standards/. All three plans now have clear scope hierarchy and handoff points."
     },
     {
       "id": "7.3",
       "phase": "Phase 7: Resolve Overlapping Scope",
       "description": "Clarify Documentation Command Boundaries",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T02:14:58.090Z",
+      "completedAt": "2025-12-25T02:16:49.977Z",
+      "duration": 111887,
+      "notes": "Added Command Boundaries section to implement-document-command.md and implement-explain-command.md. Created documentation-command-selection-guide.md in docs/standards/. Both plans now have clear distinctions including Diátaxis alignment and handoff points."
     },
     {
       "id": "7.4",
       "phase": "Phase 7: Resolve Overlapping Scope",
       "description": "Clarify Quality Verification Boundaries",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T02:16:49.980Z",
+      "completedAt": "2025-12-25T02:18:44.703Z",
+      "duration": 114723,
+      "notes": "Added Command Boundaries section to implement-test-command.md and implement-validate-command.md. Created quality-verification-command-selection-guide.md in docs/standards/. Both plans now have clear distinctions between runtime testing and static validation."
     },
     {
       "id": "8.1",
       "phase": "Phase 8: Fix Technical Inconsistencies",
       "description": "Standardize Artifact Discovery",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T02:19:30.395Z",
+      "completedAt": "2025-12-25T02:23:20.854Z",
+      "duration": 230459,
+      "notes": "Added Artifact Discovery Patterns section to docs/standards/implementation-plan-standards.md with three-tier fallback strategy (registry, convention, filesystem), standard output paths table, implementation pattern, and upstream artifact documentation template."
     },
     {
       "id": "8.2",
       "phase": "Phase 8: Fix Technical Inconsistencies",
       "description": "Standardize Diagram Generation",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T02:19:30.411Z",
+      "completedAt": "2025-12-25T02:23:21.254Z",
+      "duration": 230843,
+      "notes": "Added Diagram Generation Standards section to docs/standards/implementation-plan-standards.md with Mermaid diagram examples for C4 Context, Sequence, State, and ER diagrams. Includes styling standards (color coding, arrow styling) and best practices."
     },
     {
       "id": "8.3",
       "phase": "Phase 8: Fix Technical Inconsistencies",
       "description": "Standardize Input Validation",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T02:19:30.426Z",
+      "completedAt": "2025-12-25T02:23:21.635Z",
+      "duration": 231209,
+      "notes": "Added Input Validation Standards section to docs/standards/implementation-plan-standards.md with three-layer validation pattern: User Input Gathering (AskUserQuestion), Automated Context Analysis (artifact discovery, conflict detection), and Validation with Recovery (schema validation, error recovery). Includes implementation checklist."
     },
     {
       "id": "8.4",
       "phase": "Phase 8: Fix Technical Inconsistencies",
       "description": "Standardize Model Selection",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T02:19:30.441Z",
+      "completedAt": "2025-12-25T02:23:22.039Z",
+      "duration": 231598,
+      "notes": "Enhanced Model Selection Guidelines section in docs/standards/implementation-plan-standards.md. Existing content was already comprehensive with opus/sonnet/haiku guidelines by command type. Standards already covered: Model Selection by Command Type, Common Model Selection Patterns, and When to Use Each Model."
     },
     {
       "id": "8.5",
       "phase": "Phase 8: Fix Technical Inconsistencies",
       "description": "Standardize Quality Gates",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T02:19:30.456Z",
+      "completedAt": "2025-12-25T02:23:22.444Z",
+      "duration": 231988,
+      "notes": "Added Quality Gate Standards section to docs/standards/implementation-plan-standards.md with standard gate schema (critical:0, high:5, medium:20, coverage:85), exit code mapping, coverage thresholds by category, configuration modes (strict/standard/permissive), and CI/CD integration patterns."
     },
     {
       "id": "8.6",
       "phase": "Phase 8: Fix Technical Inconsistencies",
       "description": "Standardize Performance Targets",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T02:24:17.075Z",
+      "completedAt": "2025-12-25T02:25:07.916Z",
+      "duration": 50841,
+      "notes": "Enhanced Performance Targets section in docs/standards/implementation-plan-standards.md with: (1) Comprehensive performance categories with use cases, (2) Sub-command performance mapping with examples, (3) Performance targets by command type table, (4) Performance documentation template, (5) Performance requirements for Success Criteria, (6) Performance testing guidelines, (7) Performance monitoring instrumentation guidance, (8) Added Performance Quick Guide to appendix."
     },
     {
       "id": "9.1",
       "phase": "Phase 9: Fix Additional Issues",
       "description": "Standardize Test Coverage Targets",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T02:25:15.454Z",
+      "completedAt": "2025-12-25T02:25:57.140Z",
+      "duration": 41686,
+      "notes": "Enhanced Test Coverage section in docs/standards/implementation-plan-standards.md with: (1) Standard coverage targets table with thresholds and applications, (2) Coverage by Command Priority table, (3) Coverage by Code Category table, (4) Exception documentation template with ADR reference, (5) Success Criteria template for plans, (6) Added Coverage Quick Guide to appendix."
     },
     {
       "id": "9.2",
       "phase": "Phase 9: Fix Additional Issues",
       "description": "Complete Artifact Schemas",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T02:26:03.165Z",
+      "completedAt": "2025-12-25T02:28:34.575Z",
+      "duration": 151410,
+      "notes": "Created docs/schemas/ directory with formal JSON Schema definitions: (1) artifact-metadata.json - base metadata fields, (2) requirements-spec.json - requirements from /clarify, (3) components-catalog.json - components from /architect, (4) validation-report.json - validation results from /validate, (5) analysis-report.json - findings from /analyze. Added README.md with usage documentation. Updated implementation-plan-standards.md to reference schemas."
     },
     {
       "id": "9.3",
       "phase": "Phase 9: Fix Additional Issues",
       "description": "Complete Configuration Specifications",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T02:28:41.268Z",
+      "completedAt": "2025-12-25T02:30:44.034Z",
+      "duration": 122766,
+      "notes": "Created .claude/config-schema.json with complete JSON Schema for command configuration. Created docs/standards/command-configuration-guide.md with comprehensive documentation of all configuration options. Updated implementation-plan-standards.md with Command Configuration section referencing the new guide."
     },
     {
       "id": "10.1",
       "phase": "Phase 10: Validation & Documentation",
       "description": "Validate All Plans",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T02:31:35.538Z",
+      "completedAt": "2025-12-25T02:36:10.484Z",
+      "duration": 274946,
+      "notes": "Created validation script scripts/validate-plan-format.js. All 38 plans pass validation. Fixed 3 plans: implement-implement-command.md (Risks section, Dependencies subsections), implement-design-command.md (Dependencies subsections), implement-spec-command.md (Dependencies subsections)."
     },
     {
       "id": "10.2",
       "phase": "Phase 10: Validation & Documentation",
       "description": "Create Summary Documentation",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T02:36:10.874Z",
+      "completedAt": "2025-12-25T02:37:54.876Z",
+      "duration": 104002,
+      "notes": "Created docs/plans/README.md with: plan index by priority, command quick reference table, plan template documentation, troubleshooting guide, and validation status."
     },
     {
       "id": "10.3",
       "phase": "Phase 10: Validation & Documentation",
       "description": "Archive Analysis Findings",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-25T02:37:55.257Z",
+      "completedAt": "2025-12-25T02:40:46.415Z",
+      "duration": 171158,
+      "notes": "Created changes-summary.md, lessons-learned.md, and before-after-comparison.md in docs/plan-outputs/fix-implementation-plan-inconsistencies/. Original analysis already existed at original-analysis.md."
     }
   ],
   "runs": [
@@ -277,12 +387,44 @@
       "startedAt": "2025-12-23T17:14:51.373Z",
       "tasksCompleted": 3,
       "tasksFailed": 0
+    },
+    {
+      "runId": "run-1766625876567",
+      "startedAt": "2025-12-25T01:24:36.567Z",
+      "tasksCompleted": 5,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-25T01:28:23.456Z"
+    },
+    {
+      "runId": "run-1766626529565",
+      "startedAt": "2025-12-25T01:35:29.565Z",
+      "tasksCompleted": 0,
+      "tasksFailed": 0
+    },
+    {
+      "runId": "run-1766628644345",
+      "startedAt": "2025-12-25T02:10:44.345Z",
+      "tasksCompleted": 0,
+      "tasksFailed": 0
+    },
+    {
+      "runId": "run-1766629166004",
+      "startedAt": "2025-12-25T02:19:26.004Z",
+      "tasksCompleted": 0,
+      "tasksFailed": 0
+    },
+    {
+      "runId": "run-1766629442802",
+      "startedAt": "2025-12-25T02:24:02.802Z",
+      "tasksCompleted": 4,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-25T02:30:44.427Z"
     }
   ],
   "summary": {
     "totalTasks": 39,
-    "completed": 11,
-    "pending": 28,
+    "completed": 39,
+    "pending": 0,
     "in_progress": 0,
     "failed": 0,
     "skipped": 0

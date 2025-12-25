@@ -10,6 +10,17 @@
 
 > Implement the /design command to enable detailed component-level design that bridges architecture and implementation. The command creates implementation-ready specifications with well-defined interfaces, data structures, interaction patterns, and error handling. It operates between high-level architecture (/architect) and code implementation (/implement), producing artifacts that guide developers with clear contracts and design decisions.
 
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `design:component` | P0 | MVP | Designs component internals with responsibilities, interfaces, and internal structure |
+| `design:api` | P0 | MVP | Designs RESTful/GraphQL APIs with endpoints, DTOs, and validation rules |
+| `design:data` | P0 | MVP | Designs data structures, schemas, validation rules, and relationships |
+| `design:interactions` | P1 | Core | Designs component interaction patterns with sequence diagrams and message flows |
+| `design:state` | P1 | Core | Designs state management with state machines and transition rules |
+| `design:ui` | P2 | Enhancement | Designs UI component hierarchy with props, events, and styling approach |
+
 ---
 
 
@@ -17,35 +28,83 @@
 
 ## Dependencies
 
-### Tool Requirements
+### Upstream
+- `/architect` - Consumes system-level architecture decisions and component boundaries
+- `/clarify` - Consumes requirements.json for requirements-driven design
+- `/explore` - Uses exploration reports for codebase context
+
+### Downstream
+- `/implement` - Consumes design-spec.md, interfaces.md for code generation
+- `/test` - Uses design specs for test generation
+- `/spec` - Formalizes design into OpenAPI/JSON Schema
+- `/document` - References design specifications for documentation
+
+### External Tools
 - Read, Grep, Glob tools for codebase analysis
 - Write tool for artifact generation
 - AskUserQuestion for interactive design sessions
 - JSON and Markdown file format support
+- Mermaid for diagram generation
+- JSON Schema draft-07 or later for schema validation
 
-### Upstream Dependencies
-- /architect command should be implemented first for system context
-- /clarify command provides requirements input
-- components.json schema must be defined
-- architecture.md schema must be defined
+### Artifact Compatibility
+See `docs/architecture/artifact-compatibility-matrix.md` for detailed artifact schemas and producer-consumer relationships.
 
-### Downstream Consumers
-- /implement command will consume design artifacts
-- /test command will use design specs for test generation
-- /spec command will formalize design into OpenAPI/JSON Schema
-- /document command will reference design specifications
+---
 
-### Skill System Requirements
-- Support for sub-command notation (design:component syntax)
-- YAML frontmatter parsing
-- Output artifact tracking
-- Command chaining and artifact passing
+## Command Boundaries
 
-### Schema Standards
-- JSON Schema draft-07 or later
-- OpenAPI 3.1 compatibility
-- Mermaid diagram syntax support
-- TypeScript interface syntax for default language
+### Scope Definition
+The `/design` command focuses on **component-level design decisions** that bridge architecture and implementation. It defines interfaces, contracts, and internal structure.
+
+### Primary Focus
+- **Component/module level**: Interface definitions, internal structure, responsibilities
+- **Contract specification**: API contracts, DTOs, error types, events
+- **Interaction design**: Sequence diagrams, state machines, message flows
+- **Implementation guidance**: Design decisions that guide code structure
+
+### Scope Hierarchy
+
+| Command | Scope Level | Focus | Artifacts |
+|---------|-------------|-------|-----------|
+| `/refactor` | Function/Class | Implementation structure | refactoring-plan.md, impact-analysis.json |
+| `/design` | Component/Module | Interfaces and contracts | design-spec.md, interfaces.md |
+| `/architect` | System/Service | Architecture decisions | architecture.md, components.json |
+
+### Boundary Rules
+1. `/design` defines **what code does**, `/refactor` changes **how code works**
+2. `/design` operates within architecture constraints from `/architect`
+3. `/design` produces specifications, `/refactor` produces code changes
+4. `/design` defines interfaces, `/implement` realizes them
+
+### When to Use /design vs /refactor vs /architect
+
+| Scenario | Use This Command | Rationale |
+|----------|------------------|-----------|
+| "Design component interface" | `/design:component` | Interface specification |
+| "Define API contracts" | `/design:api` | Contract definition |
+| "Design data model" | `/design:data` | Schema specification |
+| "Design state management" | `/design:state` | State machine definition |
+| "Plan system architecture" | `/architect:system` | High-level design |
+| "Define deployment topology" | `/architect:deployment` | Infrastructure design |
+| "Extract this method" | `/refactor:extract` | Code-level change |
+| "Reduce complexity" | `/refactor:simplify` | Implementation optimization |
+
+### Handoff Points
+
+**Architect → Design:**
+- architecture.md Section 3 (Container Architecture) → design-spec.md component context
+- components.json → design-spec.md "Dependencies" section
+- architecture.md Section 9 (Technology Choices) → interfaces.md language parameter
+
+**Design → Implement:**
+- design-spec.md → implementation guidance for /implement
+- interfaces.md → TypeScript/Python interfaces to implement
+- interaction-diagrams.md → integration test scenarios
+
+**Design → Refactor:**
+- design-spec.md → refactor:patterns pattern selection
+- interfaces.md → refactor:types type annotations
 
 ---
 
@@ -60,6 +119,9 @@
 | State machine complexity | Medium | Limit state count, provide visual diagrams, validate with stakeholders |
 | Pattern misapplication | Medium | Provide pattern selection guidance, include anti-pattern warnings |
 | Cross-component inconsistency | High | Share type definitions, validate interface compatibility across components |
+
+---
+
 ## Phase 1: Core Command Setup
 
 **Objective:** Establish base /design command infrastructure with YAML frontmatter and output directory structure

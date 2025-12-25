@@ -3,7 +3,7 @@
 ## Overview
 
 - **Goal:** Implement comprehensive error recovery framework with automatic retry, checkpoint/resume, and rollback capabilities
-- **Priority:** P1 (Infrastructure)
+- **Priority:** P0 (Critical Infrastructure - required by artifact-registry)
 - **Created:** 2025-12-22
 - **Output:** `docs/plan-outputs/error-recovery-hooks/`
 

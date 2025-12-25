@@ -10,6 +10,17 @@
 
 > The /architect command provides system-level and high-level architecture design capabilities. It helps developers create comprehensive architecture documentation including C4 diagrams, component specifications, and architectural decision records (ADRs). It operates at the system boundary level - defining how major components interact, data flows, deployment architecture, and cross-cutting concerns.
 
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `architect:system` | P0 | MVP | Creates system-level architecture with C4 Context and Container diagrams |
+| `architect:components` | P0 | MVP | Decomposes containers into logical components with interfaces and dependencies |
+| `architect:data` | P1 | Core | Designs data architecture, data flows, and data governance strategy |
+| `architect:deployment` | P1 | Core | Defines infrastructure topology, deployment strategy, and operations |
+| `architect:adr` | P1 | Core | Creates Architectural Decision Records for major technology and design decisions |
+| `architect:security` | P2 | Enhancement | Designs security architecture with threat modeling and security controls |
+
 ---
 
 
@@ -32,6 +43,66 @@
 ### External Tools
 - Mermaid - Required for diagram rendering (C4, sequence, data flow)
 - Git - Required for ADR version tracking
+
+### Artifact Compatibility
+See `docs/architecture/artifact-compatibility-matrix.md` for detailed artifact schemas and producer-consumer relationships.
+
+---
+
+## Command Boundaries
+
+### Scope Definition
+The `/architect` command focuses on **system-level architecture decisions**. It defines boundaries, technology choices, and cross-cutting concerns that shape the entire system.
+
+### Primary Focus
+- **System/service level**: Component boundaries, service decomposition, integration patterns
+- **Technology decisions**: Frameworks, databases, infrastructure, deployment targets
+- **Quality attributes**: Performance requirements, scalability patterns, security architecture
+- **Architectural decisions**: ADRs documenting significant choices and rationale
+
+### Scope Hierarchy
+
+| Command | Scope Level | Focus | Artifacts |
+|---------|-------------|-------|-----------|
+| `/refactor` | Function/Class | Implementation structure | refactoring-plan.md, impact-analysis.json |
+| `/design` | Component/Module | Interfaces and contracts | design-spec.md, interfaces.md |
+| `/architect` | System/Service | Architecture decisions | architecture.md, components.json |
+
+### Boundary Rules
+1. `/architect` defines **system structure**, `/design` details **component internals**
+2. `/architect` sets constraints, `/design` and `/refactor` operate within them
+3. `/architect` produces strategic decisions, `/design` produces tactical specifications
+4. `/architect` owns cross-cutting concerns (security, observability, scalability)
+
+### When to Use /architect vs /design vs /refactor
+
+| Scenario | Use This Command | Rationale |
+|----------|------------------|-----------|
+| "Plan system architecture" | `/architect:system` | High-level design |
+| "Define deployment topology" | `/architect:deployment` | Infrastructure design |
+| "Document architecture decision" | `/architect:adr` | Decision records |
+| "Evaluate technology options" | `/architect:evaluate` | Technology selection |
+| "Create C4 diagrams" | `/architect:diagram` | System visualization |
+| "Design component interface" | `/design:component` | Interface specification |
+| "Define API contracts" | `/design:api` | Contract definition |
+| "Design data model" | `/design:data` | Schema specification |
+| "Extract this method" | `/refactor:extract` | Code-level change |
+
+### Handoff Points
+
+**Architect → Design:**
+- architecture.md Section 3 (Container Architecture) → component boundaries for design-spec.md
+- components.json → components to be detailed in /design
+- architecture.md Section 9 (Technology Choices) → language/framework constraints for interfaces.md
+- ADRs → design decisions to follow in component design
+
+**Architect → Implement:**
+- architecture.md Section 4 (API & Integration) → API implementation patterns
+- architecture.md Section 6 (Data Architecture) → data access implementation
+
+**Architect → Validate:**
+- architecture.md Section 5 (Quality Attributes) → validation thresholds
+- components.json → architecture conformance checks
 
 ---
 

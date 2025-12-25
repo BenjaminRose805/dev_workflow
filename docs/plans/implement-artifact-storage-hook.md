@@ -3,7 +3,7 @@
 ## Overview
 
 - **Goal:** Implement post-command hook system for automatic artifact detection, deduplication, and registry management
-- **Priority:** P1 (Infrastructure)
+- **Priority:** P0 (Critical Infrastructure - essential for artifact persistence)
 - **Created:** 2025-12-22
 - **Output:** `docs/plan-outputs/artifact-storage-hook/`
 - **Model:** haiku (fast artifact processing)

@@ -11,6 +11,17 @@
 
 > The /brainstorm command generates creative ideas and explores solution spaces before committing to an approach. It uses specialized prompting techniques (constraint relaxation, perspective shifting, analogical thinking) to encourage divergent thinking and produce diverse alternatives with structured comparison.
 
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `brainstorm:solutions` | P0 | MVP | Generate diverse solution approaches with structured comparison and effort/risk assessment |
+| `brainstorm:architecture` | P0 | MVP | Explore architectural alternatives (monolithic, microservices, event-driven, etc.) |
+| `brainstorm:features` | P1 | Core | Feature ideation with categorization (core, enhancement, differentiator, future) |
+| `brainstorm:approaches` | P1 | Core | Compare implementation strategies with decision framework and weighted scoring |
+| `brainstorm:apis` | P2 | Enhancement | API design ideation exploring REST, GraphQL, RPC, and event-based options |
+| `brainstorm:names` | P2 | Enhancement | Naming suggestions with convention analysis and style consistency |
+
 ---
 
 

@@ -1,0 +1,193 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "components-catalog.json",
+  "title": "Components Catalog Schema",
+  "description": "Schema for component catalogs produced by /architect command",
+  "type": "object",
+  "required": ["artifact_type", "version", "created_at", "created_by", "command", "status", "components"],
+  "properties": {
+    "artifact_type": {
+      "type": "string",
+      "const": "components-catalog"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "string",
+      "enum": ["sonnet", "opus", "haiku"]
+    },
+    "command": {
+      "type": "string",
+      "const": "/architect"
+    },
+    "subcommand": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "active", "superseded", "archived"]
+    },
+    "summary": {
+      "type": "object",
+      "description": "Summary of the component catalog",
+      "properties": {
+        "total_components": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "by_type": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "by_layer": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "components": {
+      "type": "array",
+      "description": "List of architectural components",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "type", "description"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique component identifier",
+            "pattern": "^COMP-[A-Z0-9-]+$"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable component name"
+          },
+          "type": {
+            "type": "string",
+            "description": "Component type",
+            "enum": ["service", "library", "module", "container", "external", "database", "queue", "cache"]
+          },
+          "layer": {
+            "type": "string",
+            "description": "Architectural layer",
+            "enum": ["presentation", "application", "domain", "infrastructure", "external"]
+          },
+          "description": {
+            "type": "string",
+            "description": "Component description and responsibility"
+          },
+          "technology": {
+            "type": "object",
+            "description": "Technology stack for this component",
+            "properties": {
+              "language": { "type": "string" },
+              "framework": { "type": "string" },
+              "runtime": { "type": "string" }
+            }
+          },
+          "interfaces": {
+            "type": "array",
+            "description": "Interfaces exposed by this component",
+            "items": {
+              "type": "object",
+              "required": ["name", "type"],
+              "properties": {
+                "name": { "type": "string" },
+                "type": {
+                  "type": "string",
+                  "enum": ["rest", "graphql", "grpc", "event", "file", "cli"]
+                },
+                "protocol": { "type": "string" },
+                "port": { "type": "integer" }
+              }
+            }
+          },
+          "dependencies": {
+            "type": "array",
+            "description": "Components this component depends on",
+            "items": {
+              "type": "object",
+              "required": ["component_id", "type"],
+              "properties": {
+                "component_id": {
+                  "type": "string",
+                  "pattern": "^COMP-[A-Z0-9-]+$"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": ["sync", "async", "optional"]
+                },
+                "interface": { "type": "string" }
+              }
+            }
+          },
+          "data_stores": {
+            "type": "array",
+            "description": "Data stores used by this component",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "type": {
+                  "type": "string",
+                  "enum": ["sql", "nosql", "cache", "file", "queue"]
+                },
+                "technology": { "type": "string" }
+              }
+            }
+          },
+          "requirements_implemented": {
+            "type": "array",
+            "description": "Requirement IDs implemented by this component",
+            "items": {
+              "type": "string",
+              "pattern": "^REQ-\\d{3,}$"
+            }
+          },
+          "location": {
+            "type": "object",
+            "description": "Location in the codebase",
+            "properties": {
+              "path": { "type": "string" },
+              "entry_point": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "description": "Explicit relationships between components",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "type"],
+        "properties": {
+          "from": {
+            "type": "string",
+            "pattern": "^COMP-[A-Z0-9-]+$"
+          },
+          "to": {
+            "type": "string",
+            "pattern": "^COMP-[A-Z0-9-]+$"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["uses", "extends", "implements", "contains", "communicates"]
+          },
+          "description": { "type": "string" }
+        }
+      }
+    }
+  }
+}

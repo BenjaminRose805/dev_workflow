@@ -3,7 +3,7 @@
 ## Overview
 
 - **Goal:** Implement conditional branching, loops, and error handling patterns to enable adaptive workflow execution
-- **Priority:** P0
+- **Priority:** P1 (Workflow Extension - same tier as workflow-loops)
 - **Created:** 2025-12-22
 - **Output:** `docs/plan-outputs/workflow-branching/`
 

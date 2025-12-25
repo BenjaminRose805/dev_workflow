@@ -8,6 +8,15 @@
 
 > Implement the /clarify command to enable systematic requirements discovery through guided questioning. The command uses a 3-phase approach (Understanding Context → Deep Dive → Synthesis) to extract functional requirements, scope boundaries, constraints, and acceptance criteria before transitioning to architecture/design phases.
 
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `clarify:requirements` | P0 | MVP | Extract functional and non-functional requirements through Socratic questioning |
+| `clarify:scope` | P0 | MVP | Define scope boundaries with In/Out of scope identification and creep detection |
+| `clarify:acceptance` | P1 | Core | Generate testable acceptance criteria with validation templates |
+| `clarify:constraints` | P1 | Core | Identify technical, business, resource, and timeline constraints |
+| `clarify:stakeholders` | P2 | Enhancement | Map stakeholders, roles, decision-makers, and communication plans |
 
 ---
 

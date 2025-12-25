@@ -8,6 +8,20 @@
 
 > Implement the /analyze command system that provides comprehensive static and dynamic code analysis capabilities. Supports security vulnerability detection (OWASP Top 10, CWE patterns), performance bottleneck identification, code quality metrics, dependency analysis, architecture conformance, accessibility compliance, and test quality assessment. Generates structured artifacts including findings.json, metrics.json, analysis reports, and prioritized recommendations.
 
+### Sub-Command Priorities
+
+| Sub-Command | Priority | Scope | Description |
+|-------------|----------|-------|-------------|
+| `analyze:security` | P0 | MVP | OWASP Top 10, CWE patterns, credential exposure detection |
+| `analyze:performance` | P0 | MVP | Algorithmic complexity, N+1 queries, memory leak detection |
+| `analyze:quality` | P0 | MVP | Cyclomatic/cognitive complexity, code smells, tech debt estimation |
+| `analyze:dependencies` | P1 | Core | CVE detection, outdated packages, license compliance analysis |
+| `analyze:architecture` | P1 | Core | Layer violations, circular dependencies, SOLID principles |
+| `analyze:accessibility` | P1 | Enhancement | WCAG 2.1 compliance, ARIA usage, keyboard navigation checks |
+| `analyze:test` | P1 | Enhancement | Test quality, coverage gaps, flaky test detection |
+
+---
+
 ## Dependencies
 
 ### Upstream
@@ -24,6 +38,44 @@
 - AST parsing libraries (language-specific)
 - Complexity calculation tools (escomplex for JS/TS)
 - Security pattern databases (CWE, OWASP references)
+
+---
+
+## Command Boundaries
+
+### Scope Definition
+The `/analyze` command focuses on **automated static analysis, metrics, and pattern detection**. It provides objective, quantitative assessments of code quality without subjective recommendations.
+
+### Primary Focus
+- **Automated static analysis**: AST-based pattern detection, code parsing, structural analysis
+- **Quantitative metrics**: Cyclomatic complexity, cognitive complexity, maintainability index
+- **Pattern detection**: Security patterns (OWASP), performance anti-patterns, code smells
+- **Dependency analysis**: CVE detection, license compliance, outdated packages
+
+### Relationship to Other Commands
+
+| Command | Scope | Key Differentiator |
+|---------|-------|-------------------|
+| `/analyze` | Automated metrics and patterns | **Objective, tool-driven findings** - produces raw data |
+| `/review` | AI-powered suggestions | **Subjective, improvement-focused** - interprets and suggests |
+| `/audit` | Compliance verification | **Policy-driven, evidence-based** - validates against standards |
+
+### Boundary Rules
+1. `/analyze` **produces data**, `/review` **interprets data**
+2. `/analyze` uses static analysis tools, `/review` uses AI reasoning
+3. `/analyze` generates metrics.json + findings.json, `/review` generates suggestions.json
+4. OWASP/CWE detection starts in `/analyze:security`, escalates to `/audit:security` for compliance mapping
+
+### When to Use /analyze vs /review vs /audit
+
+| Scenario | Use This Command | Rationale |
+|----------|------------------|-----------|
+| "What's my code complexity?" | `/analyze:quality` | Objective metrics |
+| "How can I improve this code?" | `/review:file` | Subjective suggestions |
+| "Are we SOC2 compliant?" | `/audit:compliance` | Policy verification |
+| "Any security vulnerabilities?" | `/analyze:security` | Pattern detection |
+| "Is this PR ready to merge?" | `/review:pr` | Holistic assessment |
+| "Are we OWASP Top 10 compliant?" | `/audit:security` | Compliance mapping |
 
 ---
 
