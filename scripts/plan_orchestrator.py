@@ -174,7 +174,18 @@ class PlanOrchestrator:
             return None
 
     def get_next_tasks(self, count: int = 5) -> list:
-        """Get next recommended tasks via status-cli.js."""
+        """Get next recommended tasks via status-cli.js.
+
+        Returns a list of task objects, each containing:
+        - id: Task ID (e.g., "3.1")
+        - description: Task description
+        - phase: Phase number
+        - status: Task status
+        - reason: Why this task was selected
+        - sequential: True if task is in a sequential group (optional)
+        - sequentialGroup: Range like "3.1-3.4" if sequential (optional)
+        - sequentialReason: Reason for sequential constraint (optional)
+        """
         try:
             result = subprocess.run(
                 ["node", STATUS_CLI_JS, "next", str(count)],
@@ -186,10 +197,68 @@ class PlanOrchestrator:
                 return []
 
             data = json.loads(result.stdout)
-            return data.get("tasks", [])
+            tasks = data.get("tasks", [])
+
+            # Log constraint metadata for debugging
+            for task in tasks:
+                if task.get("sequential"):
+                    self.logger.debug(
+                        f"Task {task.get('id')} has sequential constraint: "
+                        f"group={task.get('sequentialGroup')}, reason={task.get('sequentialReason')}"
+                    )
+
+            return tasks
         except Exception as e:
             self.logger.error(f"Failed to get next tasks: {e}")
             return []
+
+    def _filter_sequential_tasks(self, tasks: list) -> list:
+        """Filter tasks to respect sequential constraints.
+
+        If multiple tasks share the same sequentialGroup, only include the first one
+        (by task ID order). This ensures tasks marked [SEQUENTIAL] run one at a time.
+
+        Args:
+            tasks: List of task objects from get_next_tasks()
+
+        Returns:
+            Filtered list respecting sequential constraints. Tasks not in any
+            sequential group are passed through unchanged.
+        """
+        if not tasks:
+            return []
+
+        # Track which sequential groups we've already included
+        seen_groups = set()
+        filtered = []
+        held_back = []
+
+        for task in tasks:
+            seq_group = task.get("sequentialGroup")
+
+            if seq_group:
+                if seq_group in seen_groups:
+                    # Already have a task from this group, hold this one back
+                    held_back.append(task)
+                    continue
+                # First task from this sequential group
+                seen_groups.add(seq_group)
+
+            filtered.append(task)
+
+        # Log held-back tasks
+        for task in held_back:
+            # Find which task is running from the same group
+            running_task = next(
+                (t for t in filtered if t.get("sequentialGroup") == task.get("sequentialGroup")),
+                None
+            )
+            running_id = running_task.get("id") if running_task else "unknown"
+            self.logger.info(
+                f"Task {task.get('id')} held back (sequential with {running_id})"
+            )
+
+        return filtered
 
     def get_retryable_tasks(self) -> list:
         """Get failed tasks that can be retried (retryCount < 2)."""
@@ -538,16 +607,26 @@ class PlanOrchestrator:
 
                 # Get next tasks for context
                 next_tasks = self.get_next_tasks(self.batch_size)
-                task_ids = [t.get("id", "?") for t in next_tasks]
+
+                # Filter out tasks that would violate sequential constraints
+                # (only include first task from each sequential group)
+                filtered_tasks = self._filter_sequential_tasks(next_tasks)
+                if len(filtered_tasks) < len(next_tasks):
+                    self.logger.info(
+                        f"Filtered {len(next_tasks)} tasks to {len(filtered_tasks)} "
+                        f"(respecting sequential constraints)"
+                    )
+
+                task_ids = [t.get("id", "?") for t in filtered_tasks]
 
                 if self.use_tui:
                     self.tui.set_status(f"Running tasks: {', '.join(task_ids)}")
-                    self.tui.update_tasks(next_tasks, self.tui.recent_completions)
+                    self.tui.update_tasks(filtered_tasks, self.tui.recent_completions)
                 else:
                     self.logger.info(f"Next tasks: {', '.join(task_ids)}")
 
-                # Build prompt for Claude
-                prompt = self._build_prompt(status, next_tasks)
+                # Build prompt for Claude (using filtered tasks)
+                prompt = self._build_prompt(status, filtered_tasks)
 
                 # Run Claude session
                 if self.use_tui:
@@ -619,7 +698,10 @@ class PlanOrchestrator:
             for t in next_tasks
         )
 
-        return f"""Execute these tasks from the plan:
+        # Build sequential constraints section if any tasks have constraints
+        constraints_section = self._build_constraints_section(next_tasks)
+
+        prompt = f"""Execute these tasks from the plan:
 
 {task_list}
 
@@ -627,7 +709,7 @@ Plan: {status.plan_path}
 Progress: {status.percentage}% ({status.completed}/{status.total} tasks)
 
 Run: /plan:implement {task_ids} --autonomous
-
+{constraints_section}
 ## Rules
 
 - Execute autonomously - do NOT ask for confirmation
@@ -636,6 +718,35 @@ Run: /plan:implement {task_ids} --autonomous
 - Stop after completing this batch or if blocked by unrecoverable error
 - If a task fails, the command will mark it failed and continue to next task
 - Check progress: `node scripts/status-cli.js progress`"""
+        return prompt
+
+    def _build_constraints_section(self, tasks: list) -> str:
+        """Build the Sequential Constraints section for the prompt.
+
+        Args:
+            tasks: List of task objects, potentially with constraint metadata
+
+        Returns:
+            Formatted constraint section string, or empty string if no constraints
+        """
+        # Collect unique sequential groups from tasks
+        groups = {}
+        for task in tasks:
+            if task.get("sequential"):
+                group = task.get("sequentialGroup", "unknown")
+                reason = task.get("sequentialReason", "")
+                if group not in groups:
+                    groups[group] = reason
+
+        if not groups:
+            return ""
+
+        lines = ["\n## Sequential Constraints\n"]
+        for group, reason in groups.items():
+            reason_text = f" - {reason}" if reason else ""
+            lines.append(f"- Tasks {group}: [SEQUENTIAL]{reason_text}")
+
+        return "\n".join(lines)
 
 
 def main():
