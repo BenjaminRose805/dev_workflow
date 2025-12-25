@@ -39,6 +39,13 @@
   - Record the branch name in status.json metadata under a "branch" field
   - Ensure graceful handling when git is unavailable (detect with `git --version` check)
 
+**VERIFY Phase 1:**
+- [ ] Running `/plan:set test-plan` creates branch `plan/test-plan` (verify with `git branch --list plan/test-plan`)
+- [ ] Running `/plan:set test-plan` again switches to existing branch without error
+- [ ] Making uncommitted changes then running `/plan:set other-plan` displays warning prompt
+- [ ] status.json contains `"branch": "plan/test-plan"` in metadata section
+- [ ] Running `/plan:set` in non-git directory shows graceful fallback message
+
 ## Phase 2: Branch Validation in /plan:implement
 
 - [ ] 2.1 Add branch validation and enhanced commit formatting to `/plan:implement` command
@@ -49,6 +56,13 @@
   - Update the existing commit step to include plan name and phase information in the commit body
   - Commit message format should be: `[plan-name] Task X.Y: <description>` with plan/phase metadata in body
   - Ensure all git operations handle non-git environments gracefully
+
+**VERIFY Phase 2:**
+- [ ] Running `/plan:implement` while on wrong branch shows warning message with correct branch name
+- [ ] Running `/plan:implement` on non-plan branch (e.g., `master`) shows warning but continues
+- [ ] Commits created by `/plan:implement` follow format `[plan-name] Task X.Y: <description>`
+- [ ] Commit body includes plan name and phase metadata
+- [ ] Running `/plan:implement` in non-git environment completes without git-related errors
 
 ## Phase 3: Git Utilities Documentation
 
@@ -62,6 +76,12 @@
   - Add error handling patterns for when git is not available
   - Document how to parse git command outputs reliably
 
+**VERIFY Phase 3:**
+- [ ] status-tracking.md contains documented patterns for all 5 git utilities listed above
+- [ ] Each pattern includes at least one code example showing bash command usage
+- [ ] Error handling section documents git unavailable scenario with example fallback
+- [ ] Documentation is findable via search for "getCurrentBranch" or "git utilities"
+
 ## Phase 4: Status Display Updates
 
 - [ ] 4.1 Enhance `/plan:status` and CLI status to display git information
@@ -74,6 +94,14 @@
   - Handle non-git environments by showing "N/A" or omitting git section entirely
   - Ensure performance remains good by caching git queries where appropriate
 
+**VERIFY Phase 4:**
+- [ ] `/plan:status` output includes "Branch:" line showing current git branch
+- [ ] `/plan:status` output includes "Uncommitted:" count (verify with modified file)
+- [ ] `/plan:status` output includes "Commits:" count for plan branch
+- [ ] `/plan:status` output includes "Last:" with abbreviated SHA and commit message
+- [ ] `node scripts/status-cli.js progress` shows same git information
+- [ ] In non-git directory, status output shows "N/A" or omits git section gracefully
+
 ## Phase 5: Integration Testing
 
 - [ ] 5.1 Create and execute comprehensive integration test suite for git workflow
@@ -85,6 +113,13 @@
   - Document all test cases and their expected outcomes in findings
   - Run actual commands and capture outputs to verify behavior
   - Create a test checklist showing pass/fail for each scenario
+
+**VERIFY Phase 5:**
+- [ ] Test findings document exists at `docs/plan-outputs/git-workflow-phase1-core-branching/findings/5.1.md`
+- [ ] Findings include test checklist with at least 8 test cases covering the scenarios above
+- [ ] Each test case shows pass/fail status with actual command output captured
+- [ ] All critical path tests (branch creation, switching, commits) pass
+- [ ] Edge case tests are documented even if some fail (with failure notes)
 
 ## Success Criteria
 
