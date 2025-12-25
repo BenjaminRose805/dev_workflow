@@ -5,55 +5,69 @@
 - **Dependencies:** None (foundation phase)
 - **Builds On:** Existing `/plan:implement` commit step
 - **Created:** 2024-12-25
+- **Restructured:** 2024-12-25 (consolidated for orchestrator isolation)
 - **Output:** `docs/plan-outputs/git-workflow-phase1-core-branching/`
 
 > Task findings are written to the `findings/` subdirectory. Use `/plan:status` to view progress.
 
 ## Phase 1: Branch Management in /plan:set
 
-- [ ] 1.1 Read current `/plan:set` command and understand its workflow
-- [ ] 1.2 Add git branch check: does `plan/{plan-name}` exist?
-- [ ] 1.3 If branch doesn't exist, create it: `git checkout -b plan/{plan-name}`
-- [ ] 1.4 If branch exists, switch to it: `git checkout plan/{plan-name}`
-- [ ] 1.5 Add uncommitted changes detection before branch switch
-- [ ] 1.6 Present options when uncommitted changes exist: Commit, Stash, Cancel
-- [ ] 1.7 Record branch name in status.json metadata
-- [ ] **VERIFY 1**: `/plan:set` creates and switches branches correctly
+- [ ] 1.1 Implement complete branch management in `/plan:set` command
+  - Read current `/plan:set` command implementation to understand its workflow
+  - Add git branch detection to check if `plan/{plan-name}` branch exists using `git rev-parse --verify plan/{plan-name}`
+  - If branch doesn't exist, create it with `git checkout -b plan/{plan-name}`
+  - If branch exists, switch to it with `git checkout plan/{plan-name}`
+  - Implement uncommitted changes detection before any branch switch using `git status --porcelain`
+  - When uncommitted changes are detected, present interactive options: Commit, Stash, or Cancel
+  - Record the branch name in status.json metadata under a "branch" field
+  - Ensure graceful handling when git is unavailable (detect with `git --version` check)
 
 ## Phase 2: Branch Validation in /plan:implement
 
-- [ ] 2.1 Add branch validation at start of `/plan:implement`
-- [ ] 2.2 Check if currently on expected `plan/{plan-name}` branch
-- [ ] 2.3 If on wrong branch, warn user and offer to switch
-- [ ] 2.4 If not on any plan branch, warn but allow continue (backwards compat)
-- [ ] 2.5 Update the existing commit step to include plan/phase in commit body
-- [ ] **VERIFY 2**: `/plan:implement` validates branch and creates proper commits
+- [ ] 2.1 Add branch validation and enhanced commit formatting to `/plan:implement` command
+  - At the start of `/plan:implement`, add branch validation logic
+  - Check if currently on expected `plan/{plan-name}` branch using `git branch --show-current`
+  - If on wrong plan branch, warn user and offer to switch to correct branch
+  - If not on any plan branch (no `plan/` prefix), warn but allow continue for backwards compatibility
+  - Update the existing commit step to include plan name and phase information in the commit body
+  - Commit message format should be: `[plan-name] Task X.Y: <description>` with plan/phase metadata in body
+  - Ensure all git operations handle non-git environments gracefully
 
-## Phase 3: Git Utilities
+## Phase 3: Git Utilities Documentation
 
-- [ ] 3.1 Create git utility functions documentation in status-tracking.md
-- [ ] 3.2 Document `getCurrentBranch()` pattern (use `git branch --show-current`)
-- [ ] 3.3 Document `isOnPlanBranch()` pattern (check prefix `plan/`)
-- [ ] 3.4 Document `getPlanBranchName(planName)` pattern
-- [ ] 3.5 Document `hasUncommittedChanges()` pattern (use `git status --porcelain`)
-- [ ] **VERIFY 3**: Utility patterns documented and usable by commands
+- [ ] 3.1 Create comprehensive git utility patterns documentation in status-tracking.md
+  - Document `getCurrentBranch()` pattern: use `git branch --show-current`
+  - Document `isOnPlanBranch()` pattern: check if branch name has `plan/` prefix
+  - Document `getPlanBranchName(planName)` pattern: return `plan/{planName}` format
+  - Document `hasUncommittedChanges()` pattern: use `git status --porcelain` and check for non-empty output
+  - Document `branchExists(branchName)` pattern: use `git rev-parse --verify` or `git branch --list`
+  - Include code examples for each pattern showing how to call git commands via child_process
+  - Add error handling patterns for when git is not available
+  - Document how to parse git command outputs reliably
 
 ## Phase 4: Status Display Updates
 
-- [ ] 4.1 Update `/plan:status` to show current git branch
-- [ ] 4.2 Show uncommitted changes count in status output
-- [ ] 4.3 Show commit count for current plan branch
-- [ ] 4.4 Show last commit SHA and message (abbreviated)
-- [ ] 4.5 Add git info to `node scripts/status-cli.js progress` output
-- [ ] **VERIFY 4**: Status displays git information correctly
+- [ ] 4.1 Enhance `/plan:status` and CLI status to display git information
+  - Update `/plan:status` skill to show current git branch at the top of output
+  - Add uncommitted changes count using `git status --porcelain | wc -l`
+  - Show commit count for current plan branch using `git rev-list --count HEAD ^master`
+  - Display last commit SHA (abbreviated to 7 chars) and message using `git log -1 --format="%h %s"`
+  - Update `node scripts/status-cli.js progress` to include the same git information
+  - Format git info section clearly with labels like "Branch:", "Uncommitted:", "Commits:", "Last:"
+  - Handle non-git environments by showing "N/A" or omitting git section entirely
+  - Ensure performance remains good by caching git queries where appropriate
 
 ## Phase 5: Integration Testing
 
-- [ ] 5.1 Test full workflow: set plan → implement tasks → verify commits exist
-- [ ] 5.2 Test branch switching between plans
-- [ ] 5.3 Test uncommitted changes handling
-- [ ] 5.4 Test backwards compatibility (running without git or outside repo)
-- [ ] **VERIFY 5**: All integration tests pass
+- [ ] 5.1 Create and execute comprehensive integration test suite for git workflow
+  - Test complete workflow: run `/plan:set test-plan`, verify branch created, implement tasks, verify commits exist
+  - Test branch switching: set plan A, set plan B, verify switches and branch creation
+  - Test uncommitted changes handling: make changes, try to switch plans, verify prompts appear
+  - Test backwards compatibility: run commands outside git repo or with git unavailable
+  - Test edge cases: branch already exists, switching to same plan, invalid plan names
+  - Document all test cases and their expected outcomes in findings
+  - Run actual commands and capture outputs to verify behavior
+  - Create a test checklist showing pass/fail for each scenario
 
 ## Success Criteria
 
