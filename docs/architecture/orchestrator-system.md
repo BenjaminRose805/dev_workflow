@@ -53,31 +53,36 @@ This document describes the architecture and data flow of the Plan Orchestrator 
                                                       │
                                                       ▼
            ┌─────────────────────────────────────────────────────────────────────────────────┐
-           │                          PLAN OUTPUT UTILITIES                                   │
-           │                      (scripts/lib/plan-output-utils.js)                          │
+           │                             PLAN STATUS API                                      │
+           │                        (scripts/lib/plan-status.js)                              │
            ├─────────────────────────────────────────────────────────────────────────────────┤
            │                                                                                  │
-           │   Core Functions:                                                                │
+           │   Path Resolution:                                                               │
+           │   ├── getActivePlanPath()               Get current active plan                  │
+           │   ├── getOutputDir(planPath)            Get output directory path                │
+           │   └── getStatusPath(planPath)           Get status.json path                     │
+           │                                                                                  │
+           │   Core I/O:                                                                      │
            │   ├── loadStatus(planPath)              Load status.json with validation        │
-           │   ├── saveStatus(planPath, status)      Atomic save with backup                 │
-           │   ├── updateTaskStatus(...)             Update single task status               │
-           │   ├── batchUpdateTasks(...)             Update multiple tasks atomically        │
-           │   ├── recalculateSummary(status)        Recompute summary from tasks            │
-           │   ├── validateSummary(status)           Check/fix summary drift                 │
-           │   └── writeFindings(...)                Write task findings to file             │
+           │   ├── saveStatus(planPath, status)      Atomic save with locking                │
+           │   └── initializePlanStatus(planPath)    Create status.json from markdown        │
            │                                                                                  │
-           │   Lock Management:                                                               │
-           │   ├── acquireLock(statusPath)           Acquire file lock with timeout          │
-           │   ├── isLockStale(statusPath)           Check if lock is stale                  │
-           │   └── cleanStaleLock(statusPath)        Remove stale locks                      │
+           │   Task Updates:                                                                  │
+           │   ├── markTaskStarted(planPath, id)     Mark task as in_progress                │
+           │   ├── markTaskCompleted(planPath, id)   Mark task as completed                  │
+           │   ├── markTaskFailed(planPath, id)      Mark task as failed                     │
+           │   └── markTaskSkipped(planPath, id)     Mark task as skipped                    │
            │                                                                                  │
-           │   Retry & Recovery:                                                              │
-           │   ├── incrementRetryCount(...)          Track retry attempts                    │
-           │   ├── getRetryableTasks(planPath)       Get tasks eligible for retry            │
-           │   ├── detectAndMarkStuckTasks(...)      Auto-fail stuck tasks                   │
-           │   ├── createBackup(statusPath)          Backup before write                     │
-           │   ├── restoreFromBackup(statusPath)     Restore from backup                     │
-           │   └── rebuildStatusFromMarkdown(...)    Last resort recovery                    │
+           │   Queries:                                                                       │
+           │   ├── getNextTasks(planPath, count)     Get pending tasks                        │
+           │   ├── getProgress(planPath)             Get progress summary                     │
+           │   └── getStatusSummary(planPath)        Get full status                          │
+           │                                                                                  │
+           │   Findings & Runs:                                                               │
+           │   ├── writeFindings(planPath, id, ...)  Write task findings                      │
+           │   ├── readFindings(planPath, id)        Read task findings                       │
+           │   ├── startRun(planPath)                Start execution run                      │
+           │   └── completeRun(planPath, runId, ...) Complete execution run                   │
            │                                                                                  │
            └──────────────────────────────────────────┬───────────────────────────────────────┘
                                                       │
@@ -119,8 +124,8 @@ This document describes the architecture and data flow of the Plan Orchestrator 
            │       └── timestamps/       Execution timing data                              │
            │                                                                                  │
            │   Pointer Files:                                                                │
-           │   ├── .claude/current-plan.txt        Active plan path                          │
-           │   └── .claude/current-plan-output.txt  Active output directory                  │
+           │   └── .claude/current-plan.txt        Active plan path                          │
+           │       (Output directory derived from plan name: plan-outputs/{plan-name}/)      │
            │                                                                                  │
            └─────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -329,7 +334,8 @@ Process A                              Process B
 | Component | Responsibility |
 |-----------|---------------|
 | **status-cli.js** | CLI interface for all status operations; the preferred way to update status |
-| **plan-output-utils.js** | Core status management logic; file locking; atomic writes; recovery |
+| **plan-status.js** | Unified API: path resolution, status I/O, task updates, queries, findings, runs |
+| **plan-output-utils.js** | Low-level status operations; file locking; atomic writes; recovery |
 | **file-utils.js** | Low-level file operations; atomic write implementation |
 | **proper-lockfile** | Cross-platform file locking with retry logic |
 | **plan_orchestrator.py** | Autonomous execution with TUI; retry orchestration; streaming output parsing |
