@@ -718,6 +718,89 @@ function initializePlanStatus(planPath) {
   }
 }
 
+/**
+ * Refresh constraints from the plan file and update status.json
+ * Useful if plan is edited after initialization to add/remove [SEQUENTIAL] annotations
+ * @param {string} planPath - Path to plan file
+ * @returns {{ success: boolean, updated: boolean, error: string|null }}
+ */
+function refreshConstraints(planPath) {
+  try {
+    // Read plan content
+    const absolutePath = path.isAbsolute(planPath) ? planPath : resolvePath(planPath);
+    const content = readFile(absolutePath);
+    if (!content) {
+      return { success: false, updated: false, error: 'Could not read plan file' };
+    }
+
+    // Load existing status
+    const status = loadStatus(planPath);
+    if (!status) {
+      return { success: false, updated: false, error: 'No status.json found. Run init first.' };
+    }
+
+    // Parse execution constraints from plan content
+    const constraints = parseExecutionNotes(content);
+
+    // Build a lookup map for quick constraint checking
+    const constraintMap = new Map();
+    for (const constraint of constraints) {
+      for (const taskId of constraint.taskIds) {
+        constraintMap.set(taskId, {
+          sequential: true,
+          sequentialGroup: constraint.taskRange,
+          reason: constraint.reason
+        });
+      }
+    }
+
+    // Build sequentialGroups summary for top-level storage
+    const sequentialGroups = constraints.map(c => ({
+      taskRange: c.taskRange,
+      taskIds: c.taskIds,
+      reason: c.reason
+    }));
+
+    // Update status with new constraints
+    let updated = false;
+
+    // Update top-level sequentialGroups
+    const oldGroups = JSON.stringify(status.sequentialGroups || []);
+    const newGroups = JSON.stringify(sequentialGroups);
+    if (oldGroups !== newGroups) {
+      status.sequentialGroups = sequentialGroups.length > 0 ? sequentialGroups : undefined;
+      updated = true;
+    }
+
+    // Update per-task executionConstraints
+    for (const task of status.tasks) {
+      const newConstraint = constraintMap.get(task.id);
+      const oldConstraint = JSON.stringify(task.executionConstraints || null);
+      const newConstraintStr = JSON.stringify(newConstraint || null);
+
+      if (oldConstraint !== newConstraintStr) {
+        if (newConstraint) {
+          task.executionConstraints = newConstraint;
+        } else {
+          delete task.executionConstraints;
+        }
+        updated = true;
+      }
+    }
+
+    // Save if there were updates
+    if (updated) {
+      if (!saveStatus(planPath, status)) {
+        return { success: false, updated: false, error: 'Could not save updated status' };
+      }
+    }
+
+    return { success: true, updated, error: null };
+  } catch (error) {
+    return { success: false, updated: false, error: error.message };
+  }
+}
+
 // =============================================================================
 // Findings
 // =============================================================================
@@ -1023,6 +1106,7 @@ module.exports = {
 
   // Initialization
   initializePlanStatus,
+  refreshConstraints,
   parsePhases,
   getTitle,
 
