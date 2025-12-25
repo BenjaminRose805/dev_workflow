@@ -1,17 +1,10 @@
 {
-  "pending": [
-    {
-      "id": "commit-1766699748110-sww6mfm1v",
-      "message": "test",
-      "files": [],
-      "queuedAt": "2025-12-25T21:55:48.110Z",
-      "position": 0
-    }
-  ],
-  "lastCommitAt": null,
-  "totalCommits": 0,
+  "pending": [],
+  "lastCommitAt": "2025-12-25T21:55:48.120Z",
+  "totalCommits": 1,
   "failedCommits": 0,
-  "isProcessing": true,
-  "lockAcquiredAt": "2025-12-25T21:55:48.111Z",
-  "pendingCount": 1
+  "isProcessing": false,
+  "lockAcquiredAt": null,
+  "pendingCount": 0,
+  "lastCommitHash": "1e3bf23"
 }
