@@ -952,21 +952,59 @@ Examples:
 // Main Entry Point
 // =============================================================================
 
-function main() {
-  const args = process.argv.slice(2);
+/**
+ * Extract --plan argument from args array before normal parsing.
+ * Returns the plan path and filtered args with --plan removed.
+ * @param {string[]} args - Command line arguments
+ * @returns {{ planArg: string|null, filteredArgs: string[] }}
+ */
+function extractPlanArg(args) {
+  let planArg = null;
+  const filteredArgs = [];
 
-  if (args.length === 0 || args[0] === '--help' || args[0] === '-h') {
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--plan' && i + 1 < args.length) {
+      planArg = args[i + 1];
+      i++; // Skip the next arg (the plan path)
+    } else if (args[i].startsWith('--plan=')) {
+      planArg = args[i].slice('--plan='.length);
+    } else {
+      filteredArgs.push(args[i]);
+    }
+  }
+
+  return { planArg, filteredArgs };
+}
+
+function main() {
+  const rawArgs = process.argv.slice(2);
+
+  // Extract --plan argument before other parsing
+  const { planArg, filteredArgs } = extractPlanArg(rawArgs);
+
+  if (filteredArgs.length === 0 || filteredArgs[0] === '--help' || filteredArgs[0] === '-h') {
     showHelp();
     process.exit(0);
   }
 
-  const parsed = parseArgs(args);
+  const parsed = parseArgs(filteredArgs);
   const { command, positional, options } = parsed;
 
-  // Get active plan path
-  const planPath = getActivePlanPath();
-  if (!planPath) {
-    exitWithError('No active plan set. Use /plan:set to choose a plan first.');
+  // Determine plan path: --plan argument takes precedence over current-plan.txt
+  let planPath;
+  if (planArg) {
+    // Validate the provided plan path exists
+    const absolutePlanPath = path.isAbsolute(planArg) ? planArg : path.resolve(process.cwd(), planArg);
+    if (!fs.existsSync(absolutePlanPath)) {
+      exitWithError(`Plan file not found: ${planArg}`);
+    }
+    planPath = planArg;
+  } else {
+    // Fall back to active plan from current-plan.txt
+    planPath = getActivePlanPath();
+    if (!planPath) {
+      exitWithError('No active plan set. Use --plan <path> or /plan:set to choose a plan first.');
+    }
   }
 
   // Dispatch to command handler
