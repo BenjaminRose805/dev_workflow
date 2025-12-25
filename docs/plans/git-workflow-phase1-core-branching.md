@@ -35,14 +35,14 @@
   - If branch doesn't exist, create it with `git checkout -b plan/{plan-name}`
   - If branch exists, switch to it with `git checkout plan/{plan-name}`
   - Implement uncommitted changes detection before any branch switch using `git status --porcelain`
-  - When uncommitted changes are detected, present interactive options: Commit, Stash, or Cancel
+  - When uncommitted changes are detected, apply autonomous decision logic: auto-stash if changes are minor (< 10 files), warn and abort if changes are significant (>= 10 files)
   - Record the branch name in status.json metadata under a "branch" field
   - Ensure graceful handling when git is unavailable (detect with `git --version` check)
 
 **VERIFY Phase 1:**
 - [ ] Running `/plan:set test-plan` creates branch `plan/test-plan` (verify with `git branch --list plan/test-plan`)
 - [ ] Running `/plan:set test-plan` again switches to existing branch without error
-- [ ] Making uncommitted changes then running `/plan:set other-plan` displays warning prompt
+- [ ] Making uncommitted changes then running `/plan:set other-plan` auto-stashes changes and logs action
 - [ ] status.json contains `"branch": "plan/test-plan"` in metadata section
 - [ ] Running `/plan:set` in non-git directory shows graceful fallback message
 
@@ -51,7 +51,7 @@
 - [ ] 2.1 Add branch validation and enhanced commit formatting to `/plan:implement` command
   - At the start of `/plan:implement`, add branch validation logic
   - Check if currently on expected `plan/{plan-name}` branch using `git branch --show-current`
-  - If on wrong plan branch, warn user and offer to switch to correct branch
+  - If on wrong plan branch, log warning and auto-switch to correct branch (autonomous mode)
   - If not on any plan branch (no `plan/` prefix), warn but allow continue for backwards compatibility
   - Update the existing commit step to include plan name and phase information in the commit body
   - Commit message format should be: `[plan-name] Task X.Y: <description>` with plan/phase metadata in body
@@ -107,7 +107,7 @@
 - [ ] 5.1 Create and execute comprehensive integration test suite for git workflow
   - Test complete workflow: run `/plan:set test-plan`, verify branch created, implement tasks, verify commits exist
   - Test branch switching: set plan A, set plan B, verify switches and branch creation
-  - Test uncommitted changes handling: make changes, try to switch plans, verify prompts appear
+  - Test uncommitted changes handling: make changes, try to switch plans, verify auto-stash behavior and logged warnings
   - Test backwards compatibility: run commands outside git repo or with git unavailable
   - Test edge cases: branch already exists, switching to same plan, invalid plan names
   - Document all test cases and their expected outcomes in findings
@@ -125,7 +125,7 @@
 
 - [ ] `/plan:set my-plan` creates branch `plan/my-plan`
 - [ ] Subsequent `/plan:set my-plan` switches to existing branch
-- [ ] Uncommitted changes trigger warning before switch
+- [ ] Uncommitted changes are auto-stashed before switch with logged warning
 - [ ] Every task creates exactly one commit with proper format
 - [ ] `/plan:status` shows git branch and commit info
 - [ ] Works gracefully when git unavailable
@@ -133,5 +133,5 @@
 ## Risks
 
 - **Branch naming conflicts:** Mitigate with validation
-- **Uncommitted changes lost:** Mitigate with detection and prompts
+- **Uncommitted changes lost:** Mitigate with auto-stash and logged warnings
 - **Non-git environments:** Mitigate with graceful fallback
