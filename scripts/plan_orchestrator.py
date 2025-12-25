@@ -31,707 +31,28 @@ import logging
 import os
 import subprocess
 import sys
-import threading
 import time
-from collections import deque
-from dataclasses import dataclass, field
-from datetime import datetime
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Tuple
+from typing import Dict, Optional
 
-# Rich library imports (optional but recommended)
-try:
-    from rich.console import Console
-    from rich.layout import Layout
-    from rich.live import Live
-    from rich.panel import Panel
-    from rich.table import Table
-    from rich.text import Text
-    RICH_AVAILABLE = True
-except ImportError:
-    RICH_AVAILABLE = False
+# Ensure project root is in path for imports when run directly
+_script_dir = Path(__file__).parent
+_project_root = _script_dir.parent
+if str(_project_root) not in sys.path:
+    sys.path.insert(0, str(_project_root))
+
+# Import extracted modules
+from scripts.lib.tui import RichTUIManager, RICH_AVAILABLE
+from scripts.lib.claude_runner import StreamingClaudeRunner
+from scripts.lib.status_monitor import StatusMonitor
 
 # Configuration
 DEFAULT_MAX_ITERATIONS = 50
 DEFAULT_TIMEOUT = 600  # 10 minutes per session
 DEFAULT_BATCH_SIZE = 5
-PLAN_RUNNER_SCRIPT = "./scripts/plan-runner.sh"
+# Node script for status queries - unified CLI replacing plan-orchestrator.js
+STATUS_CLI_JS = "scripts/status-cli.js"
 STATUS_CHECK_INTERVAL = 2  # seconds between status checks
-
-
-# =============================================================================
-# Activity Tracking
-# =============================================================================
-
-@dataclass
-class Activity:
-    """Represents a single tracked activity (tool call)."""
-    timestamp: datetime
-    tool_name: str
-    description: str
-    details: Optional[Dict] = None
-    status: str = "started"  # started, completed, failed
-    duration_seconds: float = 0.0  # Duration in seconds (set on completion)
-
-
-class ActivityTracker:
-    """Tracks all tool calls and activities during orchestration."""
-
-    def __init__(self, max_history: int = 100):
-        self.activities: deque = deque(maxlen=max_history)
-        self.active_tools: Dict[str, Activity] = {}
-        self.stats = {
-            'reads': 0,
-            'edits': 0,
-            'writes': 0,
-            'bash_commands': 0,
-            'agents_spawned': 0,
-            'greps': 0,
-            'globs': 0,
-            'total_tools': 0
-        }
-        self._lock = threading.Lock()
-
-    def tool_started(self, tool_name: str, details: Dict) -> str:
-        """Record a tool invocation starting."""
-        with self._lock:
-            activity = Activity(
-                timestamp=datetime.now(),
-                tool_name=tool_name,
-                description=self._format_description(tool_name, details),
-                details=details,
-                status="started"
-            )
-
-            tool_id = details.get('id', str(len(self.activities)))
-            self.active_tools[tool_id] = activity
-            self.activities.append(activity)
-            self._update_stats(tool_name)
-
-            return tool_id
-
-    def tool_completed(self, tool_id: str, duration: float = 0.0, result: str = ""):
-        """Record a tool invocation completing."""
-        with self._lock:
-            if tool_id in self.active_tools:
-                activity = self.active_tools[tool_id]
-                activity.status = "completed"
-                activity.duration_seconds = duration
-                del self.active_tools[tool_id]
-
-    def _format_description(self, tool_name: str, details: Dict) -> str:
-        """Format a human-readable description of the tool call."""
-        if tool_name == 'Read':
-            path = details.get('file_path', 'unknown')
-            return f"Read: {self._truncate_path(path)}"
-        elif tool_name == 'Edit':
-            path = details.get('file_path', 'unknown')
-            return f"Edit: {self._truncate_path(path)}"
-        elif tool_name == 'Write':
-            path = details.get('file_path', 'unknown')
-            return f"Write: {self._truncate_path(path)}"
-        elif tool_name == 'Bash':
-            cmd = details.get('command', '')[:35]
-            return f"Bash: {cmd}..."
-        elif tool_name == 'Task':
-            desc = details.get('description', 'agent')
-            return f"Task: {desc}"
-        elif tool_name == 'Grep':
-            pattern = details.get('pattern', '')[:20]
-            return f"Grep: {pattern}"
-        elif tool_name == 'Glob':
-            pattern = details.get('pattern', '')[:20]
-            return f"Glob: {pattern}"
-        elif tool_name == 'WebSearch':
-            query = details.get('query', '')[:25]
-            return f"WebSearch: {query}"
-        elif tool_name == 'TodoWrite':
-            return "TodoWrite: updating tasks"
-        else:
-            return f"{tool_name}"
-
-    def _truncate_path(self, path: str, max_len: int = 40) -> str:
-        """Truncate a path for display."""
-        if len(path) <= max_len:
-            return path
-        return "..." + path[-(max_len - 3):]
-
-    def _update_stats(self, tool_name: str):
-        """Update statistics counters."""
-        self.stats['total_tools'] += 1
-        stat_map = {
-            'Read': 'reads',
-            'Edit': 'edits',
-            'Write': 'writes',
-            'Bash': 'bash_commands',
-            'Task': 'agents_spawned',
-            'Grep': 'greps',
-            'Glob': 'globs'
-        }
-        if tool_name in stat_map:
-            self.stats[stat_map[tool_name]] += 1
-
-    def get_recent(self, count: int = 10) -> List[Activity]:
-        """Get the most recent activities."""
-        with self._lock:
-            return list(self.activities)[-count:]
-
-    def get_active(self) -> List[Activity]:
-        """Get currently active tools."""
-        with self._lock:
-            return list(self.active_tools.values())
-
-
-# =============================================================================
-# Streaming Claude Runner
-# =============================================================================
-
-class StreamingClaudeRunner:
-    """Runs Claude CLI with streaming JSON output and event callbacks.
-
-    Parses Claude CLI's stream-json format which uses these event types:
-    - type: "system" (subtype: "init") - session initialization
-    - type: "assistant" - assistant messages with tool_use or text content
-    - type: "user" - tool results
-    - type: "result" - session completion
-    """
-
-    def __init__(
-        self,
-        on_tool_start: Optional[Callable[[str, Dict], None]] = None,
-        on_tool_end: Optional[Callable[[str, str, float], None]] = None,
-        on_text: Optional[Callable[[str], None]] = None,
-        timeout: int = 600
-    ):
-        self.on_tool_start = on_tool_start
-        self.on_tool_end = on_tool_end  # (tool_name, tool_id, duration_seconds) -> None
-        self.on_text = on_text
-        self.timeout = timeout
-        self.process: Optional[subprocess.Popen] = None
-        # Track active tool calls: tool_id -> {name, start_time, input}
-        self._active_tools: Dict[str, Dict] = {}
-
-    def run(self, prompt: str) -> Tuple[bool, str]:
-        """Run Claude with streaming output, calling callbacks for events."""
-        cmd = [
-            "claude", "-p", prompt,
-            "--dangerously-skip-permissions",
-            "--output-format", "stream-json",
-            "--verbose"  # Required for stream-json with -p
-        ]
-
-        try:
-            self.process = subprocess.Popen(
-                cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                bufsize=1
-            )
-
-            output_parts = []
-
-            # Read stdout line by line
-            for line in self.process.stdout:
-                line = line.strip()
-                if line:
-                    self._parse_json_line(line, output_parts)
-
-            # Wait for process to complete
-            self.process.wait(timeout=self.timeout)
-            success = self.process.returncode == 0
-
-            # Capture any stderr
-            stderr = self.process.stderr.read()
-            if stderr:
-                output_parts.append(stderr)
-
-            return success, ''.join(output_parts)
-
-        except subprocess.TimeoutExpired:
-            if self.process:
-                self.process.kill()
-                self.process.wait()
-            return False, "Session timed out"
-        except FileNotFoundError:
-            return False, "Claude CLI not found"
-        except Exception as e:
-            return False, str(e)
-        finally:
-            self.process = None
-            self._active_tools.clear()
-
-    def _parse_json_line(self, line: str, output_parts: List[str]):
-        """Parse a Claude CLI streaming JSON line and dispatch to callbacks.
-
-        Claude CLI stream-json format:
-        - {"type": "assistant", "message": {"content": [{"type": "tool_use", ...}]}}
-        - {"type": "user", "message": {"content": [{"type": "tool_result", ...}]}}
-        - {"type": "assistant", "message": {"content": [{"type": "text", "text": "..."}]}}
-        - {"type": "result", "result": "final text", ...}
-        """
-        try:
-            data = json.loads(line)
-            event_type = data.get('type')
-
-            if event_type == 'assistant':
-                # Assistant message - may contain tool_use or text
-                message = data.get('message', {})
-                content_list = message.get('content', [])
-
-                for content in content_list:
-                    content_type = content.get('type')
-
-                    if content_type == 'tool_use':
-                        # Tool invocation starting
-                        tool_id = content.get('id', '')
-                        tool_name = content.get('name', 'Unknown')
-                        tool_input = content.get('input', {})
-
-                        # Track this tool call
-                        self._active_tools[tool_id] = {
-                            'name': tool_name,
-                            'start_time': time.time(),
-                            'input': tool_input
-                        }
-
-                        # Fire callback
-                        if self.on_tool_start:
-                            self.on_tool_start(tool_name, {'id': tool_id, **tool_input})
-
-                    elif content_type == 'text':
-                        # Text output
-                        text = content.get('text', '')
-                        if text:
-                            if self.on_text:
-                                self.on_text(text)
-                            output_parts.append(text)
-
-            elif event_type == 'user':
-                # User message with tool results - means tool completed
-                message = data.get('message', {})
-                content_list = message.get('content', [])
-
-                for content in content_list:
-                    if content.get('type') == 'tool_result':
-                        tool_id = content.get('tool_use_id', '')
-
-                        if tool_id in self._active_tools:
-                            tool_info = self._active_tools[tool_id]
-                            duration = time.time() - tool_info['start_time']
-
-                            # Fire callback
-                            if self.on_tool_end:
-                                self.on_tool_end(tool_info['name'], tool_id, duration)
-
-                            # Clean up
-                            del self._active_tools[tool_id]
-
-            elif event_type == 'result':
-                # Session complete - extract final result
-                result_text = data.get('result', '')
-                if result_text and result_text not in ''.join(output_parts):
-                    output_parts.append(result_text)
-
-        except json.JSONDecodeError:
-            pass  # Skip malformed lines
-
-    def stop(self):
-        """Stop the running process."""
-        if self.process:
-            try:
-                self.process.terminate()
-                self.process.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                self.process.kill()
-                self.process.wait()
-
-
-# =============================================================================
-# Status Monitor
-# =============================================================================
-
-class StatusMonitor:
-    """Background monitor that watches status.json for changes."""
-
-    def __init__(
-        self,
-        status_path: str,
-        callback: Callable[[Dict], None],
-        interval: float = 0.5  # Reduced from 2.0s to 500ms for responsiveness
-    ):
-        self.status_path = status_path
-        self.callback = callback
-        self.interval = interval
-        self._stop_event = threading.Event()
-        self._thread: Optional[threading.Thread] = None
-        self._last_mtime: float = 0
-        self._use_inotify = False
-        self._watcher = None
-
-        # Try to use inotify for more responsive updates (Linux only)
-        try:
-            import inotify.adapters
-            self._use_inotify = True
-        except ImportError:
-            pass  # Fall back to polling
-
-    def start(self):
-        """Start the background monitoring thread."""
-        self._stop_event.clear()
-
-        if self._use_inotify:
-            self._thread = threading.Thread(target=self._inotify_loop, daemon=True)
-        else:
-            self._thread = threading.Thread(target=self._poll_loop, daemon=True)
-
-        self._thread.start()
-
-    def stop(self):
-        """Stop the background monitoring thread."""
-        self._stop_event.set()
-        if self._thread:
-            self._thread.join(timeout=5.0)
-
-    def _poll_loop(self):
-        """Polling-based monitoring loop (fallback)."""
-        while not self._stop_event.is_set():
-            try:
-                self._check_status()
-            except Exception:
-                pass  # Silently handle errors
-
-            self._stop_event.wait(self.interval)
-
-    def _inotify_loop(self):
-        """inotify-based monitoring loop (Linux, more responsive)."""
-        try:
-            import inotify.adapters
-            import inotify.constants
-
-            # Watch the directory containing status.json
-            watch_dir = os.path.dirname(self.status_path)
-            watch_file = os.path.basename(self.status_path)
-
-            i = inotify.adapters.Inotify()
-            i.add_watch(watch_dir, mask=inotify.constants.IN_MODIFY | inotify.constants.IN_CLOSE_WRITE)
-
-            # Initial check
-            self._check_status()
-
-            for event in i.event_gen(yield_nones=True, timeout_s=0.5):
-                if self._stop_event.is_set():
-                    break
-
-                if event is not None:
-                    (_, type_names, path, filename) = event
-                    if filename == watch_file:
-                        self._check_status()
-
-        except Exception:
-            # Fall back to polling if inotify fails
-            self._poll_loop()
-
-    def _check_status(self):
-        """Check status.json and invoke callback if changed."""
-        try:
-            mtime = os.path.getmtime(self.status_path)
-            if mtime > self._last_mtime:
-                self._last_mtime = mtime
-                with open(self.status_path, 'r') as f:
-                    status = json.load(f)
-                self.callback(status)
-        except (FileNotFoundError, json.JSONDecodeError, OSError):
-            pass
-
-
-# =============================================================================
-# Rich TUI Manager
-# =============================================================================
-
-class RichTUIManager:
-    """Manages the Rich-based TUI for the orchestrator."""
-
-    def __init__(self, plan_name: str):
-        if not RICH_AVAILABLE:
-            raise RuntimeError("Rich library not available")
-
-        self.console = Console()
-        self.plan_name = plan_name
-        self.current_phase = ""
-        self.iteration = 0
-        self.max_iterations = 50
-        self.start_time = time.time()
-
-        # Progress tracking
-        self.total_tasks = 0
-        self.completed_tasks = 0
-        self.pending_tasks = 0
-        self.in_progress_count = 0
-        self.failed_tasks = 0
-        self.percentage = 0
-
-        # Activity tracker
-        self.activity_tracker = ActivityTracker()
-
-        # Tasks (from status.json, not getNextTasks)
-        self.tasks_in_progress: List[Dict] = []  # Actual in_progress tasks from status.json
-        self.recent_completions: List[Dict] = []
-
-        # Status message
-        self.status_message = "Initializing..."
-
-        # Heartbeat tracking
-        self.claude_running = False
-        self.last_activity_time: Optional[float] = None
-        self._heartbeat_chars = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
-        self._heartbeat_index = 0
-
-        # Layout
-        self.layout = self._create_layout()
-        self.live: Optional[Live] = None
-        self._lock = threading.Lock()
-
-    def _create_layout(self) -> Layout:
-        """Create the TUI layout structure."""
-        layout = Layout()
-
-        layout.split(
-            Layout(name="header", size=5),
-            Layout(name="progress", size=3),
-            Layout(name="activity", size=10),
-            Layout(name="tasks", size=8),
-            Layout(name="footer", size=2)
-        )
-
-        # Split tasks section into two columns
-        layout["tasks"].split_row(
-            Layout(name="in_progress"),
-            Layout(name="completions")
-        )
-
-        return layout
-
-    def _render_header(self) -> Panel:
-        """Render the header panel."""
-        header_text = Text()
-        header_text.append("PLAN ORCHESTRATOR\n", style="bold cyan")
-        header_text.append(f"Plan: ", style="dim")
-        header_text.append(f"{self.plan_name}\n", style="white")
-        header_text.append(f"Phase: ", style="dim")
-        header_text.append(f"{self.current_phase}", style="yellow")
-        header_text.append(f"  |  ", style="dim")
-        header_text.append(f"Iteration: {self.iteration}/{self.max_iterations}", style="dim")
-
-        return Panel(header_text, border_style="cyan")
-
-    def _render_progress(self) -> Panel:
-        """Render the progress bar panel."""
-        # Calculate percentage from actual counts (handle edge case of 0 total)
-        if self.total_tasks > 0:
-            self.percentage = int((self.completed_tasks / self.total_tasks) * 100)
-        else:
-            self.percentage = 0
-
-        bar_width = 50
-        filled = int(bar_width * self.percentage / 100) if self.percentage > 0 else 0
-        filled = min(filled, bar_width)
-        remaining = bar_width - filled
-        bar = "█" * filled
-        if remaining > 0:
-            bar += "░" * remaining
-
-        elapsed = time.time() - self.start_time
-        elapsed_str = time.strftime("%H:%M:%S", time.gmtime(elapsed))
-
-        progress_text = Text()
-        progress_text.append(f"[{bar}] ", style="green")
-        progress_text.append(f"{self.percentage}%", style="bold green")
-
-        # Add heartbeat indicator
-        if self.claude_running:
-            self._heartbeat_index = (self._heartbeat_index + 1) % len(self._heartbeat_chars)
-            spinner = self._heartbeat_chars[self._heartbeat_index]
-            progress_text.append(f"  {spinner} Claude working", style="cyan")
-        elif self.last_activity_time:
-            idle_secs = int(time.time() - self.last_activity_time)
-            if idle_secs < 60:
-                progress_text.append(f"  (idle {idle_secs}s)", style="dim")
-            else:
-                mins = idle_secs // 60
-                progress_text.append(f"  (idle {mins}m)", style="dim")
-
-        progress_text.append("\n")
-        progress_text.append(f"{self.completed_tasks}/{self.total_tasks} tasks", style="dim")
-        progress_text.append(f"  |  Elapsed: {elapsed_str}", style="dim")
-        if self.in_progress_count > 0:
-            progress_text.append(f"  |  Working: {self.in_progress_count}", style="cyan")
-        if self.pending_tasks > 0:
-            progress_text.append(f"  |  Pending: {self.pending_tasks}", style="yellow")
-        if self.failed_tasks > 0:
-            progress_text.append(f"  |  Failed: {self.failed_tasks}", style="red")
-
-        return Panel(progress_text, title="Progress", border_style="green")
-
-    def _render_activity(self) -> Panel:
-        """Render the activity panel showing recent tool calls."""
-        table = Table(show_header=False, box=None, padding=(0, 1))
-        table.add_column("Time", style="dim", width=10)
-        table.add_column("Activity", style="white", overflow="ellipsis")
-        table.add_column("Duration", style="dim", width=8, justify="right")
-
-        for activity in self.activity_tracker.get_recent(8):
-            time_str = activity.timestamp.strftime("%H:%M:%S")
-            style = "dim" if activity.status == "completed" else "white"
-            status_icon = "[OK]" if activity.status == "completed" else "..."
-
-            # Format duration
-            duration_str = ""
-            if activity.status == "completed" and activity.duration_seconds > 0:
-                if activity.duration_seconds >= 60:
-                    mins = int(activity.duration_seconds // 60)
-                    secs = int(activity.duration_seconds % 60)
-                    duration_str = f"{mins}m{secs}s"
-                elif activity.duration_seconds >= 1:
-                    duration_str = f"{activity.duration_seconds:.1f}s"
-                else:
-                    duration_str = f"{activity.duration_seconds * 1000:.0f}ms"
-            elif activity.status == "started":
-                duration_str = "..."
-
-            table.add_row(
-                f"[{time_str}]",
-                Text(f"{status_icon} {activity.description}", style=style),
-                duration_str
-            )
-
-        if not self.activity_tracker.get_recent(1):
-            table.add_row("", Text("[dim]Waiting for activity...[/dim]"), "")
-
-        return Panel(table, title="Current Activity", border_style="blue")
-
-    def _render_tasks_in_progress(self) -> Panel:
-        """Render tasks currently in progress."""
-        table = Table(show_header=False, box=None)
-        table.add_column("Task", style="yellow", overflow="ellipsis")
-
-        for task in self.tasks_in_progress[:4]:
-            task_id = task.get('id', '?')
-            desc = task.get('description', '')[:35]
-            table.add_row(f"{task_id}: {desc}")
-
-        if not self.tasks_in_progress:
-            table.add_row(Text("[dim]No tasks in progress[/dim]"))
-
-        return Panel(table, title="In Progress", border_style="yellow")
-
-    def _render_completions(self) -> Panel:
-        """Render recently completed tasks."""
-        table = Table(show_header=False, box=None)
-        table.add_column("Task", style="green", overflow="ellipsis")
-
-        for task in self.recent_completions[:4]:
-            task_id = task.get('id', '?')
-            desc = task.get('description', '')[:30]
-            table.add_row(f"[OK] {task_id}: {desc}")
-
-        if not self.recent_completions:
-            table.add_row(Text("[dim]No completions yet[/dim]"))
-
-        return Panel(table, title="Recent Completions", border_style="green")
-
-    def _render_footer(self) -> Panel:
-        """Render the footer with status and stats."""
-        stats = self.activity_tracker.stats
-        footer_text = Text()
-        footer_text.append(f"STATUS: ", style="dim")
-        footer_text.append(f"{self.status_message}", style="cyan")
-        footer_text.append(f"  |  Tools: {stats['total_tools']}", style="dim")
-        footer_text.append(f"  |  Agents: {stats['agents_spawned']}", style="dim")
-        footer_text.append(f"  |  Edits: {stats['edits']}", style="dim")
-
-        return Panel(footer_text, border_style="dim")
-
-    def update_layout(self):
-        """Update all layout sections."""
-        self.layout["header"].update(self._render_header())
-        self.layout["progress"].update(self._render_progress())
-        self.layout["activity"].update(self._render_activity())
-        self.layout["in_progress"].update(self._render_tasks_in_progress())
-        self.layout["completions"].update(self._render_completions())
-        self.layout["footer"].update(self._render_footer())
-
-    def start(self):
-        """Start the live display."""
-        self.update_layout()
-        self.live = Live(
-            self.layout,
-            console=self.console,
-            refresh_per_second=4,
-            screen=False
-        )
-        self.live.start()
-
-    def stop(self):
-        """Stop the live display."""
-        if self.live:
-            self.live.stop()
-
-    def refresh(self):
-        """Refresh the display."""
-        with self._lock:
-            try:
-                self.update_layout()
-                if self.live:
-                    self.live.update(self.layout)
-            except Exception:
-                pass  # Don't crash on display errors
-
-    # Update methods called by orchestrator
-    def set_status(self, message: str):
-        self.status_message = message
-        self.refresh()
-
-    def set_progress(self, completed: int, total: int, pending: int, failed: int, in_progress: int = 0):
-        self.completed_tasks = completed
-        self.total_tasks = total
-        self.pending_tasks = pending
-        self.failed_tasks = failed
-        self.in_progress_count = in_progress
-        # Percentage is now calculated in _render_progress to handle 0 total
-        self.refresh()
-
-    def set_phase(self, phase: str):
-        self.current_phase = phase
-        self.refresh()
-
-    def set_iteration(self, iteration: int, max_iterations: int):
-        self.iteration = iteration
-        self.max_iterations = max_iterations
-        self.refresh()
-
-    def add_activity(self, tool_name: str, details: Dict) -> str:
-        tool_id = self.activity_tracker.tool_started(tool_name, details)
-        self.last_activity_time = time.time()
-        self.refresh()
-        return tool_id
-
-    def complete_activity(self, tool_id: str, duration: float = 0.0):
-        self.last_activity_time = time.time()
-        self.activity_tracker.tool_completed(tool_id, duration)
-        self.refresh()
-
-    def set_claude_running(self, running: bool):
-        """Set whether Claude is currently running (for heartbeat display)."""
-        self.claude_running = running
-        if running:
-            self.last_activity_time = time.time()
-        self.refresh()
-
-    def update_tasks(self, in_progress: List[Dict], completions: List[Dict]):
-        self.tasks_in_progress = in_progress
-        self.recent_completions = completions
-        self.refresh()
 
 
 # =============================================================================
@@ -803,20 +124,35 @@ class PlanOrchestrator:
         self.status_monitor: Optional[StatusMonitor] = None
         self.streaming_runner: Optional[StreamingClaudeRunner] = None
 
-        # Set up logging (quieter when TUI is active)
-        level = logging.DEBUG if verbose else (logging.WARNING if use_tui else logging.INFO)
-        logging.basicConfig(
-            level=level,
-            format="%(asctime)s [%(levelname)s] %(message)s",
-            datefmt="%H:%M:%S",
-        )
+        # Set up logging
         self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG if verbose else logging.INFO)
+
+        # Clear any existing handlers
+        self.logger.handlers.clear()
+
+        log_format = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s", datefmt="%H:%M:%S")
+
+        if use_tui:
+            # Log to file when TUI is active (stdout would mess up the display)
+            self.log_file = "orchestrator.log"
+            file_handler = logging.FileHandler(self.log_file, mode='a')
+            file_handler.setLevel(logging.DEBUG if verbose else logging.INFO)
+            file_handler.setFormatter(log_format)
+            self.logger.addHandler(file_handler)
+        else:
+            # Log to stdout when TUI is disabled
+            self.log_file = None
+            stream_handler = logging.StreamHandler()
+            stream_handler.setLevel(logging.DEBUG if verbose else logging.INFO)
+            stream_handler.setFormatter(log_format)
+            self.logger.addHandler(stream_handler)
 
     def get_status(self) -> Optional[PlanStatus]:
-        """Get current plan status from plan-runner.sh."""
+        """Get current plan status via node scripts/status-cli.js."""
         try:
             result = subprocess.run(
-                [PLAN_RUNNER_SCRIPT, "status"],
+                ["node", STATUS_CLI_JS, "status"],
                 capture_output=True,
                 text=True,
                 timeout=30,
@@ -834,14 +170,14 @@ class PlanOrchestrator:
             self.logger.error(f"Failed to parse status: {e}")
             return None
         except FileNotFoundError:
-            self.logger.error(f"Plan runner script not found: {PLAN_RUNNER_SCRIPT}")
+            self.logger.error(f"Node or status-cli.js not found")
             return None
 
     def get_next_tasks(self, count: int = 5) -> list:
-        """Get next recommended tasks."""
+        """Get next recommended tasks via status-cli.js."""
         try:
             result = subprocess.run(
-                [PLAN_RUNNER_SCRIPT, "next", str(count)],
+                ["node", STATUS_CLI_JS, "next", str(count)],
                 capture_output=True,
                 text=True,
                 timeout=30,
@@ -994,15 +330,21 @@ class PlanOrchestrator:
         print(f"  Duration: {elapsed_str}")
         print("═" * 65 + "\n")
 
-    def _get_output_dir(self) -> Optional[str]:
-        """Get the output directory for the current plan."""
-        try:
-            pointer_path = ".claude/current-plan-output.txt"
-            if os.path.exists(pointer_path):
-                with open(pointer_path, 'r') as f:
-                    return f.read().strip()
-        except Exception:
-            pass
+    def _get_output_dir(self, status: Optional[PlanStatus] = None) -> Optional[str]:
+        """Get the output directory for the current plan.
+
+        Derives output path from plan name: docs/plan-outputs/{plan-name}/
+        Uses status.plan_path if available, falls back to self.plan_path.
+        """
+        plan_path = None
+        if status and status.plan_path:
+            plan_path = status.plan_path
+        elif self.plan_path:
+            plan_path = self.plan_path
+
+        if plan_path:
+            plan_name = Path(plan_path).stem
+            return f"docs/plan-outputs/{plan_name}"
         return None
 
     def _on_tool_start(self, tool_name: str, details: Dict):
@@ -1062,10 +404,18 @@ class PlanOrchestrator:
                 self.tui.set_iteration(0, self.max_iterations)
 
                 # Start status monitor with faster polling (500ms)
-                output_dir = self._get_output_dir()
+                output_dir = self._get_output_dir(status)
                 if output_dir:
                     status_path = os.path.join(output_dir, 'status.json')
                     if os.path.exists(status_path):
+                        # Initial read to populate recent_completions immediately
+                        try:
+                            with open(status_path, 'r') as f:
+                                initial_status = json.load(f)
+                            self._on_status_update(initial_status)
+                        except (json.JSONDecodeError, OSError):
+                            pass  # Will be populated by monitor
+
                         self.status_monitor = StatusMonitor(
                             status_path,
                             self._on_status_update,
@@ -1251,12 +601,19 @@ class PlanOrchestrator:
     def _build_prompt(self, status: PlanStatus, next_tasks: list) -> str:
         """Build the prompt for Claude Code.
 
-        This prompt is designed to be clear and reliable:
-        - Uses status-cli.js commands instead of inline JavaScript
-        - Provides explicit implementation instructions
-        - Includes error recovery guidance
-        - Never references skill invocations
+        Uses command invocation with --autonomous flag instead of inline instructions.
+        The /plan:implement command handles:
+        - Task status tracking (mark-started, mark-complete, mark-failed)
+        - Template variable handling
+        - Agent execution strategy (parallel agents, read-only pattern)
+        - Run tracking (startRun/completeRun)
+        - Findings collection
+        - Sophisticated error handling
         """
+        # Build task ID list for command args (batch appropriately)
+        task_ids = " ".join(t.get('id', '') for t in next_tasks)
+
+        # Build task list for context display
         task_list = "\n".join(
             f"  - {t.get('id')}: {t.get('description')}"
             for t in next_tasks
@@ -1269,44 +626,13 @@ class PlanOrchestrator:
 Plan: {status.plan_path}
 Progress: {status.percentage}% ({status.completed}/{status.total} tasks)
 
-## How to Implement Each Task
-
-1. **Mark task started:**
-   ```bash
-   node scripts/status-cli.js mark-started TASK_ID
-   ```
-
-2. **Read the plan file** to understand detailed requirements:
-   - Open {status.plan_path}
-   - Find the task section (look for "TASK_ID" in the markdown)
-   - Read all bullet points and sub-tasks
-
-3. **Implement the task:**
-   - Make the actual code/file changes
-   - Create, edit, or delete files as needed
-   - Run tests or builds if the task requires it
-
-4. **Mark task complete:**
-   ```bash
-   node scripts/status-cli.js mark-complete TASK_ID --notes "Brief summary of changes"
-   ```
-
-## If a Task Fails
-
-If you encounter an error you cannot resolve:
-
-```bash
-node scripts/status-cli.js mark-failed TASK_ID --error "Description of what went wrong"
-```
-
-Then continue to the next task.
+Run: /plan:implement {task_ids} --autonomous
 
 ## Rules
 
 - Execute autonomously - do NOT ask for confirmation
-- Implement directly - do NOT use slash commands or skills
-- Use parallel Task agents for independent subtasks
-- Stop after this batch or if blocked
+- Stop after completing this batch or if blocked by unrecoverable error
+- If a task fails, the command will mark it failed and continue to next task
 - Check progress: `node scripts/status-cli.js progress`"""
 
 
@@ -1390,10 +716,15 @@ def main():
     )
 
     try:
-        return orchestrator.run()
+        result = orchestrator.run()
+        if orchestrator.log_file:
+            print(f"\nLogs written to: {orchestrator.log_file}")
+        return result
     except KeyboardInterrupt:
         orchestrator._cleanup()
         print("\n\nInterrupted by user. Progress has been saved.")
+        if orchestrator.log_file:
+            print(f"Logs written to: {orchestrator.log_file}")
         status = orchestrator.get_status()
         if status:
             orchestrator.print_completion(status, "interrupted")
