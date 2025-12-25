@@ -1,4 +1,4 @@
-# Create Plan: plan system analysis & critic output analysis
+# Analysis Plan: Plan System & Critic Output Analysis
 
 ## Overview
 - **Objective:** I want to review the current implementation of the claude code commands regarding plans - I want to have a consistent structure arround the process of a plan producing a specific output to a file in a folder. For example, when performing an analysis, I don't want the analysis plan to be the location of the results from that plan. I also would want a dedicated output file in a dedicated folder when I have a plan performing a validation / critique. Lastly, I want a dedicated file for tracking the status of the plan - this will allow me to re-use plans without having to remake them
