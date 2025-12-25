@@ -42,6 +42,8 @@ repo/
 
 ## Phase 3: Worktree Context System
 
+**Execution Note:** Tasks 3.1-6.1 are [SEQUENTIAL] - all modify related orchestrator systems (`scripts/status-cli.js`, `scripts/plan_orchestrator.py`)
+
 - [ ] 3.1 Implement worktree-aware context system: create `.claude-context/` directory structure for worktrees, move `current-plan.txt` to per-worktree context, add `CLAUDE_WORKTREE` environment variable support, update status-cli.js to detect worktree context, update all plan commands to use worktree-aware paths, and implement fallback to repo root when not in worktree
 
 **VERIFY Phase 3:**
