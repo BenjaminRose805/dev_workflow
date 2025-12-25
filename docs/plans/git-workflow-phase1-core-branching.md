@@ -29,14 +29,14 @@
 
 ## Phase 1: Branch Management in /plan:set
 
-- [ ] 1.1 Implement complete branch management in `/plan:set` command
-  - Read current `/plan:set` command implementation to understand its workflow
+- [ ] 1.1 Implement complete branch management in `.claude/commands/plan/set.md`
+  - Read current `.claude/commands/plan/set.md` implementation to understand its workflow
   - Add git branch detection to check if `plan/{plan-name}` branch exists using `git rev-parse --verify plan/{plan-name}`
   - If branch doesn't exist, create it with `git checkout -b plan/{plan-name}`
   - If branch exists, switch to it with `git checkout plan/{plan-name}`
   - Implement uncommitted changes detection before any branch switch using `git status --porcelain`
   - When uncommitted changes are detected, apply autonomous decision logic: auto-stash if changes are minor (< 10 files), warn and abort if changes are significant (>= 10 files)
-  - Record the branch name in status.json metadata under a "branch" field
+  - Record the branch name in `docs/plan-outputs/{plan-name}/status.json` metadata under a "branch" field
   - Ensure graceful handling when git is unavailable (detect with `git --version` check)
 
 **VERIFY Phase 1:**
@@ -48,8 +48,8 @@
 
 ## Phase 2: Branch Validation in /plan:implement
 
-- [ ] 2.1 Add branch validation and enhanced commit formatting to `/plan:implement` command
-  - At the start of `/plan:implement`, add branch validation logic
+- [ ] 2.1 Add branch validation and enhanced commit formatting to `.claude/commands/plan/implement.md`
+  - At the start of `.claude/commands/plan/implement.md`, add branch validation logic
   - Check if currently on expected `plan/{plan-name}` branch using `git branch --show-current`
   - If on wrong plan branch, log warning and auto-switch to correct branch (autonomous mode)
   - If not on any plan branch (no `plan/` prefix), warn but allow continue for backwards compatibility
@@ -66,7 +66,7 @@
 
 ## Phase 3: Git Utilities Documentation
 
-- [ ] 3.1 Create comprehensive git utility patterns documentation in status-tracking.md
+- [ ] 3.1 Create comprehensive git utility patterns documentation in `.claude/commands/plan/_common/status-tracking.md`
   - Document `getCurrentBranch()` pattern: use `git branch --show-current`
   - Document `isOnPlanBranch()` pattern: check if branch name has `plan/` prefix
   - Document `getPlanBranchName(planName)` pattern: return `plan/{planName}` format
@@ -77,19 +77,19 @@
   - Document how to parse git command outputs reliably
 
 **VERIFY Phase 3:**
-- [ ] status-tracking.md contains documented patterns for all 5 git utilities listed above
+- [ ] `.claude/commands/plan/_common/status-tracking.md` contains documented patterns for all 5 git utilities listed above
 - [ ] Each pattern includes at least one code example showing bash command usage
 - [ ] Error handling section documents git unavailable scenario with example fallback
 - [ ] Documentation is findable via search for "getCurrentBranch" or "git utilities"
 
 ## Phase 4: Status Display Updates
 
-- [ ] 4.1 Enhance `/plan:status` and CLI status to display git information
-  - Update `/plan:status` skill to show current git branch at the top of output
+- [ ] 4.1 Enhance `.claude/commands/plan/status.md` and `scripts/status-cli.js` to display git information
+  - Update `.claude/commands/plan/status.md` skill to show current git branch at the top of output
   - Add uncommitted changes count using `git status --porcelain | wc -l`
   - Show commit count for current plan branch using `git rev-list --count HEAD ^master`
   - Display last commit SHA (abbreviated to 7 chars) and message using `git log -1 --format="%h %s"`
-  - Update `node scripts/status-cli.js progress` to include the same git information
+  - Update `scripts/status-cli.js` to include the same git information
   - Format git info section clearly with labels like "Branch:", "Uncommitted:", "Commits:", "Last:"
   - Handle non-git environments by showing "N/A" or omitting git section entirely
   - Ensure performance remains good by caching git queries where appropriate
@@ -99,18 +99,18 @@
 - [ ] `/plan:status` output includes "Uncommitted:" count (verify with modified file)
 - [ ] `/plan:status` output includes "Commits:" count for plan branch
 - [ ] `/plan:status` output includes "Last:" with abbreviated SHA and commit message
-- [ ] `node scripts/status-cli.js progress` shows same git information
+- [ ] `scripts/status-cli.js progress` shows same git information
 - [ ] In non-git directory, status output shows "N/A" or omits git section gracefully
 
 ## Phase 5: Integration Testing
 
-- [ ] 5.1 Create and execute comprehensive integration test suite for git workflow
+- [ ] 5.1 Create and execute comprehensive integration test suite for git workflow, document in `docs/plan-outputs/git-workflow-phase1-core-branching/findings/5.1.md`
   - Test complete workflow: run `/plan:set test-plan`, verify branch created, implement tasks, verify commits exist
   - Test branch switching: set plan A, set plan B, verify switches and branch creation
   - Test uncommitted changes handling: make changes, try to switch plans, verify auto-stash behavior and logged warnings
   - Test backwards compatibility: run commands outside git repo or with git unavailable
   - Test edge cases: branch already exists, switching to same plan, invalid plan names
-  - Document all test cases and their expected outcomes in findings
+  - Document all test cases and their expected outcomes in `docs/plan-outputs/git-workflow-phase1-core-branching/findings/5.1.md`
   - Run actual commands and capture outputs to verify behavior
   - Create a test checklist showing pass/fail for each scenario
 
