@@ -5,124 +5,10 @@
 - **Goal:** Implement rollback commands and safety mechanisms
 - **Priority:** P2
 - **Created:** 2024-12-25
-- **Restructured:** 2024-12-25 (consolidated for orchestrator isolation)
+- **Restructured:** 2024-12-25 (for orchestrator isolation - each task self-contained)
 - **Output:** `docs/plan-outputs/git-workflow-phase3-safety/`
 
 > Task findings are written to the `findings/` subdirectory. Use `/plan:status` to view progress.
-
-## Phase 1: Create /plan:rollback Command
-
-- [ ] 1.1 Create complete `/plan:rollback` command at `.claude/commands/plan/rollback.md` with three subcommands (`task`, `phase`, `plan`), argument parsing for rollback targets, and comprehensive documentation including usage examples for each subcommand type
-
-**VERIFY Phase 1:**
-- [ ] `test -f .claude/commands/plan/rollback.md && echo "exists"` returns "exists"
-- [ ] `grep -c "task\|phase\|plan" .claude/commands/plan/rollback.md` returns >= 6 (subcommands documented)
-- [ ] `grep -c "## Usage\|## Example" .claude/commands/plan/rollback.md` returns >= 1
-
----
-
-## Phase 2: Task-Level Rollback
-
-- [ ] 2.1 Implement task-level rollback functionality in `.claude/commands/plan/rollback.md` for the `task` subcommand: locate task commit using `git log --grep="task {id}:" --format="%H" -1`, revert it using `git revert <sha> --no-edit`, update `docs/plan-outputs/{plan}/status.json` to mark task as `rolled_back` or `pending`, and handle edge cases (task commit not found: report error and exit; analysis-only tasks with no commits: mark status only without git revert)
-
-**VERIFY Phase 2:**
-- [ ] `grep -c "git log --grep" .claude/commands/plan/rollback.md` returns >= 1
-- [ ] `grep -c "git revert" .claude/commands/plan/rollback.md` returns >= 1
-- [ ] `grep -c "rolled_back\|pending" .claude/commands/plan/rollback.md` returns >= 1
-
----
-
-## Phase 3: Phase-Level Rollback
-
-- [ ] 3.1 Implement phase-level rollback functionality in `.claude/commands/plan/rollback.md` for the `phase` subcommand: detect phase commit range by finding first and last commits for the phase using git log, revert the range using `git revert <first>..<last> --no-edit`, update `docs/plan-outputs/{plan}/status.json` for all tasks in the phase, and handle partial phases (tasks without commits: update status only; mixed committed/uncommitted: revert what exists and log skipped tasks)
-
-**VERIFY Phase 3:**
-- [ ] `grep -c "phase" .claude/commands/plan/rollback.md` returns >= 3
-- [ ] `grep -c "range\|first.*last" .claude/commands/plan/rollback.md` returns >= 1
-- [ ] Phase rollback section documents partial phase handling
-
----
-
-## Phase 4: Plan-Level Rollback
-
-- [ ] 4.1 Implement plan-level rollback functionality in `.claude/commands/plan/rollback.md` for the `plan` subcommand: for unmerged plans, require `--force` flag to delete the plan branch (abort without flag and display warning); for merged plans, locate merge commit using `git log --grep="Plan: {name}" --format="%H" -1`, revert it using `git revert <sha> --no-edit`, and update `docs/plan-outputs/{plan}/status.json` appropriately
-
-**VERIFY Phase 4:**
-- [ ] `grep -c "unmerged\|merged" .claude/commands/plan/rollback.md` returns >= 2
-- [ ] `grep -c "branch" .claude/commands/plan/rollback.md` returns >= 1
-- [ ] Plan rollback section covers both merged and unmerged scenarios
-
----
-
-## Phase 5: Create /plan:abandon Command
-
-- [ ] 5.1 Create complete `/plan:abandon` command at `.claude/commands/plan/abandon.md` that safely abandons a plan: require `--force` flag for destructive operations (abort and display warning without flag), create backup tag using pattern `backup/plan-{name}-{timestamp}` unless `--no-backup` flag is provided, switch to main branch and delete plan branch, update `docs/plan-outputs/{plan}/status.json` with abandoned state, and handle uncommitted changes (stash automatically with message `plan/{name} WIP - auto-stash before abandon`)
-
-**VERIFY Phase 5:**
-- [ ] `test -f .claude/commands/plan/abandon.md && echo "exists"` returns "exists"
-- [ ] `grep -c "force\|--force" .claude/commands/plan/abandon.md` returns >= 1
-- [ ] `grep -c "backup" .claude/commands/plan/abandon.md` returns >= 1
-- [ ] `grep -c "abandoned" .claude/commands/plan/abandon.md` returns >= 1
-
----
-
-## Phase 6: Uncommitted Changes Protection
-
-- [ ] 6.1 Implement standardized uncommitted changes detection and protection in `.claude/commands/plan/set.md`, `.claude/commands/plan/complete.md`, and `.claude/commands/plan/abandon.md`: detect uncommitted changes using `git status --porcelain`, auto-stash changes using `git stash push -m "plan/{name} WIP"` before branch operations, auto-apply stash after successful branch switch using `git stash pop`, and abort with clear error message if stash operations fail (never silently lose changes)
-
-**VERIFY Phase 6:**
-- [ ] `grep -c "stash" .claude/commands/plan/set.md` returns >= 1
-- [ ] `grep -c "stash" .claude/commands/plan/complete.md` returns >= 1
-- [ ] `grep -c "stash" .claude/commands/plan/abandon.md` returns >= 1
-- [ ] All three commands document auto-stash behavior
-
----
-
-## Phase 7: Branch Validation Enhancement
-
-- [ ] 7.1 Add comprehensive branch validation to `.claude/commands/plan/batch.md`: check if user is on correct plan branch before execution using `git rev-parse --abbrev-ref HEAD`, auto-switch to correct branch using `git checkout plan/{name}` when on wrong branch, add `--no-branch-check` flag to override validation, and provide clear error messages explaining branch issues and how to resolve them
-
-**VERIFY Phase 7:**
-- [ ] `grep -c "branch" .claude/commands/plan/batch.md` returns >= 2
-- [ ] `grep -c "no-branch-check\|--no-branch-check" .claude/commands/plan/batch.md` returns >= 1
-- [ ] Branch validation section includes automatic switch behavior
-
----
-
-## Phase 8: Pre-commit Hook Template
-
-- [ ] 8.1 Create complete pre-commit hook template at `.githooks/pre-commit`: implement warning when committing directly to main branch, add check for plan branch naming pattern, include `--no-verify` bypass mechanism, and document hook installation process and usage in README or appropriate documentation
-
-**VERIFY Phase 8:**
-- [ ] `test -f .githooks/pre-commit && echo "exists"` returns "exists"
-- [ ] `grep -c "main\|master" .githooks/pre-commit` returns >= 1
-- [ ] `grep -c "plan/" .githooks/pre-commit` returns >= 1
-- [ ] `test -x .githooks/pre-commit && echo "executable"` returns "executable"
-
----
-
-## Phase 9: Integration Testing
-
-- [ ] 9.1 Perform comprehensive integration testing of all rollback scenarios: test task rollback during plan execution, test phase rollback, test plan rollback for both unmerged and merged states, test abandon command with backup tag creation, and test uncommitted changes protection across all relevant scenarios
-
-**VERIFY Phase 9:**
-- [ ] Task rollback test passes (revert single task, verify status.json updated)
-- [ ] Phase rollback test passes (revert multiple tasks in phase)
-- [ ] Plan rollback test passes for unmerged plan (branch deleted)
-- [ ] Plan rollback test passes for merged plan (merge commit reverted)
-- [ ] Abandon with backup test passes (backup tag created)
-- [ ] Uncommitted changes protection test passes (no silent data loss)
-
----
-
-## Success Criteria
-
-- [ ] `/plan:rollback task X` reverts single task commit
-- [ ] `/plan:rollback phase N` reverts entire phase
-- [ ] `/plan:rollback plan` handles both merged and unmerged
-- [ ] `/plan:abandon` safely discards plan with optional backup
-- [ ] Uncommitted changes protected in all scenarios
-- [ ] Pre-commit hook template available
 
 ## Dependencies
 
@@ -136,6 +22,117 @@
 
 ### External Tools
 - Git (required for revert and rollback operations)
+
+---
+
+## Phase 1: Create /plan:rollback Command
+
+**Execution Note:** Tasks 1.1-1.2 are [SEQUENTIAL] - all create/modify `.claude/commands/plan/rollback.md`
+
+- [ ] 1.1 Create `/plan:rollback` command with task-level rollback
+  - Check if `.claude/commands/plan/rollback.md` exists first
+  - Create new file with command header and usage: `/plan:rollback <task|phase|plan> <target>`
+  - Document all three subcommands: `task X.Y`, `phase N`, `plan [--force]`
+  - Implement task-level rollback: locate commit with `git log --grep="task {id}:" --format="%H" -1`
+  - Revert commit: `git revert <sha> --no-edit`
+  - Update `docs/plan-outputs/{plan}/status.json` to mark task as `rolled_back` or `pending`
+  - Handle edge cases: task commit not found (error), analysis-only tasks (status update only)
+
+- [ ] 1.2 Add phase and plan rollback to `.claude/commands/plan/rollback.md`
+  - Read `.claude/commands/plan/rollback.md` to see current state
+  - Add phase rollback: detect commit range for phase, revert with `git revert <first>..<last> --no-edit`
+  - Update all tasks in phase in status.json, handle partial phases (tasks without commits)
+  - Add plan rollback: detect if merged or unmerged
+  - For unmerged: require `--force`, delete branch with `git branch -D plan/{name}`
+  - For merged: find merge commit with `git log --grep="Plan: {name}" --format="%H" -1`, revert it
+  - Update status.json appropriately for both cases
+
+---
+
+## Phase 2: Create /plan:abandon Command
+
+**Execution Note:** Tasks 2.1-2.2 are [SEQUENTIAL] - all create/modify `.claude/commands/plan/abandon.md`
+
+- [ ] 2.1 Create `/plan:abandon` command
+  - Check if `.claude/commands/plan/abandon.md` exists first
+  - Create new file with command header and usage: `/plan:abandon [--force] [--no-backup]`
+  - Require `--force` flag for destructive operation (abort without it, show warning)
+  - Create backup tag: `backup/plan-{name}-{timestamp}` (unless `--no-backup`)
+  - Handle uncommitted changes: detect with `git status --porcelain`, auto-stash with message
+  - Switch to main: `git checkout main`
+  - Delete plan branch: `git branch -D plan/{name}`
+  - Update status.json with `abandoned` status and `abandonedAt` timestamp
+
+- [ ] 2.2 Verify rollback and abandon commands
+  - Verify rollback file: `test -f .claude/commands/plan/rollback.md`
+  - Verify rollback has all subcommands: `grep -c "task\|phase\|plan" .claude/commands/plan/rollback.md` >= 6
+  - Verify rollback has git operations: `grep -c "git log\|git revert" .claude/commands/plan/rollback.md` >= 2
+  - Verify abandon file: `test -f .claude/commands/plan/abandon.md`
+  - Verify abandon has --force and backup: `grep -c "force\|backup" .claude/commands/plan/abandon.md` >= 2
+  - Document results in `docs/plan-outputs/git-workflow-phase3-safety/findings/2.2.md`
+
+---
+
+## Phase 3: Uncommitted Changes Protection
+
+- [ ] 3.1 Add stash protection to `/plan:set` and `/plan:complete`
+  - Read `.claude/commands/plan/set.md` and add uncommitted changes detection: `git status --porcelain`
+  - Add auto-stash: `git stash push -m "plan/{name} WIP"`, auto-apply after switch: `git stash pop`
+  - Handle stash failures (abort with message, never lose data)
+  - Read `.claude/commands/plan/complete.md` and add uncommitted changes handling before merge
+  - Commit any uncommitted changes before proceeding with merge
+  - Verify stash handling exists in `.claude/commands/plan/abandon.md` (added in 2.1)
+  - Document behavior changes in each file
+
+---
+
+## Phase 4: Branch Validation for Batch
+
+- [ ] 4.1 Add branch validation to `/plan:batch`
+  - Read `.claude/commands/plan/batch.md` to understand current implementation
+  - Document current state in `docs/plan-outputs/git-workflow-phase3-safety/findings/4.1.md`
+  - Add branch check: get current branch with `git rev-parse --abbrev-ref HEAD`
+  - Compare against expected `plan/{name}`, auto-switch if on wrong branch
+  - Add `--no-branch-check` flag to skip validation
+  - Document the flag in usage section
+
+---
+
+## Phase 5: Pre-commit Hook Template
+
+- [ ] 5.1 Create pre-commit hook template
+  - Create `.githooks/` directory if it doesn't exist
+  - Create `.githooks/pre-commit` with shebang `#!/bin/bash`
+  - Add check for main/master branch commits (show warning, exit 0 to allow)
+  - Add check for plan branch pattern (info message if not on plan branch)
+  - Make executable: `chmod +x .githooks/pre-commit`
+  - Create `.githooks/README.md` documenting installation: `git config core.hooksPath .githooks`
+  - Document `--no-verify` bypass option
+
+---
+
+## Phase 6: Integration Testing
+
+- [ ] 6.1 Execute comprehensive safety mechanism tests
+  - Create test document at `docs/plan-outputs/git-workflow-phase3-safety/findings/6.1.md`
+  - Test task rollback: complete a task, run `/plan:rollback task X.Y`, verify commit reverted, status updated
+  - Test phase rollback: complete phase, run `/plan:rollback phase N`, verify all commits reverted
+  - Test plan rollback (unmerged): create branch with commits, run `/plan:rollback plan --force`, verify branch deleted
+  - Test abandon: create plan with work, run `/plan:abandon --force`, verify backup tag, branch deleted
+  - Test uncommitted changes protection: make changes, switch plans, verify stash and no data loss
+  - Verify pre-commit hook works: install hook, commit to main, verify warning shown
+  - Create summary checklist with PASS/FAIL for each test case
+
+---
+
+## Success Criteria
+
+- `/plan:rollback task X` reverts single task commit
+- `/plan:rollback phase N` reverts entire phase
+- `/plan:rollback plan` handles both merged and unmerged
+- `/plan:abandon` safely discards plan with optional backup
+- Uncommitted changes protected in all scenarios
+- Pre-commit hook template available
 
 ## Risks
 
