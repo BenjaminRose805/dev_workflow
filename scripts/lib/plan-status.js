@@ -599,6 +599,7 @@ function getTitle(content) {
 /**
  * Initialize status tracking for a plan
  * Creates output directory and status.json if they don't exist
+ * Parses execution notes and attaches constraints to tasks
  * @param {string} planPath - Path to plan file
  * @returns {{ success: boolean, status: object|null, error: string|null }}
  */
@@ -615,15 +616,45 @@ function initializePlanStatus(planPath) {
     const title = getTitle(content) || path.basename(planPath, '.md');
     const phases = parsePhases(content);
 
-    // Convert phases to task list
+    // Parse execution constraints from plan content
+    const constraints = parseExecutionNotes(content);
+
+    // Build a lookup map for quick constraint checking
+    const constraintMap = new Map();
+    for (const constraint of constraints) {
+      for (const taskId of constraint.taskIds) {
+        constraintMap.set(taskId, {
+          sequential: true,
+          sequentialGroup: constraint.taskRange,
+          reason: constraint.reason
+        });
+      }
+    }
+
+    // Build sequentialGroups summary for top-level storage
+    const sequentialGroups = constraints.map(c => ({
+      taskRange: c.taskRange,
+      taskIds: c.taskIds,
+      reason: c.reason
+    }));
+
+    // Convert phases to task list with constraints
     const tasks = [];
     for (const phase of phases) {
       for (const task of phase.tasks) {
-        tasks.push({
+        const taskData = {
           id: task.id,
           phase: `Phase ${phase.id}: ${phase.name}`,
           description: task.title
-        });
+        };
+
+        // Attach execution constraints if present
+        const taskConstraint = constraintMap.get(task.id);
+        if (taskConstraint) {
+          taskData.executionConstraints = taskConstraint;
+        }
+
+        tasks.push(taskData);
       }
     }
 
@@ -646,12 +677,20 @@ function initializePlanStatus(planPath) {
         createdAt: now,
         lastUpdatedAt: now,
         currentPhase: tasks.length > 0 ? tasks[0].phase : null,
-        tasks: tasks.map(task => ({
-          id: task.id,
-          phase: task.phase,
-          description: task.description,
-          status: 'pending'
-        })),
+        sequentialGroups: sequentialGroups.length > 0 ? sequentialGroups : undefined,
+        tasks: tasks.map(task => {
+          const taskObj = {
+            id: task.id,
+            phase: task.phase,
+            description: task.description,
+            status: 'pending'
+          };
+          // Include executionConstraints if present
+          if (task.executionConstraints) {
+            taskObj.executionConstraints = task.executionConstraints;
+          }
+          return taskObj;
+        }),
         runs: [],
         summary: createEmptySummary()
       };
