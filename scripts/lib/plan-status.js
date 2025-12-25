@@ -1171,6 +1171,123 @@ function getTaskConstraints(planPath, taskId) {
   }
 }
 
+/**
+ * Get phases that can run in parallel based on [PARALLEL] annotations
+ * Also checks for file conflicts between phases to warn about potential issues.
+ *
+ * @param {string} planPath - Path to plan file
+ * @returns {{
+ *   parallelGroups: Array<{phaseIds: number[], reason: string}>,
+ *   allParallelPhases: number[],
+ *   hasConflicts: boolean,
+ *   conflicts: Array<{file: string, phases: number[]}>
+ * }} Parallel phase information
+ *
+ * @example
+ * const result = getParallelPhases('docs/plans/my-plan.md');
+ * // {
+ * //   parallelGroups: [{ phaseIds: [1, 2, 3], reason: "independent work" }],
+ * //   allParallelPhases: [1, 2, 3],
+ * //   hasConflicts: false,
+ * //   conflicts: []
+ * // }
+ */
+function getParallelPhases(planPath) {
+  const result = {
+    parallelGroups: [],
+    allParallelPhases: [],
+    hasConflicts: false,
+    conflicts: []
+  };
+
+  try {
+    // Read plan content
+    const absolutePath = path.isAbsolute(planPath) ? planPath : resolvePath(planPath);
+    const content = readFile(absolutePath);
+    if (!content) {
+      return result;
+    }
+
+    // Parse execution notes to get parallel phase annotations
+    const constraints = parseExecutionNotes(content);
+
+    if (!constraints.parallel || constraints.parallel.length === 0) {
+      return result;
+    }
+
+    // Build parallel groups
+    const allPhases = new Set();
+    for (const group of constraints.parallel) {
+      result.parallelGroups.push({
+        phaseIds: group.phaseIds,
+        reason: group.reason
+      });
+      for (const phaseId of group.phaseIds) {
+        allPhases.add(phaseId);
+      }
+    }
+    result.allParallelPhases = Array.from(allPhases).sort((a, b) => a - b);
+
+    // Load status to get tasks by phase for conflict detection
+    const status = loadStatus(planPath);
+    if (!status || !status.tasks) {
+      return result;
+    }
+
+    // Group tasks by phase number
+    const tasksByPhase = new Map();
+    for (const task of status.tasks) {
+      const phaseMatch = task.phase ? task.phase.match(/Phase\s+(\d+)/) : null;
+      if (phaseMatch) {
+        const phaseNum = parseInt(phaseMatch[1]);
+        if (!tasksByPhase.has(phaseNum)) {
+          tasksByPhase.set(phaseNum, []);
+        }
+        tasksByPhase.get(phaseNum).push(task);
+      }
+    }
+
+    // Check for file conflicts between parallel phases
+    const fileToPhases = new Map();
+
+    for (const phaseNum of result.allParallelPhases) {
+      const phaseTasks = tasksByPhase.get(phaseNum) || [];
+      for (const task of phaseTasks) {
+        const files = extractFileReferences(task.description);
+        for (const file of files) {
+          const normalizedFile = file.toLowerCase();
+          if (!fileToPhases.has(normalizedFile)) {
+            fileToPhases.set(normalizedFile, {
+              originalFile: file,
+              phases: new Set()
+            });
+          }
+          fileToPhases.get(normalizedFile).phases.add(phaseNum);
+        }
+      }
+    }
+
+    // Find files referenced by multiple parallel phases
+    for (const [normalizedFile, data] of fileToPhases) {
+      if (data.phases.size > 1) {
+        result.conflicts.push({
+          file: data.originalFile,
+          phases: Array.from(data.phases).sort((a, b) => a - b)
+        });
+        result.hasConflicts = true;
+      }
+    }
+
+    // Sort conflicts by file path
+    result.conflicts.sort((a, b) => a.file.localeCompare(b.file));
+
+    return result;
+  } catch (error) {
+    console.error(`Failed to get parallel phases: ${error.message}`);
+    return result;
+  }
+}
+
 // =============================================================================
 // File Conflict Detection
 // =============================================================================
@@ -1457,6 +1574,7 @@ module.exports = {
   expandPhaseRange,
   parseExecutionNotes,
   getTaskConstraints,
+  getParallelPhases,
 
   // File Conflict Detection
   extractFileReferences,
