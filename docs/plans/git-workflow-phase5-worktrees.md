@@ -42,7 +42,7 @@ repo/
 
 ## Phase 3: Worktree Context System
 
-**Execution Note:** Tasks 3.1-6.1 are [SEQUENTIAL] - all modify related orchestrator systems (`scripts/status-cli.js`, `scripts/plan_orchestrator.py`)
+**Execution Note:** Task 3.1 is [SEQUENTIAL] - foundational context system that Phases 4-6 depend on (`scripts/status-cli.js`, `.claude-context/`)
 
 - [ ] 3.1 Implement worktree-aware context system: create `.claude-context/` directory structure for worktrees, move `current-plan.txt` to per-worktree context, add `CLAUDE_WORKTREE` environment variable support, update status-cli.js to detect worktree context, update all plan commands to use worktree-aware paths, and implement fallback to repo root when not in worktree
 
@@ -53,6 +53,8 @@ repo/
 
 ## Phase 4: Orchestrator Worktree Integration
 
+**Execution Note:** Task 4.1 is [SEQUENTIAL] with Phase 3 - modifies `scripts/plan_orchestrator.py` which depends on context system
+
 - [ ] 4.1 Extend plan_orchestrator.py with worktree support: add `--worktree` flag, implement auto-detection from current directory, set working directory to worktree path, use worktree-specific log files (`orchestrator-{plan-name}.log`), pass worktree context to Claude sessions, and handle worktree paths in status monitoring
 
 **VERIFY Phase 4:**
@@ -62,6 +64,8 @@ repo/
 
 ## Phase 5: Multi-Orchestrator Process Management
 
+**Execution Note:** Task 5.1 is [SEQUENTIAL] with Phases 3-4 - extends orchestrator process management in `scripts/plan_orchestrator.py`
+
 - [ ] 5.1 Implement parallel orchestrator infrastructure: design and implement process management for multiple orchestrators, create orchestrator registry to track running instances, add `--daemon` mode for background execution, implement IPC for orchestrator communication, handle graceful shutdown of multiple instances, and prevent duplicate orchestrators for the same plan
 
 **VERIFY Phase 5:**
@@ -70,6 +74,8 @@ repo/
 - [ ] Running same plan twice shows "duplicate orchestrator" warning
 
 ## Phase 6: Aggregate Status System
+
+**Execution Note:** Task 6.1 is [SEQUENTIAL] with Phases 3-5 - modifies `scripts/status-cli.js` which must integrate with worktree context system
 
 - [ ] 6.1 Implement aggregate status view in status-cli.js: add `--all-plans` flag, scan all worktrees for active plans, aggregate progress across plans, display per-plan summary in table format, support `--json` output for programmatic access, and include worktree paths in status output
 
