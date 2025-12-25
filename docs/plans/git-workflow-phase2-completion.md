@@ -37,6 +37,14 @@
   - Option `--no-archive` to skip archive tag creation
   - Document command usage, options, and how to access archived history via tag
 
+**VERIFY Phase 1:**
+- [ ] `test -f .claude/commands/plan/complete.md` returns 0 (file exists)
+- [ ] `grep -c "status.json" .claude/commands/plan/complete.md` returns >= 1
+- [ ] `grep -c "archive/plan-" .claude/commands/plan/complete.md` returns >= 1
+- [ ] `grep -c "\-\-no-archive" .claude/commands/plan/complete.md` returns >= 1
+
+---
+
 ## Phase 2: Squash Merge Workflow Implementation
 
 - [ ] 2.1 In the `/plan:complete` command, implement the squash merge workflow with these steps:
@@ -45,6 +53,14 @@
   - Squash merge using `git merge --squash plan/{name}`
   - Generate and create merge commit with plan summary message
   - Delete plan branch using `git branch -D plan/{name}`
+
+**VERIFY Phase 2:**
+- [ ] `grep -c "git checkout main" .claude/commands/plan/complete.md` returns >= 1
+- [ ] `grep -c "git merge --squash" .claude/commands/plan/complete.md` returns >= 1
+- [ ] `grep -c "\-\-sync" .claude/commands/plan/complete.md` returns >= 1
+- [ ] `grep -c "git branch -D" .claude/commands/plan/complete.md` returns >= 1
+
+---
 
 ## Phase 3: Merge Commit Message Format
 
@@ -55,6 +71,15 @@
   - Link to outputs directory: `Outputs: docs/plan-outputs/{plan-name}/`
   - Claude Code attribution footer: "Generated with Claude Code\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 
+**VERIFY Phase 3:**
+- [ ] `grep -c "task count" .claude/commands/plan/complete.md` returns >= 1
+- [ ] `grep -c "phase count" .claude/commands/plan/complete.md` returns >= 1
+- [ ] `grep -c "archive/plan-" .claude/commands/plan/complete.md` returns >= 1
+- [ ] `grep -c "docs/plan-outputs/" .claude/commands/plan/complete.md` returns >= 1
+- [ ] `grep -c "Co-Authored-By" .claude/commands/plan/complete.md` returns >= 1
+
+---
+
 ## Phase 4: Merge Strategy Options
 
 - [ ] 4.1 In the `/plan:complete` command, implement merge strategy options:
@@ -62,6 +87,15 @@
   - `--merge commit`: Standard merge commit using `git merge --no-ff`, preserves history
   - `--merge ff`: Fast-forward merge if possible using `git merge --ff-only`
   - Document when to use each strategy (squash for clean history, commit for preserving granular commits, ff for linear history)
+
+**VERIFY Phase 4:**
+- [ ] `grep -c "\-\-merge squash" .claude/commands/plan/complete.md` returns >= 1
+- [ ] `grep -c "\-\-merge commit" .claude/commands/plan/complete.md` returns >= 1
+- [ ] `grep -c "\-\-merge ff" .claude/commands/plan/complete.md` returns >= 1
+- [ ] `grep -c "git merge --no-ff" .claude/commands/plan/complete.md` returns >= 1
+- [ ] `grep -c "git merge --ff-only" .claude/commands/plan/complete.md` returns >= 1
+
+---
 
 ## Phase 5: Status Tracking Updates
 
@@ -71,6 +105,15 @@
   - Record merge commit SHA in `mergeCommit` field
   - Record archive tag name in `archiveTag` field
   - Ensure status.json reflects completion state correctly
+
+**VERIFY Phase 5:**
+- [ ] `grep -c "completedAt" .claude/commands/plan/complete.md` returns >= 1
+- [ ] `grep -c "mergedAt" .claude/commands/plan/complete.md` returns >= 1
+- [ ] `grep -c "mergeCommit" .claude/commands/plan/complete.md` returns >= 1
+- [ ] `grep -c "archiveTag" .claude/commands/plan/complete.md` returns >= 1
+- [ ] `grep -c "status.json" .claude/commands/plan/complete.md` returns >= 2
+
+---
 
 ## Success Criteria
 
