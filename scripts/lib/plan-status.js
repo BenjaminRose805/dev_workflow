@@ -1090,6 +1090,134 @@ function getTaskConstraints(planPath, taskId) {
 }
 
 // =============================================================================
+// File Conflict Detection
+// =============================================================================
+
+/**
+ * Extract file references from a task description
+ * Matches:
+ * - Backtick-quoted paths: `path/to/file.ts`
+ * - Common directory prefixes: src/, tests/, docs/, scripts/, lib/
+ * - Modify/update patterns: "modify X.ts", "update X.ts", "modifying X.ts", "updating X.ts"
+ *
+ * @param {string} taskDescription - Task description text
+ * @returns {string[]} Array of unique file paths found
+ *
+ * @example
+ * extractFileReferences("Update `src/api.ts` and `src/utils.ts`")
+ * // Returns: ["src/api.ts", "src/utils.ts"]
+ *
+ * extractFileReferences("Modify scripts/status-cli.js to add new feature")
+ * // Returns: ["scripts/status-cli.js"]
+ */
+function extractFileReferences(taskDescription) {
+  if (!taskDescription || typeof taskDescription !== 'string') {
+    return [];
+  }
+
+  const files = new Set();
+
+  // Pattern 1: Backtick-quoted paths with file extension
+  // Matches: `path/to/file.ts`, `src/utils.js`, `docs/readme.md`
+  const backtickPattern = /`([^`]+\.[a-zA-Z0-9]+)`/g;
+  let match;
+  while ((match = backtickPattern.exec(taskDescription)) !== null) {
+    const filePath = match[1].trim();
+    // Filter out things that look like code snippets rather than paths
+    if (!filePath.includes(' ') && !filePath.includes('(') && !filePath.includes(')')) {
+      files.add(filePath);
+    }
+  }
+
+  // Pattern 2: Common directory prefixes with file paths
+  // Matches: src/api.ts, tests/unit/foo.test.js, docs/plans/plan.md, scripts/status-cli.js, lib/utils.js
+  const dirPattern = /\b(src|tests|docs|scripts|lib|\.claude)\/[\w./-]+\.[a-zA-Z0-9]+\b/g;
+  while ((match = dirPattern.exec(taskDescription)) !== null) {
+    files.add(match[0]);
+  }
+
+  // Pattern 3: Modify/update patterns
+  // Matches: "modify status-cli.js", "update plan-status.js", "modifying file.ts", "updating utils.js"
+  const modifyPattern = /\b(?:modif(?:y|ying)|updat(?:e|ing)|edit(?:ing)?|chang(?:e|ing))\s+[`]?([a-zA-Z0-9_-]+\.[a-zA-Z0-9]+)[`]?\b/gi;
+  while ((match = modifyPattern.exec(taskDescription)) !== null) {
+    const filename = match[1];
+    // Only add if it looks like a filename (has extension)
+    if (/\.[a-zA-Z0-9]+$/.test(filename)) {
+      files.add(filename);
+    }
+  }
+
+  // Pattern 4: "in <filename>" patterns for files with known extensions
+  // Matches: "in status-cli.js", "in plan-status.js"
+  const inFilePattern = /\bin\s+[`]?([a-zA-Z0-9_-]+\.(?:js|ts|tsx|jsx|json|md|py|sh))[`]?\b/gi;
+  while ((match = inFilePattern.exec(taskDescription)) !== null) {
+    files.add(match[1]);
+  }
+
+  return Array.from(files);
+}
+
+/**
+ * Detect file conflicts between multiple tasks
+ * Identifies files that are referenced by more than one task.
+ *
+ * @param {Array<{id: string, description: string}>} tasks - Array of task objects
+ * @returns {Array<{file: string, taskIds: string[]}>} Array of conflicts
+ *
+ * @example
+ * const tasks = [
+ *   { id: '2.1', description: 'Update `src/api.ts` with new endpoint' },
+ *   { id: '2.2', description: 'Modify `src/api.ts` for authentication' }
+ * ];
+ * detectFileConflicts(tasks)
+ * // Returns: [{ file: 'src/api.ts', taskIds: ['2.1', '2.2'] }]
+ */
+function detectFileConflicts(tasks) {
+  if (!tasks || !Array.isArray(tasks)) {
+    return [];
+  }
+
+  // Build map of file -> task IDs
+  const fileToTasks = new Map();
+
+  for (const task of tasks) {
+    if (!task || !task.id || !task.description) {
+      continue;
+    }
+
+    const files = extractFileReferences(task.description);
+    for (const file of files) {
+      // Normalize file path to handle both full paths and basenames
+      const normalizedFile = file.toLowerCase();
+
+      if (!fileToTasks.has(normalizedFile)) {
+        fileToTasks.set(normalizedFile, {
+          originalFile: file,
+          taskIds: []
+        });
+      }
+      fileToTasks.get(normalizedFile).taskIds.push(task.id);
+    }
+  }
+
+  // Find files referenced by multiple tasks
+  const conflicts = [];
+  for (const [normalizedFile, data] of fileToTasks) {
+    if (data.taskIds.length > 1) {
+      conflicts.push({
+        file: data.originalFile,
+        taskIds: data.taskIds
+      });
+    }
+  }
+
+  // Sort conflicts by file path for consistent output
+  conflicts.sort((a, b) => a.file.localeCompare(b.file));
+
+  return conflicts;
+}
+
+// =============================================================================
 // Validation
 // =============================================================================
 
@@ -1190,5 +1318,9 @@ module.exports = {
   // Constraint Parsing
   expandTaskRange,
   parseExecutionNotes,
-  getTaskConstraints
+  getTaskConstraints,
+
+  // File Conflict Detection
+  extractFileReferences,
+  detectFileConflicts
 };
