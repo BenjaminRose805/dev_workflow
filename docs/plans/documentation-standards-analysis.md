@@ -1,17 +1,25 @@
 # Analysis Plan: Documentation Standards
 
-## Objective
-Analyze existing documentation to:
-1. Catalog all docs and their purposes
-2. Identify removable/obsolete documentation
-3. Establish which documents define the authoritative standards for plans, phases, and tasks
+## Overview
 
-## Metadata
-- **Created**: 2025-12-25
-- **Restructured**: 2025-12-25 (consolidated for orchestrator isolation)
-- **Status**: Active
-- **Priority**: P1
-- **Output Directory**: `docs/plan-outputs/documentation-standards-analysis/`
+- **Goal:** Analyze existing documentation to catalog all docs and their purposes, identify removable/obsolete documentation, and establish which documents define the authoritative standards for plans, phases, and tasks
+- **Priority:** P1
+- **Created:** 2025-12-25
+- **Output:** `docs/plan-outputs/documentation-standards-analysis/`
+
+> Restructured 2025-12-25 for orchestrator isolation.
+
+## Dependencies
+
+### Upstream
+- None (foundational analysis)
+
+### Downstream
+- Documentation cleanup and consolidation efforts
+- PLAN-STANDARDS.md improvements based on findings
+
+### External Tools
+- None
 
 ---
 
