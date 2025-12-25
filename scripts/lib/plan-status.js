@@ -105,6 +105,68 @@ function hasActivePlan() {
 }
 
 /**
+ * Get plan path from command line args, falling back to active plan.
+ * Checks for --plan argument first, then falls back to getActivePlanPath().
+ * Validates that the plan file exists.
+ *
+ * @param {string[]} args - Command line arguments (may include --plan <path> or --plan=<path>)
+ * @returns {{ planPath: string|null, error: string|null, remainingArgs: string[] }}
+ *   - planPath: The resolved plan path, or null if error
+ *   - error: Error message if plan not found or not set, null otherwise
+ *   - remainingArgs: Args with --plan and its value removed
+ *
+ * @example
+ * const result = getPlanPathFromArgs(['--plan', 'docs/plans/my-plan.md', 'status']);
+ * // { planPath: 'docs/plans/my-plan.md', error: null, remainingArgs: ['status'] }
+ *
+ * const result = getPlanPathFromArgs(['status']);
+ * // Falls back to getActivePlanPath(), returns that if set
+ */
+function getPlanPathFromArgs(args) {
+  let planArg = null;
+  const remainingArgs = [];
+
+  // Extract --plan argument
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--plan' && i + 1 < args.length) {
+      planArg = args[i + 1];
+      i++; // Skip the next arg (the plan path)
+    } else if (args[i].startsWith('--plan=')) {
+      planArg = args[i].slice('--plan='.length);
+    } else {
+      remainingArgs.push(args[i]);
+    }
+  }
+
+  // Determine plan path
+  let planPath;
+  if (planArg) {
+    // Validate the provided plan path exists
+    const absolutePlanPath = path.isAbsolute(planArg) ? planArg : resolvePath(planArg);
+    if (!fs.existsSync(absolutePlanPath)) {
+      return {
+        planPath: null,
+        error: `Plan file not found: ${planArg}`,
+        remainingArgs
+      };
+    }
+    planPath = planArg;
+  } else {
+    // Fall back to active plan from current-plan.txt
+    planPath = getActivePlanPath();
+    if (!planPath) {
+      return {
+        planPath: null,
+        error: 'No active plan set. Use --plan <path> or /plan:set to choose a plan first.',
+        remainingArgs
+      };
+    }
+  }
+
+  return { planPath, error: null, remainingArgs };
+}
+
+/**
  * Get output directory name from plan path
  * @param {string} planPath - Path to plan file
  * @returns {string} Output directory name (e.g., 'my-plan')
@@ -1078,6 +1140,7 @@ module.exports = {
   // Path Resolution
   getActivePlanPath,
   hasActivePlan,
+  getPlanPathFromArgs,
   getOutputDir,
   getOutputDirName,
   getStatusPath,
