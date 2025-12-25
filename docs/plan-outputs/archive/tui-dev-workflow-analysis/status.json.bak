@@ -1,0 +1,245 @@
+{
+  "planPath": "docs/plans/tui-dev-workflow-analysis.md",
+  "planName": "Analysis Plan: TUI Dev Workflow Analysis",
+  "createdAt": "2025-12-24T19:00:00.000Z",
+  "lastUpdatedAt": "2025-12-24T20:20:32.480Z",
+  "currentPhase": "Phase 1: Discovery",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Discovery",
+      "description": "1.1 Inventory current TUI tools installed and their versions",
+      "status": "completed",
+      "startedAt": "2025-12-24T19:50:58.417Z",
+      "completedAt": "2025-12-24T19:51:48.710Z",
+      "duration": 50293,
+      "notes": "Inventoried 10 TUI tools: yazi, micro, glow, vim, nano, tmux, fzf, rg, git, gh. Identified gaps: lazygit, bat, delta, zoxide, jq/yq"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Discovery",
+      "description": "1.2 Document current configuration for each tool (yazi, micro, glow, etc.)",
+      "status": "completed",
+      "startedAt": "2025-12-24T19:51:55.687Z",
+      "completedAt": "2025-12-24T19:53:16.037Z",
+      "duration": 80350,
+      "notes": "Documented configs for all 10 tools. Micro well-configured (LSP, 8 plugins). Yazi has glow+git plugins. tmux/vim/fzf/rg using defaults."
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Discovery",
+      "description": "1.3 Map existing integrations between tools",
+      "status": "completed",
+      "startedAt": "2025-12-24T19:53:24.075Z",
+      "completedAt": "2025-12-24T19:54:36.196Z",
+      "duration": 72121,
+      "notes": "Mapped 7 active integrations. Key: yazi-glow preview, yazi-git status, micro-fzf, micro-lsp. Gaps: tmux (zero integrations), missing fzf-git, micro-git"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Discovery",
+      "description": "1.4 Identify workflow gaps and pain points",
+      "status": "completed",
+      "startedAt": "2025-12-24T19:54:43.522Z",
+      "completedAt": "2025-12-24T19:55:15.200Z",
+      "duration": 31678,
+      "notes": "Identified 14 gaps: 4 HIGH (lazygit, bat, tmux, fzf-shell), 7 MEDIUM (zoxide, delta, jq, git-aliases), 3 LOW. Quick wins: fzf shell, git aliases, bat"
+    },
+    {
+      "id": "V1",
+      "phase": "Phase 1: Discovery",
+      "description": "**VERIFY 1**: Discovery findings documented",
+      "status": "completed",
+      "startedAt": "2025-12-24T19:55:23.101Z",
+      "completedAt": "2025-12-24T19:55:49.449Z",
+      "duration": 26348,
+      "notes": "All 4 discovery tasks documented (575 lines total). 10 tools inventoried, 7 active integrations mapped, 14 gaps identified (4 critical). Ready for Phase 2."
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Deep Analysis",
+      "description": "2.1 Analyze yazi: plugins, keybindings, preview capabilities",
+      "status": "completed",
+      "startedAt": "2025-12-24T19:56:24.946Z",
+      "completedAt": "2025-12-24T20:01:56.746Z",
+      "duration": 331800,
+      "notes": "Analyzed yazi: version 25.5.31, 2 plugins (git, glow), minimal config, 14 recommendations prioritized"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Deep Analysis",
+      "description": "2.2 Analyze micro: plugins, LSP support, syntax highlighting",
+      "status": "completed",
+      "startedAt": "2025-12-24T19:56:24.977Z",
+      "completedAt": "2025-12-24T20:01:56.776Z",
+      "duration": 331799,
+      "notes": "Analyzed micro: version 2.0.14, 15 plugins installed, LSP configured for Python, 15 recommendations"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Deep Analysis",
+      "description": "2.3 Analyze glow: rendering options, integration potential",
+      "status": "completed",
+      "startedAt": "2025-12-24T19:56:25.013Z",
+      "completedAt": "2025-12-24T20:01:56.808Z",
+      "duration": 331795,
+      "notes": "Analyzed glow: version 2.1.1, well-configured, integrated with yazi, 10 integration opportunities"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Deep Analysis",
+      "description": "2.4 Analyze git workflow tools (lazygit, git integrations)",
+      "status": "completed",
+      "startedAt": "2025-12-24T19:56:25.046Z",
+      "completedAt": "2025-12-24T20:01:56.839Z",
+      "duration": 331793,
+      "notes": "Analyzed git tools: git 2.43, gh 2.83.1, lazygit/delta NOT installed, 10 recommendations"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Deep Analysis",
+      "description": "2.5 Analyze shell/terminal setup (zsh, tmux, etc.)",
+      "status": "completed",
+      "startedAt": "2025-12-24T19:56:25.084Z",
+      "completedAt": "2025-12-24T20:01:56.870Z",
+      "duration": 331786,
+      "notes": "Analyzed shell/terminal: bash 5.2.21, tmux 3.4 unconfigured, fzf not integrated, 12 recommendations"
+    },
+    {
+      "id": "2.6",
+      "phase": "Phase 2: Deep Analysis",
+      "description": "2.6 Categorize findings by priority (HIGH > MEDIUM > LOW)",
+      "status": "completed",
+      "startedAt": "2025-12-24T20:02:26.879Z",
+      "completedAt": "2025-12-24T20:03:57.484Z",
+      "duration": 90605,
+      "notes": "Created comprehensive priority categorization document with 60 findings across HIGH/MEDIUM/LOW priorities, organized by category (missing tools, config gaps, integrations, enhancements)"
+    },
+    {
+      "id": "V2",
+      "phase": "Phase 2: Deep Analysis",
+      "description": "**VERIFY 2**: All tools analyzed with findings",
+      "status": "completed",
+      "startedAt": "2025-12-24T20:04:01.676Z",
+      "completedAt": "2025-12-24T20:04:46.845Z",
+      "duration": 45169,
+      "notes": "Verified all Phase 2 tasks complete: 6 analysis files totaling ~95KB, 60 findings categorized by priority (10 HIGH, 28 MEDIUM, 22 LOW), all 5 tools fully analyzed with recommendations"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Synthesis",
+      "description": "3.1 Identify high-value missing features per tool",
+      "status": "completed",
+      "startedAt": "2025-12-24T20:05:40.890Z",
+      "completedAt": "2025-12-24T20:06:40.340Z",
+      "duration": 59450,
+      "notes": "Created comprehensive analysis of high-value missing features per tool with prioritization"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Synthesis",
+      "description": "3.2 Find integration opportunities between tools",
+      "status": "completed",
+      "startedAt": "2025-12-24T20:06:40.744Z",
+      "completedAt": "2025-12-24T20:08:03.354Z",
+      "duration": 82610,
+      "notes": "Identified 12+ integration opportunities with prioritized roadmap"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Synthesis",
+      "description": "3.3 Research available plugins/extensions to fill gaps",
+      "status": "completed",
+      "startedAt": "2025-12-24T20:08:03.750Z",
+      "completedAt": "2025-12-24T20:09:17.179Z",
+      "duration": 73429,
+      "notes": "Comprehensive plugin/extension catalog with installation instructions"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Synthesis",
+      "description": "3.4 Propose workflow improvements",
+      "status": "completed",
+      "startedAt": "2025-12-24T20:09:17.580Z",
+      "completedAt": "2025-12-24T20:10:39.282Z",
+      "duration": 81702,
+      "notes": "Proposed 6 major workflow improvements with before/after comparisons"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Synthesis",
+      "description": "3.5 Create prioritized enhancement roadmap",
+      "status": "completed",
+      "startedAt": "2025-12-24T20:10:39.687Z",
+      "completedAt": "2025-12-24T20:12:33.278Z",
+      "duration": 113591,
+      "notes": "Created comprehensive 4-phase enhancement roadmap with verification checklists"
+    },
+    {
+      "id": "V3",
+      "phase": "Phase 3: Synthesis",
+      "description": "**VERIFY 3**: Recommendations complete",
+      "status": "completed",
+      "startedAt": "2025-12-24T20:14:10.666Z",
+      "completedAt": "2025-12-24T20:14:16.810Z",
+      "duration": 6144,
+      "notes": "All Phase 3 synthesis tasks verified complete: 3.1 High-value features (27 identified), 3.2 Integration opportunities (12+), 3.3 Plugins research (30+), 3.4 Workflow improvements (6 major), 3.5 Enhancement roadmap (4 phases, 47 items)"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Implementation Planning",
+      "description": "4.1 List quick wins (easy to implement, high value)",
+      "status": "completed",
+      "startedAt": "2025-12-24T20:14:23.812Z",
+      "completedAt": "2025-12-24T20:15:34.556Z",
+      "duration": 70744,
+      "notes": "15 quick wins identified and documented with implementation details, organized into 3 tiers by time/impact. Includes one-command setup script for Tier 1 wins."
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Implementation Planning",
+      "description": "4.2 Document configuration changes needed",
+      "status": "completed",
+      "startedAt": "2025-12-24T20:15:34.971Z",
+      "completedAt": "2025-12-24T20:17:15.140Z",
+      "duration": 100169,
+      "notes": "8 configuration files documented with full content, installation commands, and backup script. Includes ~/.bashrc, ~/.gitconfig, ~/.tmux.conf, micro settings/bindings, yazi toml/keymap, and glow config."
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Implementation Planning",
+      "description": "4.3 Identify plugins to install",
+      "status": "completed",
+      "startedAt": "2025-12-24T20:17:15.550Z",
+      "completedAt": "2025-12-24T20:18:35.966Z",
+      "duration": 80416,
+      "notes": "24 plugins documented across yazi (6), micro (7), tmux (6), and shell (5) with installation commands, keymap configs, and verification steps. Includes complete installation script."
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Implementation Planning",
+      "description": "4.4 Create implementation checklist",
+      "status": "completed",
+      "startedAt": "2025-12-24T20:18:36.369Z",
+      "completedAt": "2025-12-24T20:20:20.256Z",
+      "duration": 103887,
+      "notes": "50+ task checklist organized in 4 phases with verification scripts, troubleshooting guide, and quick reference card. Includes pre-implementation backup steps and final system check."
+    },
+    {
+      "id": "V4",
+      "phase": "Phase 4: Implementation Planning",
+      "description": "**VERIFY 4**: Actionable implementation plan ready",
+      "status": "in_progress",
+      "startedAt": "2025-12-24T20:20:32.479Z"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 23,
+    "completed": 22,
+    "pending": 0,
+    "in_progress": 1,
+    "failed": 0,
+    "skipped": 0
+  }
+}

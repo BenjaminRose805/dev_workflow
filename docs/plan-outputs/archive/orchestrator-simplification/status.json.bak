@@ -1,0 +1,479 @@
+{
+  "_comment": "This file is the authoritative source of truth for task execution state. The markdown plan file is read-only reference documentation. Use status-cli.js to update task status.",
+  "planPath": "docs/plans/orchestrator-simplification.md",
+  "planName": "Implementation Plan: Orchestrator Simplification",
+  "createdAt": "2025-12-24T23:38:57.633Z",
+  "lastUpdatedAt": "2025-12-25T00:12:40.955Z",
+  "currentPhase": "Phase 0: Preparation (No breaking changes)",
+  "tasks": [
+    {
+      "id": "0.1",
+      "phase": "Phase 0: Preparation (No breaking changes)",
+      "description": "0.1 Create comprehensive test suite for current behavior",
+      "status": "completed",
+      "startedAt": "2025-12-24T23:44:12.175Z",
+      "completedAt": "2025-12-24T23:47:45.356Z",
+      "duration": 213181,
+      "notes": "Created comprehensive test suite with 7 test suites covering status-cli, plan-orchestrator, plan-runner.sh, lib modules, parallel updates, recovery scenarios, and status file validation. Total of 186+ individual test cases, all passing."
+    },
+    {
+      "id": "0.2",
+      "phase": "Phase 0: Preparation (No breaking changes)",
+      "description": "0.2 Document all CLI commands and their expected outputs",
+      "status": "completed",
+      "startedAt": "2025-12-24T23:47:45.762Z",
+      "completedAt": "2025-12-24T23:49:14.760Z",
+      "duration": 88998,
+      "notes": "Created comprehensive CLI documentation covering all commands in status-cli.js, plan-orchestrator.js, plan-runner.sh, and library functions. Documentation includes usage examples, expected outputs, and API references."
+    },
+    {
+      "id": "0.3",
+      "phase": "Phase 0: Preparation (No breaking changes)",
+      "description": "0.3 Identify all callers of each script (grep for usage)",
+      "status": "completed",
+      "startedAt": "2025-12-24T23:49:15.162Z",
+      "completedAt": "2025-12-24T23:50:24.521Z",
+      "duration": 69359,
+      "notes": "Created comprehensive caller analysis for all scripts: plan-runner.sh, plan-orchestrator.js, status-cli.js, status-manager.js, plan-output-utils.js, plan-pointer.js. Documented dependency graph and impact analysis for each simplification phase."
+    },
+    {
+      "id": "0.4",
+      "phase": "Phase 0: Preparation (No breaking changes)",
+      "description": "**VERIFY 0**: All tests pass, baseline established",
+      "status": "completed",
+      "startedAt": "2025-12-24T23:50:24.925Z",
+      "completedAt": "2025-12-24T23:50:45.964Z",
+      "duration": 21039,
+      "notes": "All tests pass: 7 test suites, 186+ individual tests passing. Baseline established for orchestrator simplification. Test suites cover: status-cli.js (46 tests), plan-orchestrator.js (40 tests), plan-runner.sh (27 tests), lib modules (56 tests), parallel updates, recovery scenarios, and status file validation."
+    },
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Eliminate plan-runner.sh (Low risk)",
+      "description": "1.1 Update `plan_orchestrator.py` to call `node scripts/plan-orchestrator.js` directly",
+      "status": "completed",
+      "startedAt": "2025-12-24T23:51:24.915Z",
+      "completedAt": "2025-12-24T23:51:56.710Z",
+      "duration": 31795,
+      "notes": "Updated plan_orchestrator.py to call node scripts/plan-orchestrator.js directly: changed PLAN_RUNNER_SCRIPT to PLAN_ORCHESTRATOR_JS, updated get_status() and get_next_tasks() methods"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Eliminate plan-runner.sh (Low risk)",
+      "description": "1.2 Update any other callers of `plan-runner.sh` to use node directly",
+      "status": "completed",
+      "startedAt": "2025-12-24T23:51:57.111Z",
+      "completedAt": "2025-12-24T23:52:20.098Z",
+      "duration": 22987,
+      "notes": "Updated .claude/commands/plan/orchestrate.md to use node scripts/plan-orchestrator.js directly instead of plan-runner.sh"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Eliminate plan-runner.sh (Low risk)",
+      "description": "1.3 Deprecate `plan-runner.sh` (add warning, keep for compatibility)",
+      "status": "completed",
+      "startedAt": "2025-12-24T23:52:20.497Z",
+      "completedAt": "2025-12-24T23:52:47.810Z",
+      "duration": 27313,
+      "notes": "Added deprecation header comment and runtime warning to plan-runner.sh. Warning goes to stderr so JSON output parsing still works."
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Eliminate plan-runner.sh (Low risk)",
+      "description": "1.4 After verification period, delete `plan-runner.sh`",
+      "status": "completed",
+      "startedAt": "2025-12-24T23:52:48.215Z",
+      "completedAt": "2025-12-24T23:53:00.970Z",
+      "duration": 12755,
+      "notes": "Deleted scripts/plan-runner.sh - no longer needed as all callers now use node scripts/plan-orchestrator.js directly"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Eliminate plan-runner.sh (Low risk)",
+      "description": "**VERIFY 1**: Python orchestrator works without plan-runner.sh",
+      "status": "completed",
+      "startedAt": "2025-12-24T23:53:28.887Z",
+      "completedAt": "2025-12-24T23:53:37.944Z",
+      "duration": 9057,
+      "notes": "Verified: Python orchestrator correctly calls node scripts/plan-orchestrator.js for status and next commands. Both return valid JSON. Python syntax check passed."
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Consolidate Status Libraries (Medium risk)",
+      "description": "2.1 Audit all exports from `status-manager.js` - identify what's actually used",
+      "status": "completed",
+      "startedAt": "2025-12-25T00:09:25.642Z",
+      "completedAt": "2025-12-25T00:10:00.064Z",
+      "duration": 34422,
+      "notes": "Audited: Only initializePlanStatus is used externally. Most are wrappers for plan-output-utils."
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Consolidate Status Libraries (Medium risk)",
+      "description": "2.2 Audit all exports from `plan-output-utils.js` - identify what's actually used",
+      "status": "completed",
+      "startedAt": "2025-12-25T00:10:00.469Z",
+      "completedAt": "2025-12-25T00:10:26.188Z",
+      "duration": 25719,
+      "notes": "Audited: This IS the core library. Most exports actively used by status-cli.js, status-manager.js, scan-plans.js, etc."
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Consolidate Status Libraries (Medium risk)",
+      "description": "2.3 Audit `plan-pointer.js` - only `getActivePlanPath()` is essential",
+      "status": "completed",
+      "startedAt": "2025-12-25T00:10:26.588Z",
+      "completedAt": "2025-12-25T00:10:38.878Z",
+      "duration": 12290,
+      "notes": "Audited: Only getActivePlanPath() is used externally. Output pointer functions (getActivePlanOutputPath) unused by main scripts - output derived from plan name instead."
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Consolidate Status Libraries (Medium risk)",
+      "description": "2.4 Create `lib/plan-status.js` with unified API:",
+      "status": "completed",
+      "startedAt": "2025-12-25T00:10:39.273Z",
+      "completedAt": "2025-12-25T00:12:40.955Z",
+      "duration": 121682,
+      "notes": "Created lib/plan-status.js with unified API: path resolution, core I/O, task updates, queries, initialization, findings, run management, validation."
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Consolidate Status Libraries (Medium risk)",
+      "description": "2.5 Migrate `status-cli.js` to use new unified library",
+      "status": "pending"
+    },
+    {
+      "id": "2.6",
+      "phase": "Phase 2: Consolidate Status Libraries (Medium risk)",
+      "description": "2.6 Migrate `plan-orchestrator.js` to use new unified library",
+      "status": "pending"
+    },
+    {
+      "id": "2.7",
+      "phase": "Phase 2: Consolidate Status Libraries (Medium risk)",
+      "description": "2.7 Delete redundant files: `status-manager.js`, `plan-pointer.js`",
+      "status": "pending"
+    },
+    {
+      "id": "2.8",
+      "phase": "Phase 2: Consolidate Status Libraries (Medium risk)",
+      "description": "2.8 Rename `plan-output-utils.js` to `plan-status.js` (or delete if fully migrated)",
+      "status": "pending"
+    },
+    {
+      "id": "2.9",
+      "phase": "Phase 2: Consolidate Status Libraries (Medium risk)",
+      "description": "**VERIFY 2**: All status operations work, tests pass",
+      "status": "pending"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Merge plan-orchestrator.js into status-cli.js (Medium risk)",
+      "description": "3.1 Add `status` command to `status-cli.js` (matches plan-orchestrator.js output)",
+      "status": "pending"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Merge plan-orchestrator.js into status-cli.js (Medium risk)",
+      "description": "3.2 Add `next` command to `status-cli.js` (matches plan-orchestrator.js output)",
+      "status": "pending"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Merge plan-orchestrator.js into status-cli.js (Medium risk)",
+      "description": "3.3 Add `phases` command to `status-cli.js`",
+      "status": "pending"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Merge plan-orchestrator.js into status-cli.js (Medium risk)",
+      "description": "3.4 Add `check` command to `status-cli.js`",
+      "status": "pending"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Merge plan-orchestrator.js into status-cli.js (Medium risk)",
+      "description": "3.5 Update `plan_orchestrator.py` to call `status-cli.js` instead of `plan-orchestrator.js`",
+      "status": "pending"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Merge plan-orchestrator.js into status-cli.js (Medium risk)",
+      "description": "3.6 Delete `plan-orchestrator.js`",
+      "status": "pending"
+    },
+    {
+      "id": "3.7",
+      "phase": "Phase 3: Merge plan-orchestrator.js into status-cli.js (Medium risk)",
+      "description": "**VERIFY 3**: Python orchestrator works with status-cli.js for all queries",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Standardize Path Resolution (Low risk)",
+      "description": "4.1 Remove `.claude/current-plan-output.txt` pointer dependency",
+      "status": "pending"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Standardize Path Resolution (Low risk)",
+      "description": "4.2 Always derive output path from plan name: `docs/plan-outputs/{plan-name}/`",
+      "status": "pending"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Standardize Path Resolution (Low risk)",
+      "description": "4.3 Keep `.claude/current-plan.txt` as the single pointer",
+      "status": "pending"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Standardize Path Resolution (Low risk)",
+      "description": "4.4 Update all path resolution to use consistent derivation",
+      "status": "pending"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Standardize Path Resolution (Low risk)",
+      "description": "4.5 Delete pointer update logic (no longer needed)",
+      "status": "pending"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Standardize Path Resolution (Low risk)",
+      "description": "**VERIFY 4**: Orchestrator works without output pointer file",
+      "status": "pending"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Code Cleanup (Low risk)",
+      "description": "5.1 Remove duplicate markdown parsing (use single `markdown-parser.js`)",
+      "status": "pending"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Code Cleanup (Low risk)",
+      "description": "5.2 Remove duplicate summary calculation (single source in plan-status.js)",
+      "status": "pending"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Code Cleanup (Low risk)",
+      "description": "5.3 Remove unused exports and dead code",
+      "status": "pending"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Code Cleanup (Low risk)",
+      "description": "5.4 Add JSDoc comments to public API",
+      "status": "pending"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Code Cleanup (Low risk)",
+      "description": "5.5 Update documentation to reflect new architecture",
+      "status": "pending"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: Code Cleanup (Low risk)",
+      "description": "**VERIFY 5**: Final tests pass, documentation accurate",
+      "status": "pending"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "6.1.1 Add `--autonomous` flag to `/plan:implement` - skips AskUserQuestion prompts",
+      "status": "pending"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "6.1.2 Add `--autonomous` flag to `/plan:verify` - skips confirmation prompts",
+      "status": "pending"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "6.1.3 Add `--autonomous` flag to `/plan:batch` - skips all interactive prompts",
+      "status": "pending"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "6.1.4 Document autonomous mode behavior in each command",
+      "status": "pending"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "6.2.1 `/plan:implement --autonomous`: Accept task IDs as args, skip selection UI",
+      "status": "pending"
+    },
+    {
+      "id": "6.6",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "6.2.2 `/plan:implement --autonomous`: Proceed without execution preview confirmation",
+      "status": "pending"
+    },
+    {
+      "id": "6.7",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "6.2.3 `/plan:verify --autonomous`: Run verification without asking to continue",
+      "status": "pending"
+    },
+    {
+      "id": "6.8",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "6.2.4 All commands: Output structured progress (for TUI parsing if needed)",
+      "status": "pending"
+    },
+    {
+      "id": "6.9",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "6.3.1 Replace inline implementation instructions with command invocation",
+      "status": "pending"
+    },
+    {
+      "id": "6.10",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "6.3.2 New prompt format: `Run: /plan:implement 1.1 1.2 1.3 --autonomous`",
+      "status": "pending"
+    },
+    {
+      "id": "6.11",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "6.3.3 Remove `status-cli.js mark-started/mark-complete` from prompt (commands handle it)",
+      "status": "pending"
+    },
+    {
+      "id": "6.12",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "6.3.4 Keep only high-level guidance (stop conditions, error handling)",
+      "status": "pending"
+    },
+    {
+      "id": "6.13",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "6.4.1 Generate command invocation instead of inline instructions",
+      "status": "pending"
+    },
+    {
+      "id": "6.14",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "6.4.2 Batch tasks appropriately for command args",
+      "status": "pending"
+    },
+    {
+      "id": "6.15",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "6.4.3 Add `--autonomous` flag to all command invocations",
+      "status": "pending"
+    },
+    {
+      "id": "6.16",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "6.4.4 Simplify prompt from ~50 lines to ~10 lines",
+      "status": "pending"
+    },
+    {
+      "id": "6.17",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "**VERIFY 6.5.1**: Run orchestrator with single task - command executes correctly",
+      "status": "pending"
+    },
+    {
+      "id": "6.18",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "**VERIFY 6.5.2**: Run orchestrator with multiple tasks - batching works",
+      "status": "pending"
+    },
+    {
+      "id": "6.19",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "**VERIFY 6.5.3**: TUI still tracks progress (status.json updates work)",
+      "status": "pending"
+    },
+    {
+      "id": "6.20",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "**VERIFY 6.5.4**: TUI still shows tool activity (streaming works through Skill)",
+      "status": "pending"
+    },
+    {
+      "id": "6.21",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "**VERIFY 6.5.5**: Error handling works (failed tasks marked correctly)",
+      "status": "pending"
+    },
+    {
+      "id": "6.22",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "**VERIFY 6.5.6**: Full plan execution completes successfully",
+      "status": "pending"
+    },
+    {
+      "id": "6.23",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "**File Count**: 7 files → 3-4 files",
+      "status": "pending"
+    },
+    {
+      "id": "6.24",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "**Line Count**: ~4600 lines → ~2000 lines",
+      "status": "pending"
+    },
+    {
+      "id": "6.25",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "**Single Source of Truth**: One `loadStatus()`, one `getOutputDir()`",
+      "status": "pending"
+    },
+    {
+      "id": "6.26",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "**No Pointer Sync Issues**: Output path derived, not stored",
+      "status": "pending"
+    },
+    {
+      "id": "6.27",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "**All Tests Pass**: Existing functionality preserved",
+      "status": "pending"
+    },
+    {
+      "id": "6.28",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "**Clear Architecture**: Python → Node CLI → Single JS library",
+      "status": "pending"
+    },
+    {
+      "id": "6.29",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "**Commands Are Source of Truth**: Orchestrator uses same commands as humans",
+      "status": "pending"
+    },
+    {
+      "id": "6.30",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "**Simplified Prompt**: Orchestrator prompt reduced from ~50 lines to ~10 lines",
+      "status": "pending"
+    },
+    {
+      "id": "6.31",
+      "phase": "Phase 6: Orchestrator Uses Plan Commands (Architecture change)",
+      "description": "**Full Feature Parity**: Orchestrator gets template handling, agent strategy, run tracking",
+      "status": "pending"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 68,
+    "completed": 13,
+    "pending": 55,
+    "in_progress": 0,
+    "failed": 0,
+    "skipped": 0
+  }
+}

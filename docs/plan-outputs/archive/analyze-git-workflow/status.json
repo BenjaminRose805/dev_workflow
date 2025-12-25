@@ -1,0 +1,387 @@
+{
+  "_comment": "This file is the authoritative source of truth for task execution state. The markdown plan file is read-only reference documentation. Use status-cli.js to update task status.",
+  "planPath": "docs/plans/analyze-git-workflow.md",
+  "planName": "Analysis Plan: Comprehensive Git Workflow for Plan Orchestration",
+  "createdAt": "2025-12-25T02:56:49.847Z",
+  "lastUpdatedAt": "2025-12-25T04:50:00.000Z",
+  "currentPhase": "Phase 7: Recommendation Synthesis",
+  "tasks": [
+    {
+      "id": "0.1",
+      "phase": "Phase 0: Current State Analysis",
+      "description": "Document current git usage patterns in the orchestrator",
+      "status": "completed",
+      "startedAt": "2025-12-25T02:58:33.338Z",
+      "completedAt": "2025-12-25T03:03:55.686Z",
+      "duration": 322348,
+      "notes": "Documented current git usage: /plan:implement has commit workflow (advisory), /plan:verify references git for debugging, no branch management, single-branch model on master"
+    },
+    {
+      "id": "0.2",
+      "phase": "Phase 0: Current State Analysis",
+      "description": "Identify pain points from recent plan executions (manual commits, lost work, messy history)",
+      "status": "completed",
+      "startedAt": "2025-12-25T02:58:33.339Z",
+      "completedAt": "2025-12-25T03:05:14.035Z",
+      "duration": 400696,
+      "notes": "Identified 8 pain points: no per-task commits (despite docs), no branch isolation, lost work risk, messy history, manual checkpoints, no rollback command, inconsistent tags, plan switch risk"
+    },
+    {
+      "id": "0.3",
+      "phase": "Phase 0: Current State Analysis",
+      "description": "Catalog all git-related touchpoints in the system (commands, scripts, hooks)",
+      "status": "completed",
+      "startedAt": "2025-12-25T02:58:33.339Z",
+      "completedAt": "2025-12-25T03:06:27.636Z",
+      "duration": 474297,
+      "notes": "Cataloged 100+ git touchpoints: 3 active commands, 4 agent declarations, 19+ future feature plans, 15+ TUI integrations, 7 missing touchpoints (gaps)"
+    },
+    {
+      "id": "0.4",
+      "phase": "Phase 0: Current State Analysis",
+      "description": "Review how other automation tools handle git (Claude Code hooks, CI systems)",
+      "status": "completed",
+      "startedAt": "2025-12-25T02:58:33.340Z",
+      "completedAt": "2025-12-25T03:07:51.975Z",
+      "duration": 558635,
+      "notes": "Reviewed Claude Code hooks (PostToolUse, SessionStart for git), GitHub CLI (PR workflows), lazygit (custom commands), CI/CD patterns (branch-per-plan, commit-per-task), conventional commits. Key findings: hooks are best integration point, branch isolation is standard, squash merge for clean history."
+    },
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Requirements Gathering",
+      "description": "Define user scenarios (solo dev, team, open source contributor)",
+      "status": "completed",
+      "startedAt": "2025-12-25T03:09:09.279Z",
+      "completedAt": "2025-12-25T03:23:43.003Z"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Requirements Gathering",
+      "description": "Identify rollback requirements (per-task, per-phase, per-plan)",
+      "status": "completed",
+      "completedAt": "2025-12-25T03:23:43.003Z"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Requirements Gathering",
+      "description": "Determine history preferences (granular vs clean, squash policies)",
+      "status": "completed",
+      "completedAt": "2025-12-25T03:23:43.003Z"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Requirements Gathering",
+      "description": "Consider CI/CD integration points (PR creation, automated testing)",
+      "status": "completed",
+      "completedAt": "2025-12-25T03:23:43.003Z"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Requirements Gathering",
+      "description": "Evaluate conflict resolution needs (parallel plans, concurrent edits)",
+      "status": "completed",
+      "completedAt": "2025-12-25T03:23:43.003Z"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Branching Strategy Analysis",
+      "description": "Evaluate branch-per-plan approach (pros, cons, complexity)",
+      "status": "completed",
+      "startedAt": "2025-12-25T03:25:04.848Z",
+      "completedAt": "2025-12-25T03:40:45.250Z",
+      "duration": 940402
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Branching Strategy Analysis",
+      "description": "Evaluate branch-per-phase approach (pros, cons, complexity)",
+      "status": "completed",
+      "startedAt": "2025-12-25T03:25:10.846Z",
+      "completedAt": "2025-12-25T03:40:45.637Z",
+      "duration": 934791
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Branching Strategy Analysis",
+      "description": "Evaluate trunk-based with feature flags approach",
+      "status": "completed",
+      "startedAt": "2025-12-25T03:25:11.242Z",
+      "completedAt": "2025-12-25T03:40:46.025Z",
+      "duration": 934783
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Branching Strategy Analysis",
+      "description": "Analyze naming conventions ({type}/{plan-name}, {plan-name}/phase-{N})",
+      "status": "completed",
+      "startedAt": "2025-12-25T03:25:11.633Z",
+      "completedAt": "2025-12-25T03:40:46.424Z",
+      "duration": 934791
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Branching Strategy Analysis",
+      "description": "Consider branch lifecycle (creation, protection, cleanup)",
+      "status": "completed",
+      "startedAt": "2025-12-25T03:25:12.018Z",
+      "completedAt": "2025-12-25T03:40:46.813Z",
+      "duration": 934795
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Commit Strategy Analysis",
+      "description": "Evaluate commit-per-task (granularity, message format)",
+      "status": "completed",
+      "startedAt": "2025-12-25T03:41:59.965Z",
+      "completedAt": "2025-12-25T03:53:03.151Z",
+      "duration": 663186,
+      "notes": "Evaluated commit-per-task strategy: RECOMMENDED as default. Provides granular rollback, debugging, audit trail with acceptable 2-5% overhead."
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Commit Strategy Analysis",
+      "description": "Evaluate commit-per-phase (grouping, verification gate)",
+      "status": "completed",
+      "completedAt": "2025-12-25T03:53:03.542Z",
+      "notes": "Evaluated commit-per-phase: NOT RECOMMENDED as standalone. Too coarse for debugging, complex to automate. Use branch-per-phase instead."
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Commit Strategy Analysis",
+      "description": "Evaluate commit-per-batch (orchestrator iteration alignment)",
+      "status": "completed",
+      "completedAt": "2025-12-25T03:53:03.933Z",
+      "notes": "Evaluated commit-per-batch: NOT RECOMMENDED. Cross-phase batches destroy semantic clarity. Use per-task commits + batch tags instead."
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Commit Strategy Analysis",
+      "description": "Design commit message format (conventional commits, task ID linking)",
+      "status": "completed",
+      "completedAt": "2025-12-25T03:53:04.320Z",
+      "notes": "Designed commit message format: Hybrid task(id): format recommended. Combines task ID visibility with conventional commits concepts."
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Commit Strategy Analysis",
+      "description": "Consider atomic commits (what constitutes a complete unit of work)",
+      "status": "completed",
+      "completedAt": "2025-12-25T03:53:04.705Z",
+      "notes": "Defined atomic commits: Complete, compilable, testable, reversible. Build verification required, task size guidelines established."
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Merge & Integration Strategy",
+      "description": "Evaluate merge commit vs squash merge vs rebase",
+      "status": "completed",
+      "completedAt": "2025-12-25T04:04:14.654Z",
+      "notes": "Evaluated merge strategies: SQUASH MERGE recommended as default (9/10 fit). Merge commit as alternative for granular history. Rebase NOT recommended for automation."
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Merge & Integration Strategy",
+      "description": "Design merge triggers (plan completion, phase completion, manual)",
+      "status": "completed",
+      "completedAt": "2025-12-25T04:04:15.044Z",
+      "notes": "Designed 3 merge triggers: Plan completion (squash), Phase completion (accumulate vs incremental), Manual (partial/checkpoint). Pre-merge checks defined."
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Merge & Integration Strategy",
+      "description": "Consider PR creation for team workflows",
+      "status": "completed",
+      "completedAt": "2025-12-25T04:04:15.431Z",
+      "notes": "Designed PR workflow: Auto-generate title/body, draft-first, CODEOWNERS integration, GitHub Actions CI, auto-merge on approval. Profiles for solo/team/OSS."
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Merge & Integration Strategy",
+      "description": "Design rollback procedures (revert commit, reset branch, cherry-pick)",
+      "status": "completed",
+      "completedAt": "2025-12-25T04:04:15.827Z",
+      "notes": "Designed 3-tier rollback: Task (git revert), Phase (reset/revert range), Plan (branch delete with archive). Safety checks, backup creation, dependency cascade."
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Merge & Integration Strategy",
+      "description": "Handle failed/abandoned plans (branch cleanup, partial recovery)",
+      "status": "completed",
+      "completedAt": "2025-12-25T04:04:16.221Z",
+      "notes": "Designed plan lifecycle state machine. Failed plans: detection, recovery options. Stale detection (60/75/90 day warnings). Archive before delete. Salvage workflow."
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Implementation Touchpoints",
+      "description": "Map changes needed in /plan:implement (commit after task)",
+      "status": "completed",
+      "startedAt": "2025-12-25T04:05:28.618Z",
+      "completedAt": "2025-12-25T04:14:38.030Z",
+      "duration": 549412,
+      "notes": "Mapped branch validation, commit enforcement, message enhancement, error handling, status integration for /plan:implement"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Implementation Touchpoints",
+      "description": "Map changes needed in /plan:batch (branch creation, phase commits)",
+      "status": "completed",
+      "completedAt": "2025-12-25T04:14:38.408Z",
+      "notes": "Mapped branch pre-checks, commit-per-task strategy, phase completion handling, parallel execution safety for /plan:batch"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Implementation Touchpoints",
+      "description": "Map changes needed in /plan:set (branch switching)",
+      "status": "completed",
+      "completedAt": "2025-12-25T04:14:38.797Z",
+      "notes": "Mapped branch creation/switching, uncommitted changes handling, status.json git integration, main branch protection for /plan:set"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Implementation Touchpoints",
+      "description": "Design new /plan:complete command (merge workflow)",
+      "status": "completed",
+      "completedAt": "2025-12-25T04:14:39.188Z",
+      "notes": "Designed complete /plan:complete command specification: pre-checks, verification, archive creation, merge workflow, cleanup, rollback, command interface"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Implementation Touchpoints",
+      "description": "Consider status-cli.js extensions (git state tracking)",
+      "status": "completed",
+      "completedAt": "2025-12-25T04:14:39.580Z",
+      "notes": "Designed 13 new status-cli.js commands for git tracking: git-status, record-commit, rollback-task, etc. Schema extensions for plan/task git metadata."
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: Implementation Touchpoints",
+      "description": "Evaluate Python orchestrator changes (branch management)",
+      "status": "completed",
+      "startedAt": "2025-12-25T04:15:47.667Z",
+      "completedAt": "2025-12-25T04:17:46.439Z",
+      "duration": 118772,
+      "notes": "Mapped Python orchestrator changes: branch validation, PlanStatus git extensions, switch_plan.py branch management. Estimated 8-12 hours. Orchestrator validates but doesn't mutate git state."
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Edge Cases & Safety",
+      "description": "Handle uncommitted changes when switching plans",
+      "status": "completed",
+      "startedAt": "2025-12-25T04:17:52.939Z",
+      "completedAt": "2025-12-25T04:19:20.316Z",
+      "duration": 87377,
+      "notes": "Designed CSAF (Commit/Stash/Abort/Force) strategy for uncommitted changes. Smart defaults based on context. Special handling for merge/rebase in progress. 4-6 hours estimated."
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Edge Cases & Safety",
+      "description": "Handle merge conflicts during plan execution",
+      "status": "completed",
+      "startedAt": "2025-12-25T04:19:20.710Z",
+      "completedAt": "2025-12-25T04:20:59.196Z",
+      "duration": 98486,
+      "notes": "Designed conflict handling for external (main updates) and internal (task collisions) conflicts. Prevention via pre-checks, pause-on-conflict strategy, state persistence for resume. 6-8 hours estimated."
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Edge Cases & Safety",
+      "description": "Design recovery from interrupted commits/merges",
+      "status": "completed",
+      "startedAt": "2025-12-25T04:20:59.592Z",
+      "completedAt": "2025-12-25T04:22:46.209Z",
+      "duration": 106617,
+      "notes": "Designed recovery for interrupted commits/merges/rebases. State detection, stale lock cleanup, operation-specific recovery, pre-operation snapshots. New /plan:recover command. 4-6 hours estimated."
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Edge Cases & Safety",
+      "description": "Consider .gitignore updates (orchestrator.log, temp files)",
+      "status": "completed",
+      "startedAt": "2025-12-25T04:22:46.608Z",
+      "completedAt": "2025-12-25T04:23:50.100Z",
+      "duration": 63492,
+      "notes": "Analyzed .gitignore coverage. Most files already covered by *.log, *.tmp, *.lock. Recommend adding .git/orchestrator-state.json and *.orig. 5-10 minutes to implement."
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Edge Cases & Safety",
+      "description": "Evaluate pre-commit hook integration",
+      "status": "completed",
+      "startedAt": "2025-12-25T04:24:55.765Z",
+      "completedAt": "2025-12-25T04:26:45.966Z",
+      "duration": 110201,
+      "notes": "Analyzed pre-commit hook integration strategies, recommended selective hook execution model"
+    },
+    {
+      "id": "6.6",
+      "phase": "Phase 6: Edge Cases & Safety",
+      "description": "Design safeguards against force push, history rewrite",
+      "status": "completed",
+      "startedAt": "2025-12-25T04:27:01.504Z",
+      "completedAt": "2025-12-25T04:28:40.377Z",
+      "duration": 98873,
+      "notes": "Designed multi-layer protection against force push and history rewrite operations"
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Recommendation Synthesis",
+      "description": "Score each strategy against requirements",
+      "status": "completed",
+      "completedAt": "2025-12-25T04:40:00.000Z",
+      "notes": "Scored all strategies against 10 requirements. Branch-Per-Plan (90/100), Commit-Per-Task (83/100), Squash Merge (82/100). Combined Hybrid A: 85/100."
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Recommendation Synthesis",
+      "description": "Create decision matrix (flexibility vs simplicity vs safety)",
+      "status": "completed",
+      "completedAt": "2025-12-25T04:42:00.000Z",
+      "notes": "Created multi-dimensional decision matrix. Hybrid A scores 8.7/10 weighted average. Includes decision tree and trade-off analysis."
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: Recommendation Synthesis",
+      "description": "Draft recommended workflow (primary + alternatives)",
+      "status": "completed",
+      "completedAt": "2025-12-25T04:44:00.000Z",
+      "notes": "Documented primary Hybrid A workflow with lifecycle, commands, rollback. Defined 3 alternatives for audit, verification, and simplified scenarios."
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: Recommendation Synthesis",
+      "description": "Create visual workflow diagram",
+      "status": "completed",
+      "completedAt": "2025-12-25T04:46:00.000Z",
+      "notes": "Created ASCII diagrams for workflow lifecycle, branch/tag structure, rollback scenarios, parallel plans, and command reference."
+    },
+    {
+      "id": "7.5",
+      "phase": "Phase 7: Recommendation Synthesis",
+      "description": "Write implementation plan outline",
+      "status": "completed",
+      "completedAt": "2025-12-25T04:48:00.000Z",
+      "notes": "Created 4-phase implementation roadmap (5-9 weeks). Includes dependency graph, risk assessment, success metrics, and final recommendation."
+    }
+  ],
+  "runs": [
+    {
+      "runId": "run-1766631508812",
+      "startedAt": "2025-12-25T02:58:28.812Z",
+      "tasksCompleted": 0,
+      "tasksFailed": 0
+    },
+    {
+      "runId": "run-1766632131131",
+      "startedAt": "2025-12-25T03:08:51.131Z",
+      "tasksCompleted": 0,
+      "tasksFailed": 0
+    }
+  ],
+  "summary": {
+    "totalTasks": 41,
+    "completed": 41,
+    "pending": 0,
+    "in_progress": 0,
+    "failed": 0,
+    "skipped": 0
+  }
+}

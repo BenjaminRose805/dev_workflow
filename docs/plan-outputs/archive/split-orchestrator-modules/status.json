@@ -1,0 +1,259 @@
+{
+  "_comment": "This file is the authoritative source of truth for task execution state. The markdown plan file is read-only reference documentation. Use status-cli.js to update task status.",
+  "planPath": "docs/plans/split-orchestrator-modules.md",
+  "planName": "Implementation Plan: Split Orchestrator Modules",
+  "createdAt": "2025-12-25T01:40:53.204Z",
+  "lastUpdatedAt": "2025-12-25T02:02:31.964Z",
+  "currentPhase": "Phase 0: Preparation",
+  "tasks": [
+    {
+      "id": "0.1",
+      "phase": "Phase 0: Preparation",
+      "description": "Verify plan_orchestrator.py runs correctly before changes (baseline)",
+      "status": "completed",
+      "startedAt": "2025-12-25T01:41:43.800Z",
+      "completedAt": "2025-12-25T01:45:32.677Z",
+      "duration": 228877
+    },
+    {
+      "id": "0.2",
+      "phase": "Phase 0: Preparation",
+      "description": "Identify all imports needed by each component",
+      "status": "completed",
+      "startedAt": "2025-12-25T01:46:08.838Z",
+      "completedAt": "2025-12-25T01:46:43.532Z",
+      "duration": 34694
+    },
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Create TUI Module",
+      "description": "Create `scripts/lib/tui.py` with file header and imports",
+      "status": "completed",
+      "startedAt": "2025-12-25T01:47:22.624Z",
+      "completedAt": "2025-12-25T01:48:57.264Z",
+      "duration": 94640,
+      "notes": "Created scripts/lib/tui.py with file header, imports (threading, time, collections, dataclasses, datetime, typing, rich)"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Create TUI Module",
+      "description": "Move `Activity` dataclass to tui.py",
+      "status": "completed",
+      "completedAt": "2025-12-25T01:48:57.280Z",
+      "notes": "Activity dataclass moved to tui.py (lines 42-48)"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Create TUI Module",
+      "description": "Move `ActivityTracker` class to tui.py",
+      "status": "completed",
+      "completedAt": "2025-12-25T01:48:57.295Z",
+      "notes": "ActivityTracker class moved to tui.py (lines 51-123)"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Create TUI Module",
+      "description": "Move `RichTUIManager` class to tui.py",
+      "status": "completed",
+      "completedAt": "2025-12-25T01:48:57.311Z",
+      "notes": "RichTUIManager class moved to tui.py (lines 130-342)"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Create TUI Module",
+      "description": "Add `__all__` export list to tui.py",
+      "status": "completed",
+      "completedAt": "2025-12-25T01:48:57.327Z",
+      "notes": "Added __all__ export list with Activity, ActivityTracker, RichTUIManager, RICH_AVAILABLE"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Create Claude Runner Module",
+      "description": "Create `scripts/lib/claude_runner.py` with file header and imports",
+      "status": "completed",
+      "startedAt": "2025-12-25T01:49:47.050Z",
+      "completedAt": "2025-12-25T01:50:39.431Z",
+      "duration": 52381,
+      "notes": "Created scripts/lib/claude_runner.py with file header, module docstring, and imports (json, subprocess, time, typing)"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Create Claude Runner Module",
+      "description": "Move `StreamingClaudeRunner` class to claude_runner.py",
+      "status": "completed",
+      "completedAt": "2025-12-25T01:50:39.816Z",
+      "notes": "Moved StreamingClaudeRunner class to claude_runner.py (lines 19-171)"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Create Claude Runner Module",
+      "description": "Add `__all__` export list to claude_runner.py",
+      "status": "completed",
+      "completedAt": "2025-12-25T01:50:40.208Z",
+      "notes": "Added __all__ = ['StreamingClaudeRunner'] export list"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Create Status Monitor Module",
+      "description": "Create `scripts/lib/status_monitor.py` with file header and imports",
+      "status": "completed",
+      "startedAt": "2025-12-25T01:51:30.301Z",
+      "completedAt": "2025-12-25T01:51:58.447Z",
+      "duration": 28146,
+      "notes": "Created scripts/lib/status_monitor.py with file header, module docstring, imports (json, os, threading, typing), and __all__ export list"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Create Status Monitor Module",
+      "description": "Move `StatusMonitor` class to status_monitor.py",
+      "status": "completed",
+      "completedAt": "2025-12-25T01:51:58.828Z",
+      "notes": "Moved StatusMonitor class to status_monitor.py (lines 23-103)"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Create Status Monitor Module",
+      "description": "Add `__all__` export list to status_monitor.py",
+      "status": "completed",
+      "completedAt": "2025-12-25T01:51:59.214Z",
+      "notes": "Added __all__ = ['StatusMonitor'] export list at line 20"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Update Main Orchestrator",
+      "description": "Remove moved classes from plan_orchestrator.py",
+      "status": "completed",
+      "startedAt": "2025-12-25T01:52:50.465Z",
+      "completedAt": "2025-12-25T01:55:16.596Z",
+      "duration": 146131,
+      "notes": "Removed Activity, ActivityTracker, StreamingClaudeRunner, StatusMonitor, and RichTUIManager classes (lines 67-743). File reduced from 1424 to 729 lines."
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Update Main Orchestrator",
+      "description": "Add imports from new modules to plan_orchestrator.py",
+      "status": "completed",
+      "startedAt": "2025-12-25T01:55:16.979Z",
+      "completedAt": "2025-12-25T01:55:23.133Z",
+      "duration": 6154,
+      "notes": "Added imports: RichTUIManager, RICH_AVAILABLE from tui.py; StreamingClaudeRunner from claude_runner.py; StatusMonitor from status_monitor.py (lines 38-41)"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Update Main Orchestrator",
+      "description": "Ensure `PlanStatus`, `PlanOrchestrator`, and `main()` remain in plan_orchestrator.py",
+      "status": "completed",
+      "startedAt": "2025-12-25T01:55:23.526Z",
+      "completedAt": "2025-12-25T01:55:33.177Z",
+      "duration": 9651,
+      "notes": "Verified PlanStatus (line 56), PlanOrchestrator (line 91), and main() (line 633) remain in plan_orchestrator.py"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Update Main Orchestrator",
+      "description": "Update any internal references if needed",
+      "status": "completed",
+      "startedAt": "2025-12-25T01:55:33.571Z",
+      "completedAt": "2025-12-25T01:56:13.858Z",
+      "duration": 40287,
+      "notes": "Added sys.path setup for direct script execution. All internal references verified working - both direct execution (python3 scripts/plan_orchestrator.py --help) and module import work correctly."
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Integration Testing",
+      "description": "Run `python3 scripts/plan_orchestrator.py --help` to verify CLI works",
+      "status": "completed",
+      "startedAt": "2025-12-25T01:56:52.197Z",
+      "completedAt": "2025-12-25T01:57:04.606Z",
+      "duration": 12409,
+      "notes": "CLI --help works correctly. Shows all expected options: --plan, --max-iterations, --timeout, --batch-size, --dry-run, --verbose, --continue, --no-tui"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Integration Testing",
+      "description": "Run `python3 scripts/plan_orchestrator.py --dry-run` to verify orchestrator initializes",
+      "status": "completed",
+      "startedAt": "2025-12-25T01:57:07.890Z",
+      "completedAt": "2025-12-25T02:00:10.633Z",
+      "duration": 182743,
+      "notes": "Orchestrator initializes and runs successfully in --dry-run mode. Shows plan header, progress bars, iteration status, and completes orchestration loop. Tested with --no-tui flag to avoid terminal interaction issues."
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Integration Testing",
+      "description": "Run `python3 scripts/plan_orchestrator.py --no-tui --dry-run` to verify non-TUI mode",
+      "status": "completed",
+      "startedAt": "2025-12-25T02:00:13.493Z",
+      "completedAt": "2025-12-25T02:00:24.663Z",
+      "duration": 11170,
+      "notes": "Non-TUI mode works correctly. Output includes timestamped INFO messages, ASCII progress bars, plain text iteration displays. Shows 'Next tasks' and '[DRY RUN] Would execute' messages as expected."
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Cleanup",
+      "description": "Remove any duplicate imports from plan_orchestrator.py",
+      "status": "completed",
+      "startedAt": "2025-12-25T02:01:12.755Z",
+      "completedAt": "2025-12-25T02:01:28.085Z",
+      "duration": 15330,
+      "notes": "Verified no duplicate imports in plan_orchestrator.py - all 12 imports are unique"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Cleanup",
+      "description": "Verify no unused imports in any module",
+      "status": "completed",
+      "startedAt": "2025-12-25T02:01:28.476Z",
+      "completedAt": "2025-12-25T02:02:16.466Z",
+      "duration": 47990,
+      "notes": "Verified all imports: removed unused 'List' from plan_orchestrator.py typing imports. All modules import successfully."
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Cleanup",
+      "description": "Add module docstrings to each new file",
+      "status": "completed",
+      "startedAt": "2025-12-25T02:02:16.859Z",
+      "completedAt": "2025-12-25T02:02:31.964Z",
+      "duration": 15105,
+      "notes": "Verified all new modules have docstrings: tui.py (TUI components), claude_runner.py (streaming CLI execution), status_monitor.py (background status monitoring)"
+    }
+  ],
+  "runs": [
+    {
+      "runId": "run-1766626903797",
+      "startedAt": "2025-12-25T01:41:43.797Z",
+      "tasksCompleted": 0,
+      "tasksFailed": 0
+    },
+    {
+      "runId": "run-1766627379818",
+      "startedAt": "2025-12-25T01:49:39.818Z",
+      "tasksCompleted": 0,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-25T01:50:47.298Z"
+    },
+    {
+      "runId": "run-1766627557980",
+      "startedAt": "2025-12-25T01:52:37.980Z",
+      "tasksCompleted": 4,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-25T01:56:18.386Z"
+    },
+    {
+      "runId": "run-1766627809059",
+      "startedAt": "2025-12-25T01:56:49.059Z",
+      "tasksCompleted": 3,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-25T02:00:28.508Z"
+    }
+  ],
+  "summary": {
+    "totalTasks": 23,
+    "completed": 23,
+    "pending": 0,
+    "in_progress": 0,
+    "failed": 0,
+    "skipped": 0
+  }
+}

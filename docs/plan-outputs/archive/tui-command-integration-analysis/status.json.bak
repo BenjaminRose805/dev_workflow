@@ -1,0 +1,296 @@
+{
+  "_comment": "This file is the authoritative source of truth for task execution state. The markdown plan file is read-only reference documentation. Use status-cli.js to update task status.",
+  "planPath": "docs/plans/tui-command-integration-analysis.md",
+  "planName": "Analysis Plan: TUI and Command Integration Compatibility",
+  "createdAt": "2025-12-24T18:05:41.217Z",
+  "lastUpdatedAt": "2025-12-24T18:47:27.901Z",
+  "currentPhase": "Phase 1: Discovery - Current State Mapping",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Discovery - Current State Mapping",
+      "description": "1.1 Document all 13 plan commands and their CLI interfaces (arguments, outputs, exit codes)",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:07:12.464Z",
+      "completedAt": "2025-12-24T18:09:30.043Z",
+      "duration": 137579,
+      "notes": "Documented all 13 plan commands with arguments, outputs, exit codes. Also documented status-cli.js (17 commands), scan-plans.js, and plan-runner.sh CLI interfaces."
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Discovery - Current State Mapping",
+      "description": "1.2 Map TUI panels to data sources (status.json fields, script outputs)",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:09:30.438Z",
+      "completedAt": "2025-12-24T18:12:39.426Z",
+      "duration": 188988,
+      "notes": "Mapped all 6 TUI panels to their data sources: header, progress, activity, in_progress tasks, completions, footer. Documented StatusMonitor and StreamingClaudeRunner integration."
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Discovery - Current State Mapping",
+      "description": "1.3 Inventory implement-* plan requirements (38 plans, artifact schemas, workflow patterns)",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:09:30.844Z",
+      "completedAt": "2025-12-24T18:12:39.825Z",
+      "duration": 188981,
+      "notes": "Inventoried all 38 implement-* plans across 4 categories (commands, agents, hooks, infrastructure). Documented artifact schemas and 5 workflow patterns."
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Discovery - Current State Mapping",
+      "description": "1.4 Document current TUI-to-command integration points (plan-orchestrator.js ↔ status-cli.js)",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:09:31.249Z",
+      "completedAt": "2025-12-24T18:12:40.221Z",
+      "duration": 188972,
+      "notes": "Documented 9 integration points between TUI and commands. Identified integration gaps: no direct command invocation, limited keyboard navigation, no findings browser."
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Discovery - Current State Mapping",
+      "description": "**VERIFY 1**: Current state fully documented in findings/",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:12:48.472Z",
+      "completedAt": "2025-12-24T18:13:04.839Z",
+      "duration": 16367,
+      "notes": "Verified all 4 findings documents created in findings/ directory. Total 1,367 lines of documentation covering: plan commands (408 lines), TUI panels (285 lines), implement-* plans (252 lines), integration points (422 lines)."
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Deep Analysis - Gap Identification",
+      "description": "2.1 Analyze command output formats vs TUI display capabilities",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:13:50.676Z",
+      "completedAt": "2025-12-24T18:14:43.923Z",
+      "duration": 53247,
+      "notes": "Documented 10 command output vs TUI display gaps including phases, findings, retry status, explain/verify results"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Deep Analysis - Gap Identification",
+      "description": "2.2 Analyze implement-* workflow requirements vs TUI support",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:14:44.319Z",
+      "completedAt": "2025-12-24T18:15:36.078Z",
+      "duration": 51759,
+      "notes": "Analyzed 5 workflow patterns (sequential, parallel, branching, looping, composition) and artifact lifecycle tracking gaps"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Deep Analysis - Gap Identification",
+      "description": "2.3 Analyze missing TUI features identified in orchestrator exploration",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:15:36.465Z",
+      "completedAt": "2025-12-24T18:16:40.332Z",
+      "duration": 63867,
+      "notes": "Detailed analysis of 6 missing features: dependencies, phase progress, findings browser, retry history, run stats, task timeline"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Deep Analysis - Gap Identification",
+      "description": "2.4 Analyze command invocation from TUI",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:16:40.727Z",
+      "completedAt": "2025-12-24T18:17:39.594Z",
+      "duration": 58867,
+      "notes": "Analyzed command invocation gaps: no slash commands, no keyboard nav, no task selection. Proposed 11 hotkeys and 3-phase implementation"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Deep Analysis - Gap Identification",
+      "description": "2.5 Categorize findings by severity (BREAKING > BLOCKER > GAP > ENHANCEMENT)",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:17:39.995Z",
+      "completedAt": "2025-12-24T18:18:43.725Z",
+      "duration": 63730,
+      "notes": "Categorized 20 findings: 0 BREAKING, 4 BLOCKER, 10 GAP, 6 ENHANCEMENT. Created priority order and dependency graph"
+    },
+    {
+      "id": "2.6",
+      "phase": "Phase 2: Deep Analysis - Gap Identification",
+      "description": "**VERIFY 2**: All gaps documented with evidence",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:19:23.955Z",
+      "completedAt": "2025-12-24T18:20:17.260Z",
+      "duration": 53305,
+      "notes": "Verified all 20 gaps documented with evidence across 4 severity levels (0 BREAKING, 4 BLOCKER, 10 GAP, 6 ENHANCEMENT). Created verification document 2-6-verification-gaps-documented.md."
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Synthesis - Integration Architecture",
+      "description": "3.1 Design TUI panel extensions for new capabilities",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:20:27.966Z",
+      "completedAt": "2025-12-24T18:26:38.237Z",
+      "duration": 370271,
+      "notes": "Designed 6 new TUI panels: Dependency Graph, Phase Detail, Upcoming Tasks, Run History, Findings Browser (modal), Retry Indicator. Includes layout modifications, Rich library usage, and priority ordering."
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Synthesis - Integration Architecture",
+      "description": "3.2 Define command-to-TUI data contracts",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:20:27.999Z",
+      "completedAt": "2025-12-24T18:26:38.631Z",
+      "duration": 370632,
+      "notes": "Defined 8 data contracts: Status (enhanced), Tasks (enhanced), Next Tasks (enhanced), Phases, Dependencies (new), Findings (new), Run History (new), Retry Status (enhanced). Includes update frequencies, schema validation, and backward compatibility."
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Synthesis - Integration Architecture",
+      "description": "3.3 Design keyboard navigation and command palette",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:20:28.028Z",
+      "completedAt": "2025-12-24T18:26:39.030Z",
+      "duration": 371002,
+      "notes": "Designed keyboard navigation with global hotkeys, navigation keys, task action keys (e/i/v/s/f/d), batch actions, panel controls. Command palette with fuzzy search, task picker modal, search mode, and help overlay."
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Synthesis - Integration Architecture",
+      "description": "3.4 Plan workflow pattern support in TUI",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:20:28.060Z",
+      "completedAt": "2025-12-24T18:26:39.437Z",
+      "duration": 371377,
+      "notes": "Designed support for 6 workflow patterns: fan-out (parallel agent panel), branching (subtask tree view), looping (iteration history), dependencies (graph + inline blockers), artifacts (browser panel), nested workflows (future)."
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Synthesis - Integration Architecture",
+      "description": "3.5 Prioritize integration work by impact/effort",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:27:11.440Z",
+      "completedAt": "2025-12-24T18:28:44.324Z",
+      "duration": 92884,
+      "notes": "Created comprehensive priority matrix with impact/effort quadrants, 5 implementation phases, and dependency graph"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Synthesis - Integration Architecture",
+      "description": "**VERIFY 3**: Architecture proposal complete with diagrams",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:28:44.726Z",
+      "completedAt": "2025-12-24T18:31:09.865Z",
+      "duration": 145139,
+      "notes": "Created comprehensive architecture proposal with 8 diagrams: Overview, Component Hierarchy, Panel Layout, Data Flow, Keyboard Flow, Command Palette, Data Contracts, and Implementation Phases. All Phase 3 tasks verified complete."
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Verification - Feasibility Check",
+      "description": "4.1 Review Rich library capabilities for proposed panels",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:31:47.808Z",
+      "completedAt": "2025-12-24T18:38:18.332Z",
+      "duration": 390524,
+      "notes": "Created comprehensive Rich library feasibility analysis. 85% of panels fully feasible (5/7). Key findings: vertical tree YES, horizontal DAG PARTIAL, keyboard nav YES, markdown YES, modal overlays PARTIAL."
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Verification - Feasibility Check",
+      "description": "4.2 Validate command outputs can provide required data",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:33:02.154Z",
+      "completedAt": "2025-12-24T18:36:04.940Z",
+      "duration": 182786,
+      "notes": "Created comprehensive validation report for all 8 data contracts. Analyzed current command outputs against TUI requirements. Verdict: 3 CAN_PROVIDE, 4 NEEDS_ENHANCEMENT, 1 NEW_COMMAND_REQUIRED. Total effort: 60-85 hours for full implementation."
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Verification - Feasibility Check",
+      "description": "4.3 Check performance implications (refresh rates, data volume)",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:33:02.191Z",
+      "completedAt": "2025-12-24T18:37:14.931Z",
+      "duration": 252740,
+      "notes": "Comprehensive performance analysis complete with benchmarks, threading safety analysis, scale testing, and optimization recommendations. All proposed TUI enhancements validated as performance-safe."
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Verification - Feasibility Check",
+      "description": "4.4 Ensure backward compatibility with existing TUI usage",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:33:02.234Z",
+      "completedAt": "2025-12-24T18:38:27.027Z",
+      "duration": 324793,
+      "notes": "Analyzed backward compatibility for all proposed changes. Verdict: HIGH COMPATIBILITY. CLI/JSON/TUI modes all compatible. Only mitigation needed: responsive layouts for terminal size handling."
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Verification - Feasibility Check",
+      "description": "**VERIFY 4**: All proposals validated as feasible",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:38:27.434Z",
+      "completedAt": "2025-12-24T18:39:26.791Z",
+      "duration": 59357,
+      "notes": "Created verification summary. All proposals validated as feasible: Rich library 85% fully feasible, command outputs achievable with 60-85h effort, performance safe with 5x headroom, backward compatibility high with additive changes only."
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Verification - Feasibility Check",
+      "description": "All 13 commands analyzed for TUI integration potential",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:40:20.282Z",
+      "completedAt": "2025-12-24T18:41:21.054Z",
+      "duration": 60772,
+      "notes": "Created comprehensive summary of all 13 commands analyzed for TUI integration potential"
+    },
+    {
+      "id": "4.7",
+      "phase": "Phase 4: Verification - Feasibility Check",
+      "description": "All 38 implement-* plans reviewed for workflow requirements",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:41:29.424Z",
+      "completedAt": "2025-12-24T18:42:28.081Z",
+      "duration": 58657,
+      "notes": "Created comprehensive summary of all 38 implement-* plans workflow requirements"
+    },
+    {
+      "id": "4.8",
+      "phase": "Phase 4: Verification - Feasibility Check",
+      "description": "Gap analysis complete with severity ratings",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:42:28.475Z",
+      "completedAt": "2025-12-24T18:43:45.557Z",
+      "duration": 77082,
+      "notes": "Created comprehensive gap analysis with 20 gaps rated by severity (0 BREAKING, 4 BLOCKER, 10 GAP, 6 ENHANCEMENT)"
+    },
+    {
+      "id": "4.9",
+      "phase": "Phase 4: Verification - Feasibility Check",
+      "description": "Architecture proposal for expanded TUI documented",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:43:45.958Z",
+      "completedAt": "2025-12-24T18:45:32.466Z",
+      "duration": 106508,
+      "notes": "Created comprehensive architecture proposal summary with component hierarchy, data contracts, panel layouts, and gap resolution"
+    },
+    {
+      "id": "4.10",
+      "phase": "Phase 4: Verification - Feasibility Check",
+      "description": "Implementation priority matrix created",
+      "status": "completed",
+      "startedAt": "2025-12-24T18:45:32.859Z",
+      "completedAt": "2025-12-24T18:46:55.238Z",
+      "duration": 82379,
+      "notes": "Created comprehensive implementation priority matrix with 19 features ranked, 5 phases defined, dependency graph, and resource estimates"
+    },
+    {
+      "id": "4.11",
+      "phase": "Phase 4: Verification - Feasibility Check",
+      "description": "Findings documented with evidence in `findings/`",
+      "status": "in_progress",
+      "startedAt": "2025-12-24T18:47:27.901Z"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 28,
+    "completed": 27,
+    "pending": 0,
+    "in_progress": 1,
+    "failed": 0,
+    "skipped": 0
+  }
+}
