@@ -278,29 +278,26 @@
 
 ## Example Plan with Dependencies
 
-```markdown
-## Phase 1: Foundation
+Below is an example showing how dependencies would be declared in a plan:
 
-- [ ] 1.1 Create shared types (src/types/auth.ts)
-- [ ] 1.2 Create database schema (src/db/schema.ts)
-- [ ] 1.3 Implement auth service (depends: 1.1, 1.2)
+```text
+# Example: Auth Implementation Plan
 
-**VERIFY Phase 1:** (non-blocking)
-- [ ] 1.4 Type check passes
+Phase 1: Foundation
+  * 1.1 Create shared types (src/types/auth.ts)
+  * 1.2 Create database schema (src/db/schema.ts)
+  * 1.3 Implement auth service (depends: 1.1, 1.2)
+  * 1.4 Type check passes [VERIFY, non-blocking]
 
-## Phase 2: API Layer
+Phase 2: API Layer (pipeline-start: when 1.3 completes)
+  * 2.1 Create auth middleware (depends: 1.3)
+  * 2.2 Create user endpoints (depends: 2.1)
+  * 2.3 Create admin endpoints (depends: 2.1)
 
-**pipeline-start:** when 1.3 completes
-
-- [ ] 2.1 Create auth middleware (depends: 1.3)
-- [ ] 2.2 Create user endpoints (depends: 2.1)
-- [ ] 2.3 Create admin endpoints (depends: 2.1)
-
-## Phase 3: Testing
-
-- [ ] 3.1 Unit tests for types (depends: 1.1)
-- [ ] 3.2 Unit tests for auth service (depends: 1.3)
-- [ ] 3.3 Integration tests (depends: 2.2, 2.3)
+Phase 3: Testing
+  * 3.1 Unit tests for types (depends: 1.1)
+  * 3.2 Unit tests for auth service (depends: 1.3)
+  * 3.3 Integration tests (depends: 2.2, 2.3)
 ```
 
 **Execution order with DAG:**
