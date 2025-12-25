@@ -1256,6 +1256,61 @@ function validateSummary(status, autoFix = false) {
 }
 
 // =============================================================================
+// Git Operations (via git-queue)
+// =============================================================================
+
+// Lazy-load git-queue to avoid circular dependencies
+let gitQueue = null;
+
+function getGitQueue() {
+  if (!gitQueue) {
+    gitQueue = require('./git-queue');
+  }
+  return gitQueue;
+}
+
+/**
+ * Commit task changes with queue (for parallel execution safety)
+ * @param {string} planPath - Path to plan file
+ * @param {string} taskId - Task identifier
+ * @param {string} description - Brief description of the task
+ * @param {string[]} files - Files to stage (empty for all)
+ * @param {object} options - Options
+ * @param {boolean} options.noQueue - Bypass queue for direct commit
+ * @returns {Promise<{success: boolean, commitHash: string|null, error: string|null}>}
+ */
+async function commitTaskChanges(planPath, taskId, description, files = [], options = {}) {
+  const { commitWithQueue } = getGitQueue();
+
+  // Truncate description to 50 chars for commit message
+  const shortDesc = description.length > 50
+    ? description.slice(0, 47) + '...'
+    : description;
+
+  const message = `task ${taskId}: ${shortDesc}`;
+
+  return commitWithQueue(message, files, options);
+}
+
+/**
+ * Get git queue status
+ * @returns {object} Queue status
+ */
+function getCommitQueueStatus() {
+  const { getQueueStatus } = getGitQueue();
+  return getQueueStatus();
+}
+
+/**
+ * Wait for all pending commits to complete
+ * @returns {Promise<void>}
+ */
+async function waitForCommitQueue() {
+  const { waitForDrain } = getGitQueue();
+  return waitForDrain();
+}
+
+// =============================================================================
 // Exports
 // =============================================================================
 
@@ -1322,5 +1377,10 @@ module.exports = {
 
   // File Conflict Detection
   extractFileReferences,
-  detectFileConflicts
+  detectFileConflicts,
+
+  // Git Operations (via git-queue)
+  commitTaskChanges,
+  getCommitQueueStatus,
+  waitForCommitQueue
 };
