@@ -1,13 +1,30 @@
 # Implementation Plan: Git Workflow Phase 2 - Automated Completion
 
 ## Overview
-- **Objective:** Implement `/plan:complete` command with squash merge workflow
-- **Dependencies:** Phase 1 (Core Branching) must be complete
+
+- **Goal:** Implement `/plan:complete` command with squash merge workflow
+- **Priority:** P2
 - **Created:** 2024-12-25
-- **Restructured:** 2024-12-25 (consolidated for orchestrator isolation)
 - **Output:** `docs/plan-outputs/git-workflow-phase2-completion/`
 
+> Restructured 2024-12-25 for orchestrator isolation.
+
 > Task findings are written to the `findings/` subdirectory. Use `/plan:status` to view progress.
+
+## Dependencies
+
+### Upstream
+- **git-workflow-phase1-core-branching.md** - Provides branch-per-plan workflow and commit-per-task (must be complete)
+
+### Downstream
+- **git-workflow-phase3-safety.md** - Safety checks build on completion workflow
+- **git-workflow-phase4-advanced.md** - Advanced features extend base completion
+- **git-workflow-phase5-worktrees.md** - Parallel execution uses completion for each worktree
+
+### External Tools
+- Git (required for merge operations)
+
+---
 
 ## Phase 1: Command Implementation
 
@@ -63,12 +80,6 @@
 - [ ] Merge message includes useful metadata
 - [ ] Plan branch deleted after successful merge
 - [ ] Status.json updated with completion info
-
-## Dependencies
-
-- Phase 1 complete (branching and commits working)
-- Git repository with main branch
-- All plan tasks completed before running
 
 ## Risks
 
