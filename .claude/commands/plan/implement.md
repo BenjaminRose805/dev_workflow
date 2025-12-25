@@ -427,6 +427,59 @@ markTaskCompleted(planPath, taskId, findings);
 markTaskCompleted(planPath, taskId);
 ```
 
+### 6.1. Commit Changes After Task Completion
+
+After marking a task complete (or failed), commit the changes to git:
+
+**Commit workflow:**
+
+1. **Check for uncommitted changes:**
+   ```bash
+   git status --porcelain
+   ```
+   - If no changes, skip commit (task may have been analysis-only)
+
+2. **Stage all changes:**
+   ```bash
+   git add -A
+   ```
+
+3. **Create commit with task context:**
+   ```bash
+   git commit -m "task {taskId}: {brief description}"
+   ```
+   - Use the task ID and a shortened description (first 50 chars)
+   - Example: `task 1.1: Create test suite for authentication`
+
+4. **Handle commit failures gracefully:**
+   - If commit fails (e.g., nothing to commit, hooks reject), log warning but continue
+   - Don't fail the task just because the commit failed
+
+**Commit message format:**
+```
+task {id}: {description}
+
+Plan: {plan-name}
+Phase: {phase-name}
+```
+
+**Example:**
+```bash
+# After completing task 1.1
+git add -A
+git commit -m "task 1.1: Create auth middleware
+
+Plan: implement-authentication
+Phase: Phase 1: Core Implementation"
+```
+
+**Skip commits when:**
+- Task was analysis-only (no file changes)
+- Running in `--dry-run` mode (if implemented)
+- Git is not available or not a repository
+
+**Note:** This creates granular commits per task. For cleaner history, consider squashing when merging feature branches (see git workflow analysis plan).
+
 ### 7. Report Progress
 
 After all tasks complete:
