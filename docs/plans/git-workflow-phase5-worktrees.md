@@ -2,7 +2,6 @@
 
 ## Overview
 - **Objective:** Enable parallel plan execution using git worktrees
-- **Dependencies:** Phases 1-4 must be complete
 - **Created:** 2024-12-25
 - **Restructured:** 2024-12-25 (consolidated for orchestrator isolation)
 - **Output:** `docs/plan-outputs/git-workflow-phase5-worktrees/`
@@ -86,10 +85,19 @@ repo/
 
 ## Dependencies
 
-- Phases 1-4 complete (core git workflow working)
-- Git version 2.5+ (worktree support)
-- Understanding of process management
-- (Optional) Node.js for API server
+### Upstream
+- **git-workflow-phase1-core-branching.md** - Core branching commands must be working
+- **git-workflow-phase2-completion.md** - Plan completion workflow must be complete
+- **git-workflow-phase3-safety.md** - Safety checks must be in place
+- **git-workflow-phase4-advanced.md** - Advanced features (stashing, history) must be complete
+
+### Downstream
+- Multi-plan TUI and frontend integration depend on worktree infrastructure
+- REST API endpoints depend on worktree context system
+
+### External Tools
+- Git version 2.5+ (worktree support required)
+- Node.js (for API server, optional)
 
 ## Risks
 
