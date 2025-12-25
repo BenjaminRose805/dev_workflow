@@ -162,6 +162,66 @@ Choose how to proceed:
 ○ Cancel
 ```
 
+### 3.0.4 Record Branch Name in Status Metadata
+
+After successfully switching to the plan branch (or confirming we're on it), record the branch name in the status.json metadata:
+
+**Update status.json with branch information:**
+
+The branch name should be stored in the status.json file's top-level metadata:
+
+```json
+{
+  "planPath": "docs/plans/my-plan.md",
+  "planName": "My Plan Title",
+  "branch": "plan/my-plan",
+  "branchCreatedAt": "2024-12-25T10:30:00.000Z",
+  ...
+}
+```
+
+**Implementation:**
+1. After successful branch switch/creation (step 3.0.2), get current branch name:
+   ```bash
+   git branch --show-current
+   ```
+
+2. Update status.json to include branch metadata:
+   - `branch`: The current git branch name (e.g., `plan/my-plan`)
+   - `branchCreatedAt`: Timestamp when branch was first associated (only set on creation)
+
+3. If updating an existing status.json where branch already exists, preserve `branchCreatedAt`
+
+**Example status.json update:**
+```javascript
+// Read existing status.json
+const status = JSON.parse(fs.readFileSync(statusPath));
+
+// Add/update branch info
+status.branch = branchName;
+if (!status.branchCreatedAt) {
+  status.branchCreatedAt = new Date().toISOString();
+}
+
+// Write back
+fs.writeFileSync(statusPath, JSON.stringify(status, null, 2));
+```
+
+**Skip this step if:**
+- Git is not available
+- Status tracking is not initialized yet (will be set in 3.1)
+
+**Integration with step 3.1:**
+When `node scripts/status-cli.js init` is called, if git is available:
+- Automatically detect and record the current branch
+- Include branch info in the initial status.json creation
+
+**Verification:**
+After plan set, the status.json should contain:
+```
+Branch: plan/my-plan (recorded in status.json)
+```
+
 ### 3.1. Initialize Status Tracking
 
 **See:** `.claude/commands/plan/_common/status-tracking.md` for complete status tracking reference.
