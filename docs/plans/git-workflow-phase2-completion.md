@@ -28,14 +28,15 @@
 
 ## Phase 1: Command Implementation
 
-- [ ] 1.1 Create `/plan:complete` command file at `.claude/commands/plan/complete.md` with complete implementation including:
-  - Pre-completion verification: Check all tasks completed via status.json
-  - Pre-completion verification: Verify currently on plan branch using `git branch --show-current`
-  - Pre-completion verification: Check for merge conflicts with main using dry-run merge
-  - Commit any uncommitted changes with summary message
-  - Archive tag creation: Create tag `archive/plan-{name}` with timestamp annotation before merge using `git tag -a archive/plan-{name} -m "Archive of plan {name} - $(date)"`
-  - Option `--no-archive` to skip archive tag creation
-  - Document command usage, options, and how to access archived history via tag
+- [ ] 1.1 Create `/plan:complete` command file at `.claude/commands/plan/complete.md` with basic structure and usage documentation
+- [ ] 1.2 Add pre-completion verification in `.claude/commands/plan/complete.md`:
+  - [ ] 1.2.1 Check all tasks completed via `docs/plan-outputs/{plan}/status.json`
+  - [ ] 1.2.2 Verify currently on plan branch using `git branch --show-current`
+  - [ ] 1.2.3 Check for merge conflicts with main using dry-run merge
+- [ ] 1.3 Add uncommitted changes handling in `.claude/commands/plan/complete.md`: commit any uncommitted changes with summary message
+- [ ] 1.4 Add archive tag creation in `.claude/commands/plan/complete.md`: create tag `archive/plan-{name}` with timestamp annotation using `git tag -a archive/plan-{name} -m "Archive of plan {name} - $(date)"`
+- [ ] 1.5 Add `--no-archive` option in `.claude/commands/plan/complete.md` to skip archive tag creation
+- [ ] 1.6 Document command usage, options, and how to access archived history via tag in `.claude/commands/plan/complete.md`
 
 **VERIFY Phase 1:**
 - [ ] `test -f .claude/commands/plan/complete.md` returns 0 (file exists)
@@ -47,12 +48,11 @@
 
 ## Phase 2: Squash Merge Workflow Implementation
 
-- [ ] 2.1 In the `/plan:complete` command, implement the squash merge workflow with these steps:
-  - Switch to main branch using `git checkout main`
-  - Optional: Pull latest main with flag `--sync` using `git pull origin main`
-  - Squash merge using `git merge --squash plan/{name}`
-  - Generate and create merge commit with plan summary message
-  - Delete plan branch using `git branch -D plan/{name}`
+- [ ] 2.1 Add switch to main branch step in `.claude/commands/plan/complete.md` using `git checkout main`
+- [ ] 2.2 Add `--sync` option in `.claude/commands/plan/complete.md` to pull latest main using `git pull origin main`
+- [ ] 2.3 Add squash merge step in `.claude/commands/plan/complete.md` using `git merge --squash plan/{name}`
+- [ ] 2.4 Add merge commit creation in `.claude/commands/plan/complete.md` with plan summary message
+- [ ] 2.5 Add plan branch cleanup in `.claude/commands/plan/complete.md` using `git branch -D plan/{name}`
 
 **VERIFY Phase 2:**
 - [ ] `grep -c "git checkout main" .claude/commands/plan/complete.md` returns >= 1
@@ -64,12 +64,12 @@
 
 ## Phase 3: Merge Commit Message Format
 
-- [ ] 3.1 In the `/plan:complete` command, implement merge commit message generation with this format:
-  - Plan metadata: task count, phase count, duration (calculated from status.json timestamps)
-  - Phase summary: name and task count per phase
-  - Link to archive tag for granular history: `See archive/plan-{name} for individual commits`
-  - Link to outputs directory: `Outputs: docs/plan-outputs/{plan-name}/`
-  - Claude Code attribution footer: "Generated with Claude Code\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+- [ ] 3.1 Add merge commit message template in `.claude/commands/plan/complete.md` with header format
+- [ ] 3.2 Add plan metadata to merge message in `.claude/commands/plan/complete.md`: task count, phase count, duration (calculated from `docs/plan-outputs/{plan}/status.json` timestamps)
+- [ ] 3.3 Add phase summary to merge message in `.claude/commands/plan/complete.md`: name and task count per phase
+- [ ] 3.4 Add archive tag reference to merge message in `.claude/commands/plan/complete.md`: `See archive/plan-{name} for individual commits`
+- [ ] 3.5 Add outputs directory link to merge message in `.claude/commands/plan/complete.md`: `Outputs: docs/plan-outputs/{plan-name}/`
+- [ ] 3.6 Add Claude Code attribution footer to merge message in `.claude/commands/plan/complete.md`: "Generated with Claude Code\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 
 **VERIFY Phase 3:**
 - [ ] `grep -c "task count" .claude/commands/plan/complete.md` returns >= 1
@@ -82,11 +82,11 @@
 
 ## Phase 4: Merge Strategy Options
 
-- [ ] 4.1 In the `/plan:complete` command, implement merge strategy options:
-  - `--merge squash` (default): Squash merge with single commit using `git merge --squash`
-  - `--merge commit`: Standard merge commit using `git merge --no-ff`, preserves history
-  - `--merge ff`: Fast-forward merge if possible using `git merge --ff-only`
-  - Document when to use each strategy (squash for clean history, commit for preserving granular commits, ff for linear history)
+- [ ] 4.1 Add `--merge` option parser in `.claude/commands/plan/complete.md` supporting `squash`, `commit`, and `ff` values
+- [ ] 4.2 Add `--merge squash` (default) implementation in `.claude/commands/plan/complete.md`: squash merge with single commit using `git merge --squash`
+- [ ] 4.3 Add `--merge commit` implementation in `.claude/commands/plan/complete.md`: standard merge commit using `git merge --no-ff`, preserves history
+- [ ] 4.4 Add `--merge ff` implementation in `.claude/commands/plan/complete.md`: fast-forward merge using `git merge --ff-only`
+- [ ] 4.5 Document merge strategy guidance in `.claude/commands/plan/complete.md`: when to use each strategy (squash for clean history, commit for preserving granular commits, ff for linear history)
 
 **VERIFY Phase 4:**
 - [ ] `grep -c "\-\-merge squash" .claude/commands/plan/complete.md` returns >= 1
@@ -99,12 +99,12 @@
 
 ## Phase 5: Status Tracking Updates
 
-- [ ] 5.1 In the `/plan:complete` command, implement status.json updates:
-  - Add `completedAt` field with ISO timestamp
-  - Add `mergedAt` field with ISO timestamp
-  - Record merge commit SHA in `mergeCommit` field
-  - Record archive tag name in `archiveTag` field
-  - Ensure status.json reflects completion state correctly
+- [ ] 5.1 Add status.json update step in `.claude/commands/plan/complete.md` that modifies `docs/plan-outputs/{plan}/status.json`
+- [ ] 5.2 Add `completedAt` field with ISO timestamp to status.json update in `.claude/commands/plan/complete.md`
+- [ ] 5.3 Add `mergedAt` field with ISO timestamp to status.json update in `.claude/commands/plan/complete.md`
+- [ ] 5.4 Add `mergeCommit` field with merge commit SHA to status.json update in `.claude/commands/plan/complete.md`
+- [ ] 5.5 Add `archiveTag` field with archive tag name to status.json update in `.claude/commands/plan/complete.md`
+- [ ] 5.6 Document status.json final state format in `.claude/commands/plan/complete.md`
 
 **VERIFY Phase 5:**
 - [ ] `grep -c "completedAt" .claude/commands/plan/complete.md` returns >= 1
