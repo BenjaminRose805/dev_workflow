@@ -36,7 +36,7 @@ npm-debug.log*
 
 # Claude Code session state (changes frequently)
 .claude/current-plan.txt
-.claude/current-plan-output.txt
+# Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
 # Optional: Ignore plan outputs if you don't want to track execution state
 docs/plan-outputs/*/status.json

@@ -12,7 +12,7 @@ Implement one or more tasks from the active plan.
 1. Read `.claude/current-plan.txt` to get the active plan path
 2. If no active plan: inform user "No active plan set. Use /plan:set to choose a plan first." and stop
 3. Call `initializePlanStatus(planPath)` to ensure status.json exists
-4. Read `.claude/current-plan-output.txt` to get the output directory path
+4. Output directory is derived from plan name: `docs/plan-outputs/{plan-name}/`
 
 ### 1.5. Parse Arguments (if provided)
 
@@ -27,19 +27,45 @@ If arguments are passed to this skill, parse them to determine which tasks to im
 | Phase selector | `phase:1` or `p:1` | All pending tasks in Phase 1 |
 | All pending | `all` | All pending tasks (with confirmation) |
 | No arguments | (empty) | Interactive selection (step 3) |
+| `--autonomous` | `1.1 1.2 --autonomous` | Skip all interactive prompts |
+
+**Autonomous Mode:**
+
+When `--autonomous` flag is present:
+- Skip all AskUserQuestion prompts
+- Skip execution preview confirmation (step 4)
+- Skip "Confirm before executing" check for >3 tasks
+- Proceed directly with implementation
+- Still report progress and errors normally
+
+**Detecting autonomous mode:**
+```
+args = skill arguments
+autonomous = args contains "--autonomous"
+args = args with "--autonomous" removed (for further parsing)
+```
 
 **Parsing logic:**
 
 ```
 args = skill arguments (may be empty)
+autonomous = args contains "--autonomous"
+args = args with "--autonomous" removed
 
 if args is empty:
-    → Continue to step 3 (interactive selection)
+    if autonomous:
+        → ERROR: "Autonomous mode requires task IDs. Usage: /plan:implement 1.1 1.2 --autonomous"
+        → Stop execution
+    else:
+        → Continue to step 3 (interactive selection)
 
 if args == "all":
     → Select all pending tasks
-    → Show confirmation: "Implement all N pending tasks?"
-    → If confirmed, skip to step 4
+    if not autonomous:
+        → Show confirmation: "Implement all N pending tasks?"
+        → If confirmed, skip to step 4
+    else:
+        → Skip directly to step 4 (no confirmation)
 
 if args matches /^p(hase)?:\d+$/i:
     → Extract phase number
@@ -54,10 +80,14 @@ if args matches /^[\d.]+([\s,]+[\d.]+)*$/:
     → Skip to step 4 with validated tasks
 
 otherwise:
-    → Treat as search string
-    → Find tasks whose description contains the string
-    → If multiple matches, show them and ask user to select
-    → If single match, confirm and proceed
+    if autonomous:
+        → ERROR: "Autonomous mode requires explicit task IDs, not search strings"
+        → Stop execution
+    else:
+        → Treat as search string
+        → Find tasks whose description contains the string
+        → If multiple matches, show them and ask user to select
+        → If single match, confirm and proceed
 ```
 
 **Validation:**
@@ -82,8 +112,20 @@ otherwise:
 # Implement all pending
 /plan:implement all
 
-# Search by description
+# Search by description (interactive only)
 /plan:implement websocket
+
+# Autonomous mode - specific tasks (no prompts)
+/plan:implement 1.1 1.2 1.3 --autonomous
+
+# Autonomous mode - entire phase (no prompts)
+/plan:implement phase:1 --autonomous
+
+# Autonomous mode - all pending (no prompts)
+/plan:implement all --autonomous
+
+# ERROR: Autonomous mode without task IDs
+/plan:implement --autonomous  # Will error - task IDs required
 ```
 
 ### 2. Parse Plan File
@@ -163,6 +205,8 @@ Proceeding with task selection...
 
 ### 3. Present Tasks Using AskUserQuestion
 
+**Skip this step entirely if `--autonomous` mode is enabled.** In autonomous mode, task IDs MUST be provided as arguments - there is no fallback to interactive selection.
+
 **Use the task-selection template** (`.claude/templates/questions/task-selection.md`) with these parameters:
 
 ```
@@ -222,7 +266,7 @@ Execution Plan:
 │   └── 1.3 api-utils.test.ts
 ```
 
-**Confirm before executing** if more than 3 tasks selected.
+**Confirm before executing** if more than 3 tasks selected (skip in `--autonomous` mode).
 
 ### 4.1. Start Execution Run
 
@@ -458,3 +502,73 @@ try {
 2. **Different phases = sequential** - Later phases often depend on earlier ones
 3. **Explicit dependencies** - If task B mentions task A, run A first
 4. **Shared files** - If two tasks modify the same file, run sequentially
+
+## Structured Progress Output
+
+For TUI integration and programmatic use, the command outputs structured progress that can be parsed:
+
+### Status Updates via status.json
+
+All progress is tracked in `docs/plan-outputs/<plan-name>/status.json`. The TUI monitors this file for real-time updates:
+
+```json
+{
+  "tasks": [
+    {"id": "1.1", "status": "in_progress", "startedAt": "2024-12-24T10:00:00Z"},
+    {"id": "1.2", "status": "completed", "completedAt": "2024-12-24T10:05:00Z"}
+  ],
+  "summary": {
+    "totalTasks": 10,
+    "completed": 5,
+    "pending": 4,
+    "in_progress": 1,
+    "failed": 0
+  }
+}
+```
+
+### Progress Markers in Output
+
+During execution, emit progress markers that can be parsed:
+
+```
+[PROGRESS] task=1.1 status=started
+[PROGRESS] task=1.1 status=completed duration=45s
+[PROGRESS] summary completed=3 pending=7 failed=0
+```
+
+These markers are optional but help the TUI track progress when status.json monitoring has latency.
+
+## Autonomous Mode Reference
+
+The `--autonomous` flag enables non-interactive execution for orchestrator integration.
+
+**Usage:**
+```bash
+/plan:implement 1.1 1.2 1.3 --autonomous
+/plan:implement phase:1 --autonomous
+/plan:implement all --autonomous
+```
+
+**Behavior changes in autonomous mode:**
+
+| Step | Interactive Mode | Autonomous Mode |
+|------|-----------------|-----------------|
+| 3. Task selection | AskUserQuestion UI | Skipped (IDs required as args) |
+| 4. Execution preview | Show + confirm if >3 tasks | Show (no confirmation) |
+| Template variables | Prompt for values | Auto-fill or error |
+| Execution | Normal | Normal |
+| Error handling | Report to user | Log + continue |
+| Progress reporting | Normal | Normal |
+
+**Requirements:**
+- Task IDs MUST be provided as arguments (no fallback to interactive selection)
+- Cannot be combined with empty arguments (will error)
+
+**Example orchestrator usage:**
+```
+Run: /plan:implement 1.1 1.2 1.3 --autonomous
+
+Execute these tasks from the plan. Do not ask for confirmation.
+Stop if you encounter an unrecoverable error.
+```

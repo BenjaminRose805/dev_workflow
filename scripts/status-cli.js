@@ -36,24 +36,34 @@
 const fs = require('fs');
 const path = require('path');
 
-// Import shared modules
-const { getActivePlanPath } = require('./lib/plan-pointer.js');
-
-// Import plan-output-utils
+// Import unified plan status library
 const {
+  // Path resolution
+  getActivePlanPath,
+  getOutputDir,
+  getStatusPath,
+  getFindingsDir,
+  getTimestampsDir,
+  // Core I/O
   loadStatus,
   saveStatus,
+  // Task updates
   updateTaskStatus,
-  getStatusPath,
+  // Queries
   getProgress,
-  startRun,
-  completeRun,
+  // Initialization
+  initializePlanStatus,
+  // Findings
   writeFindings,
   readFindings,
+  // Run management
+  startRun,
+  completeRun,
+  // Validation
   recalculateSummary,
   validateSummary,
   ensureSummaryKeys
-} = require('./lib/plan-output-utils.js');
+} = require('./lib/plan-status.js');
 
 // =============================================================================
 // Utility Functions
@@ -111,27 +121,72 @@ function parseArgs(args) {
 // =============================================================================
 
 /**
- * status - Show current plan status (JSON)
+ * init - Initialize output directory and status.json for a plan
  */
-function cmdStatus(planPath) {
-  const status = loadStatus(planPath);
-  if (!status) {
-    exitWithError('No status.json found. Initialize the plan first.');
+function cmdInit(planPath) {
+  const result = initializePlanStatus(planPath);
+
+  if (!result.success) {
+    exitWithError(result.error || 'Failed to initialize plan status');
   }
 
-  // Build response with key info
+  const outputDir = getOutputDir(planPath);
+  const findingsDir = getFindingsDir(planPath);
+  const timestampsDir = getTimestampsDir(planPath);
+
+  outputJSON({
+    success: true,
+    planPath: planPath,
+    outputDir: path.relative(process.cwd(), outputDir),
+    structure: {
+      statusJson: path.relative(process.cwd(), getStatusPath(planPath)),
+      findingsDir: path.relative(process.cwd(), findingsDir),
+      timestampsDir: path.relative(process.cwd(), timestampsDir)
+    },
+    taskCount: result.status.tasks.length,
+    initialized: true
+  });
+}
+
+/**
+ * status - Show current plan status (JSON)
+ * Auto-initializes status.json and output pointer if missing.
+ *
+ * Output matches plan-orchestrator.js format for compatibility:
+ * - planPath, planName, source
+ * - total, completed, inProgress, pending, failed, skipped
+ * - percentage, currentPhase
+ */
+function cmdStatus(planPath) {
+  let status = loadStatus(planPath);
+
+  // Auto-initialize if status.json is missing
+  if (!status) {
+    const result = initializePlanStatus(planPath);
+    if (!result.success) {
+      exitWithError(`Could not initialize status: ${result.error}`);
+    }
+    status = result.status;
+  }
+
+  const summary = status.summary || {};
+  const total = summary.totalTasks || 0;
+  const completed = summary.completed || 0;
+  const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+  // Build response matching plan-orchestrator.js format
   const response = {
     planPath: status.planPath,
     planName: status.planName,
-    currentPhase: status.currentPhase,
-    lastUpdatedAt: status.lastUpdatedAt,
-    summary: status.summary,
-    tasks: status.tasks.map(t => ({
-      id: t.id,
-      phase: t.phase,
-      description: t.description,
-      status: t.status
-    }))
+    source: 'status.json',
+    total: total,
+    completed: completed,
+    inProgress: summary.in_progress || 0,
+    pending: summary.pending || 0,
+    failed: summary.failed || 0,
+    skipped: summary.skipped || 0,
+    percentage: percentage,
+    currentPhase: status.currentPhase || 'Unknown'
   };
 
   outputJSON(response);
@@ -305,33 +360,230 @@ function cmdCompleteRun(planPath, runId, options) {
 
 /**
  * next [count] - Get next recommended tasks (JSON)
+ *
+ * Output matches plan-orchestrator.js format for compatibility:
+ * - count
+ * - tasks (array with: id, description, phase, status, reason)
+ *
+ * Uses same logic as plan-orchestrator.js:
+ * 1. First check for in-progress tasks
+ * 2. Then check for failed tasks that might be retried
+ * 3. Finally get pending tasks respecting phase order
  */
 function cmdNext(planPath, countStr) {
-  const count = parseInt(countStr || '5', 10);
+  const maxTasks = parseInt(countStr || '3', 10);
   const status = loadStatus(planPath);
   if (!status) {
     exitWithError('No status.json found.');
   }
 
-  // Get pending tasks, prioritizing by phase order
-  const pendingTasks = status.tasks
-    .filter(t => t.status === 'pending')
-    .slice(0, count);
+  const next = [];
 
-  // Also identify the current phase
-  const inProgressTasks = status.tasks.filter(t => t.status === 'in_progress');
+  // Group tasks by phase for phase-order logic
+  const phaseMap = new Map();
+  for (const task of status.tasks) {
+    const phaseName = task.phase || 'Unknown Phase';
+    if (!phaseMap.has(phaseName)) {
+      const phaseMatch = phaseName.match(/Phase\s+(\d+)/);
+      const phaseNumber = phaseMatch ? parseInt(phaseMatch[1]) : 0;
+      phaseMap.set(phaseName, {
+        number: phaseNumber,
+        title: phaseName,
+        tasks: []
+      });
+    }
+    phaseMap.get(phaseName).tasks.push(task);
+  }
+
+  const phases = Array.from(phaseMap.values()).sort((a, b) => a.number - b.number);
+
+  // 1. First check for in-progress tasks
+  for (const phase of phases) {
+    for (const task of phase.tasks) {
+      if (task.status === 'in_progress') {
+        next.push({
+          id: task.id,
+          description: task.description,
+          phase: phase.number,
+          status: task.status,
+          reason: 'in_progress - should be completed first'
+        });
+      }
+    }
+  }
+
+  if (next.length > 0) {
+    outputJSON({
+      count: Math.min(next.length, maxTasks),
+      tasks: next.slice(0, maxTasks)
+    });
+    return;
+  }
+
+  // 2. Then check for failed tasks that might be retried
+  for (const phase of phases) {
+    for (const task of phase.tasks) {
+      if (task.status === 'failed') {
+        next.push({
+          id: task.id,
+          description: task.description,
+          phase: phase.number,
+          status: task.status,
+          reason: 'failed - needs retry or manual intervention'
+        });
+      }
+    }
+  }
+
+  // 3. Finally get pending tasks respecting phase order
+  for (const phase of phases) {
+    // Check if previous phases are complete enough (80% threshold)
+    const previousPhases = phases.filter(p => p.number < phase.number);
+    const previousIncomplete = previousPhases.some(p =>
+      p.tasks.some(t => t.status === 'pending' || t.status === 'in_progress')
+    );
+    const previousMostlyComplete = previousPhases.every(p => {
+      const completed = p.tasks.filter(t => t.status === 'completed' || t.status === 'skipped').length;
+      return completed >= p.tasks.length * 0.8;
+    });
+
+    if (previousIncomplete && !previousMostlyComplete) {
+      continue; // Skip this phase for now
+    }
+
+    for (const task of phase.tasks) {
+      if (task.status === 'pending' && next.length < maxTasks) {
+        next.push({
+          id: task.id,
+          description: task.description,
+          phase: phase.number,
+          status: task.status,
+          reason: 'pending - ready to implement'
+        });
+      }
+    }
+
+    if (next.length >= maxTasks) break;
+  }
 
   outputJSON({
-    planPath: status.planPath,
-    currentPhase: status.currentPhase,
-    inProgress: inProgressTasks.map(t => ({ id: t.id, description: t.description })),
-    nextTasks: pendingTasks.map(t => ({
-      id: t.id,
-      phase: t.phase,
-      description: t.description
-    })),
-    summary: status.summary
+    count: next.length,
+    tasks: next
   });
+}
+
+/**
+ * phases - List all phases with completion status (JSON)
+ *
+ * Output matches plan-orchestrator.js format:
+ * - phases (array with: number, title, total, completed, percentage, status)
+ */
+function cmdPhases(planPath) {
+  const status = loadStatus(planPath);
+  if (!status) {
+    exitWithError('No status.json found.');
+  }
+
+  // Group tasks by phase
+  const phaseMap = new Map();
+  for (const task of status.tasks) {
+    const phaseName = task.phase || 'Unknown Phase';
+    if (!phaseMap.has(phaseName)) {
+      const phaseMatch = phaseName.match(/Phase\s+(\d+)/);
+      const phaseNumber = phaseMatch ? parseInt(phaseMatch[1]) : 0;
+      phaseMap.set(phaseName, {
+        number: phaseNumber,
+        title: phaseName.replace(/^Phase\s+\d+:\s*/, ''),
+        tasks: []
+      });
+    }
+    phaseMap.get(phaseName).tasks.push(task);
+  }
+
+  // Sort phases by number and calculate stats
+  const phases = Array.from(phaseMap.values())
+    .sort((a, b) => a.number - b.number)
+    .map(phase => {
+      const total = phase.tasks.length;
+      const completed = phase.tasks.filter(t => t.status === 'completed').length;
+      const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+      return {
+        number: phase.number,
+        title: phase.title,
+        total: total,
+        completed: completed,
+        percentage: percentage,
+        status: percentage === 100 ? 'complete' : percentage > 0 ? 'in_progress' : 'pending'
+      };
+    });
+
+  outputJSON({ phases });
+}
+
+/**
+ * check <task-id> - Check if a specific task can be started (JSON)
+ *
+ * Output matches plan-orchestrator.js format:
+ * - task (with id, description, status, phase)
+ * - canStart (boolean)
+ * - blockers (array of task IDs that block this task)
+ * - phase (string like "Phase N: Title")
+ */
+function cmdCheck(planPath, taskId) {
+  if (!taskId) {
+    exitWithError('Task ID is required. Usage: check <task-id>');
+  }
+
+  const status = loadStatus(planPath);
+  if (!status) {
+    exitWithError('No status.json found.');
+  }
+
+  // Group tasks by phase
+  const phaseMap = new Map();
+  for (const task of status.tasks) {
+    const phaseName = task.phase || 'Unknown Phase';
+    if (!phaseMap.has(phaseName)) {
+      const phaseMatch = phaseName.match(/Phase\s+(\d+)/);
+      const phaseNumber = phaseMatch ? parseInt(phaseMatch[1]) : 0;
+      phaseMap.set(phaseName, {
+        number: phaseNumber,
+        title: phaseName,
+        tasks: []
+      });
+    }
+    phaseMap.get(phaseName).tasks.push(task);
+  }
+
+  const phases = Array.from(phaseMap.values()).sort((a, b) => a.number - b.number);
+
+  // Find the task and its phase
+  for (const phase of phases) {
+    const task = phase.tasks.find(t => t.id === taskId);
+    if (task) {
+      // Check previous phases for incomplete tasks
+      const previousPhases = phases.filter(p => p.number < phase.number);
+      const blockers = previousPhases.flatMap(p => p.tasks)
+        .filter(t => t.status === 'pending' || t.status === 'in_progress')
+        .map(t => t.id);
+
+      outputJSON({
+        task: {
+          id: task.id,
+          description: task.description,
+          status: task.status,
+          phase: phase.number
+        },
+        canStart: task.status === 'pending',
+        blockers: blockers,
+        phase: phase.title
+      });
+      return;
+    }
+  }
+
+  outputJSON({ error: `Task ${taskId} not found` });
 }
 
 /**
@@ -614,6 +866,7 @@ Usage:
   node scripts/status-cli.js <command> [options]
 
 Commands:
+  init                                Initialize output directory and status.json
   status                              Show current plan status (JSON)
   mark-started <task-id>              Mark task as in_progress
   mark-complete <task-id> [--notes]   Mark task as completed
@@ -627,6 +880,8 @@ Commands:
   complete-run <run-id> --completed N --failed N
                                       Complete an execution run
   next [count]                        Get next N recommended tasks (JSON)
+  phases                              List all phases with completion status (JSON)
+  check <task-id>                     Check if a specific task can be started (JSON)
   progress                            Show formatted progress bar
   validate                            Validate and repair status.json
   sync-check                          Compare markdown vs status.json (read-only)
@@ -686,6 +941,10 @@ function main() {
 
   // Dispatch to command handler
   switch (command) {
+    case 'init':
+      cmdInit(planPath);
+      break;
+
     case 'status':
       cmdStatus(planPath);
       break;
@@ -724,6 +983,14 @@ function main() {
 
     case 'next':
       cmdNext(planPath, positional[0]);
+      break;
+
+    case 'phases':
+      cmdPhases(planPath);
+      break;
+
+    case 'check':
+      cmdCheck(planPath, positional[0]);
       break;
 
     case 'progress':

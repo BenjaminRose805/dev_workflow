@@ -26,8 +26,8 @@ Set the current working plan file for subsequent `/plan:*` commands.
 After setting the plan path, initialize status tracking:
 
 ```bash
-# Check status (this triggers initialization if needed)
-node scripts/status-cli.js status
+# Initialize output directory and status.json
+node scripts/status-cli.js init
 ```
 
 This creates `docs/plan-outputs/{plan-name}/` with:
@@ -35,7 +35,7 @@ This creates `docs/plan-outputs/{plan-name}/` with:
 - `findings/` - Task findings/outputs
 - `timestamps/` - Execution timestamps
 
-Also sets `.claude/current-plan-output.txt` to the output directory.
+The output directory path is derived from the plan name - no separate pointer needed.
 
 **Error handling:**
 - If status cannot be loaded, check `.claude/current-plan.txt` is set correctly

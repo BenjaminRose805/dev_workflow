@@ -45,11 +45,14 @@ Templates define AI agent behavior and output formats.
 
 Reusable modules supporting script functionality:
 
+- `plan-status.js` - **Unified API** for status tracking, path resolution, task updates
+- `markdown-parser.js` - Plan file parsing
+- `plan-output-utils.js` - Low-level output file operations with locking
+- `timestamp-utils.js` - ISO timestamp and duration utilities
 - `agent-launcher.js` - Spawns Claude CLI processes
 - `agent-pool.js` - Priority queue with concurrent agent management
 - `agent-cache.js` - Result caching with TTL support
 - `file-utils.js` - File operations and caching
-- `markdown-parser.js` - Plan file parsing
 
 ### 4. Cache System (`.claude/cache/`)
 

@@ -117,7 +117,7 @@ node scripts/status-cli.js status
 
 **Using JavaScript API:**
 ```javascript
-const { initializePlanStatus, loadStatus } = require('./scripts/lib/status-manager');
+const { initializePlanStatus, loadStatus } = require('./scripts/lib/plan-status');
 
 const result = initializePlanStatus(planPath);
 if (result.success) {
@@ -140,7 +140,7 @@ node scripts/status-cli.js mark-complete 0.2 --notes "Migrated from markdown"
 
 **Using JavaScript API:**
 ```javascript
-const { markTaskCompleted } = require('./scripts/lib/status-manager');
+const { markTaskCompleted } = require('./scripts/lib/plan-status');
 
 for (const taskId of completedTasks) {
   markTaskCompleted(planPath, taskId, 'Migrated from markdown');

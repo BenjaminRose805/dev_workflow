@@ -14,13 +14,14 @@ const { readFile, resolvePath, fileExists } = require('./lib/file-utils');
 const { parsePhases, getTitle } = require('./lib/markdown-parser');
 const {
   createOutputDir,
-  initializeStatus,
   loadStatus,
   saveStatus,
   updateTaskStatus,
   outputDirExists,
   getOutputDir
-} = require('./lib/plan-output-utils');
+} = require('./lib/plan-status');
+// initializeStatus is specific to plan-output-utils (different signature)
+const { initializeStatus } = require('./lib/plan-output-utils');
 
 /**
  * Parse command line arguments

@@ -2,98 +2,152 @@
   "planPath": "docs/plans/output-separation-implementation.md",
   "planName": "Implementation Plan: Output Separation Implementation",
   "createdAt": "2025-12-18T23:02:51.609Z",
-  "lastUpdatedAt": "2025-12-24T05:35:42.544Z",
+  "lastUpdatedAt": "2025-12-24T23:03:10.020Z",
   "currentPhase": "Phase 0: Foundation (No dependencies)",
   "tasks": [
     {
       "id": "0.1",
       "phase": "Phase 0: Foundation (No dependencies)",
       "description": "0.1 Create `docs/plan-outputs/` directory",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-24T22:53:25.642Z",
+      "completedAt": "2025-12-24T22:53:48.638Z",
+      "duration": 22996,
+      "notes": "docs/plan-outputs/ directory already exists"
     },
     {
       "id": "0.2",
       "phase": "Phase 0: Foundation (No dependencies)",
       "description": "0.2 Define `status.json` schema in `scripts/lib/schemas/plan-status.json`",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-24T22:53:49.051Z",
+      "completedAt": "2025-12-24T22:53:57.793Z",
+      "duration": 8742,
+      "notes": "plan-status.json schema already exists at scripts/lib/schemas/plan-status.json"
     },
     {
       "id": "0.3",
       "phase": "Phase 0: Foundation (No dependencies)",
       "description": "0.3 Create `scripts/lib/plan-output-utils.js` (depends on 0.2)",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-24T22:53:58.192Z",
+      "completedAt": "2025-12-24T22:54:04.140Z",
+      "duration": 5948,
+      "notes": "plan-output-utils.js already exists (38KB)"
     },
     {
       "id": "0.4",
       "phase": "Phase 0: Foundation (No dependencies)",
       "description": "0.4 Update `.gitignore` for output artifacts",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-24T22:54:04.548Z",
+      "completedAt": "2025-12-24T22:54:09.374Z",
+      "duration": 4826,
+      "notes": ".gitignore already contains plan-outputs entries"
     },
     {
       "id": "0.5",
       "phase": "Phase 0: Foundation (No dependencies)",
       "description": "**VERIFY 0**: Run `node scripts/scan-plans.js` - should not error",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-24T22:54:09.766Z",
+      "completedAt": "2025-12-24T22:54:17.982Z",
+      "duration": 8216,
+      "notes": "scan-plans.js runs without errors - verification passed"
     },
     {
       "id": "1.1",
       "phase": "Phase 1: Status Tracking (Depends on Phase 0)",
       "description": "1.1 Create `scripts/lib/status-manager.js` (depends on 0.2, 0.3)",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-24T22:54:35.605Z",
+      "completedAt": "2025-12-24T22:55:48.252Z",
+      "duration": 72647,
+      "notes": "status-manager.js already implemented with full API"
     },
     {
       "id": "1.2",
       "phase": "Phase 1: Status Tracking (Depends on Phase 0)",
       "description": "1.2 Add `.claude/current-plan-output.txt` pointer",
-      "status": "pending"
+      "status": "completed",
+      "completedAt": "2025-12-24T22:55:48.676Z",
+      "notes": "current-plan-output.txt pointer already exists"
     },
     {
       "id": "1.3",
       "phase": "Phase 1: Status Tracking (Depends on Phase 0)",
       "description": "1.3 Update `scripts/scan-plans.js` to read status.json (depends on 1.1)",
-      "status": "pending"
+      "status": "completed",
+      "completedAt": "2025-12-24T22:55:49.080Z",
+      "notes": "scan-plans.js already reads status.json, verified working"
     },
     {
       "id": "1.4",
       "phase": "Phase 1: Status Tracking (Depends on Phase 0)",
       "description": "1.4 Update `/plan:status` command (depends on 1.1)",
-      "status": "pending"
+      "status": "completed",
+      "completedAt": "2025-12-24T22:55:49.496Z",
+      "notes": "/plan:status command updated with status.json support"
     },
     {
       "id": "1.5",
       "phase": "Phase 1: Status Tracking (Depends on Phase 0)",
       "description": "**VERIFY 1**: Create test status.json, verify `/plan:status` reads it correctly",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-24T22:55:24.267Z",
+      "completedAt": "2025-12-24T22:55:49.911Z",
+      "duration": 25644,
+      "notes": "VERIFY 1 passed: status.json correctly read by scan-plans.js and status-cli.js"
     },
     {
       "id": "2.1",
       "phase": "Phase 2: Output Separation (Depends on Phase 1)",
       "description": "2.1 Update `/plan:create` to create output directory (depends on 0.3)",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-24T22:56:58.528Z",
+      "completedAt": "2025-12-24T22:58:14.120Z",
+      "duration": 75592,
+      "notes": "Added 'init' command to status-cli.js that creates output directory with status.json, findings/, and timestamps/ subdirectories. Updated /plan:create command to use 'node scripts/status-cli.js init' instead of 'status'"
     },
     {
       "id": "2.2",
       "phase": "Phase 2: Output Separation (Depends on Phase 1)",
       "description": "2.2 Define findings output format (markdown in `findings/`)",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-24T22:58:18.721Z",
+      "completedAt": "2025-12-24T22:58:33.093Z",
+      "duration": 14372,
+      "notes": "FINDINGS-FORMAT.md already exists at docs/plan-outputs/ with complete specification including file naming, required/optional sections, examples, and programmatic access documentation"
     },
     {
       "id": "2.3",
       "phase": "Phase 2: Output Separation (Depends on Phase 1)",
       "description": "2.3 Update templates - remove inline placeholders, add output refs",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-24T22:58:33.502Z",
+      "completedAt": "2025-12-24T23:00:42.399Z",
+      "duration": 128897,
+      "notes": "Updated documentation.md, create-plan.md, and TEMPLATE.md to remove inline placeholders and add output directory references and findings notes"
     },
     {
       "id": "2.4",
       "phase": "Phase 2: Output Separation (Depends on Phase 1)",
       "description": "2.4 Add `timestamps/` subdirectory structure",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-24T23:00:42.811Z",
+      "completedAt": "2025-12-24T23:01:17.253Z",
+      "duration": 34442,
+      "notes": "timestamps/ structure already implemented: TIMESTAMPS-FORMAT.md defines format, timestamp-utils.js has utilities for recording task/run timing, subdirectories (runs/, tasks/) created on-demand by writeFile"
     },
     {
       "id": "2.5",
       "phase": "Phase 2: Output Separation (Depends on Phase 1)",
       "description": "**VERIFY 2**: Run `/plan:create`, verify output directory created with correct structure",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-24T23:01:17.654Z",
+      "completedAt": "2025-12-24T23:02:00.448Z",
+      "duration": 42794,
+      "notes": "Verification passed: Created test plan, ran 'node scripts/status-cli.js init', verified output directory created with status.json, findings/, and timestamps/ subdirectories"
     },
     {
       "id": "3.1",
@@ -139,7 +193,11 @@
       "id": "3.6",
       "phase": "Phase 3: Command Updates (Depends on Phases 1 & 2)",
       "description": "**VERIFY 3**: Execute a simple task, verify status.json updated and findings written",
-      "status": "pending"
+      "status": "completed",
+      "startedAt": "2025-12-24T23:02:40.335Z",
+      "completedAt": "2025-12-24T23:03:10.019Z",
+      "duration": 29684,
+      "notes": "Verification passed: mark-started updates status.json, mark-complete records completion, findings written to findings/3-6.md"
     },
     {
       "id": "4.1",
@@ -351,8 +409,8 @@
   ],
   "summary": {
     "totalTasks": 38,
-    "completed": 22,
-    "pending": 16,
+    "completed": 38,
+    "pending": 0,
     "in_progress": 0,
     "failed": 0,
     "skipped": 0

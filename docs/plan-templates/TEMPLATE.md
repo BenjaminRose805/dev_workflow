@@ -49,13 +49,14 @@ All templates follow this structure:
 - **Key Field 1:** {{variable}}
 - **Key Field 2:** {{variable}}
 - **Created:** {{date}}
+- **Output:** `docs/plan-outputs/{{plan_filename}}/`
+
+> Task findings are written to the `findings/` subdirectory. Use `/plan:status` to view progress.
 
 ## Phase 1: [First Phase Name]
-- [ ] Task 1
-- [ ] Task 2
-
-**Findings/Notes Section:**
-<!-- Placeholder for output -->
+- [ ] 1.1 Task 1
+- [ ] 1.2 Task 2
+- [ ] **VERIFY 1**: Phase verification
 
 ## Phase 2: [Second Phase Name]
 ...
@@ -63,7 +64,10 @@ All templates follow this structure:
 ## Success Criteria
 - [ ] Criterion 1
 - [ ] Criterion 2
+- [ ] Findings documented in `findings/`
 ```
+
+**Note:** Inline placeholders (like `<!-- findings here -->`) have been replaced with output directory references. All findings and task outputs are written to `docs/plan-outputs/{plan-name}/findings/` using the `writeFindings()` function or `node scripts/status-cli.js write-findings` command.
 
 ## Conventions
 
@@ -123,4 +127,6 @@ This will:
 2. **Atomic tasks** - Each checkbox should be completable in one session
 3. **Verification** - Always include a verification/review phase
 4. **Success criteria** - Make criteria measurable and specific
-5. **Notes sections** - Include placeholder sections for findings/output
+5. **Output refs** - Include output directory reference in Overview
+6. **Findings note** - Add blockquote explaining where findings are stored
+7. **Task IDs** - Use numbered task IDs (e.g., 1.1, 2.3) for status tracking

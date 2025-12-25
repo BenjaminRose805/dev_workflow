@@ -36,7 +36,14 @@ const path = require('path');
 const lockfile = require('proper-lockfile');
 const { readFile, writeFile, writeFileAtomic, fileExists, resolvePath } = require('./file-utils');
 const planStatusSchema = require('./schemas/plan-status.json');
-const planPointer = require('./plan-pointer');
+const planStatus = require('./plan-status');
+
+// Import summary utilities from plan-status.js (single source of truth)
+const {
+  createEmptySummary,
+  recalculateSummary,
+  ensureSummaryKeys
+} = planStatus;
 
 // Output directory base path
 const OUTPUT_BASE = 'docs/plan-outputs';
@@ -145,48 +152,7 @@ function outputDirExists(planPath) {
  */
 const VALID_STATUSES = ['pending', 'in_progress', 'completed', 'failed', 'skipped'];
 
-/**
- * Create an empty summary object with all status counts initialized to 0
- * @returns {object} Empty summary object
- */
-function createEmptySummary() {
-  return {
-    totalTasks: 0,
-    completed: 0,
-    pending: 0,
-    in_progress: 0,
-    failed: 0,
-    skipped: 0
-  };
-}
-
-/**
- * Recalculate summary by counting actual task statuses
- * This is the authoritative way to compute summary - use when summary may have drifted.
- * @param {object} status - Full status object with tasks array
- * @returns {object} Recalculated summary
- */
-function recalculateSummary(status) {
-  const summary = createEmptySummary();
-
-  if (!status || !status.tasks || !Array.isArray(status.tasks)) {
-    return summary;
-  }
-
-  summary.totalTasks = status.tasks.length;
-
-  for (const task of status.tasks) {
-    const taskStatus = task.status || 'pending';
-    if (summary[taskStatus] !== undefined) {
-      summary[taskStatus]++;
-    } else {
-      // Unknown status, treat as pending
-      summary.pending++;
-    }
-  }
-
-  return summary;
-}
+// createEmptySummary and recalculateSummary are imported from plan-status.js above
 
 /**
  * Initialize status.json for a plan
@@ -642,15 +608,7 @@ async function saveStatusWithLock(planPath, status) {
   }
 }
 
-/**
- * Ensure summary has all required keys, adding missing ones with 0
- * @param {object} summary - Summary object to normalize
- * @returns {object} Normalized summary
- */
-function ensureSummaryKeys(summary) {
-  const defaults = createEmptySummary();
-  return { ...defaults, ...summary };
-}
+// ensureSummaryKeys is imported from plan-status.js above
 
 /**
  * Validate and optionally fix summary against actual task counts
@@ -1237,7 +1195,7 @@ module.exports = {
   saveStatusWithLock,
   updateTaskStatus,
   updateTaskStatusWithLock,
-  batchUpdateTasks,
+  // Note: batchUpdateTasks is internal only
   startRun,
   completeRun,
   writeFindings,
@@ -1249,14 +1207,11 @@ module.exports = {
   recalculateSummary,
   ensureSummaryKeys,
   validateSummary,
-  // Lock utilities
-  isLockStale,
-  cleanStaleLock,
-  isLocked,
   // Lock configuration exported for testing/configuration
   LOCK_OPTIONS,
   LOCK_TIMEOUT_MS,
   STALE_LOCK_MS,
+  // Note: isLockStale, cleanStaleLock, isLocked are internal only
   // Retry tracking
   MAX_RETRIES,
   STUCK_TASK_THRESHOLD_MS,
@@ -1266,13 +1221,10 @@ module.exports = {
   getExhaustedTasks,
   detectAndMarkStuckTasks,
   getStuckTasks,
-  // Backup and recovery
-  getBackupPath,
-  createBackup,
-  restoreFromBackup,
+  // Note: getBackupPath, createBackup, restoreFromBackup are internal only
+  // rebuildStatusFromMarkdown kept for potential recovery scenarios
   rebuildStatusFromMarkdown,
-  // Plan pointer re-exports for convenience
-  getActivePlanPath: planPointer.getActivePlanPath,
-  getActivePlanOutputPath: planPointer.getActivePlanOutputPath,
-  hasActivePlan: planPointer.hasActivePlan
+  // Plan status re-exports for convenience (from unified plan-status.js)
+  getActivePlanPath: planStatus.getActivePlanPath,
+  hasActivePlan: planStatus.hasActivePlan
 };

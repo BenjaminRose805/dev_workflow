@@ -23,7 +23,7 @@ const BACKUP_PATH = STATUS_PATH + '.bak';
 
 // Store original values
 let originalPlanPath = '';
-let originalOutputPath = '';
+// Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
 // Test results
 let passed = 0;
@@ -74,11 +74,7 @@ function setupTestEnvironment() {
   } catch (e) {
     originalPlanPath = '';
   }
-  try {
-    originalOutputPath = fs.readFileSync(path.join(claudeDir, 'current-plan-output.txt'), 'utf8').trim();
-  } catch (e) {
-    originalOutputPath = '';
-  }
+  // Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
   // Create test directories
   fs.mkdirSync(TEST_OUTPUT_DIR, { recursive: true });
@@ -121,9 +117,8 @@ function setupTestEnvironment() {
   };
   fs.writeFileSync(STATUS_PATH, JSON.stringify(status, null, 2));
 
-  // Set current plan pointers
+  // Set current plan pointer (output path is derived from plan name)
   fs.writeFileSync(path.join(claudeDir, 'current-plan.txt'), 'docs/plans/test-recovery.md');
-  fs.writeFileSync(path.join(claudeDir, 'current-plan-output.txt'), 'docs/plan-outputs/test-recovery');
 
   log('Created test environment with valid status.json');
 }
@@ -135,42 +130,29 @@ function cleanupTestEnvironment() {
   if (originalPlanPath) {
     fs.writeFileSync(path.join(claudeDir, 'current-plan.txt'), originalPlanPath);
   }
-  if (originalOutputPath) {
-    fs.writeFileSync(path.join(claudeDir, 'current-plan-output.txt'), originalOutputPath);
-  }
+  // Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
   // Clean up test files
   try { fs.unlinkSync(TEST_PLAN_PATH); } catch (e) { /* ignore */ }
   try { fs.rmSync(TEST_OUTPUT_DIR, { recursive: true, force: true }); } catch (e) { /* ignore */ }
 }
 
-function testBackupCreation() {
-  log('\n=== Test: Backup Creation ===');
+function testAtomicWrites() {
+  log('\n=== Test: Atomic Writes ===');
 
-  // Remove any existing backup
-  try { fs.unlinkSync(BACKUP_PATH); } catch (e) { /* ignore */ }
-
-  // Perform an update that should create a backup
+  // Perform an update - the new implementation uses atomic writes (temp + rename)
+  // instead of backup files for data safety
   const result = runCli('mark-started 1.1');
   logTest('mark-started succeeds', result.success);
 
-  // Check if backup was created
-  const backupExists = fs.existsSync(BACKUP_PATH);
-  logTest('backup file created', backupExists);
-
-  if (backupExists) {
-    // Verify backup is valid JSON
-    try {
-      const backupContent = fs.readFileSync(BACKUP_PATH, 'utf8');
-      const backupData = JSON.parse(backupContent);
-      logTest('backup is valid JSON', true);
-      // Backup should have the OLD state (before mark-started)
-      const task = backupData.tasks.find(t => t.id === '1.1');
-      logTest('backup has pre-update state', task?.status === 'pending');
-    } catch (e) {
-      logTest('backup is valid JSON', false, e.message);
-      logTest('backup has pre-update state', false, 'Could not parse');
-    }
+  // Verify status.json is valid after update
+  try {
+    const content = fs.readFileSync(STATUS_PATH, 'utf8');
+    const status = JSON.parse(content);
+    const task = status.tasks.find(t => t.id === '1.1');
+    logTest('status.json valid after update', task?.status === 'in_progress');
+  } catch (e) {
+    logTest('status.json valid after update', false, e.message);
   }
 }
 
@@ -323,7 +305,7 @@ function main() {
     log('\nSetting up test environment...');
     setupTestEnvironment();
 
-    testBackupCreation();
+    testAtomicWrites();
     testRecoveryFromCorruptFile();
     testRebuildFromMarkdown();
     testStuckTaskRecovery();

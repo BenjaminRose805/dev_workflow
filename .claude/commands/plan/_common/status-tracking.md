@@ -16,7 +16,7 @@ Read `.claude/current-plan.txt` to get the active plan path.
 
 **Initialize status tracking:**
 - Call `initializePlanStatus(planPath)` to ensure output directory and status.json exist
-- Read `.claude/current-plan-output.txt` to get the output directory path
+- Output directory path is derived from plan name: `docs/plan-outputs/{plan-name}/`
 - If initialization fails, warn the user but continue (status tracking is optional)
 
 **Load current status:**

@@ -41,7 +41,8 @@ def get_paths():
         'plans': root / 'docs' / 'plans',
         'outputs': root / 'docs' / 'plan-outputs',
         'current_plan': root / '.claude' / 'current-plan.txt',
-        'current_output': root / '.claude' / 'current-plan-output.txt',
+        # Output path is now derived from plan name: docs/plan-outputs/{plan-name}/
+        # No longer using .claude/current-plan-output.txt pointer
     }
 
 
@@ -181,11 +182,7 @@ def switch_to_plan(name):
     # Create output directory if needed
     findings_dir = output_dir / 'findings'
     findings_dir.mkdir(parents=True, exist_ok=True)
-    print(f"{Colors.GREEN}✓{Colors.NC} Output directory ready")
-
-    # Update output pointer
-    paths['current_output'].write_text(f'docs/plan-outputs/{name}\n')
-    print(f"{Colors.GREEN}✓{Colors.NC} Updated current-plan-output.txt")
+    print(f"{Colors.GREEN}✓{Colors.NC} Output directory ready: docs/plan-outputs/{name}/")
 
     # Initialize status.json if needed
     if not status_file.exists():

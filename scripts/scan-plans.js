@@ -11,8 +11,7 @@
 const path = require('path');
 const { readFile, globSync, resolvePath, getCached, setCached } = require('./lib/file-utils');
 const { getTitle, countTasks, parsePhases } = require('./lib/markdown-parser');
-const { loadStatus, outputDirExists, getOutputDir } = require('./lib/plan-output-utils');
-const { getActivePlanPath } = require('./lib/plan-pointer');
+const { loadStatus, outputDirExists, getOutputDir, getActivePlanPath } = require('./lib/plan-status');
 
 /**
  * Scan a single plan file

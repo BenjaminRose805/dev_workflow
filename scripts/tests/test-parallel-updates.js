@@ -21,7 +21,7 @@ const UPDATES_PER_PROCESS = 3;
 
 // Store original values
 let originalPlanPath = '';
-let originalOutputPath = '';
+// Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
 function log(msg) {
   console.log(msg);
@@ -36,11 +36,7 @@ function setupTestEnvironment() {
   } catch (e) {
     originalPlanPath = '';
   }
-  try {
-    originalOutputPath = fs.readFileSync(path.join(claudeDir, 'current-plan-output.txt'), 'utf8').trim();
-  } catch (e) {
-    originalOutputPath = '';
-  }
+  // Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
   // Create test directories
   fs.mkdirSync(TEST_OUTPUT_DIR, { recursive: true });
@@ -95,9 +91,8 @@ ${tasks.join('\n')}
     JSON.stringify(status, null, 2)
   );
 
-  // Set current plan pointers
+  // Set current plan pointer (output path is derived from plan name)
   fs.writeFileSync(path.join(claudeDir, 'current-plan.txt'), 'docs/plans/test-parallel.md');
-  fs.writeFileSync(path.join(claudeDir, 'current-plan-output.txt'), 'docs/plan-outputs/test-parallel');
 
   log(`Created ${statusTasks.length} test tasks for parallel update test`);
 }
@@ -109,9 +104,7 @@ function cleanupTestEnvironment() {
   if (originalPlanPath) {
     fs.writeFileSync(path.join(claudeDir, 'current-plan.txt'), originalPlanPath);
   }
-  if (originalOutputPath) {
-    fs.writeFileSync(path.join(claudeDir, 'current-plan-output.txt'), originalOutputPath);
-  }
+  // Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
   // Clean up test files
   try {

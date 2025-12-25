@@ -25,7 +25,7 @@ CLAUDE_DIR = PROJECT_ROOT / ".claude"
 
 # Store original values
 original_plan_path = ""
-original_output_path = ""
+# Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
 
 def log(msg):
@@ -52,21 +52,16 @@ def run_cmd(cmd, check=True, capture=True):
 
 def setup_test_environment():
     """Set up a minimal test plan for orchestrator testing."""
-    global original_plan_path, original_output_path
+    global original_plan_path
 
     # Save original values
     plan_path_file = CLAUDE_DIR / "current-plan.txt"
-    output_path_file = CLAUDE_DIR / "current-plan-output.txt"
+    # Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
     try:
         original_plan_path = plan_path_file.read_text().strip()
     except:
         original_plan_path = ""
-
-    try:
-        original_output_path = output_path_file.read_text().strip()
-    except:
-        original_output_path = ""
 
     # Create test plan directory
     test_plan_dir = PROJECT_ROOT / "docs" / "plans"
@@ -115,9 +110,8 @@ def setup_test_environment():
     }
     (test_output_dir / "status.json").write_text(json.dumps(status, indent=2))
 
-    # Set current plan pointers
+    # Set current plan pointer (output path is derived from plan name)
     plan_path_file.write_text("docs/plans/test-e2e.md")
-    output_path_file.write_text("docs/plan-outputs/test-e2e")
 
     log("Created test plan with 3 tasks")
     return test_plan, test_output_dir
@@ -125,13 +119,12 @@ def setup_test_environment():
 
 def cleanup_test_environment():
     """Restore original state."""
-    global original_plan_path, original_output_path
+    global original_plan_path
 
     # Restore original values
     if original_plan_path:
         (CLAUDE_DIR / "current-plan.txt").write_text(original_plan_path)
-    if original_output_path:
-        (CLAUDE_DIR / "current-plan-output.txt").write_text(original_output_path)
+    # Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
     # Clean up test files
     try:

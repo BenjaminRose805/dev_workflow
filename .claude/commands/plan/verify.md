@@ -27,6 +27,22 @@ If arguments are passed to this skill, parse them to determine which tasks to ve
 | Phase selector | `phase:1` or `p:1` | All tasks in Phase 1 |
 | All tasks | `all` | All tasks (pending and completed) |
 | No arguments | (empty) | Interactive selection (step 3) |
+| `--autonomous` | `1.1 1.2 --autonomous` | Skip all interactive prompts |
+
+**Autonomous Mode:**
+
+When `--autonomous` flag is present:
+- Skip all AskUserQuestion prompts (step 3)
+- Skip confirmation prompts (step 6 auto-mark options)
+- Automatically apply recommended status updates without asking
+- Still report verification results normally
+
+**Detecting autonomous mode:**
+```
+args = skill arguments
+autonomous = args contains "--autonomous"
+args = args with "--autonomous" removed (for further parsing)
+```
 
 **Parsing logic:**
 
@@ -113,7 +129,7 @@ Read task information from status.json (the authoritative source of truth).
 
 ### 3. Present Tasks for Selection (Interactive Mode)
 
-**Skip this step if arguments were provided in step 1.5.**
+**Skip this step if arguments were provided in step 1.5 or if `--autonomous` mode is enabled.** In autonomous mode, task IDs MUST be provided as arguments.
 
 Use the **task-selection template** (`.claude/templates/questions/task-selection.md`) with these configuration parameters:
 
@@ -396,6 +412,12 @@ Verification completed in 3.2s
 
 If any tasks are ALREADY DONE or OBSOLETE, offer to update status tracking:
 
+**In `--autonomous` mode:** Skip this prompt and automatically apply all recommended status updates:
+- Mark ALREADY DONE tasks as completed
+- Mark OBSOLETE tasks as skipped
+- Add blocking notes to blocked tasks
+
+**In interactive mode:**
 ```
 Would you like to update the task status?
 ☐ Mark 3 completed tasks as done (update status.json)
@@ -499,3 +521,78 @@ Use manual checks for complex tasks that can't be verified by file existence alo
 - **Track performance** - Report verification time in summary (helps justify script usage)
 - **Status tracking** - All task completion status tracked in status.json, not markdown
 - **Preserve plan** - Plan markdown file is never modified, only status.json is updated
+
+## Structured Progress Output
+
+For TUI integration and programmatic use, the command outputs structured progress that can be parsed:
+
+### Status Updates via status.json
+
+All verification results update `docs/plan-outputs/<plan-name>/status.json`. The TUI monitors this file for real-time updates:
+
+```json
+{
+  "tasks": [
+    {"id": "1.1", "status": "completed", "verifiedAt": "2024-12-24T10:00:00Z"},
+    {"id": "1.2", "status": "pending"}
+  ],
+  "summary": {
+    "totalTasks": 10,
+    "completed": 5,
+    "pending": 4,
+    "in_progress": 0,
+    "failed": 1
+  }
+}
+```
+
+### Progress Markers in Output
+
+During verification, emit progress markers that can be parsed:
+
+```
+[VERIFY] task=1.1 result=ALREADY_DONE
+[VERIFY] task=1.2 result=NEEDED
+[VERIFY] task=1.3 result=BLOCKED blocker=1.2
+[VERIFY] summary done=3 needed=5 blocked=1 obsolete=0
+```
+
+These markers help the TUI track verification progress in real-time.
+
+## Autonomous Mode Reference
+
+The `--autonomous` flag enables non-interactive verification for orchestrator integration.
+
+**Usage:**
+```bash
+/plan:verify 1.1 1.2 1.3 --autonomous
+/plan:verify phase:1 --autonomous
+/plan:verify all --autonomous
+```
+
+**Behavior changes in autonomous mode:**
+
+| Step | Interactive Mode | Autonomous Mode |
+|------|-----------------|-----------------|
+| 3. Task selection | AskUserQuestion UI | Skipped (IDs required as args) |
+| 4. Verification | Normal | Normal |
+| 5. Report | Normal | Normal |
+| 6. Auto-mark options | Prompt for each action | Auto-apply all recommendations |
+| 7. Apply updates | Per user selection | Automatic |
+
+**Automatic actions in autonomous mode:**
+- ALREADY DONE tasks → marked as completed
+- OBSOLETE tasks → marked as skipped
+- BLOCKED tasks → blocking notes added
+- NEEDED tasks → left as pending (no status change)
+
+**Requirements:**
+- Task IDs MUST be provided as arguments (no fallback to interactive selection)
+- Cannot be combined with empty arguments (will error)
+
+**Example orchestrator usage:**
+```
+Run: /plan:verify all --autonomous
+
+Verify all tasks and auto-update status.json with findings.
+```

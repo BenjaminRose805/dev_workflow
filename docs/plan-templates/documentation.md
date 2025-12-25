@@ -4,14 +4,14 @@
 - **Target:** {{target_path}}
 - **Doc Type:** {{doc_type}} (API | Architecture | User Guide | Developer)
 - **Created:** {{date}}
+- **Output:** `docs/plan-outputs/{{plan_filename}}/`
+
+> Documentation findings and drafts are written to the `findings/` subdirectory. Use `/plan:status` to view progress.
 
 ## Phase 1: Discovery
 - [ ] Identify all components to document
 - [ ] Review existing documentation
 - [ ] Note undocumented or outdated areas
-
-**Components to Document:**
-<!-- List components -->
 
 **Existing Docs Status:**
 | Document | Status | Notes |
@@ -24,22 +24,11 @@
 - [ ] Note usage patterns and examples
 - [ ] Gather edge cases and gotchas
 
-**API Inventory:**
-<!-- List APIs to document -->
-
 ## Phase 3: Writing
 - [ ] Write overview/introduction
 - [ ] Document each component
 - [ ] Add code examples
 - [ ] Include troubleshooting section
-
-**Progress:**
-| Section | Status | Notes |
-|---------|--------|-------|
-| Overview | ⬜ | |
-| API Reference | ⬜ | |
-| Examples | ⬜ | |
-| Troubleshooting | ⬜ | |
 
 ## Phase 4: Review & Polish
 - [ ] Review for accuracy
@@ -52,3 +41,4 @@
 - [ ] Examples are runnable
 - [ ] No broken links
 - [ ] Consistent formatting
+- [ ] Results documented in `findings/`

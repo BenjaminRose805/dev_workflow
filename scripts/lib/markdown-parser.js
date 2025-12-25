@@ -1,6 +1,20 @@
 /**
- * Markdown Parser
- * Extracts tasks, headings, and structure from markdown files.
+ * @module markdown-parser
+ * @description Extracts tasks, headings, and structure from markdown files.
+ *
+ * This module provides utilities for parsing markdown plan files:
+ * - Task extraction (checkboxes)
+ * - Phase parsing (## Phase N: Title)
+ * - Heading extraction
+ * - Title extraction (first H1)
+ *
+ * @example
+ * const { parsePhases, getTitle, countTasks } = require('./lib/markdown-parser');
+ *
+ * const content = fs.readFileSync('docs/plans/my-plan.md', 'utf8');
+ * const title = getTitle(content);
+ * const phases = parsePhases(content);
+ * const { total, complete } = countTasks(content);
  */
 
 /**

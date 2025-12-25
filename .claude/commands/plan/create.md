@@ -101,17 +101,22 @@ Create the output directory structure for status tracking:
 
 **Directory:** `docs/plan-outputs/{plan-name}/` (where `{plan-name}` is the filename without `.md` extension)
 
-**Initialize status.json:**
+**Initialize output directory and status.json:**
 ```bash
-# After setting current-plan.txt, run any status command to trigger initialization
-node scripts/status-cli.js status
+# After setting current-plan.txt, initialize the output directory
+node scripts/status-cli.js init
 ```
 
 This will:
-1. Parse the newly created plan file
-2. Extract all tasks from phases
-3. Create initial status.json with all tasks as "pending"
-4. Set the output pointer (`.claude/current-plan-output.txt`)
+1. Create `docs/plan-outputs/{plan-name}/` directory with:
+   - `status.json` - Task status tracking
+   - `findings/` - Subdirectory for task findings (markdown)
+   - `timestamps/` - Subdirectory for timing data
+2. Parse the newly created plan file
+3. Extract all tasks from phases
+4. Create initial status.json with all tasks as "pending"
+
+The output directory path is derived from the plan name - no separate pointer needed.
 
 ### 8. Confirm to User
 

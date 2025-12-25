@@ -4,6 +4,9 @@
 - **Objective:** {{objective}}
 - **Scope:** {{scope}}
 - **Created:** {{date}}
+- **Output:** `docs/plan-outputs/{{plan_filename}}/`
+
+> Planning findings and research are written to the `findings/` subdirectory. Use `/plan:status` to view progress.
 
 ## Phase 1: Requirements Gathering
 - [ ] Clarify the goal and success criteria
@@ -11,29 +14,11 @@
 - [ ] Define scope boundaries (what's in/out)
 - [ ] Gather context from existing code/docs
 
-**Requirements:**
-<!-- List requirements here -->
-
-**Constraints:**
-<!-- List constraints here -->
-
-**Out of Scope:**
-<!-- Explicitly exclude things -->
-
 ## Phase 2: Research & Analysis
 - [ ] Explore relevant parts of codebase
 - [ ] Identify existing patterns to follow
 - [ ] Research similar implementations
 - [ ] Identify risks and dependencies
-
-**Key Findings:**
-<!-- Research findings -->
-
-**Patterns to Follow:**
-<!-- Existing patterns in the codebase -->
-
-**Dependencies:**
-<!-- External dependencies or blockers -->
 
 ## Phase 3: Plan Design
 - [ ] Break objective into phases
@@ -41,9 +26,6 @@
 - [ ] Order tasks by dependency
 - [ ] Add verification steps
 - [ ] Define success criteria
-
-**Draft Structure:**
-<!-- Outline the plan structure -->
 
 ## Phase 4: Plan Writing
 - [ ] Write overview section
@@ -66,3 +48,4 @@
 - [ ] Tasks are actionable (start with verb)
 - [ ] Success criteria are measurable
 - [ ] Plan can be executed with `/plan:implement`
+- [ ] Research and findings documented in `findings/`

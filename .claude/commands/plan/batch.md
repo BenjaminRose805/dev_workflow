@@ -12,7 +12,7 @@ Select multiple tasks for batch/parallel execution with detailed preview and pro
 1. Read `.claude/current-plan.txt` to get the active plan path
 2. If no active plan: inform user "No active plan set. Use /plan:set to choose a plan first." and stop
 3. Call `initializePlanStatus(planPath)` to create output directory and status.json
-4. Read `.claude/current-plan-output.txt` to get the output directory path
+4. Output directory is derived from plan name: `docs/plan-outputs/{plan-name}/`
 
 ### 1.5. Parse Arguments (if provided)
 
@@ -27,6 +27,23 @@ If arguments are passed to this skill, parse them to determine which tasks to ba
 | Phase selector | `phase:1` or `p:1` | All pending tasks in Phase 1 |
 | All pending | `all` | All pending tasks (with confirmation) |
 | No arguments | (empty) | Interactive selection (step 3) |
+| `--autonomous` | `1.1 1.2 --autonomous` | Skip all interactive prompts |
+
+**Autonomous Mode:**
+
+When `--autonomous` flag is present:
+- Skip batch selection interface (step 3)
+- Skip execution preview confirmation (step 5)
+- Skip all error recovery prompts (step 8) - continue with remaining tasks on failure
+- Task IDs MUST be provided as arguments
+- Still report progress and final summary normally
+
+**Detecting autonomous mode:**
+```
+args = skill arguments
+autonomous = args contains "--autonomous"
+args = args with "--autonomous" removed (for further parsing)
+```
 
 **Parsing logic:**
 
@@ -98,7 +115,7 @@ Read the plan and extract:
 
 ### 3. Present Batch Selection Interface (Interactive Mode)
 
-**Skip this step if arguments were provided in step 1.5.**
+**Skip this step if arguments were provided in step 1.5 or if `--autonomous` mode is enabled.** In autonomous mode, task IDs MUST be provided as arguments.
 
 Use AskUserQuestion with multi-select, featuring quick-select options:
 
@@ -154,6 +171,8 @@ Selected tasks by phase:
 
 ### 5. Show Execution Preview
 
+**In `--autonomous` mode:** Skip the confirmation prompt and proceed directly to execution. Still display the execution plan for logging purposes, but don't wait for user confirmation.
+
 Use the **execution-confirm template** (`.claude/templates/questions/execution-confirm.md`) to display the execution plan.
 
 **Template Configuration:**
@@ -161,7 +180,7 @@ Use the **execution-confirm template** (`.claude/templates/questions/execution-c
 - `strategy`: Describe the execution strategy (e.g., "Mixed parallel/sequential", "Sequential by phase")
 - `groups`: Array of execution groups with phase names, parallel/sequential flags, and tasks
 - `summary`: Include task count, phases, parallel/sequential breakdown, estimated parallel groups
-- `options`: ["Execute this plan", "Modify selection", "Cancel"]
+- `options`: ["Execute this plan", "Modify selection", "Cancel"] (skip in autonomous mode)
 
 **Example output** (generated from template):
 
@@ -295,14 +314,18 @@ IMPORTANT: Do NOT write files directly. Instead:
 
 **Use the error-report template** (`.claude/templates/output/error-report.md`) for failure display and the **error-recovery template** (`.claude/templates/questions/error-recovery.md`) for user options.
 
+**In `--autonomous` mode:** Skip error recovery prompts and automatically continue with remaining tasks. Still report failures for logging purposes.
+
 **If a task fails:**
 - Call `markTaskFailed(planPath, taskId, errorMessage)` to record the failure
+- In autonomous mode: log the error and continue with remaining tasks
+- In interactive mode: show recovery options
 
 ```
 ✗ 1.2 preferences-store.test.ts - FAILED
   Error: Test file created but 3 tests failing
 
-  Options:
+  Options: (skipped in autonomous mode - auto-continue)
   ○ Continue with remaining tasks
   ○ Pause and fix this task
   ○ Abort batch execution
@@ -436,3 +459,85 @@ See `.claude/templates/output/execution-summary.md` for full template documentat
 - **Handle interruption** - User can cancel mid-batch; completed work is preserved in status.json
 - **Resource awareness** - Don't spawn too many parallel agents (max 5)
 - **Status tracking is persistent** - All progress is stored in `docs/plan-outputs/<plan-name>/status.json`
+
+## Structured Progress Output
+
+For TUI integration and programmatic use, the command outputs structured progress that can be parsed:
+
+### Status Updates via status.json
+
+All execution progress is tracked in `docs/plan-outputs/<plan-name>/status.json`. The TUI monitors this file for real-time updates:
+
+```json
+{
+  "tasks": [
+    {"id": "1.1", "status": "in_progress", "startedAt": "2024-12-24T10:00:00Z"},
+    {"id": "1.2", "status": "completed", "completedAt": "2024-12-24T10:05:00Z"}
+  ],
+  "runs": [
+    {"runId": "run_001", "startedAt": "...", "tasksCompleted": 3, "tasksFailed": 1}
+  ],
+  "summary": {
+    "totalTasks": 10,
+    "completed": 5,
+    "pending": 4,
+    "in_progress": 1,
+    "failed": 0
+  }
+}
+```
+
+### Progress Markers in Output
+
+During batch execution, emit progress markers that can be parsed:
+
+```
+[BATCH] started tasks=5 phases=2
+[PROGRESS] task=1.1 status=started agent=parallel
+[PROGRESS] task=1.2 status=started agent=parallel
+[PROGRESS] task=1.1 status=completed duration=45s
+[PROGRESS] task=1.2 status=completed duration=32s
+[BATCH] phase=1 complete succeeded=2 failed=0
+[BATCH] complete succeeded=5 failed=1 skipped=0 duration=3m45s
+```
+
+These markers help the TUI track batch progress in real-time, including parallel execution state.
+
+## Autonomous Mode Reference
+
+The `--autonomous` flag enables non-interactive batch execution for orchestrator integration.
+
+**Usage:**
+```bash
+/plan:batch 1.1 1.2 1.3 --autonomous
+/plan:batch phase:1 --autonomous
+/plan:batch all --autonomous
+```
+
+**Behavior changes in autonomous mode:**
+
+| Step | Interactive Mode | Autonomous Mode |
+|------|-----------------|-----------------|
+| 3. Batch selection | AskUserQuestion UI | Skipped (IDs required as args) |
+| 5. Execution preview | Show + confirm | Show (no confirmation) |
+| 6-7. Execution | Normal | Normal |
+| 8. Error handling | Prompt for recovery action | Auto-continue with remaining |
+| 9-10. Completion | Normal | Normal |
+
+**Error behavior in autonomous mode:**
+- Failed tasks are marked with `markTaskFailed()`
+- Dependent tasks are marked as skipped
+- Execution continues with remaining independent tasks
+- Final summary still reports all failures
+
+**Requirements:**
+- Task IDs MUST be provided as arguments (no fallback to interactive selection)
+- Cannot be combined with empty arguments (will error)
+
+**Example orchestrator usage:**
+```
+Run: /plan:batch 1.1 1.2 1.3 --autonomous
+
+Execute these tasks. On failure, continue with remaining tasks.
+Report final status when complete.
+```

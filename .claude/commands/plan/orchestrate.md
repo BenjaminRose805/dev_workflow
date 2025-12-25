@@ -24,7 +24,7 @@ Autonomously execute a plan from start to finish. This command runs continuously
 
 **Load current state:**
 ```bash
-./scripts/plan-runner.sh status
+node scripts/status-cli.js status
 ```
 
 Parse the JSON response for:
@@ -46,7 +46,7 @@ Parse the JSON response for:
 #### Step 2.1: Get Next Tasks
 
 ```bash
-./scripts/plan-runner.sh next 5
+node scripts/status-cli.js next 5
 ```
 
 This returns the next recommended tasks (up to 5). Parse the JSON to get task IDs and descriptions.

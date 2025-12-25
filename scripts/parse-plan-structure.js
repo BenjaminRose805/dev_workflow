@@ -15,7 +15,7 @@
 const path = require('path');
 const { readFile, fileExists, resolvePath } = require('./lib/file-utils');
 const { parsePhases } = require('./lib/markdown-parser');
-const { getActivePlanPath } = require('./lib/plan-pointer');
+const { getActivePlanPath } = require('./lib/plan-status');
 
 /**
  * Main function to parse plan structure

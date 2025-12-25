@@ -5,7 +5,7 @@
 
 const path = require('path');
 const { readFile, writeFile, fileExists } = require('./file-utils');
-const { getTimestampsDir } = require('./plan-output-utils');
+const { getTimestampsDir } = require('./plan-status');
 
 /**
  * Get path to runs directory

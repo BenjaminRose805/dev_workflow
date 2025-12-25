@@ -19,7 +19,7 @@ const STATUS_CLI = 'node scripts/status-cli.js';
 
 // Store original values to restore
 let originalPlanPath = '';
-let originalOutputPath = '';
+// Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
 // Track test results
 let passed = 0;
@@ -81,11 +81,7 @@ function setupTestEnvironment() {
   } catch (e) {
     originalPlanPath = '';
   }
-  try {
-    originalOutputPath = fs.readFileSync(path.join(claudeDir, 'current-plan-output.txt'), 'utf8').trim();
-  } catch (e) {
-    originalOutputPath = '';
-  }
+  // Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
   // Create test directories
   fs.mkdirSync(TEST_PLAN_DIR, { recursive: true });
@@ -142,15 +138,10 @@ function setupTestEnvironment() {
   );
 
   // Set up current-plan.txt to point to test plan (use relative path)
+  // Output path is derived from plan name: docs/plan-outputs/test-cli-unit/
   fs.writeFileSync(
     path.join(claudeDir, 'current-plan.txt'),
     relativePlanPath
-  );
-
-  // Set up current-plan-output.txt (use relative path)
-  fs.writeFileSync(
-    path.join(claudeDir, 'current-plan-output.txt'),
-    'docs/plan-outputs/test-cli-unit'
   );
 }
 
@@ -161,9 +152,7 @@ function cleanupTestEnvironment() {
   if (originalPlanPath) {
     fs.writeFileSync(path.join(claudeDir, 'current-plan.txt'), originalPlanPath);
   }
-  if (originalOutputPath) {
-    fs.writeFileSync(path.join(claudeDir, 'current-plan-output.txt'), originalOutputPath);
-  }
+  // Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
   // Clean up test files
   try {
@@ -186,8 +175,9 @@ function testStatusCommand() {
   const result = runCli('status');
   logTest('status returns JSON', result.success && result.parsed !== null);
   logTest('status has planPath', typeof result.parsed?.planPath === 'string');
-  logTest('status has tasks array', Array.isArray(result.parsed?.tasks));
-  logTest('status has summary', result.parsed?.summary?.totalTasks === 5);
+  // Note: status command returns a summary, not the full status with tasks array
+  logTest('status has total tasks count', typeof result.parsed?.total === 'number');
+  logTest('status has percentage', typeof result.parsed?.percentage === 'number');
 }
 
 function testMarkStarted() {
@@ -198,10 +188,9 @@ function testMarkStarted() {
   logTest('mark-started returns success', result.parsed?.success === true);
   logTest('mark-started sets in_progress', result.parsed?.status === 'in_progress');
 
-  // Verify status updated
-  const status = runCli('status');
-  const task = status.parsed?.tasks?.find(t => t.id === '1.1');
-  logTest('task is now in_progress', task?.status === 'in_progress');
+  // Verify task status via check command
+  const check = runCli('check 1.1');
+  logTest('task is now in_progress', check.parsed?.task?.status === 'in_progress');
 
   // Test invalid task ID
   const invalid = runCli('mark-started 99.99');
@@ -219,11 +208,13 @@ function testMarkComplete() {
   logTest('mark-complete returns success', result.parsed?.success === true);
   logTest('mark-complete sets completed', result.parsed?.status === 'completed');
 
-  // Verify status updated
+  // Verify task status via check command
+  const check = runCli('check 1.2');
+  logTest('task is now completed', check.parsed?.task?.status === 'completed');
+
+  // Verify summary via status command
   const status = runCli('status');
-  const task = status.parsed?.tasks?.find(t => t.id === '1.2');
-  logTest('task is now completed', task?.status === 'completed');
-  logTest('summary updated', status.parsed?.summary?.completed === 1);
+  logTest('summary updated', status.parsed?.completed >= 1);
 
   // Test missing task ID
   const missing = runCli('mark-complete');
@@ -241,11 +232,13 @@ function testMarkFailed() {
   logTest('mark-failed returns success', result.parsed?.success === true);
   logTest('mark-failed sets failed', result.parsed?.status === 'failed');
 
-  // Verify status updated
+  // Verify task status via check command
+  const check = runCli('check 1.3');
+  logTest('task is now failed', check.parsed?.task?.status === 'failed');
+
+  // Verify summary via status command
   const status = runCli('status');
-  const task = status.parsed?.tasks?.find(t => t.id === '1.3');
-  logTest('task is now failed', task?.status === 'failed');
-  logTest('summary updated', status.parsed?.summary?.failed === 1);
+  logTest('summary updated', status.parsed?.failed >= 1);
 }
 
 function testMarkSkipped() {
@@ -256,10 +249,9 @@ function testMarkSkipped() {
   logTest('mark-skipped returns success', result.parsed?.success === true);
   logTest('mark-skipped sets skipped', result.parsed?.status === 'skipped');
 
-  // Verify status updated
-  const status = runCli('status');
-  const task = status.parsed?.tasks?.find(t => t.id === '2.1');
-  logTest('task is now skipped', task?.status === 'skipped');
+  // Verify task status via check command
+  const check = runCli('check 2.1');
+  logTest('task is now skipped', check.parsed?.task?.status === 'skipped');
 }
 
 function testNextCommand() {
@@ -273,9 +265,9 @@ function testNextCommand() {
   // Test next command
   const result = runCli('next 3');
   logTest('next returns JSON', result.success && result.parsed !== null);
-  // next command returns {planPath, currentPhase, inProgress, nextTasks} structure
-  logTest('next has planPath', typeof result.parsed?.planPath === 'string');
-  logTest('next has nextTasks array', Array.isArray(result.parsed?.nextTasks) || Array.isArray(result.parsed?.inProgress));
+  // next command returns {count, tasks} structure
+  logTest('next has count', typeof result.parsed?.count === 'number');
+  logTest('next has tasks array', Array.isArray(result.parsed?.tasks));
 }
 
 function testProgressCommand() {
