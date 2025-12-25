@@ -1010,27 +1010,39 @@ function expandTaskRange(rangeStr) {
 }
 
 /**
- * Parse execution notes from plan content to extract sequential constraints
+ * Parse execution notes from plan content to extract sequential and parallel constraints
  * @param {string} planContent - Full markdown content of the plan
- * @returns {Array<{taskRange: string, taskIds: string[], reason: string}>} Array of constraint objects
+ * @returns {{
+ *   sequential: Array<{taskRange: string, taskIds: string[], reason: string}>,
+ *   parallel: Array<{phaseRange: string, phaseIds: number[], reason: string}>
+ * }} Object with sequential task constraints and parallel phase constraints
  * @example
  * const constraints = parseExecutionNotes(planContent);
- * // Returns: [{ taskRange: "3.1-3.4", taskIds: ["3.1","3.2","3.3","3.4"], reason: "all modify same file" }]
+ * // Returns: {
+ * //   sequential: [{ taskRange: "3.1-3.4", taskIds: ["3.1","3.2","3.3","3.4"], reason: "all modify same file" }],
+ * //   parallel: [{ phaseRange: "1-3", phaseIds: [1, 2, 3], reason: "independent work" }]
+ * // }
+ *
+ * // For backward compatibility, the returned object also acts as an array of sequential constraints
  */
 function parseExecutionNotes(planContent) {
   if (!planContent || typeof planContent !== 'string') {
-    return [];
+    const result = [];
+    result.sequential = [];
+    result.parallel = [];
+    return result;
   }
 
-  const constraints = [];
+  const sequential = [];
+  const parallel = [];
 
   // Match pattern: **Execution Note:** Tasks X.Y-X.Z are [SEQUENTIAL] - reason
   // Also handle: **Execution Note:** Tasks X.Y-X.Z are [SEQUENTIAL] (reason)
   // And multiple task ranges in same note
-  const notePattern = /\*\*Execution Note:\*\*\s*Tasks?\s+([\d.,\s-]+)\s+(?:are|is)\s+\[SEQUENTIAL\]\s*[-–—]?\s*(.+?)(?:\n|$)/gi;
+  const sequentialPattern = /\*\*Execution Note:\*\*\s*Tasks?\s+([\d.,\s-]+)\s+(?:are|is)\s+\[SEQUENTIAL\]\s*[-–—]?\s*(.+?)(?:\n|$)/gi;
 
   let match;
-  while ((match = notePattern.exec(planContent)) !== null) {
+  while ((match = sequentialPattern.exec(planContent)) !== null) {
     const taskRangeStr = match[1].trim();
     const reason = match[2].trim();
 
@@ -1043,7 +1055,7 @@ function parseExecutionNotes(planContent) {
       if (cleanRange) {
         const taskIds = expandTaskRange(cleanRange);
         if (taskIds.length > 0) {
-          constraints.push({
+          sequential.push({
             taskRange: cleanRange,
             taskIds,
             reason
@@ -1053,7 +1065,77 @@ function parseExecutionNotes(planContent) {
     }
   }
 
-  return constraints;
+  // Match pattern: **Execution Note:** Phases X-Y are [PARALLEL] - reason
+  // Also handle: **Execution Note:** Phase X, Y, Z are [PARALLEL] - reason
+  const parallelPattern = /\*\*Execution Note:\*\*\s*Phases?\s+([\d,\s-]+)\s+(?:are|is)\s+\[PARALLEL\]\s*[-–—]?\s*(.+?)(?:\n|$)/gi;
+
+  while ((match = parallelPattern.exec(planContent)) !== null) {
+    const phaseRangeStr = match[1].trim();
+    const reason = match[2].trim();
+
+    const phaseIds = expandPhaseRange(phaseRangeStr);
+    if (phaseIds.length > 0) {
+      parallel.push({
+        phaseRange: phaseRangeStr,
+        phaseIds,
+        reason
+      });
+    }
+  }
+
+  // For backward compatibility, return an array-like object
+  // that also has .sequential and .parallel properties
+  const result = [...sequential];
+  result.sequential = sequential;
+  result.parallel = parallel;
+
+  return result;
+}
+
+/**
+ * Expand a phase range string into an array of phase numbers
+ * @param {string} rangeStr - Range string (e.g., "1-3", "1, 2, 3", "1-3, 5")
+ * @returns {number[]} Array of phase numbers
+ * @example
+ * expandPhaseRange("1-3") // [1, 2, 3]
+ * expandPhaseRange("1, 2, 3") // [1, 2, 3]
+ * expandPhaseRange("1-3, 5") // [1, 2, 3, 5]
+ */
+function expandPhaseRange(rangeStr) {
+  if (!rangeStr || typeof rangeStr !== 'string') {
+    return [];
+  }
+
+  const result = new Set();
+  const trimmed = rangeStr.trim();
+
+  // Split by comma for multiple ranges/numbers
+  const parts = trimmed.split(/,\s*/);
+
+  for (const part of parts) {
+    const cleanPart = part.trim();
+
+    // Check for range: "1-3"
+    const rangeMatch = cleanPart.match(/^(\d+)\s*-\s*(\d+)$/);
+    if (rangeMatch) {
+      const start = parseInt(rangeMatch[1]);
+      const end = parseInt(rangeMatch[2]);
+      if (start <= end) {
+        for (let i = start; i <= end; i++) {
+          result.add(i);
+        }
+      }
+      continue;
+    }
+
+    // Single number
+    const numMatch = cleanPart.match(/^(\d+)$/);
+    if (numMatch) {
+      result.add(parseInt(numMatch[1]));
+    }
+  }
+
+  return Array.from(result).sort((a, b) => a - b);
 }
 
 /**
@@ -1372,6 +1454,7 @@ module.exports = {
 
   // Constraint Parsing
   expandTaskRange,
+  expandPhaseRange,
   parseExecutionNotes,
   getTaskConstraints,
 
