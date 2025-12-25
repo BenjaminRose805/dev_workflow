@@ -1,0 +1,611 @@
+{
+  "planPath": "docs/plans/implement-document-command.md",
+  "planName": "Implementation Plan: /document Command",
+  "createdAt": "2025-12-23T04:52:55.450Z",
+  "lastUpdatedAt": "2025-12-23T04:52:55.450Z",
+  "currentPhase": "Phase 1: Core Command Setup",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.1 Create `/document` command file at `.claude/commands/document.md`",
+      "status": "pending"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.2 Add YAML frontmatter with configuration:",
+      "status": "pending"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.3 Write base command prompt with sections:",
+      "status": "pending"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.4 Define default parameters:",
+      "status": "pending"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.5 Create output directory structure: `docs/`",
+      "status": "pending"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Documentation Workflow Implementation",
+      "description": "2.1 Implement Documentation Parameters phase:",
+      "status": "pending"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Documentation Workflow Implementation",
+      "description": "2.2 Implement Codebase Analysis phase:",
+      "status": "pending"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Documentation Workflow Implementation",
+      "description": "2.3 Implement Artifact Consumption phase:",
+      "status": "pending"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Documentation Workflow Implementation",
+      "description": "2.4 Implement Documentation Generation phase:",
+      "status": "pending"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Documentation Workflow Implementation",
+      "description": "2.5 Implement Update vs Create Logic:",
+      "status": "pending"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Sub-Command Implementation (P0)",
+      "description": "3.1.1 Create `/document:api` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Sub-Command Implementation (P0)",
+      "description": "3.1.2 Implement API documentation generation:",
+      "status": "pending"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Sub-Command Implementation (P0)",
+      "description": "3.1.3 Generate specialized artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Sub-Command Implementation (P0)",
+      "description": "3.1.4 Support multiple formats:",
+      "status": "pending"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Sub-Command Implementation (P0)",
+      "description": "3.2.1 Create `/document:user` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Sub-Command Implementation (P0)",
+      "description": "3.2.2 Implement user guide generation:",
+      "status": "pending"
+    },
+    {
+      "id": "3.7",
+      "phase": "Phase 3: Sub-Command Implementation (P0)",
+      "description": "3.2.3 Generate specialized artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.8",
+      "phase": "Phase 3: Sub-Command Implementation (P0)",
+      "description": "3.2.4 Apply Diátaxis framework:",
+      "status": "pending"
+    },
+    {
+      "id": "3.9",
+      "phase": "Phase 3: Sub-Command Implementation (P0)",
+      "description": "3.3.1 Create `/document:developer` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.10",
+      "phase": "Phase 3: Sub-Command Implementation (P0)",
+      "description": "3.3.2 Implement developer documentation:",
+      "status": "pending"
+    },
+    {
+      "id": "3.11",
+      "phase": "Phase 3: Sub-Command Implementation (P0)",
+      "description": "3.3.3 Generate specialized artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.12",
+      "phase": "Phase 3: Sub-Command Implementation (P0)",
+      "description": "3.3.4 Include project metadata:",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Sub-Command Implementation (P1)",
+      "description": "4.1.1 Create `/document:architecture` command file",
+      "status": "pending"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Sub-Command Implementation (P1)",
+      "description": "4.1.2 Implement architecture documentation:",
+      "status": "pending"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Sub-Command Implementation (P1)",
+      "description": "4.1.3 Generate specialized artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Sub-Command Implementation (P1)",
+      "description": "4.1.4 Consume upstream artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Sub-Command Implementation (P1)",
+      "description": "4.2.1 Create `/document:changelog` command file",
+      "status": "pending"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Sub-Command Implementation (P1)",
+      "description": "4.2.2 Implement changelog generation:",
+      "status": "pending"
+    },
+    {
+      "id": "4.7",
+      "phase": "Phase 4: Sub-Command Implementation (P1)",
+      "description": "4.2.3 Generate specialized artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "4.8",
+      "phase": "Phase 4: Sub-Command Implementation (P1)",
+      "description": "4.2.4 Support versioning schemes:",
+      "status": "pending"
+    },
+    {
+      "id": "4.9",
+      "phase": "Phase 4: Sub-Command Implementation (P1)",
+      "description": "4.3.1 Create `/document:inline` command file",
+      "status": "pending"
+    },
+    {
+      "id": "4.10",
+      "phase": "Phase 4: Sub-Command Implementation (P1)",
+      "description": "4.3.2 Implement inline documentation:",
+      "status": "pending"
+    },
+    {
+      "id": "4.11",
+      "phase": "Phase 4: Sub-Command Implementation (P1)",
+      "description": "4.3.3 Generate updates to source files:",
+      "status": "pending"
+    },
+    {
+      "id": "4.12",
+      "phase": "Phase 4: Sub-Command Implementation (P1)",
+      "description": "4.3.4 Support multiple languages:",
+      "status": "pending"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Sub-Command Implementation (P2)",
+      "description": "5.1.1 Create `/document:diagrams` command file",
+      "status": "pending"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Sub-Command Implementation (P2)",
+      "description": "5.1.2 Implement diagram generation:",
+      "status": "pending"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Sub-Command Implementation (P2)",
+      "description": "5.1.3 Generate Mermaid diagrams:",
+      "status": "pending"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Sub-Command Implementation (P2)",
+      "description": "5.1.4 Support diagram types:",
+      "status": "pending"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Sub-Command Implementation (P2)",
+      "description": "5.2.1 Create `/document:runbook` command file",
+      "status": "pending"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: Sub-Command Implementation (P2)",
+      "description": "5.2.2 Implement runbook generation:",
+      "status": "pending"
+    },
+    {
+      "id": "5.7",
+      "phase": "Phase 5: Sub-Command Implementation (P2)",
+      "description": "5.2.3 Generate specialized artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "5.8",
+      "phase": "Phase 5: Sub-Command Implementation (P2)",
+      "description": "5.2.4 Include operational details:",
+      "status": "pending"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Artifact Schemas & Quality Standards",
+      "description": "6.1.1 Implement README.md artifact schema:",
+      "status": "pending"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Artifact Schemas & Quality Standards",
+      "description": "6.1.2 Implement api-reference.md artifact schema:",
+      "status": "pending"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Artifact Schemas & Quality Standards",
+      "description": "6.1.3 Implement CHANGELOG.md artifact schema:",
+      "status": "pending"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Artifact Schemas & Quality Standards",
+      "description": "6.2.1 Implement completeness validation:",
+      "status": "pending"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Artifact Schemas & Quality Standards",
+      "description": "6.2.2 Implement accuracy validation:",
+      "status": "pending"
+    },
+    {
+      "id": "6.6",
+      "phase": "Phase 6: Artifact Schemas & Quality Standards",
+      "description": "6.2.3 Implement quality checks:",
+      "status": "pending"
+    },
+    {
+      "id": "6.7",
+      "phase": "Phase 6: Artifact Schemas & Quality Standards",
+      "description": "6.3.1 Categorize documentation types:",
+      "status": "pending"
+    },
+    {
+      "id": "6.8",
+      "phase": "Phase 6: Artifact Schemas & Quality Standards",
+      "description": "6.3.2 Validate audience appropriateness:",
+      "status": "pending"
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Workflow Integration",
+      "description": "7.1.1 Define artifact consumption:",
+      "status": "pending"
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Workflow Integration",
+      "description": "7.1.2 Implement artifact discovery:",
+      "status": "pending"
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: Workflow Integration",
+      "description": "7.2.1 Define artifact production:",
+      "status": "pending"
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: Workflow Integration",
+      "description": "7.2.2 Add artifact cross-referencing:",
+      "status": "pending"
+    },
+    {
+      "id": "7.5",
+      "phase": "Phase 7: Workflow Integration",
+      "description": "7.3.1 API-First Documentation workflow:",
+      "status": "pending"
+    },
+    {
+      "id": "7.6",
+      "phase": "Phase 7: Workflow Integration",
+      "description": "7.3.2 Feature Documentation workflow:",
+      "status": "pending"
+    },
+    {
+      "id": "7.7",
+      "phase": "Phase 7: Workflow Integration",
+      "description": "7.3.3 Release Documentation workflow:",
+      "status": "pending"
+    },
+    {
+      "id": "8.1",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.1.1 Test /document:api:",
+      "status": "pending"
+    },
+    {
+      "id": "8.2",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.1.2 Test /document:user:",
+      "status": "pending"
+    },
+    {
+      "id": "8.3",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.1.3 Test /document:developer:",
+      "status": "pending"
+    },
+    {
+      "id": "8.4",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.2.1 Test completeness (all public APIs documented)",
+      "status": "pending"
+    },
+    {
+      "id": "8.5",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.2.2 Test accuracy (examples work)",
+      "status": "pending"
+    },
+    {
+      "id": "8.6",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.2.3 Test formatting (valid markdown)",
+      "status": "pending"
+    },
+    {
+      "id": "8.7",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.2.4 Test links (no broken links)",
+      "status": "pending"
+    },
+    {
+      "id": "8.8",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.3.1 Test updating existing README",
+      "status": "pending"
+    },
+    {
+      "id": "8.9",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.3.2 Test merging changelog entries",
+      "status": "pending"
+    },
+    {
+      "id": "8.10",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.3.3 Test preserving custom sections",
+      "status": "pending"
+    },
+    {
+      "id": "8.11",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.4.1 Test with no existing documentation",
+      "status": "pending"
+    },
+    {
+      "id": "8.12",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.4.2 Test with extensive existing documentation",
+      "status": "pending"
+    },
+    {
+      "id": "8.13",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.4.3 Test with undocumented codebase",
+      "status": "pending"
+    },
+    {
+      "id": "8.14",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.4.4 Test with multiple documentation formats",
+      "status": "pending"
+    },
+    {
+      "id": "9.1",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "9.1 Create command documentation:",
+      "status": "pending"
+    },
+    {
+      "id": "9.2",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "9.2 Document documentation methodology:",
+      "status": "pending"
+    },
+    {
+      "id": "9.3",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "9.3 Create user guides:",
+      "status": "pending"
+    },
+    {
+      "id": "9.4",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "9.4 Add inline help:",
+      "status": "pending"
+    },
+    {
+      "id": "9.5",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "9.5 Polish output formatting:",
+      "status": "pending"
+    },
+    {
+      "id": "9.6",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "9.6 Create example outputs:",
+      "status": "pending"
+    },
+    {
+      "id": "9.7",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Base /document command analyzes codebase and generates README.md",
+      "status": "pending"
+    },
+    {
+      "id": "9.8",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "All 8 sub-commands (api, user, developer, architecture, changelog, inline, diagrams, runbook) work correctly",
+      "status": "pending"
+    },
+    {
+      "id": "9.9",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Documentation is audience-appropriate (user vs developer vs operator)",
+      "status": "pending"
+    },
+    {
+      "id": "9.10",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Existing documentation is updated, not overwritten",
+      "status": "pending"
+    },
+    {
+      "id": "9.11",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "All documentation includes proper metadata frontmatter",
+      "status": "pending"
+    },
+    {
+      "id": "9.12",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Follows Diátaxis framework principles",
+      "status": "pending"
+    },
+    {
+      "id": "9.13",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Clear, concise writing appropriate to audience",
+      "status": "pending"
+    },
+    {
+      "id": "9.14",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Consistent terminology throughout",
+      "status": "pending"
+    },
+    {
+      "id": "9.15",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Proper markdown formatting",
+      "status": "pending"
+    },
+    {
+      "id": "9.16",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Working code examples",
+      "status": "pending"
+    },
+    {
+      "id": "9.17",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Clear progress indicators during generation",
+      "status": "pending"
+    },
+    {
+      "id": "9.18",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Helpful error messages for edge cases",
+      "status": "pending"
+    },
+    {
+      "id": "9.19",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Preview of changes before applying",
+      "status": "pending"
+    },
+    {
+      "id": "9.20",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Support for dry-run mode",
+      "status": "pending"
+    },
+    {
+      "id": "9.21",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Consumes artifacts from /architect, /design, /spec, /implement",
+      "status": "pending"
+    },
+    {
+      "id": "9.22",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Produces artifacts consumable by /test, /release",
+      "status": "pending"
+    },
+    {
+      "id": "9.23",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Metadata includes related_artifacts cross-references",
+      "status": "pending"
+    },
+    {
+      "id": "9.24",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Works seamlessly in documentation workflows",
+      "status": "pending"
+    },
+    {
+      "id": "9.25",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "All sub-commands tested with various project types",
+      "status": "pending"
+    },
+    {
+      "id": "9.26",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Update logic tested (merge vs create)",
+      "status": "pending"
+    },
+    {
+      "id": "9.27",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Edge cases handled gracefully",
+      "status": "pending"
+    },
+    {
+      "id": "9.28",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Documentation quality validated across different codebases",
+      "status": "pending"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 99,
+    "completed": 0,
+    "pending": 99,
+    "failed": 0,
+    "skipped": 0
+  }
+}

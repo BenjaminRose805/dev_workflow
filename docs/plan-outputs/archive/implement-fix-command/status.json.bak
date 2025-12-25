@@ -1,0 +1,653 @@
+{
+  "planPath": "docs/plans/implement-fix-command.md",
+  "planName": "Implementation Plan: /fix Command",
+  "createdAt": "2025-12-23T02:10:21.323Z",
+  "lastUpdatedAt": "2025-12-23T02:10:21.323Z",
+  "currentPhase": "Phase 1: Core Command Infrastructure",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Command file exists and exports proper structure",
+      "status": "pending"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Base types are defined for fix context, results, and artifacts",
+      "status": "pending"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Error handling covers common failure scenarios",
+      "status": "pending"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Output directory structure is created on command initialization",
+      "status": "pending"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Issue analyzer correctly identifies affected files and dependencies",
+      "status": "pending"
+    },
+    {
+      "id": "1.6",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Risk assessment categorizes fixes appropriately",
+      "status": "pending"
+    },
+    {
+      "id": "1.7",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Rollback plans include all modified files and restoration steps",
+      "status": "pending"
+    },
+    {
+      "id": "1.8",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Backups are created before any file modifications",
+      "status": "pending"
+    },
+    {
+      "id": "1.9",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Validation runs relevant tests after fixes",
+      "status": "pending"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Sub-command correctly parses bug descriptions and error logs",
+      "status": "pending"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Context includes relevant code, stack traces, and reproduction steps",
+      "status": "pending"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Generated fixes address root cause, not just symptoms",
+      "status": "pending"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Regression tests fail before fix and pass after",
+      "status": "pending"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Verification confirms bug is resolved",
+      "status": "pending"
+    },
+    {
+      "id": "2.6",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "TypeScript errors are correctly identified and categorized",
+      "status": "pending"
+    },
+    {
+      "id": "2.7",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Fixes maintain type safety across the codebase",
+      "status": "pending"
+    },
+    {
+      "id": "2.8",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "No new type errors are introduced by fixes",
+      "status": "pending"
+    },
+    {
+      "id": "2.9",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Type inference improvements are correctly applied",
+      "status": "pending"
+    },
+    {
+      "id": "2.10",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Compiler validation passes after fixes",
+      "status": "pending"
+    },
+    {
+      "id": "2.11",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Vulnerabilities are correctly identified with CVE references",
+      "status": "pending"
+    },
+    {
+      "id": "2.12",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Impact assessment reflects actual risk level",
+      "status": "pending"
+    },
+    {
+      "id": "2.13",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Fixes follow security best practices and standards",
+      "status": "pending"
+    },
+    {
+      "id": "2.14",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Security tests validate the vulnerability is patched",
+      "status": "pending"
+    },
+    {
+      "id": "2.15",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "No new security issues introduced by fixes",
+      "status": "pending"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Performance bottlenecks are correctly identified",
+      "status": "pending"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Optimizations show measurable improvement in benchmarks",
+      "status": "pending"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "No functional regressions introduced by optimizations",
+      "status": "pending"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Benchmark tests accurately measure performance impact",
+      "status": "pending"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Memory leaks are detected and prevented",
+      "status": "pending"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Test failures are correctly diagnosed (code bug vs test bug)",
+      "status": "pending"
+    },
+    {
+      "id": "3.7",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Fixes address root cause of test failures",
+      "status": "pending"
+    },
+    {
+      "id": "3.8",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Flaky tests become deterministic",
+      "status": "pending"
+    },
+    {
+      "id": "3.9",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Test coverage improves where gaps identified",
+      "status": "pending"
+    },
+    {
+      "id": "3.10",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "All tests pass consistently after fixes",
+      "status": "pending"
+    },
+    {
+      "id": "3.11",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Dependency conflicts are correctly identified",
+      "status": "pending"
+    },
+    {
+      "id": "3.12",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Resolution strategies are safe and compatible",
+      "status": "pending"
+    },
+    {
+      "id": "3.13",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "No new conflicts introduced by fixes",
+      "status": "pending"
+    },
+    {
+      "id": "3.14",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Migration notes document all breaking changes",
+      "status": "pending"
+    },
+    {
+      "id": "3.15",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Project builds and tests pass after dependency fixes",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Linting errors are correctly identified and categorized",
+      "status": "pending"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Auto-fixes maintain code semantics",
+      "status": "pending"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Style is consistent across all fixed files",
+      "status": "pending"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "No functional changes introduced by lint fixes",
+      "status": "pending"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Linter passes after fixes applied",
+      "status": "pending"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Schema validation errors are correctly identified",
+      "status": "pending"
+    },
+    {
+      "id": "4.7",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Data migrations preserve data integrity",
+      "status": "pending"
+    },
+    {
+      "id": "4.8",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Type coercions are safe and reversible",
+      "status": "pending"
+    },
+    {
+      "id": "4.9",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "All validation errors are resolved",
+      "status": "pending"
+    },
+    {
+      "id": "4.10",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Migration scripts are idempotent and tested",
+      "status": "pending"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Artifact Generation",
+      "description": "Fix reports are comprehensive and well-structured",
+      "status": "pending"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Artifact Generation",
+      "description": "All sections contain relevant and accurate information",
+      "status": "pending"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Artifact Generation",
+      "description": "Risk assessments reflect actual impact",
+      "status": "pending"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Artifact Generation",
+      "description": "Reports are human-readable and actionable",
+      "status": "pending"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Artifact Generation",
+      "description": "Reports include timestamps and metadata",
+      "status": "pending"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: Artifact Generation",
+      "description": "Generated tests fail before fix is applied",
+      "status": "pending"
+    },
+    {
+      "id": "5.7",
+      "phase": "Phase 5: Artifact Generation",
+      "description": "Generated tests pass after fix is applied",
+      "status": "pending"
+    },
+    {
+      "id": "5.8",
+      "phase": "Phase 5: Artifact Generation",
+      "description": "Tests cover edge cases and boundary conditions",
+      "status": "pending"
+    },
+    {
+      "id": "5.9",
+      "phase": "Phase 5: Artifact Generation",
+      "description": "Test code follows project testing conventions",
+      "status": "pending"
+    },
+    {
+      "id": "5.10",
+      "phase": "Phase 5: Artifact Generation",
+      "description": "Tests are maintainable and well-documented",
+      "status": "pending"
+    },
+    {
+      "id": "5.11",
+      "phase": "Phase 5: Artifact Generation",
+      "description": "Fix notes capture complete session history",
+      "status": "pending"
+    },
+    {
+      "id": "5.12",
+      "phase": "Phase 5: Artifact Generation",
+      "description": "Decision rationale is clearly documented",
+      "status": "pending"
+    },
+    {
+      "id": "5.13",
+      "phase": "Phase 5: Artifact Generation",
+      "description": "Follow-up items are actionable and prioritized",
+      "status": "pending"
+    },
+    {
+      "id": "5.14",
+      "phase": "Phase 5: Artifact Generation",
+      "description": "Metrics accurately reflect work done",
+      "status": "pending"
+    },
+    {
+      "id": "5.15",
+      "phase": "Phase 5: Artifact Generation",
+      "description": "Notes are useful for future reference and learning",
+      "status": "pending"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "All sub-commands are accessible via CLI",
+      "status": "pending"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Help text is accurate and comprehensive",
+      "status": "pending"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Command routing works correctly for all sub-commands",
+      "status": "pending"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Aliases and shortcuts function as expected",
+      "status": "pending"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Telemetry captures usage patterns",
+      "status": "pending"
+    },
+    {
+      "id": "6.6",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "All sub-commands pass their test suites",
+      "status": "pending"
+    },
+    {
+      "id": "6.7",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Artifacts are generated correctly for all fix types",
+      "status": "pending"
+    },
+    {
+      "id": "6.8",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Fixes meet quality standards (no regressions, proper testing)",
+      "status": "pending"
+    },
+    {
+      "id": "6.9",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Performance is acceptable for typical use cases",
+      "status": "pending"
+    },
+    {
+      "id": "6.10",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Error handling is robust and informative",
+      "status": "pending"
+    },
+    {
+      "id": "6.11",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "User guide covers all common use cases",
+      "status": "pending"
+    },
+    {
+      "id": "6.12",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Sub-command documentation is complete and accurate",
+      "status": "pending"
+    },
+    {
+      "id": "6.13",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Troubleshooting guide addresses known issues",
+      "status": "pending"
+    },
+    {
+      "id": "6.14",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Architecture documentation enables future development",
+      "status": "pending"
+    },
+    {
+      "id": "6.15",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "API documentation is comprehensive",
+      "status": "pending"
+    },
+    {
+      "id": "6.16",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "All 8 sub-commands (bug, type-error, security, performance, test, lint, dependency, data) are implemented and functional",
+      "status": "pending"
+    },
+    {
+      "id": "6.17",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Each sub-command correctly identifies issues in its domain",
+      "status": "pending"
+    },
+    {
+      "id": "6.18",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Generated fixes address root causes and don't introduce regressions",
+      "status": "pending"
+    },
+    {
+      "id": "6.19",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Risk assessment accurately reflects impact of fixes",
+      "status": "pending"
+    },
+    {
+      "id": "6.20",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Rollback plans enable safe restoration if needed",
+      "status": "pending"
+    },
+    {
+      "id": "6.21",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Validation confirms fixes resolve issues without breaking functionality",
+      "status": "pending"
+    },
+    {
+      "id": "6.22",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "All unit tests pass with >90% coverage",
+      "status": "pending"
+    },
+    {
+      "id": "6.23",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Integration tests validate end-to-end workflows",
+      "status": "pending"
+    },
+    {
+      "id": "6.24",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Performance meets targets (<30s for typical fixes)",
+      "status": "pending"
+    },
+    {
+      "id": "6.25",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Generated code follows project conventions and style",
+      "status": "pending"
+    },
+    {
+      "id": "6.26",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Error messages are clear and actionable",
+      "status": "pending"
+    },
+    {
+      "id": "6.27",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Security fixes meet compliance standards (OWASP, CVE remediation)",
+      "status": "pending"
+    },
+    {
+      "id": "6.28",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "fix-report.md contains comprehensive issue analysis and solution documentation",
+      "status": "pending"
+    },
+    {
+      "id": "6.29",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "regression-test.ts generates working tests that validate fixes",
+      "status": "pending"
+    },
+    {
+      "id": "6.30",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "fix-notes.md captures session history and follow-up actions",
+      "status": "pending"
+    },
+    {
+      "id": "6.31",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "All artifacts are properly formatted and human-readable",
+      "status": "pending"
+    },
+    {
+      "id": "6.32",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Artifacts are stored in organized output directories",
+      "status": "pending"
+    },
+    {
+      "id": "6.33",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Command is registered and accessible via CLI",
+      "status": "pending"
+    },
+    {
+      "id": "6.34",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Help text and examples are complete and accurate",
+      "status": "pending"
+    },
+    {
+      "id": "6.35",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Command integrates with existing workflow (works with /explore, /test, /validate)",
+      "status": "pending"
+    },
+    {
+      "id": "6.36",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Telemetry captures usage for improvement",
+      "status": "pending"
+    },
+    {
+      "id": "6.37",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Documentation enables users to effectively use all features",
+      "status": "pending"
+    },
+    {
+      "id": "6.38",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Command provides clear progress feedback during fix generation",
+      "status": "pending"
+    },
+    {
+      "id": "6.39",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Interactive prompts guide users through fix options",
+      "status": "pending"
+    },
+    {
+      "id": "6.40",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Batch mode supports fixing multiple issues efficiently",
+      "status": "pending"
+    },
+    {
+      "id": "6.41",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Dry-run mode allows previewing fixes before applying",
+      "status": "pending"
+    },
+    {
+      "id": "6.42",
+      "phase": "Phase 6: Integration & Testing",
+      "description": "Command is intuitive for both beginners and experts",
+      "status": "pending"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 106,
+    "completed": 0,
+    "pending": 106,
+    "failed": 0,
+    "skipped": 0
+  }
+}

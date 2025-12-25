@@ -1,0 +1,1085 @@
+{
+  "planPath": "docs/plans/implement-spec-command.md",
+  "planName": "Implementation Plan: Implement /spec Command",
+  "createdAt": "2025-12-23T04:42:55.273Z",
+  "lastUpdatedAt": "2025-12-23T04:42:55.273Z",
+  "currentPhase": "Phase 1: Core Command Setup",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.1 Create primary command file at `.claude/commands/spec.md`",
+      "status": "pending"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.2 Configure YAML frontmatter with model: sonnet, allowed-tools: Read, Grep, Glob, Write, WebSearch",
+      "status": "pending"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.3 Set command category as \"Design & Architecture\" with P1 priority",
+      "status": "pending"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.4 Implement context detection logic to analyze project type (REST, GraphQL, event-driven)",
+      "status": "pending"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.5 Create technology stack detector (read package.json, analyze imports)",
+      "status": "pending"
+    },
+    {
+      "id": "1.6",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.6 Build routing logic to select appropriate sub-command based on context",
+      "status": "pending"
+    },
+    {
+      "id": "1.7",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.7 Add input artifact reader for design docs (design-spec.md, interfaces.md)",
+      "status": "pending"
+    },
+    {
+      "id": "1.8",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.8 Create base output directory structure `docs/specs/`",
+      "status": "pending"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: OpenAPI 3.1 Specification Generation (spec:api)",
+      "description": "2.1 Create sub-command file at `.claude/commands/spec/api.md`",
+      "status": "pending"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: OpenAPI 3.1 Specification Generation (spec:api)",
+      "description": "2.2 Configure YAML frontmatter with argument-hint: [api-name]",
+      "status": "pending"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: OpenAPI 3.1 Specification Generation (spec:api)",
+      "description": "2.3 Implement design document parser to extract endpoints from design-spec.md",
+      "status": "pending"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: OpenAPI 3.1 Specification Generation (spec:api)",
+      "description": "2.4 Build OpenAPI 3.1 template generator with info, servers, tags sections",
+      "status": "pending"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: OpenAPI 3.1 Specification Generation (spec:api)",
+      "description": "2.5 Create path definition generator from endpoint specifications",
+      "status": "pending"
+    },
+    {
+      "id": "2.6",
+      "phase": "Phase 2: OpenAPI 3.1 Specification Generation (spec:api)",
+      "description": "2.6 Implement component schema generator for request/response bodies",
+      "status": "pending"
+    },
+    {
+      "id": "2.7",
+      "phase": "Phase 2: OpenAPI 3.1 Specification Generation (spec:api)",
+      "description": "2.7 Build reusable parameter generator ($ref to components/parameters)",
+      "status": "pending"
+    },
+    {
+      "id": "2.8",
+      "phase": "Phase 2: OpenAPI 3.1 Specification Generation (spec:api)",
+      "description": "2.8 Create reusable response generator ($ref to components/responses)",
+      "status": "pending"
+    },
+    {
+      "id": "2.9",
+      "phase": "Phase 2: OpenAPI 3.1 Specification Generation (spec:api)",
+      "description": "2.9 Implement security scheme definitions (bearerAuth, OAuth2, API Key)",
+      "status": "pending"
+    },
+    {
+      "id": "2.10",
+      "phase": "Phase 2: OpenAPI 3.1 Specification Generation (spec:api)",
+      "description": "2.10 Add example generator for all request/response schemas",
+      "status": "pending"
+    },
+    {
+      "id": "2.11",
+      "phase": "Phase 2: OpenAPI 3.1 Specification Generation (spec:api)",
+      "description": "2.11 Build tag grouping logic for related operations",
+      "status": "pending"
+    },
+    {
+      "id": "2.12",
+      "phase": "Phase 2: OpenAPI 3.1 Specification Generation (spec:api)",
+      "description": "2.12 Implement operationId generator for all endpoints",
+      "status": "pending"
+    },
+    {
+      "id": "2.13",
+      "phase": "Phase 2: OpenAPI 3.1 Specification Generation (spec:api)",
+      "description": "2.13 Create server definitions (dev, staging, production)",
+      "status": "pending"
+    },
+    {
+      "id": "2.14",
+      "phase": "Phase 2: OpenAPI 3.1 Specification Generation (spec:api)",
+      "description": "2.14 Add WebSearch integration for OpenAPI 3.1 best practices",
+      "status": "pending"
+    },
+    {
+      "id": "2.15",
+      "phase": "Phase 2: OpenAPI 3.1 Specification Generation (spec:api)",
+      "description": "2.15 Implement version detection and semver handling",
+      "status": "pending"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: JSON Schema Generation (spec:schema)",
+      "description": "3.1 Create sub-command file at `.claude/commands/spec/schema.md`",
+      "status": "pending"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: JSON Schema Generation (spec:schema)",
+      "description": "3.2 Configure YAML frontmatter with argument-hint: [schema-name]",
+      "status": "pending"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: JSON Schema Generation (spec:schema)",
+      "description": "3.3 Implement TypeScript type parser to extract interfaces and types",
+      "status": "pending"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: JSON Schema Generation (spec:schema)",
+      "description": "3.4 Build schema analyzer to read existing code structures",
+      "status": "pending"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: JSON Schema Generation (spec:schema)",
+      "description": "3.5 Create JSON Schema 2020-12 template generator with $schema and $id",
+      "status": "pending"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: JSON Schema Generation (spec:schema)",
+      "description": "3.6 Implement property type mapper (string, number, boolean, object, array)",
+      "status": "pending"
+    },
+    {
+      "id": "3.7",
+      "phase": "Phase 3: JSON Schema Generation (spec:schema)",
+      "description": "3.7 Build format validator generator (email, uuid, date-time, uri)",
+      "status": "pending"
+    },
+    {
+      "id": "3.8",
+      "phase": "Phase 3: JSON Schema Generation (spec:schema)",
+      "description": "3.8 Create constraint generator (minLength, maxLength, pattern, min, max)",
+      "status": "pending"
+    },
+    {
+      "id": "3.9",
+      "phase": "Phase 3: JSON Schema Generation (spec:schema)",
+      "description": "3.9 Implement enum detection and generation",
+      "status": "pending"
+    },
+    {
+      "id": "3.10",
+      "phase": "Phase 3: JSON Schema Generation (spec:schema)",
+      "description": "3.10 Add required fields detector and generator",
+      "status": "pending"
+    },
+    {
+      "id": "3.11",
+      "phase": "Phase 3: JSON Schema Generation (spec:schema)",
+      "description": "3.11 Build nested schema handler with $ref support",
+      "status": "pending"
+    },
+    {
+      "id": "3.12",
+      "phase": "Phase 3: JSON Schema Generation (spec:schema)",
+      "description": "3.12 Create additionalProperties policy generator",
+      "status": "pending"
+    },
+    {
+      "id": "3.13",
+      "phase": "Phase 3: JSON Schema Generation (spec:schema)",
+      "description": "3.13 Implement example value generator for schemas",
+      "status": "pending"
+    },
+    {
+      "id": "3.14",
+      "phase": "Phase 3: JSON Schema Generation (spec:schema)",
+      "description": "3.14 Add description generator from code comments",
+      "status": "pending"
+    },
+    {
+      "id": "3.15",
+      "phase": "Phase 3: JSON Schema Generation (spec:schema)",
+      "description": "3.15 Build $defs section for reusable internal definitions",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: GraphQL SDL Generation (spec:graphql)",
+      "description": "4.1 Create sub-command file at `.claude/commands/spec/graphql.md`",
+      "status": "pending"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: GraphQL SDL Generation (spec:graphql)",
+      "description": "4.2 Configure YAML frontmatter with argument-hint: [schema-name]",
+      "status": "pending"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: GraphQL SDL Generation (spec:graphql)",
+      "description": "4.3 Implement GraphQL type detector from design documents",
+      "status": "pending"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: GraphQL SDL Generation (spec:graphql)",
+      "description": "4.4 Build schema definition generator (Query, Mutation, Subscription)",
+      "status": "pending"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: GraphQL SDL Generation (spec:graphql)",
+      "description": "4.5 Create custom scalar definitions (DateTime, UUID, Email, JSON)",
+      "status": "pending"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: GraphQL SDL Generation (spec:graphql)",
+      "description": "4.6 Implement object type generator with field definitions",
+      "status": "pending"
+    },
+    {
+      "id": "4.7",
+      "phase": "Phase 4: GraphQL SDL Generation (spec:graphql)",
+      "description": "4.7 Build input type generator for mutations",
+      "status": "pending"
+    },
+    {
+      "id": "4.8",
+      "phase": "Phase 4: GraphQL SDL Generation (spec:graphql)",
+      "description": "4.8 Create enum type definitions",
+      "status": "pending"
+    },
+    {
+      "id": "4.9",
+      "phase": "Phase 4: GraphQL SDL Generation (spec:graphql)",
+      "description": "4.9 Implement interface and union type support",
+      "status": "pending"
+    },
+    {
+      "id": "4.10",
+      "phase": "Phase 4: GraphQL SDL Generation (spec:graphql)",
+      "description": "4.10 Add directive definitions (@auth, @deprecated, @constraint)",
+      "status": "pending"
+    },
+    {
+      "id": "4.11",
+      "phase": "Phase 4: GraphQL SDL Generation (spec:graphql)",
+      "description": "4.11 Build pagination type generator (Connection, Edge, PageInfo)",
+      "status": "pending"
+    },
+    {
+      "id": "4.12",
+      "phase": "Phase 4: GraphQL SDL Generation (spec:graphql)",
+      "description": "4.12 Create resolver specification JSON generator (resolvers-spec.json)",
+      "status": "pending"
+    },
+    {
+      "id": "4.13",
+      "phase": "Phase 4: GraphQL SDL Generation (spec:graphql)",
+      "description": "4.13 Implement field documentation from comments",
+      "status": "pending"
+    },
+    {
+      "id": "4.14",
+      "phase": "Phase 4: GraphQL SDL Generation (spec:graphql)",
+      "description": "4.14 Add deprecation reason support",
+      "status": "pending"
+    },
+    {
+      "id": "4.15",
+      "phase": "Phase 4: GraphQL SDL Generation (spec:graphql)",
+      "description": "4.15 Build schema stitching hints for microservices",
+      "status": "pending"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: AsyncAPI Event Specification (spec:events)",
+      "description": "5.1 Create sub-command file at `.claude/commands/spec/events.md`",
+      "status": "pending"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: AsyncAPI Event Specification (spec:events)",
+      "description": "5.2 Configure YAML frontmatter with argument-hint: [service-name]",
+      "status": "pending"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: AsyncAPI Event Specification (spec:events)",
+      "description": "5.3 Implement event catalog parser from design documents",
+      "status": "pending"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: AsyncAPI Event Specification (spec:events)",
+      "description": "5.4 Build AsyncAPI 2.6 template generator with info and servers",
+      "status": "pending"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: AsyncAPI Event Specification (spec:events)",
+      "description": "5.5 Create channel definition generator for topics/queues",
+      "status": "pending"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: AsyncAPI Event Specification (spec:events)",
+      "description": "5.6 Implement message schema generator for event payloads",
+      "status": "pending"
+    },
+    {
+      "id": "5.7",
+      "phase": "Phase 5: AsyncAPI Event Specification (spec:events)",
+      "description": "5.7 Build operation definitions (publish, subscribe)",
+      "status": "pending"
+    },
+    {
+      "id": "5.8",
+      "phase": "Phase 5: AsyncAPI Event Specification (spec:events)",
+      "description": "5.8 Create protocol binding generator (Kafka, RabbitMQ, MQTT, WebSocket)",
+      "status": "pending"
+    },
+    {
+      "id": "5.9",
+      "phase": "Phase 5: AsyncAPI Event Specification (spec:events)",
+      "description": "5.9 Implement server configuration (Kafka cluster, AMQP broker)",
+      "status": "pending"
+    },
+    {
+      "id": "5.10",
+      "phase": "Phase 5: AsyncAPI Event Specification (spec:events)",
+      "description": "5.10 Add message trait definitions (headers, correlation ID)",
+      "status": "pending"
+    },
+    {
+      "id": "5.11",
+      "phase": "Phase 5: AsyncAPI Event Specification (spec:events)",
+      "description": "5.11 Build event versioning strategy generator",
+      "status": "pending"
+    },
+    {
+      "id": "5.12",
+      "phase": "Phase 5: AsyncAPI Event Specification (spec:events)",
+      "description": "5.12 Create schema registry integration hints",
+      "status": "pending"
+    },
+    {
+      "id": "5.13",
+      "phase": "Phase 5: AsyncAPI Event Specification (spec:events)",
+      "description": "5.13 Implement dead letter queue configuration",
+      "status": "pending"
+    },
+    {
+      "id": "5.14",
+      "phase": "Phase 5: AsyncAPI Event Specification (spec:events)",
+      "description": "5.14 Add retry policy specifications",
+      "status": "pending"
+    },
+    {
+      "id": "5.15",
+      "phase": "Phase 5: AsyncAPI Event Specification (spec:events)",
+      "description": "5.15 Build event flow documentation generator",
+      "status": "pending"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Data Model Specification (spec:data)",
+      "description": "6.1 Create sub-command file at `.claude/commands/spec/data.md`",
+      "status": "pending"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Data Model Specification (spec:data)",
+      "description": "6.2 Configure YAML frontmatter with argument-hint: [model-name]",
+      "status": "pending"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Data Model Specification (spec:data)",
+      "description": "6.3 Implement entity relationship parser from ERD diagrams",
+      "status": "pending"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Data Model Specification (spec:data)",
+      "description": "6.4 Build data model JSON schema generator",
+      "status": "pending"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Data Model Specification (spec:data)",
+      "description": "6.5 Create entity definition generator with attributes",
+      "status": "pending"
+    },
+    {
+      "id": "6.6",
+      "phase": "Phase 6: Data Model Specification (spec:data)",
+      "description": "6.6 Implement relationship mapper (one-to-one, one-to-many, many-to-many)",
+      "status": "pending"
+    },
+    {
+      "id": "6.7",
+      "phase": "Phase 6: Data Model Specification (spec:data)",
+      "description": "6.7 Add constraint definitions (unique, nullable, default)",
+      "status": "pending"
+    },
+    {
+      "id": "6.8",
+      "phase": "Phase 6: Data Model Specification (spec:data)",
+      "description": "6.8 Build index specification generator",
+      "status": "pending"
+    },
+    {
+      "id": "6.9",
+      "phase": "Phase 6: Data Model Specification (spec:data)",
+      "description": "6.9 Create foreign key relationship definitions",
+      "status": "pending"
+    },
+    {
+      "id": "6.10",
+      "phase": "Phase 6: Data Model Specification (spec:data)",
+      "description": "6.10 Implement cascade behavior specifications (ON DELETE, ON UPDATE)",
+      "status": "pending"
+    },
+    {
+      "id": "6.11",
+      "phase": "Phase 6: Data Model Specification (spec:data)",
+      "description": "6.11 Add data type mapping for target database (PostgreSQL, MySQL, MongoDB)",
+      "status": "pending"
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Validation Integration",
+      "description": "7.1 Implement OpenAPI validator using Redocly CLI",
+      "status": "pending"
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Validation Integration",
+      "description": "7.2 Add Swagger CLI validation for OpenAPI specs",
+      "status": "pending"
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: Validation Integration",
+      "description": "7.3 Integrate AJV for JSON Schema validation",
+      "status": "pending"
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: Validation Integration",
+      "description": "7.4 Implement GraphQL schema linter integration",
+      "status": "pending"
+    },
+    {
+      "id": "7.5",
+      "phase": "Phase 7: Validation Integration",
+      "description": "7.5 Add AsyncAPI CLI validation",
+      "status": "pending"
+    },
+    {
+      "id": "7.6",
+      "phase": "Phase 7: Validation Integration",
+      "description": "7.6 Create validation report generator",
+      "status": "pending"
+    },
+    {
+      "id": "7.7",
+      "phase": "Phase 7: Validation Integration",
+      "description": "7.7 Build auto-fix suggestions for common validation errors",
+      "status": "pending"
+    },
+    {
+      "id": "7.8",
+      "phase": "Phase 7: Validation Integration",
+      "description": "7.8 Implement $ref resolution validator",
+      "status": "pending"
+    },
+    {
+      "id": "7.9",
+      "phase": "Phase 7: Validation Integration",
+      "description": "7.9 Add example validation against schemas",
+      "status": "pending"
+    },
+    {
+      "id": "7.10",
+      "phase": "Phase 7: Validation Integration",
+      "description": "7.10 Create completeness checker (required sections, fields)",
+      "status": "pending"
+    },
+    {
+      "id": "7.11",
+      "phase": "Phase 7: Validation Integration",
+      "description": "7.11 Build quality checklist validator for each spec type",
+      "status": "pending"
+    },
+    {
+      "id": "8.1",
+      "phase": "Phase 8: Artifact Output Management",
+      "description": "8.1 Create directory structure generator for `docs/specs/`",
+      "status": "pending"
+    },
+    {
+      "id": "8.2",
+      "phase": "Phase 8: Artifact Output Management",
+      "description": "8.2 Implement versioned output folders (api/v1, api/v2)",
+      "status": "pending"
+    },
+    {
+      "id": "8.3",
+      "phase": "Phase 8: Artifact Output Management",
+      "description": "8.3 Build sub-directory creators (schemas/, graphql/, events/, data/)",
+      "status": "pending"
+    },
+    {
+      "id": "8.4",
+      "phase": "Phase 8: Artifact Output Management",
+      "description": "8.4 Create artifact metadata generator (timestamp, version, author)",
+      "status": "pending"
+    },
+    {
+      "id": "8.5",
+      "phase": "Phase 8: Artifact Output Management",
+      "description": "8.5 Implement file naming conventions (openapi.yaml, schema.json)",
+      "status": "pending"
+    },
+    {
+      "id": "8.6",
+      "phase": "Phase 8: Artifact Output Management",
+      "description": "8.6 Add version detection from existing specs",
+      "status": "pending"
+    },
+    {
+      "id": "8.7",
+      "phase": "Phase 8: Artifact Output Management",
+      "description": "8.7 Build version bump logic (major, minor, patch)",
+      "status": "pending"
+    },
+    {
+      "id": "8.8",
+      "phase": "Phase 8: Artifact Output Management",
+      "description": "8.8 Create changelog generator for spec versions",
+      "status": "pending"
+    },
+    {
+      "id": "8.9",
+      "phase": "Phase 8: Artifact Output Management",
+      "description": "8.9 Implement artifact index file generator",
+      "status": "pending"
+    },
+    {
+      "id": "8.10",
+      "phase": "Phase 8: Artifact Output Management",
+      "description": "8.10 Add validation stamp to artifact metadata",
+      "status": "pending"
+    },
+    {
+      "id": "9.1",
+      "phase": "Phase 9: WebSearch Integration for Standards",
+      "description": "9.1 Implement OpenAPI 3.1 specification fetcher",
+      "status": "pending"
+    },
+    {
+      "id": "9.2",
+      "phase": "Phase 9: WebSearch Integration for Standards",
+      "description": "9.2 Add JSON Schema 2020-12 specification reference",
+      "status": "pending"
+    },
+    {
+      "id": "9.3",
+      "phase": "Phase 9: WebSearch Integration for Standards",
+      "description": "9.3 Build GraphQL specification fetcher for latest SDL syntax",
+      "status": "pending"
+    },
+    {
+      "id": "9.4",
+      "phase": "Phase 9: WebSearch Integration for Standards",
+      "description": "9.4 Create AsyncAPI specification reference integration",
+      "status": "pending"
+    },
+    {
+      "id": "9.5",
+      "phase": "Phase 9: WebSearch Integration for Standards",
+      "description": "9.5 Implement best practices searcher for each spec type",
+      "status": "pending"
+    },
+    {
+      "id": "9.6",
+      "phase": "Phase 9: WebSearch Integration for Standards",
+      "description": "9.6 Add common pattern library fetcher (pagination, error handling)",
+      "status": "pending"
+    },
+    {
+      "id": "9.7",
+      "phase": "Phase 9: WebSearch Integration for Standards",
+      "description": "9.7 Build security scheme best practices retriever",
+      "status": "pending"
+    },
+    {
+      "id": "9.8",
+      "phase": "Phase 9: WebSearch Integration for Standards",
+      "description": "9.8 Create example repository searcher for reference implementations",
+      "status": "pending"
+    },
+    {
+      "id": "9.9",
+      "phase": "Phase 9: WebSearch Integration for Standards",
+      "description": "9.9 Implement breaking change detector for spec versions",
+      "status": "pending"
+    },
+    {
+      "id": "9.10",
+      "phase": "Phase 9: WebSearch Integration for Standards",
+      "description": "9.10 Add deprecation warning generator based on standards",
+      "status": "pending"
+    },
+    {
+      "id": "10.1",
+      "phase": "Phase 10: Workflow Integration",
+      "description": "10.1 Implement requirements.json parser from /clarify command",
+      "status": "pending"
+    },
+    {
+      "id": "10.2",
+      "phase": "Phase 10: Workflow Integration",
+      "description": "10.2 Add design-spec.md reader from /design command",
+      "status": "pending"
+    },
+    {
+      "id": "10.3",
+      "phase": "Phase 10: Workflow Integration",
+      "description": "10.3 Build architecture.md parser from /architect command",
+      "status": "pending"
+    },
+    {
+      "id": "10.4",
+      "phase": "Phase 10: Workflow Integration",
+      "description": "10.4 Create interface extractor from interfaces.md",
+      "status": "pending"
+    },
+    {
+      "id": "10.5",
+      "phase": "Phase 10: Workflow Integration",
+      "description": "10.5 Implement entity reader from entities.json (/model command)",
+      "status": "pending"
+    },
+    {
+      "id": "10.6",
+      "phase": "Phase 10: Workflow Integration",
+      "description": "10.6 Add output format for /implement command consumption",
+      "status": "pending"
+    },
+    {
+      "id": "10.7",
+      "phase": "Phase 10: Workflow Integration",
+      "description": "10.7 Build test data hint generator for /test command",
+      "status": "pending"
+    },
+    {
+      "id": "10.8",
+      "phase": "Phase 10: Workflow Integration",
+      "description": "10.8 Create documentation seed for /document:api command",
+      "status": "pending"
+    },
+    {
+      "id": "10.9",
+      "phase": "Phase 10: Workflow Integration",
+      "description": "10.9 Implement validation rule extractor for /validate command",
+      "status": "pending"
+    },
+    {
+      "id": "10.10",
+      "phase": "Phase 10: Workflow Integration",
+      "description": "10.10 Add workflow suggestion engine based on spec type",
+      "status": "pending"
+    },
+    {
+      "id": "10.11",
+      "phase": "Phase 10: Workflow Integration",
+      "description": "10.11 Build artifact relationship tracker (upstream/downstream)",
+      "status": "pending"
+    },
+    {
+      "id": "11.1",
+      "phase": "Phase 11: Quality Checklist System",
+      "description": "11.1 Create OpenAPI quality checklist validator",
+      "status": "pending"
+    },
+    {
+      "id": "11.2",
+      "phase": "Phase 11: Quality Checklist System",
+      "description": "11.2 Build JSON Schema quality checklist validator",
+      "status": "pending"
+    },
+    {
+      "id": "11.3",
+      "phase": "Phase 11: Quality Checklist System",
+      "description": "11.3 Implement GraphQL quality checklist validator",
+      "status": "pending"
+    },
+    {
+      "id": "11.4",
+      "phase": "Phase 11: Quality Checklist System",
+      "description": "11.4 Add AsyncAPI quality checklist validator",
+      "status": "pending"
+    },
+    {
+      "id": "11.5",
+      "phase": "Phase 11: Quality Checklist System",
+      "description": "11.5 Create reusability detector (components usage vs duplication)",
+      "status": "pending"
+    },
+    {
+      "id": "11.6",
+      "phase": "Phase 11: Quality Checklist System",
+      "description": "11.6 Build security definition completeness checker",
+      "status": "pending"
+    },
+    {
+      "id": "11.7",
+      "phase": "Phase 11: Quality Checklist System",
+      "description": "11.7 Implement error response coverage analyzer",
+      "status": "pending"
+    },
+    {
+      "id": "11.8",
+      "phase": "Phase 11: Quality Checklist System",
+      "description": "11.8 Add documentation completeness checker (descriptions)",
+      "status": "pending"
+    },
+    {
+      "id": "11.9",
+      "phase": "Phase 11: Quality Checklist System",
+      "description": "11.9 Create example coverage analyzer",
+      "status": "pending"
+    },
+    {
+      "id": "11.10",
+      "phase": "Phase 11: Quality Checklist System",
+      "description": "11.10 Build breaking change detector for version updates",
+      "status": "pending"
+    },
+    {
+      "id": "12.1",
+      "phase": "Phase 12: Error Handling & Edge Cases",
+      "description": "12.1 Handle missing design documents gracefully",
+      "status": "pending"
+    },
+    {
+      "id": "12.2",
+      "phase": "Phase 12: Error Handling & Edge Cases",
+      "description": "12.2 Implement fallback when no existing specs found",
+      "status": "pending"
+    },
+    {
+      "id": "12.3",
+      "phase": "Phase 12: Error Handling & Edge Cases",
+      "description": "12.3 Add conflict resolution for contradictory interface definitions",
+      "status": "pending"
+    },
+    {
+      "id": "12.4",
+      "phase": "Phase 12: Error Handling & Edge Cases",
+      "description": "12.4 Create schema complexity warning system",
+      "status": "pending"
+    },
+    {
+      "id": "12.5",
+      "phase": "Phase 12: Error Handling & Edge Cases",
+      "description": "12.5 Implement circular reference detector and handler",
+      "status": "pending"
+    },
+    {
+      "id": "12.6",
+      "phase": "Phase 12: Error Handling & Edge Cases",
+      "description": "12.6 Add invalid type mapping error handler",
+      "status": "pending"
+    },
+    {
+      "id": "12.7",
+      "phase": "Phase 12: Error Handling & Edge Cases",
+      "description": "12.7 Build validation failure recovery logic",
+      "status": "pending"
+    },
+    {
+      "id": "12.8",
+      "phase": "Phase 12: Error Handling & Edge Cases",
+      "description": "12.8 Create manual intervention prompts for ambiguous cases",
+      "status": "pending"
+    },
+    {
+      "id": "12.9",
+      "phase": "Phase 12: Error Handling & Edge Cases",
+      "description": "12.9 Implement rollback for failed spec generation",
+      "status": "pending"
+    },
+    {
+      "id": "12.10",
+      "phase": "Phase 12: Error Handling & Edge Cases",
+      "description": "12.10 Add partial spec save on interruption",
+      "status": "pending"
+    },
+    {
+      "id": "13.1",
+      "phase": "Phase 13: Testing Across API Types",
+      "description": "13.1 Test OpenAPI generation for simple CRUD REST API",
+      "status": "pending"
+    },
+    {
+      "id": "13.2",
+      "phase": "Phase 13: Testing Across API Types",
+      "description": "13.2 Test OpenAPI generation for complex REST API (nested resources, batch operations)",
+      "status": "pending"
+    },
+    {
+      "id": "13.3",
+      "phase": "Phase 13: Testing Across API Types",
+      "description": "13.3 Test JSON Schema generation for flat data structures",
+      "status": "pending"
+    },
+    {
+      "id": "13.4",
+      "phase": "Phase 13: Testing Across API Types",
+      "description": "13.4 Test JSON Schema generation for deeply nested objects",
+      "status": "pending"
+    },
+    {
+      "id": "13.5",
+      "phase": "Phase 13: Testing Across API Types",
+      "description": "13.5 Test GraphQL generation for query-only schema",
+      "status": "pending"
+    },
+    {
+      "id": "13.6",
+      "phase": "Phase 13: Testing Across API Types",
+      "description": "13.6 Test GraphQL generation for full schema (Query, Mutation, Subscription)",
+      "status": "pending"
+    },
+    {
+      "id": "13.7",
+      "phase": "Phase 13: Testing Across API Types",
+      "description": "13.7 Test AsyncAPI generation for Kafka-based event system",
+      "status": "pending"
+    },
+    {
+      "id": "13.8",
+      "phase": "Phase 13: Testing Across API Types",
+      "description": "13.8 Test AsyncAPI generation for RabbitMQ/AMQP system",
+      "status": "pending"
+    },
+    {
+      "id": "13.9",
+      "phase": "Phase 13: Testing Across API Types",
+      "description": "13.9 Test data model generation for relational database",
+      "status": "pending"
+    },
+    {
+      "id": "13.10",
+      "phase": "Phase 13: Testing Across API Types",
+      "description": "13.10 Test data model generation for document database (MongoDB)",
+      "status": "pending"
+    },
+    {
+      "id": "13.11",
+      "phase": "Phase 13: Testing Across API Types",
+      "description": "13.11 Validate all generated specs with standard tools",
+      "status": "pending"
+    },
+    {
+      "id": "13.12",
+      "phase": "Phase 13: Testing Across API Types",
+      "description": "13.12 Test version upgrade scenarios (v1 -> v2 with breaking changes)",
+      "status": "pending"
+    },
+    {
+      "id": "14.1",
+      "phase": "Phase 14: Documentation",
+      "description": "14.1 Create main usage guide at `docs/commands/spec.md`",
+      "status": "pending"
+    },
+    {
+      "id": "14.2",
+      "phase": "Phase 14: Documentation",
+      "description": "14.2 Document spec:api sub-command with OpenAPI examples",
+      "status": "pending"
+    },
+    {
+      "id": "14.3",
+      "phase": "Phase 14: Documentation",
+      "description": "14.3 Document spec:schema sub-command with JSON Schema examples",
+      "status": "pending"
+    },
+    {
+      "id": "14.4",
+      "phase": "Phase 14: Documentation",
+      "description": "14.4 Document spec:graphql sub-command with GraphQL SDL examples",
+      "status": "pending"
+    },
+    {
+      "id": "14.5",
+      "phase": "Phase 14: Documentation",
+      "description": "14.5 Document spec:events sub-command with AsyncAPI examples",
+      "status": "pending"
+    },
+    {
+      "id": "14.6",
+      "phase": "Phase 14: Documentation",
+      "description": "14.6 Document spec:data sub-command with data model examples",
+      "status": "pending"
+    },
+    {
+      "id": "14.7",
+      "phase": "Phase 14: Documentation",
+      "description": "14.7 Create artifact schema reference documentation",
+      "status": "pending"
+    },
+    {
+      "id": "14.8",
+      "phase": "Phase 14: Documentation",
+      "description": "14.8 Add workflow diagrams (clarify -> design -> spec -> implement)",
+      "status": "pending"
+    },
+    {
+      "id": "14.9",
+      "phase": "Phase 14: Documentation",
+      "description": "14.9 Write best practices guide for contract-first development",
+      "status": "pending"
+    },
+    {
+      "id": "14.10",
+      "phase": "Phase 14: Documentation",
+      "description": "14.10 Create validation guide with tool setup instructions",
+      "status": "pending"
+    },
+    {
+      "id": "14.11",
+      "phase": "Phase 14: Documentation",
+      "description": "14.11 Add troubleshooting section for common validation errors",
+      "status": "pending"
+    },
+    {
+      "id": "14.12",
+      "phase": "Phase 14: Documentation",
+      "description": "14.12 Document integration with code generation tools (openapi-generator, GraphQL codegen)",
+      "status": "pending"
+    },
+    {
+      "id": "14.13",
+      "phase": "Phase 14: Documentation",
+      "description": "Command executes successfully via `/spec` and all 5 sub-commands",
+      "status": "pending"
+    },
+    {
+      "id": "14.14",
+      "phase": "Phase 14: Documentation",
+      "description": "OpenAPI 3.1 specifications pass Redocly and Swagger validation",
+      "status": "pending"
+    },
+    {
+      "id": "14.15",
+      "phase": "Phase 14: Documentation",
+      "description": "JSON Schema (2020-12) specifications validate with AJV",
+      "status": "pending"
+    },
+    {
+      "id": "14.16",
+      "phase": "Phase 14: Documentation",
+      "description": "GraphQL SDL specifications pass graphql-schema-linter",
+      "status": "pending"
+    },
+    {
+      "id": "14.17",
+      "phase": "Phase 14: Documentation",
+      "description": "AsyncAPI 2.6 specifications pass AsyncAPI CLI validation",
+      "status": "pending"
+    },
+    {
+      "id": "14.18",
+      "phase": "Phase 14: Documentation",
+      "description": "All specifications include required metadata (version, timestamp, status)",
+      "status": "pending"
+    },
+    {
+      "id": "14.19",
+      "phase": "Phase 14: Documentation",
+      "description": "Specifications are written to correct versioned directories",
+      "status": "pending"
+    },
+    {
+      "id": "14.20",
+      "phase": "Phase 14: Documentation",
+      "description": "WebSearch integration provides accurate standard references",
+      "status": "pending"
+    },
+    {
+      "id": "14.21",
+      "phase": "Phase 14: Documentation",
+      "description": "Workflow integration enables seamless command chaining",
+      "status": "pending"
+    },
+    {
+      "id": "14.22",
+      "phase": "Phase 14: Documentation",
+      "description": "Quality checklists identify completeness and best practice gaps",
+      "status": "pending"
+    },
+    {
+      "id": "14.23",
+      "phase": "Phase 14: Documentation",
+      "description": "All test scenarios (REST, GraphQL, events, data) produce valid specs",
+      "status": "pending"
+    },
+    {
+      "id": "14.24",
+      "phase": "Phase 14: Documentation",
+      "description": "Documentation enables independent usage with clear examples",
+      "status": "pending"
+    },
+    {
+      "id": "14.25",
+      "phase": "Phase 14: Documentation",
+      "description": "Generated specifications can drive implementation and testing",
+      "status": "pending"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 178,
+    "completed": 0,
+    "pending": 178,
+    "failed": 0,
+    "skipped": 0
+  }
+}

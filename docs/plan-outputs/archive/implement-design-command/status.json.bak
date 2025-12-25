@@ -1,0 +1,1307 @@
+{
+  "planPath": "docs/plans/implement-design-command.md",
+  "planName": "Implementation Plan: Implement /design Command",
+  "createdAt": "2025-12-23T04:40:43.579Z",
+  "lastUpdatedAt": "2025-12-23T04:40:43.579Z",
+  "currentPhase": "Phase 1: Core Command Setup",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.1 Create YAML configuration at `.claude/commands/design.md` with base metadata",
+      "status": "pending"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.2 Configure model as `sonnet` for balanced design capability and cost-effectiveness",
+      "status": "pending"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.3 Define allowed tools: Read, Grep, Glob, Write, AskUserQuestion (no WebSearch/Bash)",
+      "status": "pending"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.4 Set argument-hint to `[component-or-feature-name]` for component targeting",
+      "status": "pending"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.5 Set command category as \"design-architecture\" with CRITICAL priority",
+      "status": "pending"
+    },
+    {
+      "id": "1.6",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.6 Define output_artifacts: design-spec.md, interfaces.md, interaction-diagrams.md",
+      "status": "pending"
+    },
+    {
+      "id": "1.7",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.7 Create base prompt template with design methodology framework",
+      "status": "pending"
+    },
+    {
+      "id": "1.8",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.8 Implement output directory structure: `docs/design/[component-name]/`",
+      "status": "pending"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Sub-Command Infrastructure (6 Sub-Commands)",
+      "description": "2.1 Create `.claude/commands/design/component.md` (P0) - Component internals design",
+      "status": "pending"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Sub-Command Infrastructure (6 Sub-Commands)",
+      "description": "2.2 Create `.claude/commands/design/api.md` (P0) - API endpoint/interface design",
+      "status": "pending"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Sub-Command Infrastructure (6 Sub-Commands)",
+      "description": "2.3 Create `.claude/commands/design/data.md` (P0) - Data structure and schema design",
+      "status": "pending"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Sub-Command Infrastructure (6 Sub-Commands)",
+      "description": "2.4 Create `.claude/commands/design/interactions.md` (P1) - Component interaction patterns",
+      "status": "pending"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Sub-Command Infrastructure (6 Sub-Commands)",
+      "description": "2.5 Create `.claude/commands/design/state.md` (P1) - State management design",
+      "status": "pending"
+    },
+    {
+      "id": "2.6",
+      "phase": "Phase 2: Sub-Command Infrastructure (6 Sub-Commands)",
+      "description": "2.6 Create `.claude/commands/design/ui.md` (P2) - UI component design",
+      "status": "pending"
+    },
+    {
+      "id": "2.7",
+      "phase": "Phase 2: Sub-Command Infrastructure (6 Sub-Commands)",
+      "description": "2.7 Configure all sub-commands with `sonnet` model and appropriate tools",
+      "status": "pending"
+    },
+    {
+      "id": "2.8",
+      "phase": "Phase 2: Sub-Command Infrastructure (6 Sub-Commands)",
+      "description": "2.8 Set argument-hints specific to each sub-command's purpose",
+      "status": "pending"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Artifact Schema Implementation - design-spec.md",
+      "description": "3.1 Create YAML frontmatter schema with artifact_type, component, version, status",
+      "status": "pending"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Artifact Schema Implementation - design-spec.md",
+      "description": "3.2 Implement \"Overview\" section generator (Purpose, Scope, Context)",
+      "status": "pending"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Artifact Schema Implementation - design-spec.md",
+      "description": "3.3 Build \"Responsibilities\" section with Primary/Secondary/Non-Responsibilities",
+      "status": "pending"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Artifact Schema Implementation - design-spec.md",
+      "description": "3.4 Create \"Public Interface\" section with function signatures and contracts",
+      "status": "pending"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Artifact Schema Implementation - design-spec.md",
+      "description": "3.5 Implement \"Internal Structure\" section (Data Structures, Key Algorithms)",
+      "status": "pending"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Artifact Schema Implementation - design-spec.md",
+      "description": "3.6 Build \"Dependencies\" section (External and Internal dependencies)",
+      "status": "pending"
+    },
+    {
+      "id": "3.7",
+      "phase": "Phase 3: Artifact Schema Implementation - design-spec.md",
+      "description": "3.7 Create \"Integration Points\" section (Upstream/Downstream, Events)",
+      "status": "pending"
+    },
+    {
+      "id": "3.8",
+      "phase": "Phase 3: Artifact Schema Implementation - design-spec.md",
+      "description": "3.8 Implement \"Error Handling\" section with error types and strategies",
+      "status": "pending"
+    },
+    {
+      "id": "3.9",
+      "phase": "Phase 3: Artifact Schema Implementation - design-spec.md",
+      "description": "3.9 Build \"State Management\" section with state shape and transitions",
+      "status": "pending"
+    },
+    {
+      "id": "3.10",
+      "phase": "Phase 3: Artifact Schema Implementation - design-spec.md",
+      "description": "3.10 Add \"Performance Considerations\" section with load expectations",
+      "status": "pending"
+    },
+    {
+      "id": "3.11",
+      "phase": "Phase 3: Artifact Schema Implementation - design-spec.md",
+      "description": "3.11 Add \"Security Considerations\" section (Auth, Authorization, Validation)",
+      "status": "pending"
+    },
+    {
+      "id": "3.12",
+      "phase": "Phase 3: Artifact Schema Implementation - design-spec.md",
+      "description": "3.12 Create \"Testing Strategy\" section (Unit, Integration test guidance)",
+      "status": "pending"
+    },
+    {
+      "id": "3.13",
+      "phase": "Phase 3: Artifact Schema Implementation - design-spec.md",
+      "description": "3.13 Implement \"Implementation Guidance\" section with recommended order",
+      "status": "pending"
+    },
+    {
+      "id": "3.14",
+      "phase": "Phase 3: Artifact Schema Implementation - design-spec.md",
+      "description": "3.14 Add metadata tracking: related_artifacts links to architecture.md, requirements.json",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Artifact Schema Implementation - interfaces.md",
+      "description": "4.1 Create YAML frontmatter with artifact_type: interface-definitions",
+      "status": "pending"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Artifact Schema Implementation - interfaces.md",
+      "description": "4.2 Implement \"Public Interfaces\" section with TypeScript interface syntax",
+      "status": "pending"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Artifact Schema Implementation - interfaces.md",
+      "description": "4.3 Add JSDoc comments to interfaces with @param, @returns, @throws annotations",
+      "status": "pending"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Artifact Schema Implementation - interfaces.md",
+      "description": "4.4 Build \"Data Transfer Objects\" section with Request/Response DTOs",
+      "status": "pending"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Artifact Schema Implementation - interfaces.md",
+      "description": "4.5 Add validation rules for each DTO field (required, length, format)",
+      "status": "pending"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Artifact Schema Implementation - interfaces.md",
+      "description": "4.6 Create \"Error Types\" section with custom error class definitions",
+      "status": "pending"
+    },
+    {
+      "id": "4.7",
+      "phase": "Phase 4: Artifact Schema Implementation - interfaces.md",
+      "description": "4.7 Implement \"Events\" section with Published/Consumed event interfaces",
+      "status": "pending"
+    },
+    {
+      "id": "4.8",
+      "phase": "Phase 4: Artifact Schema Implementation - interfaces.md",
+      "description": "4.8 Add \"Configuration Interface\" section for component config",
+      "status": "pending"
+    },
+    {
+      "id": "4.9",
+      "phase": "Phase 4: Artifact Schema Implementation - interfaces.md",
+      "description": "4.9 Support language parameter in frontmatter (typescript, python, go, rust)",
+      "status": "pending"
+    },
+    {
+      "id": "4.10",
+      "phase": "Phase 4: Artifact Schema Implementation - interfaces.md",
+      "description": "4.10 Generate language-appropriate syntax based on language parameter",
+      "status": "pending"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Artifact Schema Implementation - Interaction Diagrams",
+      "description": "5.1 Create interaction-diagrams.md with artifact_type: interaction-diagrams",
+      "status": "pending"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Artifact Schema Implementation - Interaction Diagrams",
+      "description": "5.2 Implement \"Happy Path Flow\" section with Mermaid sequence diagrams",
+      "status": "pending"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Artifact Schema Implementation - Interaction Diagrams",
+      "description": "5.3 Build multi-participant sequence diagrams (Client, Component, Dependencies)",
+      "status": "pending"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Artifact Schema Implementation - Interaction Diagrams",
+      "description": "5.4 Add \"Error Scenarios\" section with failure case diagrams",
+      "status": "pending"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Artifact Schema Implementation - Interaction Diagrams",
+      "description": "5.5 Create \"State Transition Diagram\" section with stateDiagram-v2 syntax",
+      "status": "pending"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: Artifact Schema Implementation - Interaction Diagrams",
+      "description": "5.6 Implement automatic diagram generation from design-spec state transitions",
+      "status": "pending"
+    },
+    {
+      "id": "5.7",
+      "phase": "Phase 5: Artifact Schema Implementation - Interaction Diagrams",
+      "description": "5.7 Add validation and edge case flow diagrams",
+      "status": "pending"
+    },
+    {
+      "id": "5.8",
+      "phase": "Phase 5: Artifact Schema Implementation - Interaction Diagrams",
+      "description": "5.8 Support multiple diagram types (sequence, state, flowchart)",
+      "status": "pending"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Artifact Schema Implementation - state-machine.json",
+      "description": "6.1 Create JSON schema for state-machine-definition artifact type",
+      "status": "pending"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Artifact Schema Implementation - state-machine.json",
+      "description": "6.2 Implement metadata object with artifact_type, component, version",
+      "status": "pending"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Artifact Schema Implementation - state-machine.json",
+      "description": "6.3 Build \"states\" array with id, name, type (initial/normal/final/error)",
+      "status": "pending"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Artifact Schema Implementation - state-machine.json",
+      "description": "6.4 Add on_enter and on_exit action arrays to state objects",
+      "status": "pending"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Artifact Schema Implementation - state-machine.json",
+      "description": "6.5 Create \"transitions\" array with from, to, event, guard, actions",
+      "status": "pending"
+    },
+    {
+      "id": "6.6",
+      "phase": "Phase 6: Artifact Schema Implementation - state-machine.json",
+      "description": "6.6 Implement \"events\" array with event name and payload schema",
+      "status": "pending"
+    },
+    {
+      "id": "6.7",
+      "phase": "Phase 6: Artifact Schema Implementation - state-machine.json",
+      "description": "6.7 Add initial_state field to define entry point",
+      "status": "pending"
+    },
+    {
+      "id": "6.8",
+      "phase": "Phase 6: Artifact Schema Implementation - state-machine.json",
+      "description": "6.8 Validate JSON schema compliance for all generated state machines",
+      "status": "pending"
+    },
+    {
+      "id": "6.9",
+      "phase": "Phase 6: Artifact Schema Implementation - state-machine.json",
+      "description": "6.9 Create generator to convert state-machine.json to Mermaid diagrams",
+      "status": "pending"
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Sub-Command Implementation - design:component (P0)",
+      "description": "7.1 Build codebase analysis logic to find existing component patterns",
+      "status": "pending"
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Sub-Command Implementation - design:component (P0)",
+      "description": "7.2 Implement responsibility extraction from requirements/architecture",
+      "status": "pending"
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: Sub-Command Implementation - design:component (P0)",
+      "description": "7.3 Create interface design logic with minimal, cohesive contracts",
+      "status": "pending"
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: Sub-Command Implementation - design:component (P0)",
+      "description": "7.4 Build dependency identification from architecture.md and components.json",
+      "status": "pending"
+    },
+    {
+      "id": "7.5",
+      "phase": "Phase 7: Sub-Command Implementation - design:component (P0)",
+      "description": "7.5 Generate internal data structure specifications",
+      "status": "pending"
+    },
+    {
+      "id": "7.6",
+      "phase": "Phase 7: Sub-Command Implementation - design:component (P0)",
+      "description": "7.6 Create error handling strategy based on component type",
+      "status": "pending"
+    },
+    {
+      "id": "7.7",
+      "phase": "Phase 7: Sub-Command Implementation - design:component (P0)",
+      "description": "7.7 Produce design-spec.md and interfaces.md artifacts",
+      "status": "pending"
+    },
+    {
+      "id": "7.8",
+      "phase": "Phase 7: Sub-Command Implementation - design:component (P0)",
+      "description": "7.8 Add implementation-notes.md for critical design decisions",
+      "status": "pending"
+    },
+    {
+      "id": "8.1",
+      "phase": "Phase 8: Sub-Command Implementation - design:api (P0)",
+      "description": "8.1 Implement REST endpoint design logic (GET, POST, PUT, DELETE, PATCH)",
+      "status": "pending"
+    },
+    {
+      "id": "8.2",
+      "phase": "Phase 8: Sub-Command Implementation - design:api (P0)",
+      "description": "8.2 Build request/response DTO generation with validation rules",
+      "status": "pending"
+    },
+    {
+      "id": "8.3",
+      "phase": "Phase 8: Sub-Command Implementation - design:api (P0)",
+      "description": "8.3 Create error code and HTTP status mapping",
+      "status": "pending"
+    },
+    {
+      "id": "8.4",
+      "phase": "Phase 8: Sub-Command Implementation - design:api (P0)",
+      "description": "8.4 Add idempotency requirements for non-GET endpoints",
+      "status": "pending"
+    },
+    {
+      "id": "8.5",
+      "phase": "Phase 8: Sub-Command Implementation - design:api (P0)",
+      "description": "8.5 Implement rate limiting and pagination design",
+      "status": "pending"
+    },
+    {
+      "id": "8.6",
+      "phase": "Phase 8: Sub-Command Implementation - design:api (P0)",
+      "description": "8.6 Build authentication/authorization requirements per endpoint",
+      "status": "pending"
+    },
+    {
+      "id": "8.7",
+      "phase": "Phase 8: Sub-Command Implementation - design:api (P0)",
+      "description": "8.7 Generate api-spec.md with endpoint documentation",
+      "status": "pending"
+    },
+    {
+      "id": "8.8",
+      "phase": "Phase 8: Sub-Command Implementation - design:api (P0)",
+      "description": "8.8 Create openapi.yaml skeleton for /spec:api formalization",
+      "status": "pending"
+    },
+    {
+      "id": "8.9",
+      "phase": "Phase 8: Sub-Command Implementation - design:api (P0)",
+      "description": "8.9 Add API versioning strategy (URL, header, or media type)",
+      "status": "pending"
+    },
+    {
+      "id": "9.1",
+      "phase": "Phase 9: Sub-Command Implementation - design:data (P0)",
+      "description": "9.1 Analyze existing data models from model:erd or architecture",
+      "status": "pending"
+    },
+    {
+      "id": "9.2",
+      "phase": "Phase 9: Sub-Command Implementation - design:data (P0)",
+      "description": "9.2 Create entity/type definitions with field types and constraints",
+      "status": "pending"
+    },
+    {
+      "id": "9.3",
+      "phase": "Phase 9: Sub-Command Implementation - design:data (P0)",
+      "description": "9.3 Define validation rules (required, unique, length, format, range)",
+      "status": "pending"
+    },
+    {
+      "id": "9.4",
+      "phase": "Phase 9: Sub-Command Implementation - design:data (P0)",
+      "description": "9.4 Build relationship definitions (one-to-one, one-to-many, many-to-many)",
+      "status": "pending"
+    },
+    {
+      "id": "9.5",
+      "phase": "Phase 9: Sub-Command Implementation - design:data (P0)",
+      "description": "9.5 Add data invariants and business rules",
+      "status": "pending"
+    },
+    {
+      "id": "9.6",
+      "phase": "Phase 9: Sub-Command Implementation - design:data (P0)",
+      "description": "9.6 Create data-model.md artifact with comprehensive schemas",
+      "status": "pending"
+    },
+    {
+      "id": "9.7",
+      "phase": "Phase 9: Sub-Command Implementation - design:data (P0)",
+      "description": "9.7 Generate schemas.json with JSON Schema format",
+      "status": "pending"
+    },
+    {
+      "id": "9.8",
+      "phase": "Phase 9: Sub-Command Implementation - design:data (P0)",
+      "description": "9.8 Add migration strategy for evolving data structures",
+      "status": "pending"
+    },
+    {
+      "id": "10.1",
+      "phase": "Phase 10: Sub-Command Implementation - design:interactions (P1)",
+      "description": "10.1 Identify component communication patterns from architecture",
+      "status": "pending"
+    },
+    {
+      "id": "10.2",
+      "phase": "Phase 10: Sub-Command Implementation - design:interactions (P1)",
+      "description": "10.2 Create happy path interaction flows",
+      "status": "pending"
+    },
+    {
+      "id": "10.3",
+      "phase": "Phase 10: Sub-Command Implementation - design:interactions (P1)",
+      "description": "10.3 Design error scenario interaction flows",
+      "status": "pending"
+    },
+    {
+      "id": "10.4",
+      "phase": "Phase 10: Sub-Command Implementation - design:interactions (P1)",
+      "description": "10.4 Build retry and recovery interaction patterns",
+      "status": "pending"
+    },
+    {
+      "id": "10.5",
+      "phase": "Phase 10: Sub-Command Implementation - design:interactions (P1)",
+      "description": "10.5 Add timeout and circuit breaker patterns where applicable",
+      "status": "pending"
+    },
+    {
+      "id": "10.6",
+      "phase": "Phase 10: Sub-Command Implementation - design:interactions (P1)",
+      "description": "10.6 Generate interactions.md with detailed message flows",
+      "status": "pending"
+    },
+    {
+      "id": "10.7",
+      "phase": "Phase 10: Sub-Command Implementation - design:interactions (P1)",
+      "description": "10.7 Create sequence-diagrams.md with Mermaid visualizations",
+      "status": "pending"
+    },
+    {
+      "id": "10.8",
+      "phase": "Phase 10: Sub-Command Implementation - design:interactions (P1)",
+      "description": "10.8 Document integration point contracts",
+      "status": "pending"
+    },
+    {
+      "id": "11.1",
+      "phase": "Phase 11: Sub-Command Implementation - design:state (P1)",
+      "description": "11.1 Analyze stateful component requirements",
+      "status": "pending"
+    },
+    {
+      "id": "11.2",
+      "phase": "Phase 11: Sub-Command Implementation - design:state (P1)",
+      "description": "11.2 Define state shape and structure",
+      "status": "pending"
+    },
+    {
+      "id": "11.3",
+      "phase": "Phase 11: Sub-Command Implementation - design:state (P1)",
+      "description": "11.3 Create state transition rules and guards",
+      "status": "pending"
+    },
+    {
+      "id": "11.4",
+      "phase": "Phase 11: Sub-Command Implementation - design:state (P1)",
+      "description": "11.4 Add state persistence requirements (memory, localStorage, database)",
+      "status": "pending"
+    },
+    {
+      "id": "11.5",
+      "phase": "Phase 11: Sub-Command Implementation - design:state (P1)",
+      "description": "11.5 Build state synchronization strategy for distributed components",
+      "status": "pending"
+    },
+    {
+      "id": "11.6",
+      "phase": "Phase 11: Sub-Command Implementation - design:state (P1)",
+      "description": "11.6 Generate state-model.md with state documentation",
+      "status": "pending"
+    },
+    {
+      "id": "11.7",
+      "phase": "Phase 11: Sub-Command Implementation - design:state (P1)",
+      "description": "11.7 Create state-machine.json with formal state machine definition",
+      "status": "pending"
+    },
+    {
+      "id": "11.8",
+      "phase": "Phase 11: Sub-Command Implementation - design:state (P1)",
+      "description": "11.8 Add state visualization with Mermaid state diagrams",
+      "status": "pending"
+    },
+    {
+      "id": "12.1",
+      "phase": "Phase 12: Sub-Command Implementation - design:ui (P2)",
+      "description": "12.1 Create UI component tree structure",
+      "status": "pending"
+    },
+    {
+      "id": "12.2",
+      "phase": "Phase 12: Sub-Command Implementation - design:ui (P2)",
+      "description": "12.2 Define component props interfaces with types and validation",
+      "status": "pending"
+    },
+    {
+      "id": "12.3",
+      "phase": "Phase 12: Sub-Command Implementation - design:ui (P2)",
+      "description": "12.3 Design event handlers and callback patterns",
+      "status": "pending"
+    },
+    {
+      "id": "12.4",
+      "phase": "Phase 12: Sub-Command Implementation - design:ui (P2)",
+      "description": "12.4 Add styling approach (CSS-in-JS, modules, Tailwind, etc.)",
+      "status": "pending"
+    },
+    {
+      "id": "12.5",
+      "phase": "Phase 12: Sub-Command Implementation - design:ui (P2)",
+      "description": "12.5 Define responsive design breakpoints and behavior",
+      "status": "pending"
+    },
+    {
+      "id": "12.6",
+      "phase": "Phase 12: Sub-Command Implementation - design:ui (P2)",
+      "description": "12.6 Create accessibility requirements (ARIA, keyboard nav)",
+      "status": "pending"
+    },
+    {
+      "id": "12.7",
+      "phase": "Phase 12: Sub-Command Implementation - design:ui (P2)",
+      "description": "12.7 Generate ui-spec.md with component specifications",
+      "status": "pending"
+    },
+    {
+      "id": "12.8",
+      "phase": "Phase 12: Sub-Command Implementation - design:ui (P2)",
+      "description": "12.8 Create component-tree.json with hierarchy and relationships",
+      "status": "pending"
+    },
+    {
+      "id": "13.1",
+      "phase": "Phase 13: Context Analysis and Artifact Consumption",
+      "description": "13.1 Implement architecture.md parser to extract component context",
+      "status": "pending"
+    },
+    {
+      "id": "13.2",
+      "phase": "Phase 13: Context Analysis and Artifact Consumption",
+      "description": "13.2 Build components.json reader to understand system structure",
+      "status": "pending"
+    },
+    {
+      "id": "13.3",
+      "phase": "Phase 13: Context Analysis and Artifact Consumption",
+      "description": "13.3 Create requirements.json parser for functional requirements",
+      "status": "pending"
+    },
+    {
+      "id": "13.4",
+      "phase": "Phase 13: Context Analysis and Artifact Consumption",
+      "description": "13.4 Add constraints.json reader for design constraints",
+      "status": "pending"
+    },
+    {
+      "id": "13.5",
+      "phase": "Phase 13: Context Analysis and Artifact Consumption",
+      "description": "13.5 Implement codebase-map.json analyzer for existing patterns",
+      "status": "pending"
+    },
+    {
+      "id": "13.6",
+      "phase": "Phase 13: Context Analysis and Artifact Consumption",
+      "description": "13.6 Build options-analysis.md reader for technology choices",
+      "status": "pending"
+    },
+    {
+      "id": "13.7",
+      "phase": "Phase 13: Context Analysis and Artifact Consumption",
+      "description": "13.7 Add related_artifacts tracking in all generated artifacts",
+      "status": "pending"
+    },
+    {
+      "id": "13.8",
+      "phase": "Phase 13: Context Analysis and Artifact Consumption",
+      "description": "13.8 Create artifact dependency graph for traceability",
+      "status": "pending"
+    },
+    {
+      "id": "14.1",
+      "phase": "Phase 14: Workflow Integration with Downstream Commands",
+      "description": "14.1 Create design-to-implementation handoff format",
+      "status": "pending"
+    },
+    {
+      "id": "14.2",
+      "phase": "Phase 14: Workflow Integration with Downstream Commands",
+      "description": "14.2 Implement artifact export for /implement consumption",
+      "status": "pending"
+    },
+    {
+      "id": "14.3",
+      "phase": "Phase 14: Workflow Integration with Downstream Commands",
+      "description": "14.3 Build design-to-spec transition for /spec:api formalization",
+      "status": "pending"
+    },
+    {
+      "id": "14.4",
+      "phase": "Phase 14: Workflow Integration with Downstream Commands",
+      "description": "14.4 Add design-to-test integration for /test:unit test generation",
+      "status": "pending"
+    },
+    {
+      "id": "14.5",
+      "phase": "Phase 14: Workflow Integration with Downstream Commands",
+      "description": "14.5 Create workflow suggestion engine (\"Run /implement next\")",
+      "status": "pending"
+    },
+    {
+      "id": "14.6",
+      "phase": "Phase 14: Workflow Integration with Downstream Commands",
+      "description": "14.6 Implement artifact validation before handoff",
+      "status": "pending"
+    },
+    {
+      "id": "14.7",
+      "phase": "Phase 14: Workflow Integration with Downstream Commands",
+      "description": "14.7 Add completeness checker for design artifacts",
+      "status": "pending"
+    },
+    {
+      "id": "15.1",
+      "phase": "Phase 15: Design Quality Validation",
+      "description": "15.1 Create design completeness checker (all sections present)",
+      "status": "pending"
+    },
+    {
+      "id": "15.2",
+      "phase": "Phase 15: Design Quality Validation",
+      "description": "15.2 Implement interface cohesion analyzer (single responsibility check)",
+      "status": "pending"
+    },
+    {
+      "id": "15.3",
+      "phase": "Phase 15: Design Quality Validation",
+      "description": "15.3 Build dependency cycle detector",
+      "status": "pending"
+    },
+    {
+      "id": "15.4",
+      "phase": "Phase 15: Design Quality Validation",
+      "description": "15.4 Add error handling coverage check (all operations have error cases)",
+      "status": "pending"
+    },
+    {
+      "id": "15.5",
+      "phase": "Phase 15: Design Quality Validation",
+      "description": "15.5 Create performance consideration validator",
+      "status": "pending"
+    },
+    {
+      "id": "15.6",
+      "phase": "Phase 15: Design Quality Validation",
+      "description": "15.6 Implement security checklist validator",
+      "status": "pending"
+    },
+    {
+      "id": "15.7",
+      "phase": "Phase 15: Design Quality Validation",
+      "description": "15.7 Build testing strategy completeness check",
+      "status": "pending"
+    },
+    {
+      "id": "15.8",
+      "phase": "Phase 15: Design Quality Validation",
+      "description": "15.8 Add implementation guidance validator",
+      "status": "pending"
+    },
+    {
+      "id": "15.9",
+      "phase": "Phase 15: Design Quality Validation",
+      "description": "15.9 Create Mermaid diagram syntax validator",
+      "status": "pending"
+    },
+    {
+      "id": "15.10",
+      "phase": "Phase 15: Design Quality Validation",
+      "description": "15.10 Generate design quality report with checklist",
+      "status": "pending"
+    },
+    {
+      "id": "16.1",
+      "phase": "Phase 16: Interactive Design Session",
+      "description": "16.1 Implement design clarification question generator",
+      "status": "pending"
+    },
+    {
+      "id": "16.2",
+      "phase": "Phase 16: Interactive Design Session",
+      "description": "16.2 Add interface design validation prompts",
+      "status": "pending"
+    },
+    {
+      "id": "16.3",
+      "phase": "Phase 16: Interactive Design Session",
+      "description": "16.3 Create error handling strategy confirmation flow",
+      "status": "pending"
+    },
+    {
+      "id": "16.4",
+      "phase": "Phase 16: Interactive Design Session",
+      "description": "16.4 Build performance requirement clarification",
+      "status": "pending"
+    },
+    {
+      "id": "16.5",
+      "phase": "Phase 16: Interactive Design Session",
+      "description": "16.5 Add security consideration validation questions",
+      "status": "pending"
+    },
+    {
+      "id": "16.6",
+      "phase": "Phase 16: Interactive Design Session",
+      "description": "16.6 Implement design trade-off discussion prompts",
+      "status": "pending"
+    },
+    {
+      "id": "16.7",
+      "phase": "Phase 16: Interactive Design Session",
+      "description": "16.7 Create design review confirmation step",
+      "status": "pending"
+    },
+    {
+      "id": "16.8",
+      "phase": "Phase 16: Interactive Design Session",
+      "description": "16.8 Add iterative refinement loop for design improvements",
+      "status": "pending"
+    },
+    {
+      "id": "17.1",
+      "phase": "Phase 17: Design Pattern Recognition",
+      "description": "17.1 Build pattern library (Repository, Factory, Observer, Strategy, etc.)",
+      "status": "pending"
+    },
+    {
+      "id": "17.2",
+      "phase": "Phase 17: Design Pattern Recognition",
+      "description": "17.2 Implement pattern detection from requirements and architecture",
+      "status": "pending"
+    },
+    {
+      "id": "17.3",
+      "phase": "Phase 17: Design Pattern Recognition",
+      "description": "17.3 Create pattern recommendation engine",
+      "status": "pending"
+    },
+    {
+      "id": "17.4",
+      "phase": "Phase 17: Design Pattern Recognition",
+      "description": "17.4 Add pattern-specific template generators",
+      "status": "pending"
+    },
+    {
+      "id": "17.5",
+      "phase": "Phase 17: Design Pattern Recognition",
+      "description": "17.5 Build anti-pattern detector and warnings",
+      "status": "pending"
+    },
+    {
+      "id": "17.6",
+      "phase": "Phase 17: Design Pattern Recognition",
+      "description": "17.6 Implement pattern documentation in design artifacts",
+      "status": "pending"
+    },
+    {
+      "id": "17.7",
+      "phase": "Phase 17: Design Pattern Recognition",
+      "description": "17.7 Create pattern catalog reference in implementation guidance",
+      "status": "pending"
+    },
+    {
+      "id": "18.1",
+      "phase": "Phase 18: Error Handling and Edge Cases",
+      "description": "18.1 Handle missing architecture.md gracefully (prompt user or create minimal)",
+      "status": "pending"
+    },
+    {
+      "id": "18.2",
+      "phase": "Phase 18: Error Handling and Edge Cases",
+      "description": "18.2 Detect and warn about conflicting requirements",
+      "status": "pending"
+    },
+    {
+      "id": "18.3",
+      "phase": "Phase 18: Error Handling and Edge Cases",
+      "description": "18.3 Handle incomplete component definitions",
+      "status": "pending"
+    },
+    {
+      "id": "18.4",
+      "phase": "Phase 18: Error Handling and Edge Cases",
+      "description": "18.4 Validate interface contracts for consistency",
+      "status": "pending"
+    },
+    {
+      "id": "18.5",
+      "phase": "Phase 18: Error Handling and Edge Cases",
+      "description": "18.5 Detect circular dependencies and suggest refactoring",
+      "status": "pending"
+    },
+    {
+      "id": "18.6",
+      "phase": "Phase 18: Error Handling and Edge Cases",
+      "description": "18.6 Handle ambiguous state transitions",
+      "status": "pending"
+    },
+    {
+      "id": "18.7",
+      "phase": "Phase 18: Error Handling and Edge Cases",
+      "description": "18.7 Validate error type coverage across all operations",
+      "status": "pending"
+    },
+    {
+      "id": "18.8",
+      "phase": "Phase 18: Error Handling and Edge Cases",
+      "description": "18.8 Add recovery suggestions for validation failures",
+      "status": "pending"
+    },
+    {
+      "id": "19.1",
+      "phase": "Phase 19: Testing and Validation",
+      "description": "19.1 Test /design with simple component (UserService)",
+      "status": "pending"
+    },
+    {
+      "id": "19.2",
+      "phase": "Phase 19: Testing and Validation",
+      "description": "19.2 Test /design with complex component (PaymentProcessor with state machine)",
+      "status": "pending"
+    },
+    {
+      "id": "19.3",
+      "phase": "Phase 19: Testing and Validation",
+      "description": "19.3 Test design:api with RESTful API (CRUD operations)",
+      "status": "pending"
+    },
+    {
+      "id": "19.4",
+      "phase": "Phase 19: Testing and Validation",
+      "description": "19.4 Test design:data with relational data model (User-Profile-Order)",
+      "status": "pending"
+    },
+    {
+      "id": "19.5",
+      "phase": "Phase 19: Testing and Validation",
+      "description": "19.5 Test design:interactions with multi-component flow",
+      "status": "pending"
+    },
+    {
+      "id": "19.6",
+      "phase": "Phase 19: Testing and Validation",
+      "description": "19.6 Test design:state with complex state machine (Order fulfillment)",
+      "status": "pending"
+    },
+    {
+      "id": "19.7",
+      "phase": "Phase 19: Testing and Validation",
+      "description": "19.7 Test design:ui with component hierarchy (Form with validation)",
+      "status": "pending"
+    },
+    {
+      "id": "19.8",
+      "phase": "Phase 19: Testing and Validation",
+      "description": "19.8 Validate all artifacts against JSON/Markdown schemas",
+      "status": "pending"
+    },
+    {
+      "id": "19.9",
+      "phase": "Phase 19: Testing and Validation",
+      "description": "19.9 Test integration with /architect upstream artifacts",
+      "status": "pending"
+    },
+    {
+      "id": "19.10",
+      "phase": "Phase 19: Testing and Validation",
+      "description": "19.10 Test handoff to /implement downstream",
+      "status": "pending"
+    },
+    {
+      "id": "19.11",
+      "phase": "Phase 19: Testing and Validation",
+      "description": "19.11 Test Mermaid diagram rendering in common viewers",
+      "status": "pending"
+    },
+    {
+      "id": "19.12",
+      "phase": "Phase 19: Testing and Validation",
+      "description": "19.12 Verify TypeScript interfaces compile without errors",
+      "status": "pending"
+    },
+    {
+      "id": "20.1",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "20.1 Create main usage guide in `docs/commands/design.md`",
+      "status": "pending"
+    },
+    {
+      "id": "20.2",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "20.2 Document all 6 sub-commands with purpose and examples",
+      "status": "pending"
+    },
+    {
+      "id": "20.3",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "20.3 Add artifact schema reference documentation",
+      "status": "pending"
+    },
+    {
+      "id": "20.4",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "20.4 Create example: designing authentication component",
+      "status": "pending"
+    },
+    {
+      "id": "20.5",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "20.5 Create example: designing RESTful API",
+      "status": "pending"
+    },
+    {
+      "id": "20.6",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "20.6 Create example: designing state machine for workflow",
+      "status": "pending"
+    },
+    {
+      "id": "20.7",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "20.7 Document workflow: clarify -> architect -> design -> implement",
+      "status": "pending"
+    },
+    {
+      "id": "20.8",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "20.8 Add best practices guide for effective component design",
+      "status": "pending"
+    },
+    {
+      "id": "20.9",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "20.9 Create troubleshooting section for common issues",
+      "status": "pending"
+    },
+    {
+      "id": "20.10",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "20.10 Add comparison guide: /architect vs /design vs /spec",
+      "status": "pending"
+    },
+    {
+      "id": "20.11",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "20.11 Document integration patterns with other commands",
+      "status": "pending"
+    },
+    {
+      "id": "20.12",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "20.12 Create video/tutorial-style walkthrough (as markdown)",
+      "status": "pending"
+    },
+    {
+      "id": "20.13",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Base /design command executes successfully with component name argument",
+      "status": "pending"
+    },
+    {
+      "id": "20.14",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "All 6 sub-commands (component, api, data, interactions, state, ui) are functional",
+      "status": "pending"
+    },
+    {
+      "id": "20.15",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Commands use Sonnet model as configured in YAML frontmatter",
+      "status": "pending"
+    },
+    {
+      "id": "20.16",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "All allowed tools (Read, Grep, Glob, Write, AskUserQuestion) work correctly",
+      "status": "pending"
+    },
+    {
+      "id": "20.17",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "design-spec.md validates against schema with all 13 sections",
+      "status": "pending"
+    },
+    {
+      "id": "20.18",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "interfaces.md generates valid TypeScript (or configured language) interfaces",
+      "status": "pending"
+    },
+    {
+      "id": "20.19",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "interaction-diagrams.md produces valid Mermaid diagrams that render",
+      "status": "pending"
+    },
+    {
+      "id": "20.20",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "state-machine.json validates against JSON schema",
+      "status": "pending"
+    },
+    {
+      "id": "20.21",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "All artifacts include proper YAML frontmatter with metadata",
+      "status": "pending"
+    },
+    {
+      "id": "20.22",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Artifacts written to `docs/design/[component-name]/` directory structure",
+      "status": "pending"
+    },
+    {
+      "id": "20.23",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Related artifacts are properly linked in frontmatter",
+      "status": "pending"
+    },
+    {
+      "id": "20.24",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Versioning is tracked correctly",
+      "status": "pending"
+    },
+    {
+      "id": "20.25",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Output directory structure is clean and navigable",
+      "status": "pending"
+    },
+    {
+      "id": "20.26",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Successfully consumes architecture.md, components.json, requirements.json",
+      "status": "pending"
+    },
+    {
+      "id": "20.27",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Artifacts are consumable by /implement, /test, /spec commands",
+      "status": "pending"
+    },
+    {
+      "id": "20.28",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Workflow transitions work seamlessly (architect -> design -> implement)",
+      "status": "pending"
+    },
+    {
+      "id": "20.29",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "related_artifacts references are valid and traceable",
+      "status": "pending"
+    },
+    {
+      "id": "20.30",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Design quality checklist validates completeness",
+      "status": "pending"
+    },
+    {
+      "id": "20.31",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Interface cohesion and dependency checks pass",
+      "status": "pending"
+    },
+    {
+      "id": "20.32",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Error handling coverage is complete",
+      "status": "pending"
+    },
+    {
+      "id": "20.33",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Performance and security considerations are addressed",
+      "status": "pending"
+    },
+    {
+      "id": "20.34",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Mermaid diagrams are syntactically correct",
+      "status": "pending"
+    },
+    {
+      "id": "20.35",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Interactive sessions guide users through design decisions",
+      "status": "pending"
+    },
+    {
+      "id": "20.36",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "AskUserQuestion clarifies ambiguities effectively",
+      "status": "pending"
+    },
+    {
+      "id": "20.37",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Error messages are helpful and actionable",
+      "status": "pending"
+    },
+    {
+      "id": "20.38",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Design pattern recommendations improve design quality",
+      "status": "pending"
+    },
+    {
+      "id": "20.39",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Usage guide enables independent use of /design command",
+      "status": "pending"
+    },
+    {
+      "id": "20.40",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "All 6 sub-commands are documented with examples",
+      "status": "pending"
+    },
+    {
+      "id": "20.41",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Artifact schemas are fully documented",
+      "status": "pending"
+    },
+    {
+      "id": "20.42",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Best practices guide improves design outcomes",
+      "status": "pending"
+    },
+    {
+      "id": "20.43",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Examples demonstrate real-world usage patterns",
+      "status": "pending"
+    },
+    {
+      "id": "20.44",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Simple component design test passes (e.g., UserService)",
+      "status": "pending"
+    },
+    {
+      "id": "20.45",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Complex component design test passes (e.g., PaymentProcessor)",
+      "status": "pending"
+    },
+    {
+      "id": "20.46",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "API design test produces valid REST specifications",
+      "status": "pending"
+    },
+    {
+      "id": "20.47",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "State machine design produces valid state definitions",
+      "status": "pending"
+    },
+    {
+      "id": "20.48",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "All artifacts validate against schemas",
+      "status": "pending"
+    },
+    {
+      "id": "20.49",
+      "phase": "Phase 20: Documentation and Examples",
+      "description": "Integration tests with upstream/downstream commands pass",
+      "status": "pending"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 215,
+    "completed": 0,
+    "pending": 215,
+    "failed": 0,
+    "skipped": 0
+  }
+}

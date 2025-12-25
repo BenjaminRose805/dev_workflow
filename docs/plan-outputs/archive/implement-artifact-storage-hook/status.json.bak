@@ -1,0 +1,725 @@
+{
+  "planPath": "docs/plans/implement-artifact-storage-hook.md",
+  "planName": "Implementation Plan: Artifact Storage Hook",
+  "createdAt": "2025-12-23T05:52:05.529Z",
+  "lastUpdatedAt": "2025-12-23T05:52:05.529Z",
+  "currentPhase": "Phase 1: Artifact Detection and Parsing",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Artifact Detection and Parsing",
+      "description": "1.1 Create output parser module to analyze command outputs for file paths",
+      "status": "pending"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Artifact Detection and Parsing",
+      "description": "1.2 Implement file path pattern matching using regex for common formats (absolute, relative, glob patterns)",
+      "status": "pending"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Artifact Detection and Parsing",
+      "description": "1.3 Add support for parsing structured outputs (JSON, YAML, markdown code blocks)",
+      "status": "pending"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Artifact Detection and Parsing",
+      "description": "1.4 Create path normalization to convert relative paths to absolute paths",
+      "status": "pending"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Artifact Detection and Parsing",
+      "description": "1.5 Implement path validation to verify detected files exist on filesystem",
+      "status": "pending"
+    },
+    {
+      "id": "1.6",
+      "phase": "Phase 1: Artifact Detection and Parsing",
+      "description": "1.6 Add artifact type inference based on file extension and content analysis",
+      "status": "pending"
+    },
+    {
+      "id": "1.7",
+      "phase": "Phase 1: Artifact Detection and Parsing",
+      "description": "1.7 Create output parsing configuration with customizable patterns per command type",
+      "status": "pending"
+    },
+    {
+      "id": "1.8",
+      "phase": "Phase 1: Artifact Detection and Parsing",
+      "description": "1.8 Implement multi-line output parsing to capture paths spanning multiple lines",
+      "status": "pending"
+    },
+    {
+      "id": "1.9",
+      "phase": "Phase 1: Artifact Detection and Parsing",
+      "description": "1.9 Add support for parsing directory paths and automatically discovering contained artifacts",
+      "status": "pending"
+    },
+    {
+      "id": "1.10",
+      "phase": "Phase 1: Artifact Detection and Parsing",
+      "description": "1.10 Create artifact metadata extraction from parsed outputs (timestamps, command context)",
+      "status": "pending"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Content Hashing and Deduplication",
+      "description": "2.1 Create content hashing module using SHA256 algorithm",
+      "status": "pending"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Content Hashing and Deduplication",
+      "description": "2.2 Implement incremental file reading for efficient hashing of large files (streaming)",
+      "status": "pending"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Content Hashing and Deduplication",
+      "description": "2.3 Add hash cache to store computed hashes and avoid re-computation",
+      "status": "pending"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Content Hashing and Deduplication",
+      "description": "2.4 Create deduplication logic comparing content hashes before registration",
+      "status": "pending"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Content Hashing and Deduplication",
+      "description": "2.5 Implement duplicate artifact handling: skip, update metadata, or create alias",
+      "status": "pending"
+    },
+    {
+      "id": "2.6",
+      "phase": "Phase 2: Content Hashing and Deduplication",
+      "description": "2.6 Add hash collision detection and resolution strategy",
+      "status": "pending"
+    },
+    {
+      "id": "2.7",
+      "phase": "Phase 2: Content Hashing and Deduplication",
+      "description": "2.7 Create hash index in registry for O(1) duplicate lookups",
+      "status": "pending"
+    },
+    {
+      "id": "2.8",
+      "phase": "Phase 2: Content Hashing and Deduplication",
+      "description": "2.8 Implement content similarity detection for near-duplicate artifacts (optional)",
+      "status": "pending"
+    },
+    {
+      "id": "2.9",
+      "phase": "Phase 2: Content Hashing and Deduplication",
+      "description": "2.9 Add hash verification to detect file corruption or modification",
+      "status": "pending"
+    },
+    {
+      "id": "2.10",
+      "phase": "Phase 2: Content Hashing and Deduplication",
+      "description": "2.10 Create performance optimizations: hash only first/last N bytes for initial comparison",
+      "status": "pending"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Registry Management",
+      "description": "3.1 Create registry file lock mechanism to prevent concurrent write conflicts",
+      "status": "pending"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Registry Management",
+      "description": "3.2 Implement atomic registry updates using write-temp-then-rename pattern",
+      "status": "pending"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Registry Management",
+      "description": "3.3 Add registry backup creation before each update (rolling backups, keep last 5)",
+      "status": "pending"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Registry Management",
+      "description": "3.4 Create registry validation to ensure JSON structure integrity before writing",
+      "status": "pending"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Registry Management",
+      "description": "3.5 Implement registry merge logic for concurrent updates from multiple hooks",
+      "status": "pending"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Registry Management",
+      "description": "3.6 Add registry compaction to remove deleted/superseded artifacts periodically",
+      "status": "pending"
+    },
+    {
+      "id": "3.7",
+      "phase": "Phase 3: Registry Management",
+      "description": "3.7 Create registry migration system for schema version upgrades",
+      "status": "pending"
+    },
+    {
+      "id": "3.8",
+      "phase": "Phase 3: Registry Management",
+      "description": "3.8 Implement registry recovery from backup on corruption detection",
+      "status": "pending"
+    },
+    {
+      "id": "3.9",
+      "phase": "Phase 3: Registry Management",
+      "description": "3.9 Add registry audit logging for all modifications (who, when, what changed)",
+      "status": "pending"
+    },
+    {
+      "id": "3.10",
+      "phase": "Phase 3: Registry Management",
+      "description": "3.10 Create registry statistics tracking (total artifacts, size, growth rate)",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Status Tracking Integration",
+      "description": "4.1 Implement status.json reader to load current plan status",
+      "status": "pending"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Status Tracking Integration",
+      "description": "4.2 Create task identification logic to determine which plan task generated the artifact",
+      "status": "pending"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Status Tracking Integration",
+      "description": "4.3 Add artifact ID recording in task metadata within status.json",
+      "status": "pending"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Status Tracking Integration",
+      "description": "4.4 Implement task completion detection based on artifact creation",
+      "status": "pending"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Status Tracking Integration",
+      "description": "4.5 Create status update logic to mark tasks as completed when artifacts registered",
+      "status": "pending"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Status Tracking Integration",
+      "description": "4.6 Add multi-artifact task support (task produces multiple artifacts)",
+      "status": "pending"
+    },
+    {
+      "id": "4.7",
+      "phase": "Phase 4: Status Tracking Integration",
+      "description": "4.7 Implement task dependency validation (check prerequisite tasks completed)",
+      "status": "pending"
+    },
+    {
+      "id": "4.8",
+      "phase": "Phase 4: Status Tracking Integration",
+      "description": "4.8 Create status.json atomic updates with same locking as registry",
+      "status": "pending"
+    },
+    {
+      "id": "4.9",
+      "phase": "Phase 4: Status Tracking Integration",
+      "description": "4.9 Add status rollback capability for failed artifact registration",
+      "status": "pending"
+    },
+    {
+      "id": "4.10",
+      "phase": "Phase 4: Status Tracking Integration",
+      "description": "4.10 Implement status synchronization between registry and plan status",
+      "status": "pending"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Workflow Step Completion Tracking",
+      "description": "5.1 Create workflow step tracker to maintain step execution state",
+      "status": "pending"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Workflow Step Completion Tracking",
+      "description": "5.2 Implement step completion criteria based on artifact production",
+      "status": "pending"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Workflow Step Completion Tracking",
+      "description": "5.3 Add step progress calculation (steps completed / total steps)",
+      "status": "pending"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Workflow Step Completion Tracking",
+      "description": "5.4 Create workflow milestone detection (phase completion, critical path completion)",
+      "status": "pending"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Workflow Step Completion Tracking",
+      "description": "5.5 Implement step retry tracking for failed artifact creation attempts",
+      "status": "pending"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: Workflow Step Completion Tracking",
+      "description": "5.6 Add step timing metrics (duration, start/end timestamps)",
+      "status": "pending"
+    },
+    {
+      "id": "5.7",
+      "phase": "Phase 5: Workflow Step Completion Tracking",
+      "description": "5.7 Create step output validation to confirm expected artifacts produced",
+      "status": "pending"
+    },
+    {
+      "id": "5.8",
+      "phase": "Phase 5: Workflow Step Completion Tracking",
+      "description": "5.8 Implement step dependencies graph update as steps complete",
+      "status": "pending"
+    },
+    {
+      "id": "5.9",
+      "phase": "Phase 5: Workflow Step Completion Tracking",
+      "description": "5.9 Add workflow completion notification when all steps finish",
+      "status": "pending"
+    },
+    {
+      "id": "5.10",
+      "phase": "Phase 5: Workflow Step Completion Tracking",
+      "description": "5.10 Create workflow progress visualization data export for status display",
+      "status": "pending"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Configuration and Hook Integration",
+      "description": "6.1 Create hook configuration schema in .claude/settings.json under hooks.PostToolUse",
+      "status": "pending"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Configuration and Hook Integration",
+      "description": "6.2 Implement Skill matcher to trigger hook only for Skill tool invocations",
+      "status": "pending"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Configuration and Hook Integration",
+      "description": "6.3 Add configurable timeout (default: 10000ms) with graceful timeout handling",
+      "status": "pending"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Configuration and Hook Integration",
+      "description": "6.4 Create hook command wrapper: `node scripts/hooks/store-artifacts.js`",
+      "status": "pending"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Configuration and Hook Integration",
+      "description": "6.5 Implement hook input handling to receive tool output via stdin or environment",
+      "status": "pending"
+    },
+    {
+      "id": "6.6",
+      "phase": "Phase 6: Configuration and Hook Integration",
+      "description": "6.6 Add hook exit code conventions: 0 (success), 1 (warning), 2 (error)",
+      "status": "pending"
+    },
+    {
+      "id": "6.7",
+      "phase": "Phase 6: Configuration and Hook Integration",
+      "description": "6.7 Create hook configuration validation at settings load time",
+      "status": "pending"
+    },
+    {
+      "id": "6.8",
+      "phase": "Phase 6: Configuration and Hook Integration",
+      "description": "6.8 Implement selective hook execution based on command patterns (include/exclude lists)",
+      "status": "pending"
+    },
+    {
+      "id": "6.9",
+      "phase": "Phase 6: Configuration and Hook Integration",
+      "description": "6.9 Add hook chaining support to run multiple hooks in sequence",
+      "status": "pending"
+    },
+    {
+      "id": "6.10",
+      "phase": "Phase 6: Configuration and Hook Integration",
+      "description": "6.10 Create hook performance metrics collection (execution time, success rate)",
+      "status": "pending"
+    },
+    {
+      "id": "6.11",
+      "phase": "Phase 6: Configuration and Hook Integration",
+      "description": "6.11 Implement hook error handling with retry logic (max 3 attempts, exponential backoff)",
+      "status": "pending"
+    },
+    {
+      "id": "6.12",
+      "phase": "Phase 6: Configuration and Hook Integration",
+      "description": "6.12 Add hook logging with configurable verbosity levels",
+      "status": "pending"
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Script Implementation",
+      "description": "7.1 Create script entry point with command-line argument parsing",
+      "status": "pending"
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Script Implementation",
+      "description": "7.2 Implement stdin reader to capture tool output from hook system",
+      "status": "pending"
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: Script Implementation",
+      "description": "7.3 Add environment variable reader for hook context (command, task ID, plan name)",
+      "status": "pending"
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: Script Implementation",
+      "description": "7.4 Create main execution flow: parse → hash → deduplicate → register → update status",
+      "status": "pending"
+    },
+    {
+      "id": "7.5",
+      "phase": "Phase 7: Script Implementation",
+      "description": "7.5 Implement comprehensive error handling with specific error types",
+      "status": "pending"
+    },
+    {
+      "id": "7.6",
+      "phase": "Phase 7: Script Implementation",
+      "description": "7.6 Add structured logging with levels: debug, info, warn, error",
+      "status": "pending"
+    },
+    {
+      "id": "7.7",
+      "phase": "Phase 7: Script Implementation",
+      "description": "7.7 Create dry-run mode for testing without modifying registry",
+      "status": "pending"
+    },
+    {
+      "id": "7.8",
+      "phase": "Phase 7: Script Implementation",
+      "description": "7.8 Implement verbose mode showing detailed processing steps",
+      "status": "pending"
+    },
+    {
+      "id": "7.9",
+      "phase": "Phase 7: Script Implementation",
+      "description": "7.9 Add performance timing instrumentation for each processing phase",
+      "status": "pending"
+    },
+    {
+      "id": "7.10",
+      "phase": "Phase 7: Script Implementation",
+      "description": "7.10 Create graceful degradation when registry unavailable (log and continue)",
+      "status": "pending"
+    },
+    {
+      "id": "7.11",
+      "phase": "Phase 7: Script Implementation",
+      "description": "7.11 Implement signal handling for clean shutdown on SIGTERM/SIGINT",
+      "status": "pending"
+    },
+    {
+      "id": "8.1",
+      "phase": "Phase 8: Error Handling and Recovery",
+      "description": "8.1 Create error classification system: transient, permanent, configuration, data corruption",
+      "status": "pending"
+    },
+    {
+      "id": "8.2",
+      "phase": "Phase 8: Error Handling and Recovery",
+      "description": "8.2 Implement retry logic for transient errors (network, file locks, temporary unavailability)",
+      "status": "pending"
+    },
+    {
+      "id": "8.3",
+      "phase": "Phase 8: Error Handling and Recovery",
+      "description": "8.3 Add exponential backoff for retries (100ms, 200ms, 400ms)",
+      "status": "pending"
+    },
+    {
+      "id": "8.4",
+      "phase": "Phase 8: Error Handling and Recovery",
+      "description": "8.4 Create error context preservation (what was being processed, system state)",
+      "status": "pending"
+    },
+    {
+      "id": "8.5",
+      "phase": "Phase 8: Error Handling and Recovery",
+      "description": "8.5 Implement partial success handling (some artifacts registered, others failed)",
+      "status": "pending"
+    },
+    {
+      "id": "8.6",
+      "phase": "Phase 8: Error Handling and Recovery",
+      "description": "8.6 Add error notification system for critical failures (log to error file)",
+      "status": "pending"
+    },
+    {
+      "id": "8.7",
+      "phase": "Phase 8: Error Handling and Recovery",
+      "description": "8.7 Create recovery procedures for each error type with documentation",
+      "status": "pending"
+    },
+    {
+      "id": "8.8",
+      "phase": "Phase 8: Error Handling and Recovery",
+      "description": "8.8 Implement fallback behavior when registry unavailable (cache locally, sync later)",
+      "status": "pending"
+    },
+    {
+      "id": "8.9",
+      "phase": "Phase 8: Error Handling and Recovery",
+      "description": "8.9 Add corruption detection and automatic recovery from backup",
+      "status": "pending"
+    },
+    {
+      "id": "8.10",
+      "phase": "Phase 8: Error Handling and Recovery",
+      "description": "8.10 Create error reporting format for hook system (structured JSON output)",
+      "status": "pending"
+    },
+    {
+      "id": "9.1",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.1 Create unit tests for output parser with 30+ test cases",
+      "status": "pending"
+    },
+    {
+      "id": "9.2",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.2 Implement unit tests for content hashing and deduplication logic",
+      "status": "pending"
+    },
+    {
+      "id": "9.3",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.3 Add unit tests for registry operations (CRUD, locking, backup/restore)",
+      "status": "pending"
+    },
+    {
+      "id": "9.4",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.4 Create integration tests for full hook execution flow",
+      "status": "pending"
+    },
+    {
+      "id": "9.5",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.5 Implement tests for status.json integration and updates",
+      "status": "pending"
+    },
+    {
+      "id": "9.6",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.6 Add performance tests to ensure hook completes within timeout",
+      "status": "pending"
+    },
+    {
+      "id": "9.7",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.7 Create concurrency tests simulating multiple simultaneous hook executions",
+      "status": "pending"
+    },
+    {
+      "id": "9.8",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.8 Implement error scenario tests (corruption, timeouts, invalid inputs)",
+      "status": "pending"
+    },
+    {
+      "id": "9.9",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.9 Add regression tests for previously discovered bugs",
+      "status": "pending"
+    },
+    {
+      "id": "9.10",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.10 Create end-to-end tests with real plan execution and artifact creation",
+      "status": "pending"
+    },
+    {
+      "id": "9.11",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.11 Implement chaos testing with random failures injected",
+      "status": "pending"
+    },
+    {
+      "id": "9.12",
+      "phase": "Phase 9: Testing and Validation",
+      "description": "9.12 Add test coverage reporting (target: 85%+ coverage)",
+      "status": "pending"
+    },
+    {
+      "id": "10.1",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "10.1 Write hook architecture documentation explaining system design and components",
+      "status": "pending"
+    },
+    {
+      "id": "10.2",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "10.2 Create configuration guide for .claude/settings.json hook setup",
+      "status": "pending"
+    },
+    {
+      "id": "10.3",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "10.3 Write user guide explaining how hook operates and what it tracks",
+      "status": "pending"
+    },
+    {
+      "id": "10.4",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "10.4 Create troubleshooting guide for common hook issues and solutions",
+      "status": "pending"
+    },
+    {
+      "id": "10.5",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "10.5 Add flowchart diagrams showing hook execution flow",
+      "status": "pending"
+    },
+    {
+      "id": "10.6",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "10.6 Write developer guide for extending hook functionality",
+      "status": "pending"
+    },
+    {
+      "id": "10.7",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "10.7 Create example configurations for different use cases",
+      "status": "pending"
+    },
+    {
+      "id": "10.8",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "10.8 Add example outputs showing hook processing steps",
+      "status": "pending"
+    },
+    {
+      "id": "10.9",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "10.9 Write performance tuning guide for large-scale usage",
+      "status": "pending"
+    },
+    {
+      "id": "10.10",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "10.10 Create API reference for hook script command-line interface",
+      "status": "pending"
+    },
+    {
+      "id": "10.11",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Hook successfully parses command outputs and detects artifact paths with 95%+ accuracy",
+      "status": "pending"
+    },
+    {
+      "id": "10.12",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Content hashing correctly identifies duplicates with 100% accuracy",
+      "status": "pending"
+    },
+    {
+      "id": "10.13",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Registry updates are atomic, never leaving corrupted state even under concurrent execution",
+      "status": "pending"
+    },
+    {
+      "id": "10.14",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Status.json correctly tracks task completion based on artifact creation",
+      "status": "pending"
+    },
+    {
+      "id": "10.15",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Workflow progress accurately reflects step completion across plan execution",
+      "status": "pending"
+    },
+    {
+      "id": "10.16",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Hook configuration validates and integrates seamlessly into .claude/settings.json",
+      "status": "pending"
+    },
+    {
+      "id": "10.17",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "store-artifacts.js script completes within 10000ms timeout under normal conditions",
+      "status": "pending"
+    },
+    {
+      "id": "10.18",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Error handling successfully retries transient failures and gracefully handles permanent errors",
+      "status": "pending"
+    },
+    {
+      "id": "10.19",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "All tests pass with 85%+ code coverage",
+      "status": "pending"
+    },
+    {
+      "id": "10.20",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Hook adds less than 200ms overhead to normal command execution",
+      "status": "pending"
+    },
+    {
+      "id": "10.21",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Documentation provides clear guidance for configuration, usage, and troubleshooting",
+      "status": "pending"
+    },
+    {
+      "id": "10.22",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Registry backup/restore protects against data loss from corruption",
+      "status": "pending"
+    },
+    {
+      "id": "10.23",
+      "phase": "Phase 10: Documentation and Examples",
+      "description": "Deduplication reduces storage by 30%+ in typical workflows with repeated artifacts",
+      "status": "pending"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 118,
+    "completed": 0,
+    "pending": 118,
+    "failed": 0,
+    "skipped": 0
+  }
+}

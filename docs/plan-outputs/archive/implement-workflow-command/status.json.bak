@@ -1,0 +1,809 @@
+{
+  "planPath": "docs/plans/implement-workflow-command.md",
+  "planName": "Implementation Plan: /workflow Command",
+  "createdAt": "2025-12-23T05:11:43.689Z",
+  "lastUpdatedAt": "2025-12-23T05:11:43.689Z",
+  "currentPhase": "Phase 1: Core Command Infrastructure",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Command file exists and exports proper structure",
+      "status": "pending"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Base types are defined for workflow context, state, and artifacts",
+      "status": "pending"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Error handling covers common failure scenarios",
+      "status": "pending"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Output directory structure is created on command initialization",
+      "status": "pending"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "`.workflows/` directory structure is documented",
+      "status": "pending"
+    },
+    {
+      "id": "1.6",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "YAML definitions are correctly parsed",
+      "status": "pending"
+    },
+    {
+      "id": "1.7",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Schema validation catches invalid workflows",
+      "status": "pending"
+    },
+    {
+      "id": "1.8",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Variable substitution works for inputs, outputs, and step references",
+      "status": "pending"
+    },
+    {
+      "id": "1.9",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Dependencies are correctly resolved",
+      "status": "pending"
+    },
+    {
+      "id": "1.10",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Input validation catches missing required values",
+      "status": "pending"
+    },
+    {
+      "id": "1.11",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Orchestrator correctly executes workflow steps",
+      "status": "pending"
+    },
+    {
+      "id": "1.12",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Step executor invokes slash commands via Skill tool",
+      "status": "pending"
+    },
+    {
+      "id": "1.13",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Execution order respects dependencies",
+      "status": "pending"
+    },
+    {
+      "id": "1.14",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Parallel steps execute concurrently",
+      "status": "pending"
+    },
+    {
+      "id": "1.15",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "State is persisted for resume capability",
+      "status": "pending"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Interactive builder guides workflow creation",
+      "status": "pending"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Steps are correctly defined with commands and dependencies",
+      "status": "pending"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Dependencies are validated for cycles",
+      "status": "pending"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Created workflows pass schema validation",
+      "status": "pending"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Workflow files are correctly generated",
+      "status": "pending"
+    },
+    {
+      "id": "2.6",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Workflows are discovered from `.workflows/` directory",
+      "status": "pending"
+    },
+    {
+      "id": "2.7",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Inputs are collected and validated",
+      "status": "pending"
+    },
+    {
+      "id": "2.8",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Progress is displayed in real-time",
+      "status": "pending"
+    },
+    {
+      "id": "2.9",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Errors are handled with configurable retry",
+      "status": "pending"
+    },
+    {
+      "id": "2.10",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Execution log captures all step results",
+      "status": "pending"
+    },
+    {
+      "id": "2.11",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "All workflows are correctly discovered",
+      "status": "pending"
+    },
+    {
+      "id": "2.12",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Metadata is accurately displayed",
+      "status": "pending"
+    },
+    {
+      "id": "2.13",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Filtering works correctly",
+      "status": "pending"
+    },
+    {
+      "id": "2.14",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Usage statistics are tracked",
+      "status": "pending"
+    },
+    {
+      "id": "2.15",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Search finds relevant workflows",
+      "status": "pending"
+    },
+    {
+      "id": "2.16",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Running workflows are detected",
+      "status": "pending"
+    },
+    {
+      "id": "2.17",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Step status is accurately displayed",
+      "status": "pending"
+    },
+    {
+      "id": "2.18",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Timing information is correct",
+      "status": "pending"
+    },
+    {
+      "id": "2.19",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Error details are helpful for debugging",
+      "status": "pending"
+    },
+    {
+      "id": "2.20",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Summary provides actionable information",
+      "status": "pending"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Workflow graph is correctly analyzed",
+      "status": "pending"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Mermaid diagrams are valid and renderable",
+      "status": "pending"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "ASCII art is clear in terminal",
+      "status": "pending"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Execution paths are correctly highlighted",
+      "status": "pending"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Visualization helps understand workflow structure",
+      "status": "pending"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "YAML syntax errors are caught",
+      "status": "pending"
+    },
+    {
+      "id": "3.7",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Schema violations are identified",
+      "status": "pending"
+    },
+    {
+      "id": "3.8",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Dependency cycles are detected",
+      "status": "pending"
+    },
+    {
+      "id": "3.9",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Invalid commands are flagged",
+      "status": "pending"
+    },
+    {
+      "id": "3.10",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Validation report is comprehensive",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Workflow state is correctly recovered",
+      "status": "pending"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Checkpoint selection works properly",
+      "status": "pending"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Artifacts from completed steps are available",
+      "status": "pending"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Execution continues from correct point",
+      "status": "pending"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "State consistency is validated",
+      "status": "pending"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Built-in templates are accessible",
+      "status": "pending"
+    },
+    {
+      "id": "4.7",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Customization wizard guides users",
+      "status": "pending"
+    },
+    {
+      "id": "4.8",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Variable substitution works correctly",
+      "status": "pending"
+    },
+    {
+      "id": "4.9",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Generated workflows pass validation",
+      "status": "pending"
+    },
+    {
+      "id": "4.10",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Import/export works for sharing",
+      "status": "pending"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Control Flow Patterns",
+      "description": "Steps execute in correct order",
+      "status": "pending"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Control Flow Patterns",
+      "description": "Output is captured and available to next step",
+      "status": "pending"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Control Flow Patterns",
+      "description": "Artifacts are correctly passed",
+      "status": "pending"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Control Flow Patterns",
+      "description": "Timing is accurately tracked",
+      "status": "pending"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Control Flow Patterns",
+      "description": "Visualization shows sequential flow",
+      "status": "pending"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: Control Flow Patterns",
+      "description": "Parallel groups are correctly identified",
+      "status": "pending"
+    },
+    {
+      "id": "5.7",
+      "phase": "Phase 5: Control Flow Patterns",
+      "description": "Steps execute concurrently",
+      "status": "pending"
+    },
+    {
+      "id": "5.8",
+      "phase": "Phase 5: Control Flow Patterns",
+      "description": "Resource limits are respected",
+      "status": "pending"
+    },
+    {
+      "id": "5.9",
+      "phase": "Phase 5: Control Flow Patterns",
+      "description": "Results are correctly aggregated",
+      "status": "pending"
+    },
+    {
+      "id": "5.10",
+      "phase": "Phase 5: Control Flow Patterns",
+      "description": "Failure handling works as configured",
+      "status": "pending"
+    },
+    {
+      "id": "5.11",
+      "phase": "Phase 5: Control Flow Patterns",
+      "description": "Condition expressions are correctly parsed",
+      "status": "pending"
+    },
+    {
+      "id": "5.12",
+      "phase": "Phase 5: Control Flow Patterns",
+      "description": "Evaluator accesses step outputs correctly",
+      "status": "pending"
+    },
+    {
+      "id": "5.13",
+      "phase": "Phase 5: Control Flow Patterns",
+      "description": "Branching executes correct path",
+      "status": "pending"
+    },
+    {
+      "id": "5.14",
+      "phase": "Phase 5: Control Flow Patterns",
+      "description": "Condition evaluation is logged",
+      "status": "pending"
+    },
+    {
+      "id": "5.15",
+      "phase": "Phase 5: Control Flow Patterns",
+      "description": "Visualization shows branch paths",
+      "status": "pending"
+    },
+    {
+      "id": "5.16",
+      "phase": "Phase 5: Control Flow Patterns",
+      "description": "While loops execute correctly",
+      "status": "pending"
+    },
+    {
+      "id": "5.17",
+      "phase": "Phase 5: Control Flow Patterns",
+      "description": "Max iterations prevents infinite loops",
+      "status": "pending"
+    },
+    {
+      "id": "5.18",
+      "phase": "Phase 5: Control Flow Patterns",
+      "description": "Retry pattern handles transient failures",
+      "status": "pending"
+    },
+    {
+      "id": "5.19",
+      "phase": "Phase 5: Control Flow Patterns",
+      "description": "Backoff delays are correctly applied",
+      "status": "pending"
+    },
+    {
+      "id": "5.20",
+      "phase": "Phase 5: Control Flow Patterns",
+      "description": "Loop progress is trackable",
+      "status": "pending"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Schema documentation is complete",
+      "status": "pending"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Templates generate valid workflows",
+      "status": "pending"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Command history conversion works",
+      "status": "pending"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Optimization suggestions are helpful",
+      "status": "pending"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Documentation is generated correctly",
+      "status": "pending"
+    },
+    {
+      "id": "6.6",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Execution logs are comprehensive",
+      "status": "pending"
+    },
+    {
+      "id": "6.7",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Timeline accurately reflects execution",
+      "status": "pending"
+    },
+    {
+      "id": "6.8",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Outputs and artifacts are documented",
+      "status": "pending"
+    },
+    {
+      "id": "6.9",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Graph visualization is accurate",
+      "status": "pending"
+    },
+    {
+      "id": "6.10",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Metrics enable optimization",
+      "status": "pending"
+    },
+    {
+      "id": "6.11",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "State schema is complete and valid",
+      "status": "pending"
+    },
+    {
+      "id": "6.12",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "State is captured at each checkpoint",
+      "status": "pending"
+    },
+    {
+      "id": "6.13",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Step state is correctly serialized",
+      "status": "pending"
+    },
+    {
+      "id": "6.14",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Artifact references are preserved",
+      "status": "pending"
+    },
+    {
+      "id": "6.15",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "State enables workflow recovery",
+      "status": "pending"
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "All sub-commands are accessible via CLI",
+      "status": "pending"
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Help text is accurate and comprehensive",
+      "status": "pending"
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Command routing works correctly for all sub-commands",
+      "status": "pending"
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Aliases and shortcuts function as expected",
+      "status": "pending"
+    },
+    {
+      "id": "7.5",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Telemetry captures usage patterns",
+      "status": "pending"
+    },
+    {
+      "id": "7.6",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "All sub-commands pass their test suites",
+      "status": "pending"
+    },
+    {
+      "id": "7.7",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Workflow execution tests cover all patterns",
+      "status": "pending"
+    },
+    {
+      "id": "7.8",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Control flow patterns work correctly",
+      "status": "pending"
+    },
+    {
+      "id": "7.9",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Parallel execution performance is acceptable",
+      "status": "pending"
+    },
+    {
+      "id": "7.10",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Error handling is robust and informative",
+      "status": "pending"
+    },
+    {
+      "id": "7.11",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "User guide covers all common workflow scenarios",
+      "status": "pending"
+    },
+    {
+      "id": "7.12",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Sub-command documentation is complete and accurate",
+      "status": "pending"
+    },
+    {
+      "id": "7.13",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Workflow definition reference is comprehensive",
+      "status": "pending"
+    },
+    {
+      "id": "7.14",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Template guide helps users get started",
+      "status": "pending"
+    },
+    {
+      "id": "7.15",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Troubleshooting guide addresses known issues",
+      "status": "pending"
+    },
+    {
+      "id": "7.16",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "All 8 sub-commands (create, run, list, status, visualize, validate, resume, template) are implemented and functional",
+      "status": "pending"
+    },
+    {
+      "id": "7.17",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Workflow definitions in YAML are correctly parsed and executed",
+      "status": "pending"
+    },
+    {
+      "id": "7.18",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Sequential, parallel, conditional, and loop patterns all work correctly",
+      "status": "pending"
+    },
+    {
+      "id": "7.19",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Artifact-based dependencies are resolved automatically",
+      "status": "pending"
+    },
+    {
+      "id": "7.20",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "State persistence enables workflow resume",
+      "status": "pending"
+    },
+    {
+      "id": "7.21",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Built-in templates cover common workflows (TDD, release, refactoring)",
+      "status": "pending"
+    },
+    {
+      "id": "7.22",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "All unit tests pass with >90% coverage",
+      "status": "pending"
+    },
+    {
+      "id": "7.23",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Integration tests validate end-to-end workflows",
+      "status": "pending"
+    },
+    {
+      "id": "7.24",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Performance meets targets (workflow overhead <10% of step execution time)",
+      "status": "pending"
+    },
+    {
+      "id": "7.25",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Generated artifacts follow conventions and are well-formatted",
+      "status": "pending"
+    },
+    {
+      "id": "7.26",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Error messages are clear and actionable",
+      "status": "pending"
+    },
+    {
+      "id": "7.27",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Parallel execution scales appropriately",
+      "status": "pending"
+    },
+    {
+      "id": "7.28",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "workflow.yaml definitions follow documented schema",
+      "status": "pending"
+    },
+    {
+      "id": "7.29",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "execution-log.md contains comprehensive execution documentation",
+      "status": "pending"
+    },
+    {
+      "id": "7.30",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "workflow-state.json enables reliable resume capability",
+      "status": "pending"
+    },
+    {
+      "id": "7.31",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "All artifacts are properly formatted and human-readable",
+      "status": "pending"
+    },
+    {
+      "id": "7.32",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Mermaid diagrams are valid and renderable",
+      "status": "pending"
+    },
+    {
+      "id": "7.33",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Command is registered and accessible via CLI",
+      "status": "pending"
+    },
+    {
+      "id": "7.34",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Help text and examples are complete and accurate",
+      "status": "pending"
+    },
+    {
+      "id": "7.35",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Workflow integrates with all slash commands via Skill tool",
+      "status": "pending"
+    },
+    {
+      "id": "7.36",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Telemetry captures usage for improvement",
+      "status": "pending"
+    },
+    {
+      "id": "7.37",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Documentation enables users to create and execute workflows",
+      "status": "pending"
+    },
+    {
+      "id": "7.38",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Command provides clear progress feedback during execution",
+      "status": "pending"
+    },
+    {
+      "id": "7.39",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Interactive workflow creation guides users step-by-step",
+      "status": "pending"
+    },
+    {
+      "id": "7.40",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Visualization helps understand workflow structure",
+      "status": "pending"
+    },
+    {
+      "id": "7.41",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Resume capability prevents lost work on interruption",
+      "status": "pending"
+    },
+    {
+      "id": "7.42",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Built-in templates accelerate common tasks",
+      "status": "pending"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 132,
+    "completed": 0,
+    "pending": 132,
+    "failed": 0,
+    "skipped": 0
+  }
+}

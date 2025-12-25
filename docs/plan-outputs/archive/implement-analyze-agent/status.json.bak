@@ -1,0 +1,599 @@
+{
+  "planPath": "docs/plans/implement-analyze-agent.md",
+  "planName": "Implementation Plan: Implement Analyze Agent",
+  "createdAt": "2025-12-23T05:34:59.378Z",
+  "lastUpdatedAt": "2025-12-23T05:34:59.378Z",
+  "currentPhase": "Phase 1: Agent Configuration & System Prompt",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Agent Configuration & System Prompt",
+      "description": "1.1 Create agent configuration file at `.claude/agents/analyze.md`",
+      "status": "pending"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Agent Configuration & System Prompt",
+      "description": "1.2 Implement strict read-only tool restrictions",
+      "status": "pending"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Agent Configuration & System Prompt",
+      "description": "1.3 Create specialized system prompt for analysis",
+      "status": "pending"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Agent Configuration & System Prompt",
+      "description": "1.4 Implement severity classification guidelines",
+      "status": "pending"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Agent Configuration & System Prompt",
+      "description": "1.5 Configure structured output requirements",
+      "status": "pending"
+    },
+    {
+      "id": "1.6",
+      "phase": "Phase 1: Agent Configuration & System Prompt",
+      "description": "1.6 Add evidence-based analysis guidelines",
+      "status": "pending"
+    },
+    {
+      "id": "1.7",
+      "phase": "Phase 1: Agent Configuration & System Prompt",
+      "description": "**VERIFY 1**: Agent config validates, tool restrictions work correctly, system prompt loads, severity classification guidelines are clear",
+      "status": "pending"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Proactive Invocation System",
+      "description": "2.1 Define task pattern detection rules",
+      "status": "pending"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Proactive Invocation System",
+      "description": "2.2 Implement automatic agent invocation triggers",
+      "status": "pending"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Proactive Invocation System",
+      "description": "2.3 Configure invocation context passing",
+      "status": "pending"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Proactive Invocation System",
+      "description": "2.4 Implement invocation decision logging",
+      "status": "pending"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Proactive Invocation System",
+      "description": "2.5 Add manual invocation support",
+      "status": "pending"
+    },
+    {
+      "id": "2.6",
+      "phase": "Phase 2: Proactive Invocation System",
+      "description": "**VERIFY 2**: Proactive invocation triggers correctly, pattern detection has <15% false positives, context passing is complete",
+      "status": "pending"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Integration with /analyze Command Family",
+      "description": "3.1 Create bidirectional command-agent integration",
+      "status": "pending"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Integration with /analyze Command Family",
+      "description": "3.2 Implement sub-command parameter handling",
+      "status": "pending"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Integration with /analyze Command Family",
+      "description": "3.3 Configure analysis scope controls",
+      "status": "pending"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Integration with /analyze Command Family",
+      "description": "3.4 Implement depth level execution strategies",
+      "status": "pending"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Integration with /analyze Command Family",
+      "description": "3.5 Add command result aggregation",
+      "status": "pending"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Integration with /analyze Command Family",
+      "description": "**VERIFY 3**: All 7 sub-commands invoke agent correctly, parameters pass through, depth levels control scope appropriately",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Findings Artifact Generation",
+      "description": "4.1 Implement findings.json schema v1.0",
+      "status": "pending"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Findings Artifact Generation",
+      "description": "4.2 Create finding object structure",
+      "status": "pending"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Findings Artifact Generation",
+      "description": "4.3 Add specialized finding fields per analysis type",
+      "status": "pending"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Findings Artifact Generation",
+      "description": "4.4 Implement finding ID generation",
+      "status": "pending"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Findings Artifact Generation",
+      "description": "4.5 Create findings validation logic",
+      "status": "pending"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Findings Artifact Generation",
+      "description": "4.6 Implement findings deduplication",
+      "status": "pending"
+    },
+    {
+      "id": "4.7",
+      "phase": "Phase 4: Findings Artifact Generation",
+      "description": "**VERIFY 4**: findings.json validates against schema, all required fields present, IDs are unique and stable",
+      "status": "pending"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Metrics Artifact Generation",
+      "description": "5.1 Implement metrics.json schema v1.0",
+      "status": "pending"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Metrics Artifact Generation",
+      "description": "5.2 Calculate complexity metrics",
+      "status": "pending"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Metrics Artifact Generation",
+      "description": "5.3 Calculate duplication metrics",
+      "status": "pending"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Metrics Artifact Generation",
+      "description": "5.4 Calculate coverage metrics (if available)",
+      "status": "pending"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Metrics Artifact Generation",
+      "description": "5.5 Calculate maintainability index",
+      "status": "pending"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: Metrics Artifact Generation",
+      "description": "5.6 Calculate technical debt estimation",
+      "status": "pending"
+    },
+    {
+      "id": "5.7",
+      "phase": "Phase 5: Metrics Artifact Generation",
+      "description": "5.7 Add baseline comparison logic",
+      "status": "pending"
+    },
+    {
+      "id": "5.8",
+      "phase": "Phase 5: Metrics Artifact Generation",
+      "description": "**VERIFY 5**: Metrics calculations are accurate, baseline comparison works, technical debt estimates are realistic",
+      "status": "pending"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Severity Classification System",
+      "description": "6.1 Implement context-aware severity rules",
+      "status": "pending"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Severity Classification System",
+      "description": "6.2 Add severity adjustment based on context",
+      "status": "pending"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Severity Classification System",
+      "description": "6.3 Implement impact assessment scoring",
+      "status": "pending"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Severity Classification System",
+      "description": "6.4 Add exploitability assessment",
+      "status": "pending"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Severity Classification System",
+      "description": "6.5 Create severity override mechanism",
+      "status": "pending"
+    },
+    {
+      "id": "6.6",
+      "phase": "Phase 6: Severity Classification System",
+      "description": "**VERIFY 6**: Severity classification is consistent, context adjustments work correctly, impact scoring is accurate",
+      "status": "pending"
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: CI/CD Integration Hooks",
+      "description": "7.1 Implement exit code strategy",
+      "status": "pending"
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: CI/CD Integration Hooks",
+      "description": "7.2 Add fail-on threshold configuration",
+      "status": "pending"
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: CI/CD Integration Hooks",
+      "description": "7.3 Implement GitHub annotations format",
+      "status": "pending"
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: CI/CD Integration Hooks",
+      "description": "7.4 Implement SARIF format output",
+      "status": "pending"
+    },
+    {
+      "id": "7.5",
+      "phase": "Phase 7: CI/CD Integration Hooks",
+      "description": "7.5 Implement JUnit XML format",
+      "status": "pending"
+    },
+    {
+      "id": "7.6",
+      "phase": "Phase 7: CI/CD Integration Hooks",
+      "description": "7.6 Add CI/CD environment detection",
+      "status": "pending"
+    },
+    {
+      "id": "7.7",
+      "phase": "Phase 7: CI/CD Integration Hooks",
+      "description": "7.7 Create pre-commit hook integration",
+      "status": "pending"
+    },
+    {
+      "id": "7.8",
+      "phase": "Phase 7: CI/CD Integration Hooks",
+      "description": "7.8 Create pull request workflow template",
+      "status": "pending"
+    },
+    {
+      "id": "7.9",
+      "phase": "Phase 7: CI/CD Integration Hooks",
+      "description": "**VERIFY 7**: Exit codes work in CI/CD, GitHub annotations render correctly, SARIF uploads to Security tab",
+      "status": "pending"
+    },
+    {
+      "id": "8.1",
+      "phase": "Phase 8: Proactive Invocation Testing",
+      "description": "8.1 Create test suite for pattern detection",
+      "status": "pending"
+    },
+    {
+      "id": "8.2",
+      "phase": "Phase 8: Proactive Invocation Testing",
+      "description": "8.2 Test invocation confidence scoring",
+      "status": "pending"
+    },
+    {
+      "id": "8.3",
+      "phase": "Phase 8: Proactive Invocation Testing",
+      "description": "8.3 Test context passing accuracy",
+      "status": "pending"
+    },
+    {
+      "id": "8.4",
+      "phase": "Phase 8: Proactive Invocation Testing",
+      "description": "8.4 Test agent invocation logging",
+      "status": "pending"
+    },
+    {
+      "id": "8.5",
+      "phase": "Phase 8: Proactive Invocation Testing",
+      "description": "8.5 Create proactive invocation benchmarks",
+      "status": "pending"
+    },
+    {
+      "id": "8.6",
+      "phase": "Phase 8: Proactive Invocation Testing",
+      "description": "**VERIFY 8**: Pattern detection is accurate, confidence scoring works, context passing is complete, logging is comprehensive",
+      "status": "pending"
+    },
+    {
+      "id": "9.1",
+      "phase": "Phase 9: Real-World Validation",
+      "description": "9.1 Test agent on diverse codebases",
+      "status": "pending"
+    },
+    {
+      "id": "9.2",
+      "phase": "Phase 9: Real-World Validation",
+      "description": "9.2 Validate security analysis accuracy",
+      "status": "pending"
+    },
+    {
+      "id": "9.3",
+      "phase": "Phase 9: Real-World Validation",
+      "description": "9.3 Validate performance analysis accuracy",
+      "status": "pending"
+    },
+    {
+      "id": "9.4",
+      "phase": "Phase 9: Real-World Validation",
+      "description": "9.4 Validate quality metrics calculation",
+      "status": "pending"
+    },
+    {
+      "id": "9.5",
+      "phase": "Phase 9: Real-World Validation",
+      "description": "9.5 Validate baseline comparison",
+      "status": "pending"
+    },
+    {
+      "id": "9.6",
+      "phase": "Phase 9: Real-World Validation",
+      "description": "9.6 Validate CI/CD integration",
+      "status": "pending"
+    },
+    {
+      "id": "9.7",
+      "phase": "Phase 9: Real-World Validation",
+      "description": "9.7 Performance and scalability testing",
+      "status": "pending"
+    },
+    {
+      "id": "9.8",
+      "phase": "Phase 9: Real-World Validation",
+      "description": "**VERIFY 9**: All analysis types are accurate on real codebases, CI/CD integration works, performance is acceptable",
+      "status": "pending"
+    },
+    {
+      "id": "10.1",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "10.1 Create agent documentation",
+      "status": "pending"
+    },
+    {
+      "id": "10.2",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "10.2 Create proactive invocation guide",
+      "status": "pending"
+    },
+    {
+      "id": "10.3",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "10.3 Create CI/CD integration guide",
+      "status": "pending"
+    },
+    {
+      "id": "10.4",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "10.4 Create artifact schema documentation",
+      "status": "pending"
+    },
+    {
+      "id": "10.5",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "10.5 Create severity classification guide",
+      "status": "pending"
+    },
+    {
+      "id": "10.6",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "10.6 Create best practices guide",
+      "status": "pending"
+    },
+    {
+      "id": "10.7",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "10.7 Create example artifacts",
+      "status": "pending"
+    },
+    {
+      "id": "10.8",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "**VERIFY 10**: Documentation is complete and clear, examples are accurate and helpful, guides are actionable",
+      "status": "pending"
+    },
+    {
+      "id": "10.9",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "Agent configuration file (.claude/agents/analyze.md) is valid and loads correctly",
+      "status": "pending"
+    },
+    {
+      "id": "10.10",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "Tool restrictions enforce read-only mode, prevent Write/Edit operations",
+      "status": "pending"
+    },
+    {
+      "id": "10.11",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "System prompt includes OWASP/CWE/quality/architecture knowledge",
+      "status": "pending"
+    },
+    {
+      "id": "10.12",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "Severity classification produces consistent, context-aware results",
+      "status": "pending"
+    },
+    {
+      "id": "10.13",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "Proactive invocation triggers on analysis-related requests with >85% accuracy",
+      "status": "pending"
+    },
+    {
+      "id": "10.14",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "Pattern detection false positive rate is <15%",
+      "status": "pending"
+    },
+    {
+      "id": "10.15",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "All 7 /analyze sub-commands invoke agent correctly with proper context",
+      "status": "pending"
+    },
+    {
+      "id": "10.16",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "Scope, depth, focus, and threshold parameters work as documented",
+      "status": "pending"
+    },
+    {
+      "id": "10.17",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "findings.json validates against schema v1.0, includes all required fields",
+      "status": "pending"
+    },
+    {
+      "id": "10.18",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "Finding IDs are unique and stable for baseline comparison",
+      "status": "pending"
+    },
+    {
+      "id": "10.19",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "metrics.json includes accurate complexity, duplication, coverage, maintainability calculations",
+      "status": "pending"
+    },
+    {
+      "id": "10.20",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "Technical debt estimation provides realistic hour estimates",
+      "status": "pending"
+    },
+    {
+      "id": "10.21",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "Baseline comparison accurately detects regressions and improvements",
+      "status": "pending"
+    },
+    {
+      "id": "10.22",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "Severity classification matches manual expert review in >90% of cases",
+      "status": "pending"
+    },
+    {
+      "id": "10.23",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "CI/CD integration works in GitHub Actions, GitLab CI, and Jenkins",
+      "status": "pending"
+    },
+    {
+      "id": "10.24",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "Exit codes trigger correct build status (pass/fail)",
+      "status": "pending"
+    },
+    {
+      "id": "10.25",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "GitHub annotations render inline in PR UI",
+      "status": "pending"
+    },
+    {
+      "id": "10.26",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "SARIF format uploads successfully to GitHub Security tab",
+      "status": "pending"
+    },
+    {
+      "id": "10.27",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "Agent detects real vulnerabilities in OWASP WebGoat with >95% recall",
+      "status": "pending"
+    },
+    {
+      "id": "10.28",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "Performance analysis identifies known bottlenecks with >90% accuracy",
+      "status": "pending"
+    },
+    {
+      "id": "10.29",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "Quality metrics match reference tools (ESLint, SonarQube) within 10%",
+      "status": "pending"
+    },
+    {
+      "id": "10.30",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "Analysis completes within depth level timeouts (quick <30s, standard <5min, deep <30min)",
+      "status": "pending"
+    },
+    {
+      "id": "10.31",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "Memory consumption stays below 2GB for large projects (1000+ files)",
+      "status": "pending"
+    },
+    {
+      "id": "10.32",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "Documentation covers all features with working examples",
+      "status": "pending"
+    },
+    {
+      "id": "10.33",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "Troubleshooting guide addresses common issues",
+      "status": "pending"
+    },
+    {
+      "id": "10.34",
+      "phase": "Phase 10: Documentation & Examples",
+      "description": "Example artifacts are valid and representative",
+      "status": "pending"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 97,
+    "completed": 0,
+    "pending": 97,
+    "failed": 0,
+    "skipped": 0
+  }
+}

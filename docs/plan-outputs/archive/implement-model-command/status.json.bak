@@ -1,0 +1,737 @@
+{
+  "planPath": "docs/plans/implement-model-command.md",
+  "planName": "Implementation Plan: /model Command",
+  "createdAt": "2025-12-23T04:50:25.081Z",
+  "lastUpdatedAt": "2025-12-23T04:50:25.081Z",
+  "currentPhase": "Phase 1: Core Command Setup",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.1 Create `/model` command file at `.claude/commands/model.md`",
+      "status": "pending"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.2 Add YAML frontmatter with configuration:",
+      "status": "pending"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.3 Write base command prompt with:",
+      "status": "pending"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.4 Define default parameters:",
+      "status": "pending"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Core Command Setup",
+      "description": "1.5 Create output directory structure: `docs/models/`",
+      "status": "pending"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Entity-Relationship Modeling",
+      "description": "2.1 Implement entity identification flow:",
+      "status": "pending"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Entity-Relationship Modeling",
+      "description": "2.2 Implement attribute design:",
+      "status": "pending"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Entity-Relationship Modeling",
+      "description": "2.3 Implement relationship modeling:",
+      "status": "pending"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Entity-Relationship Modeling",
+      "description": "2.4 Implement Mermaid ERD generation:",
+      "status": "pending"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Entity-Relationship Modeling",
+      "description": "2.5 Add entity classification:",
+      "status": "pending"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.1.1 Create `/model:erd` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.1.2 Implement ERD-focused workflow:",
+      "status": "pending"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.1.3 Generate artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.2.1 Create `/model:schema` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.2.2 Implement schema generation:",
+      "status": "pending"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.2.3 Support multiple database systems:",
+      "status": "pending"
+    },
+    {
+      "id": "3.7",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.2.4 Generate artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.8",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.3.1 Create `/model:domain` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.9",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.3.2 Implement DDD modeling:",
+      "status": "pending"
+    },
+    {
+      "id": "3.10",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.3.3 Generate artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.11",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.4.1 Create `/model:migration` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.12",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.4.2 Implement migration generation:",
+      "status": "pending"
+    },
+    {
+      "id": "3.13",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.4.3 Handle migration scenarios:",
+      "status": "pending"
+    },
+    {
+      "id": "3.14",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.4.4 Generate artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.15",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.5.1 Create `/model:normalize` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.16",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.5.2 Implement normalization analysis:",
+      "status": "pending"
+    },
+    {
+      "id": "3.17",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.5.3 Generate recommendations:",
+      "status": "pending"
+    },
+    {
+      "id": "3.18",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.5.4 Generate artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.19",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.6.1 Create `/model:orm` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.20",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.6.2 Implement Prisma schema generation:",
+      "status": "pending"
+    },
+    {
+      "id": "3.21",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.6.3 Implement Drizzle schema generation:",
+      "status": "pending"
+    },
+    {
+      "id": "3.22",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.6.4 Implement TypeORM support:",
+      "status": "pending"
+    },
+    {
+      "id": "3.23",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.6.5 Generate artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "3.24",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.7.1 Create `/model:validate` command file",
+      "status": "pending"
+    },
+    {
+      "id": "3.25",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.7.2 Implement validation checks:",
+      "status": "pending"
+    },
+    {
+      "id": "3.26",
+      "phase": "Phase 3: Sub-Command Implementation",
+      "description": "3.7.3 Generate artifacts:",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Database System Support",
+      "description": "4.1.1 Implement PostgreSQL data types:",
+      "status": "pending"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Database System Support",
+      "description": "4.1.2 Implement PostgreSQL features:",
+      "status": "pending"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Database System Support",
+      "description": "4.1.3 Generate PostgreSQL-specific SQL",
+      "status": "pending"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Database System Support",
+      "description": "4.2.1 Implement MySQL data types:",
+      "status": "pending"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Database System Support",
+      "description": "4.2.2 Implement MySQL features:",
+      "status": "pending"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Database System Support",
+      "description": "4.2.3 Generate MySQL-specific SQL",
+      "status": "pending"
+    },
+    {
+      "id": "4.7",
+      "phase": "Phase 4: Database System Support",
+      "description": "4.3.1 Implement SQLite data types:",
+      "status": "pending"
+    },
+    {
+      "id": "4.8",
+      "phase": "Phase 4: Database System Support",
+      "description": "4.3.2 Handle SQLite limitations:",
+      "status": "pending"
+    },
+    {
+      "id": "4.9",
+      "phase": "Phase 4: Database System Support",
+      "description": "4.3.3 Generate SQLite-specific SQL",
+      "status": "pending"
+    },
+    {
+      "id": "4.10",
+      "phase": "Phase 4: Database System Support",
+      "description": "4.4.1 Implement MongoDB schema validation:",
+      "status": "pending"
+    },
+    {
+      "id": "4.11",
+      "phase": "Phase 4: Database System Support",
+      "description": "4.4.2 Implement MongoDB indexes:",
+      "status": "pending"
+    },
+    {
+      "id": "4.12",
+      "phase": "Phase 4: Database System Support",
+      "description": "4.4.3 Generate MongoDB-specific output:",
+      "status": "pending"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Artifact Generation & Schemas",
+      "description": "5.1.1 Define entities.json schema:",
+      "status": "pending"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Artifact Generation & Schemas",
+      "description": "5.1.2 Implement attribute schema:",
+      "status": "pending"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Artifact Generation & Schemas",
+      "description": "5.1.3 Implement foreign_key nested schema:",
+      "status": "pending"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Artifact Generation & Schemas",
+      "description": "5.2.1 Define data-model.md structure:",
+      "status": "pending"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Artifact Generation & Schemas",
+      "description": "5.2.2 Implement entity documentation format:",
+      "status": "pending"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: Artifact Generation & Schemas",
+      "description": "5.3.1 Define aggregates.json schema:",
+      "status": "pending"
+    },
+    {
+      "id": "5.7",
+      "phase": "Phase 5: Artifact Generation & Schemas",
+      "description": "5.3.2 Implement invariant schema:",
+      "status": "pending"
+    },
+    {
+      "id": "5.8",
+      "phase": "Phase 5: Artifact Generation & Schemas",
+      "description": "5.3.3 Implement command schema:",
+      "status": "pending"
+    },
+    {
+      "id": "5.9",
+      "phase": "Phase 5: Artifact Generation & Schemas",
+      "description": "5.3.4 Implement domain_events schema:",
+      "status": "pending"
+    },
+    {
+      "id": "5.10",
+      "phase": "Phase 5: Artifact Generation & Schemas",
+      "description": "5.4.1 Implement JSON schema validation for all .json artifacts",
+      "status": "pending"
+    },
+    {
+      "id": "5.11",
+      "phase": "Phase 5: Artifact Generation & Schemas",
+      "description": "5.4.2 Add schema $id URLs in artifact metadata",
+      "status": "pending"
+    },
+    {
+      "id": "5.12",
+      "phase": "Phase 5: Artifact Generation & Schemas",
+      "description": "5.4.3 Create schema documentation in `docs/schemas/`",
+      "status": "pending"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Naming Convention Support",
+      "description": "6.1 Implement table naming conventions:",
+      "status": "pending"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Naming Convention Support",
+      "description": "6.2 Implement column naming conventions:",
+      "status": "pending"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Naming Convention Support",
+      "description": "6.3 Implement index naming conventions:",
+      "status": "pending"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Naming Convention Support",
+      "description": "6.4 Implement foreign key naming conventions:",
+      "status": "pending"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Naming Convention Support",
+      "description": "6.5 Implement ORM mapping:",
+      "status": "pending"
+    },
+    {
+      "id": "6.6",
+      "phase": "Phase 6: Naming Convention Support",
+      "description": "6.6 Add convention configuration:",
+      "status": "pending"
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Command Integration & Workflows",
+      "description": "7.1 Define integration points:",
+      "status": "pending"
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Command Integration & Workflows",
+      "description": "7.2 Add artifact cross-referencing:",
+      "status": "pending"
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: Command Integration & Workflows",
+      "description": "7.3 Implement workflow chains:",
+      "status": "pending"
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: Command Integration & Workflows",
+      "description": "7.4 Test common workflows:",
+      "status": "pending"
+    },
+    {
+      "id": "8.1",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.1.1 Test PostgreSQL schema generation",
+      "status": "pending"
+    },
+    {
+      "id": "8.2",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.1.2 Test MySQL schema generation",
+      "status": "pending"
+    },
+    {
+      "id": "8.3",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.1.3 Test SQLite schema generation",
+      "status": "pending"
+    },
+    {
+      "id": "8.4",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.1.4 Test MongoDB schema generation",
+      "status": "pending"
+    },
+    {
+      "id": "8.5",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.2.1 Test Prisma schema generation",
+      "status": "pending"
+    },
+    {
+      "id": "8.6",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.2.2 Test Drizzle schema generation",
+      "status": "pending"
+    },
+    {
+      "id": "8.7",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.2.3 Test TypeORM entity generation",
+      "status": "pending"
+    },
+    {
+      "id": "8.8",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.2.4 Validate ORM schemas are runnable",
+      "status": "pending"
+    },
+    {
+      "id": "8.9",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.3.1 Test simple entity (single table, few columns)",
+      "status": "pending"
+    },
+    {
+      "id": "8.10",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.3.2 Test complex relationships (1:N, M:N)",
+      "status": "pending"
+    },
+    {
+      "id": "8.11",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.3.3 Test self-referential relationships",
+      "status": "pending"
+    },
+    {
+      "id": "8.12",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.3.4 Test DDD aggregate modeling",
+      "status": "pending"
+    },
+    {
+      "id": "8.13",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.3.5 Test normalization analysis",
+      "status": "pending"
+    },
+    {
+      "id": "8.14",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.4.1 Test add table migration",
+      "status": "pending"
+    },
+    {
+      "id": "8.15",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.4.2 Test add column migration",
+      "status": "pending"
+    },
+    {
+      "id": "8.16",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.4.3 Test modify column migration",
+      "status": "pending"
+    },
+    {
+      "id": "8.17",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.4.4 Test add index migration",
+      "status": "pending"
+    },
+    {
+      "id": "8.18",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.4.5 Test rollback generation",
+      "status": "pending"
+    },
+    {
+      "id": "8.19",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.5.1 Test each sub-command independently",
+      "status": "pending"
+    },
+    {
+      "id": "8.20",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.5.2 Verify artifact schemas are valid",
+      "status": "pending"
+    },
+    {
+      "id": "8.21",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.5.3 Test argument handling",
+      "status": "pending"
+    },
+    {
+      "id": "8.22",
+      "phase": "Phase 8: Testing & Validation",
+      "description": "8.5.4 Test context detection",
+      "status": "pending"
+    },
+    {
+      "id": "9.1",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "9.1 Create command documentation:",
+      "status": "pending"
+    },
+    {
+      "id": "9.2",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "9.2 Document schema design best practices:",
+      "status": "pending"
+    },
+    {
+      "id": "9.3",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "9.3 Create user guides:",
+      "status": "pending"
+    },
+    {
+      "id": "9.4",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "9.4 Add inline help:",
+      "status": "pending"
+    },
+    {
+      "id": "9.5",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "9.5 Create example outputs:",
+      "status": "pending"
+    },
+    {
+      "id": "9.6",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "9.6 Polish output formatting:",
+      "status": "pending"
+    },
+    {
+      "id": "9.7",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Base /model command generates valid ERD and basic schema",
+      "status": "pending"
+    },
+    {
+      "id": "9.8",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "All 7 sub-commands (erd, schema, domain, migration, normalize, orm, validate) work correctly",
+      "status": "pending"
+    },
+    {
+      "id": "9.9",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Supports PostgreSQL, MySQL, SQLite, and MongoDB",
+      "status": "pending"
+    },
+    {
+      "id": "9.10",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Supports Prisma, Drizzle, and TypeORM schema generation",
+      "status": "pending"
+    },
+    {
+      "id": "9.11",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Migration files include up and down scripts",
+      "status": "pending"
+    },
+    {
+      "id": "9.12",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Generated SQL is syntactically valid and runnable",
+      "status": "pending"
+    },
+    {
+      "id": "9.13",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "ERD diagrams render correctly in Mermaid",
+      "status": "pending"
+    },
+    {
+      "id": "9.14",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "ORM schemas pass their respective validation tools",
+      "status": "pending"
+    },
+    {
+      "id": "9.15",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Naming conventions are consistent throughout",
+      "status": "pending"
+    },
+    {
+      "id": "9.16",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Normalization analysis is accurate",
+      "status": "pending"
+    },
+    {
+      "id": "9.17",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Interactive entity gathering is intuitive",
+      "status": "pending"
+    },
+    {
+      "id": "9.18",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Database type auto-detection works reliably",
+      "status": "pending"
+    },
+    {
+      "id": "9.19",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Clear error messages for invalid input",
+      "status": "pending"
+    },
+    {
+      "id": "9.20",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Comprehensive documentation for each sub-command",
+      "status": "pending"
+    },
+    {
+      "id": "9.21",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Artifacts can be consumed by /implement, /migrate, /document",
+      "status": "pending"
+    },
+    {
+      "id": "9.22",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Metadata includes related_artifacts cross-references",
+      "status": "pending"
+    },
+    {
+      "id": "9.23",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Works seamlessly in common workflows (design → schema → migration)",
+      "status": "pending"
+    },
+    {
+      "id": "9.24",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "ORM schemas integrate with project tooling",
+      "status": "pending"
+    },
+    {
+      "id": "9.25",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "All database systems tested",
+      "status": "pending"
+    },
+    {
+      "id": "9.26",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "All ORM frameworks tested",
+      "status": "pending"
+    },
+    {
+      "id": "9.27",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Complex relationship scenarios tested",
+      "status": "pending"
+    },
+    {
+      "id": "9.28",
+      "phase": "Phase 9: Documentation & Polish",
+      "description": "Migration generation tested end-to-end",
+      "status": "pending"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 120,
+    "completed": 0,
+    "pending": 120,
+    "failed": 0,
+    "skipped": 0
+  }
+}

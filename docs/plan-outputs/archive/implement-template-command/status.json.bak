@@ -1,0 +1,833 @@
+{
+  "planPath": "docs/plans/implement-template-command.md",
+  "planName": "Implementation Plan: /template Command",
+  "createdAt": "2025-12-23T05:13:57.662Z",
+  "lastUpdatedAt": "2025-12-23T05:13:57.662Z",
+  "currentPhase": "Phase 1: Core Command Infrastructure",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Command file exists and exports proper structure",
+      "status": "pending"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Base types are defined for template context, variables, and artifacts",
+      "status": "pending"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Error handling covers common failure scenarios",
+      "status": "pending"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Output directory structure is created on command initialization",
+      "status": "pending"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "`.claude/templates/` directory structure matches specification",
+      "status": "pending"
+    },
+    {
+      "id": "1.6",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "All subdirectories are created with proper structure",
+      "status": "pending"
+    },
+    {
+      "id": "1.7",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Directory structure matches documented specification",
+      "status": "pending"
+    },
+    {
+      "id": "1.8",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Permissions are correctly set for read/write",
+      "status": "pending"
+    },
+    {
+      "id": "1.9",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Template manifest can track templates across directories",
+      "status": "pending"
+    },
+    {
+      "id": "1.10",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Basic variable substitution works correctly",
+      "status": "pending"
+    },
+    {
+      "id": "1.11",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "All documented filters are implemented",
+      "status": "pending"
+    },
+    {
+      "id": "1.12",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Conditionals correctly include/exclude content",
+      "status": "pending"
+    },
+    {
+      "id": "1.13",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "System variables are auto-populated",
+      "status": "pending"
+    },
+    {
+      "id": "1.14",
+      "phase": "Phase 1: Core Command Infrastructure",
+      "description": "Invalid variables are caught with helpful errors",
+      "status": "pending"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "All templates are discovered across directories",
+      "status": "pending"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Metadata is correctly extracted and displayed",
+      "status": "pending"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Categories show accurate counts",
+      "status": "pending"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Filtering works correctly",
+      "status": "pending"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Search finds relevant templates",
+      "status": "pending"
+    },
+    {
+      "id": "2.6",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Variables are correctly detected from source artifact",
+      "status": "pending"
+    },
+    {
+      "id": "2.7",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Variable wizard captures all necessary metadata",
+      "status": "pending"
+    },
+    {
+      "id": "2.8",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Frontmatter is correctly generated",
+      "status": "pending"
+    },
+    {
+      "id": "2.9",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Template file is properly formatted",
+      "status": "pending"
+    },
+    {
+      "id": "2.10",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Manifest is updated with new template",
+      "status": "pending"
+    },
+    {
+      "id": "2.11",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Template selection works by name and interactively",
+      "status": "pending"
+    },
+    {
+      "id": "2.12",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Variable prompts show defaults and validation",
+      "status": "pending"
+    },
+    {
+      "id": "2.13",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Substitution produces correct output",
+      "status": "pending"
+    },
+    {
+      "id": "2.14",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Output files are created at correct paths",
+      "status": "pending"
+    },
+    {
+      "id": "2.15",
+      "phase": "Phase 2: Primary Sub-commands (P0)",
+      "description": "Validation catches substitution errors",
+      "status": "pending"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Templates are correctly loaded for editing",
+      "status": "pending"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Variable definitions can be modified",
+      "status": "pending"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Content can be edited in place",
+      "status": "pending"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Version is bumped appropriately",
+      "status": "pending"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Validation catches issues before save",
+      "status": "pending"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Frontmatter syntax is validated",
+      "status": "pending"
+    },
+    {
+      "id": "3.7",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Variable definitions are complete and valid",
+      "status": "pending"
+    },
+    {
+      "id": "3.8",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "All content variables have definitions",
+      "status": "pending"
+    },
+    {
+      "id": "3.9",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Dependencies are found and valid",
+      "status": "pending"
+    },
+    {
+      "id": "3.10",
+      "phase": "Phase 3: Secondary Sub-commands (P1)",
+      "description": "Report clearly shows issues and warnings",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "URL import works for common sources",
+      "status": "pending"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Local file import works correctly",
+      "status": "pending"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Imported templates are validated",
+      "status": "pending"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Conflicts are handled gracefully",
+      "status": "pending"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Manifest is updated after import",
+      "status": "pending"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Template bundles are correctly created",
+      "status": "pending"
+    },
+    {
+      "id": "4.7",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Dependencies are included",
+      "status": "pending"
+    },
+    {
+      "id": "4.8",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Export formats work correctly",
+      "status": "pending"
+    },
+    {
+      "id": "4.9",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Shareable links work when enabled",
+      "status": "pending"
+    },
+    {
+      "id": "4.10",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Metadata is preserved in export",
+      "status": "pending"
+    },
+    {
+      "id": "4.11",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Template selection works correctly",
+      "status": "pending"
+    },
+    {
+      "id": "4.12",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Confirmation prevents accidental deletion",
+      "status": "pending"
+    },
+    {
+      "id": "4.13",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Dependency warnings are shown",
+      "status": "pending"
+    },
+    {
+      "id": "4.14",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Deletion creates backup",
+      "status": "pending"
+    },
+    {
+      "id": "4.15",
+      "phase": "Phase 4: Remaining Sub-commands (P2)",
+      "description": "Manifest is updated after deletion",
+      "status": "pending"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Template Categories",
+      "description": "Plan template schema is complete",
+      "status": "pending"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Template Categories",
+      "description": "Plan variables work correctly",
+      "status": "pending"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Template Categories",
+      "description": "Structure validation catches issues",
+      "status": "pending"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Template Categories",
+      "description": "Examples are useful and valid",
+      "status": "pending"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Template Categories",
+      "description": "Integration with /plan:create works",
+      "status": "pending"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: Template Categories",
+      "description": "Command template schema is complete",
+      "status": "pending"
+    },
+    {
+      "id": "5.7",
+      "phase": "Phase 5: Template Categories",
+      "description": "Frontmatter variables are correctly handled",
+      "status": "pending"
+    },
+    {
+      "id": "5.8",
+      "phase": "Phase 5: Template Categories",
+      "description": "Structure validation catches issues",
+      "status": "pending"
+    },
+    {
+      "id": "5.9",
+      "phase": "Phase 5: Template Categories",
+      "description": "Examples are useful and valid",
+      "status": "pending"
+    },
+    {
+      "id": "5.10",
+      "phase": "Phase 5: Template Categories",
+      "description": "Integration works correctly",
+      "status": "pending"
+    },
+    {
+      "id": "5.11",
+      "phase": "Phase 5: Template Categories",
+      "description": "Artifact template schema is complete",
+      "status": "pending"
+    },
+    {
+      "id": "5.12",
+      "phase": "Phase 5: Template Categories",
+      "description": "Artifact variables work correctly",
+      "status": "pending"
+    },
+    {
+      "id": "5.13",
+      "phase": "Phase 5: Template Categories",
+      "description": "Structure validation catches issues",
+      "status": "pending"
+    },
+    {
+      "id": "5.14",
+      "phase": "Phase 5: Template Categories",
+      "description": "Examples cover common artifact types",
+      "status": "pending"
+    },
+    {
+      "id": "5.15",
+      "phase": "Phase 5: Template Categories",
+      "description": "Integration works with relevant commands",
+      "status": "pending"
+    },
+    {
+      "id": "5.16",
+      "phase": "Phase 5: Template Categories",
+      "description": "Workflow template schema is complete",
+      "status": "pending"
+    },
+    {
+      "id": "5.17",
+      "phase": "Phase 5: Template Categories",
+      "description": "Workflow variables work correctly",
+      "status": "pending"
+    },
+    {
+      "id": "5.18",
+      "phase": "Phase 5: Template Categories",
+      "description": "Structure validation catches issues",
+      "status": "pending"
+    },
+    {
+      "id": "5.19",
+      "phase": "Phase 5: Template Categories",
+      "description": "Examples cover common workflows",
+      "status": "pending"
+    },
+    {
+      "id": "5.20",
+      "phase": "Phase 5: Template Categories",
+      "description": "Integration with /workflow:create works",
+      "status": "pending"
+    },
+    {
+      "id": "5.21",
+      "phase": "Phase 5: Template Categories",
+      "description": "Documentation template schema is complete",
+      "status": "pending"
+    },
+    {
+      "id": "5.22",
+      "phase": "Phase 5: Template Categories",
+      "description": "Doc variables work correctly",
+      "status": "pending"
+    },
+    {
+      "id": "5.23",
+      "phase": "Phase 5: Template Categories",
+      "description": "Structure validation catches issues",
+      "status": "pending"
+    },
+    {
+      "id": "5.24",
+      "phase": "Phase 5: Template Categories",
+      "description": "Examples cover common doc types",
+      "status": "pending"
+    },
+    {
+      "id": "5.25",
+      "phase": "Phase 5: Template Categories",
+      "description": "Integration with /document works",
+      "status": "pending"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Manifest schema is complete and valid",
+      "status": "pending"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Auto-generation captures all templates",
+      "status": "pending"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Metadata is correctly extracted",
+      "status": "pending"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Categories are accurately counted",
+      "status": "pending"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Manifest stays in sync with templates",
+      "status": "pending"
+    },
+    {
+      "id": "6.6",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Validation reports are comprehensive",
+      "status": "pending"
+    },
+    {
+      "id": "6.7",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Summary accurately reflects validation status",
+      "status": "pending"
+    },
+    {
+      "id": "6.8",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Variable table shows all validations",
+      "status": "pending"
+    },
+    {
+      "id": "6.9",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Issues are clearly explained",
+      "status": "pending"
+    },
+    {
+      "id": "6.10",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Recommendations are actionable",
+      "status": "pending"
+    },
+    {
+      "id": "6.11",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Config schema is complete",
+      "status": "pending"
+    },
+    {
+      "id": "6.12",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Default values work correctly",
+      "status": "pending"
+    },
+    {
+      "id": "6.13",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "System variables are configurable",
+      "status": "pending"
+    },
+    {
+      "id": "6.14",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "Filters can be customized",
+      "status": "pending"
+    },
+    {
+      "id": "6.15",
+      "phase": "Phase 6: Artifact Generation",
+      "description": "User preferences persist",
+      "status": "pending"
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "All sub-commands are accessible via CLI",
+      "status": "pending"
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Help text is accurate and comprehensive",
+      "status": "pending"
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Command routing works correctly for all sub-commands",
+      "status": "pending"
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Aliases and shortcuts function as expected",
+      "status": "pending"
+    },
+    {
+      "id": "7.5",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Telemetry captures usage patterns",
+      "status": "pending"
+    },
+    {
+      "id": "7.6",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "All sub-commands pass their test suites",
+      "status": "pending"
+    },
+    {
+      "id": "7.7",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Variable substitution works correctly in all scenarios",
+      "status": "pending"
+    },
+    {
+      "id": "7.8",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Category-specific validation works",
+      "status": "pending"
+    },
+    {
+      "id": "7.9",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Performance is acceptable for large libraries",
+      "status": "pending"
+    },
+    {
+      "id": "7.10",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Error handling is robust and informative",
+      "status": "pending"
+    },
+    {
+      "id": "7.11",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "User guide covers all common template scenarios",
+      "status": "pending"
+    },
+    {
+      "id": "7.12",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Sub-command documentation is complete and accurate",
+      "status": "pending"
+    },
+    {
+      "id": "7.13",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Authoring guide enables template creation",
+      "status": "pending"
+    },
+    {
+      "id": "7.14",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Variable reference is comprehensive",
+      "status": "pending"
+    },
+    {
+      "id": "7.15",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Troubleshooting guide addresses known issues",
+      "status": "pending"
+    },
+    {
+      "id": "7.16",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "All 7 sub-commands (list, create, apply, edit, validate, import, export, delete) are implemented and functional",
+      "status": "pending"
+    },
+    {
+      "id": "7.17",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Variable substitution works for basic, filters, conditionals, and system variables",
+      "status": "pending"
+    },
+    {
+      "id": "7.18",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "All 5 template categories (plans, commands, artifacts, workflows, documentation) are supported",
+      "status": "pending"
+    },
+    {
+      "id": "7.19",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Template manifest tracks all templates with accurate metadata",
+      "status": "pending"
+    },
+    {
+      "id": "7.20",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Template validation catches common issues",
+      "status": "pending"
+    },
+    {
+      "id": "7.21",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Import/export enables template sharing",
+      "status": "pending"
+    },
+    {
+      "id": "7.22",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "All unit tests pass with >90% coverage",
+      "status": "pending"
+    },
+    {
+      "id": "7.23",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Integration tests validate end-to-end workflows",
+      "status": "pending"
+    },
+    {
+      "id": "7.24",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Performance meets targets (template listing <1s, application <5s)",
+      "status": "pending"
+    },
+    {
+      "id": "7.25",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Generated artifacts follow conventions and are well-formatted",
+      "status": "pending"
+    },
+    {
+      "id": "7.26",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Error messages are clear and actionable",
+      "status": "pending"
+    },
+    {
+      "id": "7.27",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Variable substitution is accurate and complete",
+      "status": "pending"
+    },
+    {
+      "id": "7.28",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "template-manifest.json contains accurate template registry",
+      "status": "pending"
+    },
+    {
+      "id": "7.29",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "validation-report.md provides clear validation feedback",
+      "status": "pending"
+    },
+    {
+      "id": "7.30",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "template-config.json enables customization",
+      "status": "pending"
+    },
+    {
+      "id": "7.31",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "All artifacts are properly formatted and human-readable",
+      "status": "pending"
+    },
+    {
+      "id": "7.32",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Template files follow documented schema",
+      "status": "pending"
+    },
+    {
+      "id": "7.33",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Command is registered and accessible via CLI",
+      "status": "pending"
+    },
+    {
+      "id": "7.34",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Help text and examples are complete and accurate",
+      "status": "pending"
+    },
+    {
+      "id": "7.35",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Templates integrate with /plan:create, /workflow:create, /document",
+      "status": "pending"
+    },
+    {
+      "id": "7.36",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Telemetry captures usage for improvement",
+      "status": "pending"
+    },
+    {
+      "id": "7.37",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Documentation enables users to create and use templates",
+      "status": "pending"
+    },
+    {
+      "id": "7.38",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Command provides clear feedback during template operations",
+      "status": "pending"
+    },
+    {
+      "id": "7.39",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Interactive template creation guides users step-by-step",
+      "status": "pending"
+    },
+    {
+      "id": "7.40",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Variable prompts show defaults and validation rules",
+      "status": "pending"
+    },
+    {
+      "id": "7.41",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Template discovery is intuitive with filtering and search",
+      "status": "pending"
+    },
+    {
+      "id": "7.42",
+      "phase": "Phase 7: Integration & Testing",
+      "description": "Import/export enables easy template sharing",
+      "status": "pending"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 136,
+    "completed": 0,
+    "pending": 136,
+    "failed": 0,
+    "skipped": 0
+  }
+}
