@@ -105,14 +105,23 @@ function parseArgs(args) {
   while (i < args.length) {
     const arg = args[i];
     if (arg.startsWith('--')) {
-      const key = arg.slice(2);
-      // Check if next arg is a value or another flag
-      if (i + 1 < args.length && !args[i + 1].startsWith('--')) {
-        result.options[key] = args[i + 1];
-        i += 2;
-      } else {
-        result.options[key] = true;
+      // Handle --key=value syntax
+      if (arg.includes('=')) {
+        const eqIndex = arg.indexOf('=');
+        const key = arg.slice(2, eqIndex);
+        const value = arg.slice(eqIndex + 1);
+        result.options[key] = value;
         i += 1;
+      } else {
+        const key = arg.slice(2);
+        // Check if next arg is a value or another flag
+        if (i + 1 < args.length && !args[i + 1].startsWith('--')) {
+          result.options[key] = args[i + 1];
+          i += 2;
+        } else {
+          result.options[key] = true;
+          i += 1;
+        }
       }
     } else {
       result.positional.push(arg);
