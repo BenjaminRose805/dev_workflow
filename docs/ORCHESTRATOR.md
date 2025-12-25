@@ -32,12 +32,12 @@ The Plan Orchestrator system enables autonomous execution of implementation plan
 │                     Plan Orchestrator System                         │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                      │
-│  ┌──────────────────┐    ┌──────────────────┐                       │
-│  │  plan_orchestrator.py │    │  plan-runner.sh  │                   │
-│  │  (Python TUI)         │    │  (Shell wrapper) │                   │
-│  └──────────┬───────────┘    └────────┬─────────┘                   │
-│             │                          │                             │
-│             ▼                          ▼                             │
+│  ┌────────────────────────┐                                         │
+│  │  plan_orchestrator.py  │                                         │
+│  │  (Python TUI)          │                                         │
+│  └──────────┬─────────────┘                                         │
+│             │                                                        │
+│             ▼                                                        │
 │  ┌────────────────────────────────────────────────────┐             │
 │  │                 status-cli.js                       │             │
 │  │  (CLI for managing plan execution status)           │             │
@@ -45,15 +45,14 @@ The Plan Orchestrator system enables autonomous execution of implementation plan
 │                       │                                              │
 │                       ▼                                              │
 │  ┌────────────────────────────────────────────────────┐             │
-│  │              plan-output-utils.js                   │             │
-│  │  (Low-level status operations + file locking)       │             │
+│  │                 plan-status.js                      │             │
+│  │  (Unified API: status I/O, plan resolution, runs)   │             │
 │  └────────────────────┬───────────────────────────────┘             │
 │                       │                                              │
 │                       ▼                                              │
 │  ┌────────────────────────────────────────────────────┐             │
 │  │              docs/plan-outputs/<plan>/              │             │
 │  │  ├── status.json      (task execution state)        │             │
-│  │  ├── status.json.bak  (backup for recovery)         │             │
 │  │  └── findings/        (task output artifacts)       │             │
 │  └────────────────────────────────────────────────────┘             │
 │                                                                      │
@@ -90,15 +89,18 @@ Options:
 - `--dry-run`: Show what would be done without executing
 - `--no-tui`: Disable Rich TUI (plain text output)
 
-### scripts/lib/plan-output-utils.js
+### scripts/lib/plan-status.js
 
-Low-level utilities for plan output management:
+Unified API for plan execution status management:
 
+- Path resolution: `getActivePlanPath()`, `getOutputDir()`, `getStatusPath()`
+- Core I/O: `loadStatus()`, `saveStatus()`
+- Task updates: `markTaskStarted()`, `markTaskCompleted()`, `markTaskFailed()`
+- Queries: `getNextTasks()`, `getProgress()`, `getStatusSummary()`
+- Findings management: `writeFindings()`, `readFindings()`
+- Runs: `startRun()`, `completeRun()`
 - File locking with `proper-lockfile`
 - Atomic writes (temp file + rename)
-- Summary recalculation
-- Backup and recovery
-- Retry tracking
 
 ### scripts/lib/file-utils.js
 
