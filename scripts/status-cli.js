@@ -894,7 +894,11 @@ function showHelp() {
 Status Manager CLI - Manage plan execution status
 
 Usage:
-  node scripts/status-cli.js <command> [options]
+  node scripts/status-cli.js [--plan <path>] <command> [options]
+
+Global Options:
+  --plan <path>                     Use specific plan file instead of current-plan.txt
+                                    Supports both --plan <path> and --plan=<path>
 
 Commands:
   init                                Initialize output directory and status.json
@@ -932,14 +936,17 @@ Options:
   --failed N         Number of failed tasks (complete-run)
 
 Examples:
-  # Check current status
+  # Check current status (uses current-plan.txt)
   node scripts/status-cli.js status
+
+  # Check status for a specific plan
+  node scripts/status-cli.js --plan docs/plans/my-plan.md status
 
   # Mark a task complete with notes
   node scripts/status-cli.js mark-complete 1.1 --notes "Implemented auth middleware"
 
-  # Get next 3 tasks
-  node scripts/status-cli.js next 3
+  # Get next 3 tasks from a specific plan
+  node scripts/status-cli.js --plan docs/plans/my-plan.md next 3
 
   # Show progress bar
   node scripts/status-cli.js progress
