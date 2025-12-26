@@ -510,6 +510,48 @@ To resolve:
 
 Generate a comprehensive commit message with plan metadata from status.json.
 
+#### Message Format Specification
+
+The merge commit message follows a structured format with distinct sections:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ HEADER: "Complete: {plan-name}"                             │
+├─────────────────────────────────────────────────────────────┤
+│ METADATA SECTION:                                           │
+│   Plan: {full plan title from status.json}                  │
+│   Tasks: {completed}/{total}                                │
+│   Duration: {human-readable duration}                       │
+├─────────────────────────────────────────────────────────────┤
+│ PHASE SUMMARY:                                              │
+│   Phases:                                                   │
+│     - {Phase N}: {name} ({count} tasks)                     │
+│     - ...                                                   │
+├─────────────────────────────────────────────────────────────┤
+│ ARCHIVE REFERENCE (if archive tag created):                 │
+│   Archive: archive/plan-{name}                              │
+│     View individual commits: git log archive/plan-{name}    │
+├─────────────────────────────────────────────────────────────┤
+│ OUTPUTS LINK:                                               │
+│   Outputs: docs/plan-outputs/{plan-name}/                   │
+├─────────────────────────────────────────────────────────────┤
+│ ATTRIBUTION FOOTER:                                         │
+│   🤖 Generated with Claude Code                              │
+│   Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Required metadata fields:**
+| Field | Source | Description |
+|-------|--------|-------------|
+| `plan-name` | Plan filename (without .md) | Used in header and references |
+| `plan-title` | `status.json → planName` | Full descriptive title |
+| `completed` | `status.json → summary.completed` | Number of completed tasks |
+| `total` | `status.json → summary.totalTasks` | Total task count |
+| `duration` | Calculated from timestamps | Time from plan creation to completion |
+| `phases` | `status.json → tasks[].phase` | Aggregated phase summary |
+| `archive-tag` | Created in Step 6 or null | Reference to archived commits |
+
 **Step 1: Load status.json for metadata**
 ```bash
 STATUS_FILE="docs/plan-outputs/$PLAN_NAME/status.json"
