@@ -14,6 +14,80 @@ Implement one or more tasks from the active plan.
 3. Call `initializePlanStatus(planPath)` to ensure status.json exists
 4. Output directory is derived from plan name: `docs/plan-outputs/{plan-name}/`
 
+### 1.1. Git Branch Validation (Optional)
+
+After loading the active plan, validate that you're on the correct git branch:
+
+**Step 1: Check git availability**
+```bash
+git --version 2>/dev/null
+```
+- If command fails: Set `GIT_AVAILABLE=false` and skip all git operations in this section
+- If command succeeds: Continue with branch validation
+
+**Step 2: Get current branch and expected branch**
+```bash
+# Get current branch
+CURRENT_BRANCH=$(git branch --show-current)
+
+# Derive expected branch from plan name
+PLAN_NAME=$(basename "$PLAN_PATH" .md)
+EXPECTED_BRANCH="plan/$PLAN_NAME"
+```
+
+**Step 3: Validate branch and take action**
+
+| Current Branch | Action |
+|----------------|--------|
+| `plan/{plan-name}` (correct) | Continue normally - already on correct branch |
+| `plan/{other-plan}` (wrong plan branch) | Log warning, auto-switch to `plan/{plan-name}` |
+| Non-plan branch (e.g., `master`, `feature/x`) | Warn but continue for backwards compatibility |
+| No branch (detached HEAD) | Warn but continue |
+
+**Branch switching logic:**
+```bash
+# If on wrong plan branch, switch to correct one
+if [[ "$CURRENT_BRANCH" == plan/* ]] && [[ "$CURRENT_BRANCH" != "$EXPECTED_BRANCH" ]]; then
+    echo "Warning: On branch '$CURRENT_BRANCH' but plan expects '$EXPECTED_BRANCH'"
+    git checkout "$EXPECTED_BRANCH" 2>/dev/null || git checkout -b "$EXPECTED_BRANCH"
+    echo "Switched to branch '$EXPECTED_BRANCH'"
+fi
+```
+
+**Backwards compatibility mode (non-plan branch):**
+```bash
+# If on a non-plan branch (no plan/ prefix), warn but continue
+if [[ ! "$CURRENT_BRANCH" == plan/* ]]; then
+    echo "⚠ Warning: Not on a plan branch (currently on '$CURRENT_BRANCH')."
+    echo "  Run /plan:set to switch to the plan branch 'plan/$PLAN_NAME'."
+    echo "  Continuing with task implementation..."
+fi
+```
+
+**Example output (correct branch):**
+```
+Git branch: plan/my-plan ✓
+```
+
+**Example output (wrong plan branch - auto-switched):**
+```
+⚠ On wrong plan branch: plan/other-plan
+  Switching to: plan/my-plan
+  Switched to branch 'plan/my-plan'
+```
+
+**Example output (non-plan branch - backwards compat):**
+```
+⚠ Warning: Not on a plan branch (currently on 'master').
+  Run /plan:set to switch to the plan branch 'plan/my-plan'.
+  Continuing with task implementation...
+```
+
+**Skip branch validation if:**
+- Git is not available
+- Running in a non-git directory
+- The `--no-git` flag is passed (future feature)
+
 ### 1.5. Parse Arguments (if provided)
 
 If arguments are passed to this skill, parse them to determine which tasks to implement:
