@@ -1101,3 +1101,133 @@ fi
 ```
 
 **Note:** Branch deletion failure is non-fatal. The merge was successful, and the archive tag preserves the branch history. The user can manually delete the branch if needed.
+
+### 12. Update Status.json with Completion Information
+
+After successful merge, update status.json with completion metadata.
+
+**Step 1: Prepare completion data**
+```bash
+# Get timestamps
+COMPLETED_AT=$(date -Iseconds)
+MERGED_AT=$(date -Iseconds)
+
+# Get merge commit SHA (already captured in Step 10)
+MERGE_COMMIT_SHA=$(git rev-parse HEAD)
+
+# Archive tag (captured in Step 6, or empty if --no-archive)
+# ARCHIVE_TAG is already set from earlier step
+```
+
+**Step 2: Update status.json with completion fields**
+```javascript
+const fs = require('fs');
+
+const statusPath = `docs/plan-outputs/${PLAN_NAME}/status.json`;
+const status = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
+
+// Add completion timestamp
+status.completedAt = COMPLETED_AT;
+
+// Add merge timestamp
+status.mergedAt = MERGED_AT;
+
+// Add merge commit SHA
+status.mergeCommit = MERGE_COMMIT_SHA;
+
+// Add archive tag (null if --no-archive was used)
+status.archiveTag = ARCHIVE_TAG || null;
+
+// Write updated status
+fs.writeFileSync(statusPath, JSON.stringify(status, null, 2));
+```
+
+**Using Node.js one-liner:**
+```bash
+node -e "
+const fs = require('fs');
+const statusPath = 'docs/plan-outputs/$PLAN_NAME/status.json';
+const status = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
+status.completedAt = '$(date -Iseconds)';
+status.mergedAt = '$(date -Iseconds)';
+status.mergeCommit = '$MERGE_COMMIT_SHA';
+status.archiveTag = '$ARCHIVE_TAG' || null;
+fs.writeFileSync(statusPath, JSON.stringify(status, null, 2));
+console.log('✓ Updated status.json with completion info');
+"
+```
+
+**Step 3: Verify status.json was updated**
+```bash
+# Verify the fields exist
+node -e "
+const status = require('./docs/plan-outputs/$PLAN_NAME/status.json');
+const fields = ['completedAt', 'mergedAt', 'mergeCommit', 'archiveTag'];
+const missing = fields.filter(f => !(f in status));
+if (missing.length > 0) {
+    console.log('⚠ Missing fields in status.json:', missing.join(', '));
+} else {
+    console.log('✓ All completion fields present in status.json');
+    console.log('  completedAt:', status.completedAt);
+    console.log('  mergedAt:', status.mergedAt);
+    console.log('  mergeCommit:', status.mergeCommit);
+    console.log('  archiveTag:', status.archiveTag || '(none - --no-archive)');
+}
+"
+```
+
+**Final status.json structure:**
+```json
+{
+  "planPath": "docs/plans/my-plan.md",
+  "planName": "My Plan",
+  "createdAt": "2024-12-20T10:00:00Z",
+  "lastUpdatedAt": "2024-12-25T15:30:00Z",
+  "completedAt": "2024-12-25T16:00:00Z",
+  "mergedAt": "2024-12-25T16:00:00Z",
+  "mergeCommit": "abc123def456...",
+  "archiveTag": "archive/plan-my-plan",
+  "currentPhase": "Phase 3: Final",
+  "tasks": [...],
+  "runs": [...],
+  "summary": {
+    "totalTasks": 15,
+    "completed": 15,
+    "pending": 0,
+    "in_progress": 0,
+    "failed": 0,
+    "skipped": 0
+  }
+}
+```
+
+**Example output (success):**
+```
+✓ Updated status.json with completion info
+✓ All completion fields present in status.json
+  completedAt: 2024-12-25T16:00:00+00:00
+  mergedAt: 2024-12-25T16:00:00+00:00
+  mergeCommit: abc123def456789...
+  archiveTag: archive/plan-my-plan
+```
+
+**Example output (--no-archive used):**
+```
+✓ Updated status.json with completion info
+✓ All completion fields present in status.json
+  completedAt: 2024-12-25T16:00:00+00:00
+  mergedAt: 2024-12-25T16:00:00+00:00
+  mergeCommit: abc123def456789...
+  archiveTag: (none - --no-archive)
+```
+
+**Error handling:**
+```bash
+if [[ $? -ne 0 ]]; then
+    echo "⚠ Warning: Failed to update status.json"
+    echo "  Plan completion was successful, but status tracking incomplete"
+    echo "  You can manually add completion fields to: $STATUS_FILE"
+fi
+```
+
+**Note:** Status.json update failure is non-fatal. The merge was successful, and the completion can be verified via git log. The status.json update is for tracking purposes only.
