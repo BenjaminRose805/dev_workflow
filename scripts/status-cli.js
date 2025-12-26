@@ -1026,6 +1026,16 @@ function cmdProgress(planPath, options = {}) {
       lastUpdated: status.lastUpdatedAt
     };
 
+    // Include git information if available
+    const gitInfo = getGitInfo();
+    if (gitInfo) {
+      jsonOutput.git = {
+        branch: gitInfo.branch,
+        uncommittedCount: gitInfo.uncommittedCount,
+        lastCommit: gitInfo.lastCommit
+      };
+    }
+
     // Include git queue status if available
     try {
       const { getCommitQueueStatus } = require('./lib/plan-status.js');
@@ -1056,6 +1066,15 @@ function cmdProgress(planPath, options = {}) {
 
     // Plan-level marker
     console.log(`[PROGRESS] plan status=${planStatus} percent=${percentage}`);
+
+    // Git marker
+    const gitInfo = getGitInfo();
+    if (gitInfo) {
+      console.log(`[PROGRESS] git branch=${gitInfo.branch || 'detached'} uncommitted=${gitInfo.uncommittedCount}`);
+      if (gitInfo.lastCommit) {
+        console.log(`[PROGRESS] git last_commit=${gitInfo.lastCommit.sha}`);
+      }
+    }
 
     // Phase-level markers
     const phaseMap = new Map();
@@ -1120,6 +1139,21 @@ function cmdProgress(planPath, options = {}) {
   console.log(`Total: ${total} tasks`);
   console.log(`Current Phase: ${status.currentPhase}`);
   console.log(`Last Updated: ${new Date(status.lastUpdatedAt).toLocaleString()}`);
+
+  // Show git information
+  const gitInfo = getGitInfo();
+  if (gitInfo) {
+    console.log('');
+    console.log(`Branch: ${gitInfo.branch || '(detached HEAD)'}`);
+    console.log(`Uncommitted: ${gitInfo.uncommittedCount} file(s)`);
+    if (gitInfo.lastCommit) {
+      // Truncate message to 50 chars for display
+      const msg = gitInfo.lastCommit.message.length > 50
+        ? gitInfo.lastCommit.message.slice(0, 47) + '...'
+        : gitInfo.lastCommit.message;
+      console.log(`Last Commit: ${gitInfo.lastCommit.sha} ${msg}`);
+    }
+  }
 
   // Show git queue status if there are pending commits
   try {
