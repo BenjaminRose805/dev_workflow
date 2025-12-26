@@ -697,3 +697,53 @@ else
     git commit -m "$COMMIT_MSG"
 fi
 ```
+
+### 11. Delete Plan Branch
+
+After successful merge, delete the plan branch to clean up.
+
+**Step 1: Verify we're on main branch (safety check)**
+```bash
+CURRENT_BRANCH=$(git branch --show-current)
+if [[ "$CURRENT_BRANCH" != "$MAIN_BRANCH" ]]; then
+    echo "⚠ Warning: Not on $MAIN_BRANCH, skipping branch deletion"
+    echo "  Current branch: $CURRENT_BRANCH"
+    exit 0  # Exit gracefully - merge was successful
+fi
+```
+
+**Step 2: Delete the plan branch**
+```bash
+# PLAN_BRANCH was saved earlier (e.g., "plan/my-plan")
+git branch -D "$PLAN_BRANCH"
+if [[ $? -ne 0 ]]; then
+    echo "⚠ Warning: Failed to delete plan branch: $PLAN_BRANCH"
+    echo "  You can delete it manually: git branch -D $PLAN_BRANCH"
+else
+    echo "✓ Deleted plan branch: $PLAN_BRANCH"
+fi
+```
+
+**Step 3: Verify branch was deleted**
+```bash
+# Confirm branch no longer exists
+if git show-ref --verify --quiet "refs/heads/$PLAN_BRANCH"; then
+    echo "⚠ Branch still exists: $PLAN_BRANCH"
+else
+    echo "  Branch successfully removed from local repository"
+fi
+```
+
+**Example output (success):**
+```
+✓ Deleted plan branch: plan/my-plan
+  Branch successfully removed from local repository
+```
+
+**Example output (failure - non-fatal):**
+```
+⚠ Warning: Failed to delete plan branch: plan/my-plan
+  You can delete it manually: git branch -D plan/my-plan
+```
+
+**Note:** Branch deletion failure is non-fatal. The merge was successful, and the archive tag preserves the branch history. The user can manually delete the branch if needed.
