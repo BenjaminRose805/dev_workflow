@@ -386,13 +386,59 @@ Before proceeding to merge:
 - Currently on the correct plan branch (`plan/{plan-name}`)
 - No merge conflicts with main branch
 
-## Next Steps
+### 7. Switch to Main Branch
 
-After pre-checks pass, the completion workflow will:
-1. Handle any uncommitted changes
-2. Create archive tag (unless `--no-archive`)
-3. Switch to main branch
-4. Perform squash merge (or selected strategy)
-5. Create completion commit with metadata
-6. Delete plan branch
-7. Update status.json with completion info
+After all pre-checks pass and the archive tag is created, switch to the main branch.
+
+**Step 1: Get main branch name**
+```bash
+# Determine the main branch (could be 'main' or 'master')
+if git show-ref --verify --quiet refs/heads/main; then
+    MAIN_BRANCH="main"
+elif git show-ref --verify --quiet refs/heads/master; then
+    MAIN_BRANCH="master"
+else
+    echo "✗ Neither 'main' nor 'master' branch found"
+    exit 1
+fi
+```
+
+**Step 2: Switch to main branch**
+```bash
+git checkout "$MAIN_BRANCH"
+if [[ $? -ne 0 ]]; then
+    echo "✗ Failed to switch to $MAIN_BRANCH branch"
+    echo "  Current branch: $(git branch --show-current)"
+    exit 1
+fi
+```
+
+**Step 3: Optionally sync with remote (if --sync)**
+```bash
+if [[ "$SYNC_WITH_REMOTE" == "true" ]]; then
+    echo "Pulling latest from origin/$MAIN_BRANCH..."
+    git pull origin "$MAIN_BRANCH"
+    if [[ $? -ne 0 ]]; then
+        echo "⚠ Warning: Failed to pull from origin/$MAIN_BRANCH"
+        echo "  Continuing with local state. Consider manual sync."
+    fi
+fi
+```
+
+**Example output (success):**
+```
+✓ Switched to main branch
+```
+
+**Example output (with --sync):**
+```
+✓ Switched to main branch
+✓ Pulled latest from origin/main
+```
+
+**Example output (sync warning):**
+```
+✓ Switched to main branch
+⚠ Warning: Failed to pull from origin/main
+  Continuing with local state. Consider manual sync.
+```
