@@ -12,6 +12,8 @@ Complete a plan by merging it to main with squash merge workflow.
 - `--no-archive` - Skip creating archive tag (default: create tag)
 - `--sync` - Pull latest from main before merge
 - `--merge <strategy>` - Merge strategy: `squash` (default), `commit`, `ff`
+- `--pr` - Create a GitHub Pull Request instead of local merge
+- `--draft` - Create as draft PR (requires `--pr`)
 
 ## Instructions
 
@@ -380,6 +382,367 @@ git show archive/plan-{name}
 **Merge conflict detection fails:**
 - If dry-run merge fails for non-conflict reasons, log warning
 - Proceed with caution and warn user
+
+## PR Workflow (--pr flag)
+
+When `--pr` is specified, the command creates a GitHub Pull Request instead of performing a local merge. This is useful for team workflows that require code review before merging.
+
+### PR Workflow Overview
+
+The PR workflow differs from local merge:
+1. Branch is pushed to remote (instead of merging locally)
+2. PR is created via GitHub CLI (instead of `git merge`)
+3. Local branch is **not deleted** (remains for further work if needed)
+4. Archive tag is still created locally (preserves pre-squash history)
+
+### Step PR.1: Check GitHub CLI Availability
+
+Before attempting PR creation, verify `gh` is installed and authenticated.
+
+**Check gh installation:**
+```bash
+if ! command -v gh &> /dev/null; then
+    echo "✗ GitHub CLI (gh) not found"
+    echo ""
+    echo "To use --pr flag, install GitHub CLI:"
+    echo "  macOS:  brew install gh"
+    echo "  Linux:  https://github.com/cli/cli/blob/trunk/docs/install_linux.md"
+    echo "  Windows: winget install --id GitHub.cli"
+    echo ""
+    echo "Then authenticate: gh auth login"
+    exit 1
+fi
+```
+
+**Check gh authentication:**
+```bash
+if ! gh auth status &> /dev/null; then
+    echo "✗ GitHub CLI not authenticated"
+    echo ""
+    echo "Run: gh auth login"
+    exit 1
+fi
+```
+
+**Example output (success):**
+```
+✓ GitHub CLI available and authenticated
+```
+
+**Example output (gh not found):**
+```
+✗ GitHub CLI (gh) not found
+
+To use --pr flag, install GitHub CLI:
+  macOS:  brew install gh
+  Linux:  https://github.com/cli/cli/blob/trunk/docs/install_linux.md
+  Windows: winget install --id GitHub.cli
+
+Then authenticate: gh auth login
+```
+
+### Step PR.2: Push Branch to Remote
+
+Push the plan branch to the remote repository with upstream tracking.
+
+**Push with upstream tracking:**
+```bash
+# PLAN_BRANCH is already set (e.g., "plan/my-plan")
+git push -u origin "$PLAN_BRANCH"
+if [[ $? -ne 0 ]]; then
+    echo "✗ Failed to push branch to remote"
+    echo ""
+    echo "Possible causes:"
+    echo "  - No remote 'origin' configured"
+    echo "  - No network connectivity"
+    echo "  - Permission denied on remote repository"
+    echo ""
+    echo "Check remote: git remote -v"
+    exit 1
+fi
+
+echo "✓ Pushed branch: $PLAN_BRANCH -> origin/$PLAN_BRANCH"
+```
+
+**Example output (success):**
+```
+✓ Pushed branch: plan/my-plan -> origin/plan/my-plan
+```
+
+**Example output (failure):**
+```
+✗ Failed to push branch to remote
+
+Possible causes:
+  - No remote 'origin' configured
+  - No network connectivity
+  - Permission denied on remote repository
+
+Check remote: git remote -v
+```
+
+### Step PR.3: Generate PR Description
+
+Generate a comprehensive PR description from the plan's status.json metadata.
+
+**PR Title Format:**
+```
+Complete: {plan-name}
+```
+
+**PR Body Structure:**
+```markdown
+## Summary
+
+{Brief description extracted from plan overview or first task descriptions}
+
+## Plan Details
+
+- **Plan:** {plan-title from status.json}
+- **Tasks:** {completed}/{total} completed
+- **Phases:** {phase-count} phases
+
+## Phases
+
+{Phase list with task counts}
+
+## Task Checklist
+
+{Completed tasks as checked items}
+
+## Test Plan
+
+- [ ] Review code changes in Files tab
+- [ ] Verify CI checks pass
+- [ ] Run local tests if applicable
+
+---
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+```
+
+**Generate PR body using Node.js:**
+```bash
+PR_BODY=$(node -e "
+const fs = require('fs');
+const status = JSON.parse(fs.readFileSync('docs/plan-outputs/$PLAN_NAME/status.json', 'utf8'));
+
+// Generate summary from plan
+const summary = status.planName || '$PLAN_NAME';
+
+// Count phases
+const phases = [...new Set(status.tasks.map(t => t.phase))];
+const phaseCount = phases.length;
+
+// Generate phase list with task counts
+const phaseCounts = {};
+status.tasks.forEach(t => {
+    phaseCounts[t.phase] = (phaseCounts[t.phase] || 0) + 1;
+});
+const phaseList = Object.entries(phaseCounts)
+    .map(([phase, count]) => '- ' + phase + ' (' + count + ' tasks)')
+    .join('\n');
+
+// Generate task checklist
+const taskList = status.tasks
+    .map(t => '- [' + (t.status === 'completed' ? 'x' : ' ') + '] ' + t.id + ': ' + t.description)
+    .join('\n');
+
+// Build PR body
+console.log(\\\`## Summary
+
+\${summary}
+
+## Plan Details
+
+- **Plan:** \${status.planName || '$PLAN_NAME'}
+- **Tasks:** \${status.summary.completed}/\${status.summary.totalTasks} completed
+- **Phases:** \${phaseCount} phases
+
+## Phases
+
+\${phaseList}
+
+## Task Checklist
+
+\${taskList}
+
+## Test Plan
+
+- [ ] Review code changes in Files tab
+- [ ] Verify CI checks pass
+- [ ] Run local tests if applicable
+
+---
+🤖 Generated with [Claude Code](https://claude.com/claude-code)\\\`);
+")
+```
+
+### Step PR.4: Create Pull Request
+
+Create the PR using GitHub CLI with the generated title and body.
+
+**Create PR (regular):**
+```bash
+# Store PR title
+PR_TITLE="Complete: $PLAN_NAME"
+
+# Determine base branch (main or master)
+if git show-ref --verify --quiet refs/heads/main; then
+    BASE_BRANCH="main"
+elif git show-ref --verify --quiet refs/heads/master; then
+    BASE_BRANCH="master"
+else
+    echo "✗ Neither 'main' nor 'master' branch found for PR base"
+    exit 1
+fi
+
+# Create PR using heredoc for body
+gh pr create \
+    --title "$PR_TITLE" \
+    --base "$BASE_BRANCH" \
+    --body "$(cat <<'EOF'
+$PR_BODY
+EOF
+)"
+
+if [[ $? -ne 0 ]]; then
+    echo "✗ Failed to create pull request"
+    echo ""
+    echo "Possible causes:"
+    echo "  - PR already exists for this branch"
+    echo "  - Branch not pushed to remote"
+    echo "  - Repository not configured for PRs"
+    exit 1
+fi
+```
+
+**Create draft PR (with --draft):**
+```bash
+if [[ "$CREATE_DRAFT" == "true" ]]; then
+    gh pr create \
+        --title "$PR_TITLE" \
+        --base "$BASE_BRANCH" \
+        --body "$PR_BODY" \
+        --draft
+
+    echo "✓ Created draft PR: $PR_TITLE"
+else
+    gh pr create \
+        --title "$PR_TITLE" \
+        --base "$BASE_BRANCH" \
+        --body "$PR_BODY"
+
+    echo "✓ Created PR: $PR_TITLE"
+fi
+```
+
+**Capture and display PR URL:**
+```bash
+# Get PR URL after creation
+PR_URL=$(gh pr view --json url -q '.url' 2>/dev/null)
+if [[ -n "$PR_URL" ]]; then
+    echo "  View PR: $PR_URL"
+fi
+```
+
+**Example output (success - regular PR):**
+```
+✓ Created PR: Complete: my-plan
+  View PR: https://github.com/owner/repo/pull/123
+```
+
+**Example output (success - draft PR):**
+```
+✓ Created draft PR: Complete: my-plan
+  View PR: https://github.com/owner/repo/pull/123
+```
+
+**Example output (PR already exists):**
+```
+✗ Failed to create pull request
+
+Possible causes:
+  - PR already exists for this branch
+  - Branch not pushed to remote
+  - Repository not configured for PRs
+```
+
+### Step PR.5: Skip Local Merge Steps
+
+When `--pr` is used, skip these local merge steps:
+- Step 7: Switch to Main Branch
+- Step 8: Perform Merge
+- Step 9: Generate Merge Commit Message
+- Step 10: Create the Merge Commit
+- Step 11: Delete Plan Branch
+
+Instead, continue to:
+- Step 12: Update Status.json (mark as PR created, not merged)
+
+**Update status.json for PR workflow:**
+```javascript
+// Different fields for PR workflow
+status.prCreated = true;
+status.prUrl = PR_URL;
+status.prCreatedAt = new Date().toISOString();
+// Note: mergedAt and mergeCommit will be null until PR is merged
+```
+
+### PR Workflow Decision Logic
+
+The `--pr` flag changes the completion workflow:
+
+```
+/plan:complete workflow:
+
+├── Steps 1-6: Same for both workflows
+│   ├── Load plan and status
+│   ├── Verify all tasks completed
+│   ├── Validate branch
+│   ├── Check for merge conflicts
+│   ├── Commit uncommitted changes
+│   └── Create archive tag
+│
+├── Is --pr flag present?
+│   │
+│   ├── YES (PR Workflow):
+│   │   ├── PR.1: Check gh availability
+│   │   ├── PR.2: Push branch to remote
+│   │   ├── PR.3: Generate PR description
+│   │   ├── PR.4: Create PR (with --draft if specified)
+│   │   └── PR.5: Update status.json (prCreated: true)
+│   │
+│   └── NO (Local Merge Workflow):
+│       ├── Step 7: Switch to main
+│       ├── Step 8: Perform merge
+│       ├── Step 9: Generate commit message
+│       ├── Step 10: Create merge commit
+│       ├── Step 11: Delete plan branch
+│       └── Step 12: Update status.json (mergedAt)
+```
+
+### PR Workflow Examples
+
+**Create a regular PR:**
+```bash
+/plan:complete --pr
+```
+
+**Create a draft PR:**
+```bash
+/plan:complete --pr --draft
+```
+
+**Create PR with archive tag skipped:**
+```bash
+/plan:complete --pr --no-archive
+```
+
+**Invalid: --draft without --pr:**
+```bash
+/plan:complete --draft
+# Error: --draft requires --pr flag
+```
 
 ## Merge Strategy Guide
 

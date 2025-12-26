@@ -4,9 +4,10 @@ This document defines the recommended order for executing plans in this reposito
 
 ## Overview
 
-These plans implement two major feature sets:
+These plans implement three major feature sets:
 1. **Parallel Execution** - Enable safe concurrent task/plan execution
 2. **Git Workflow** - Branch-per-plan workflow with safety and automation
+3. **UI Decoupling** - Decouple orchestrator from UI for multi-interface support
 
 The plans are ordered to maximize safety and enable incremental value delivery.
 
@@ -16,16 +17,23 @@ The plans are ordered to maximize safety and enable incremental value delivery.
 
 | Order | Plan | Tasks | Status |
 |-------|------|-------|--------|
-| 1 | [parallel-execution-foundation](parallel-execution-foundation.md) | 30 | Not Started |
-| 2 | [git-workflow-phase1-core-branching](git-workflow-phase1-core-branching.md) | 26 | Not Started |
-| 3 | [git-workflow-phase2-completion](git-workflow-phase2-completion.md) | 35 | Not Started |
-| 4 | [parallel-execution-dependencies](parallel-execution-dependencies.md) | 35 | Not Started |
-| 5 | [git-workflow-phase3-safety](git-workflow-phase3-safety.md) | 46 | Complete |
-| 6 | [orchestrator-ui-decoupling](orchestrator-ui-decoupling.md) | 31 | Not Started |
-| 7 | [git-workflow-phase4-advanced](git-workflow-phase4-advanced.md) | 14 | Not Started |
-| 8 | [git-workflow-phase5-worktrees](git-workflow-phase5-worktrees.md) | 84 | Not Started |
+| 1 | [parallel-execution-foundation](parallel-execution-foundation.md) | 30 | Complete |
+| 2 | [git-workflow-phase1-core-branching](git-workflow-phase1-core-branching.md) | 26 | Complete |
+| 3 | [git-workflow-phase2-completion](git-workflow-phase2-completion.md) | 35 | Complete |
+| 4 | [git-workflow-phase3-safety](git-workflow-phase3-safety.md) | 46 | Complete |
+| 5 | [git-workflow-phase4-advanced](git-workflow-phase4-advanced.md) | 63 | Not Started |
+| 6 | [git-workflow-phase5-worktrees](git-workflow-phase5-worktrees.md) | 84 | Not Started |
+| 7 | [parallel-execution-dependencies](parallel-execution-dependencies.md) | 35 | Not Started |
+| 8 | [tui-expansion-analysis](tui-expansion-analysis.md) | 57 | Not Started |
+| 9 | [tui-integration-implementation](tui-integration-implementation.md) | 24 | Not Started |
+| 10 | [orchestrator-event-protocol](orchestrator-event-protocol.md) | 12 | Not Started |
+| 11 | [orchestrator-engine-extraction](orchestrator-engine-extraction.md) | 15 | Not Started |
+| 12 | [orchestrator-core-adapters](orchestrator-core-adapters.md) | 18 | Not Started |
+| 13 | [orchestrator-external-adapters](orchestrator-external-adapters.md) | 16 | Not Started |
 
-**Total: 301 tasks across 8 plans**
+**Total: 461 tasks across 13 plans**
+
+> **Note:** The original `orchestrator-ui-decoupling` plan was split into 4 focused plans (10-13) to reduce risk and leverage infrastructure from earlier plans. See `docs/plan-outputs/orchestrator-ui-decoupling/findings/split-analysis.md` for details.
 
 ---
 
@@ -104,23 +112,7 @@ The plans are ordered to maximize safety and enable incremental value delivery.
 
 ---
 
-### 6. orchestrator-ui-decoupling
-**Goal:** Decouple orchestration engine from UI for multiple interface support.
-
-**Delivers:**
-- `OrchestrationEngine` - pure logic, no UI coupling
-- `OrchestratorUIAdapter` - abstract interface for UIs
-- Event protocol (JSON-serializable orchestration events)
-- Adapters: RichTUI, PlainText, JSONStream, Socket, Web
-- Standalone viewer script (read-only TUI for monitoring)
-- HTTP/WebSocket server for web-based monitoring
-- Unix socket for multi-viewer support
-
-**Why here:** Phase 4's completion prompt and Phase 5's multi-TUI depend on this architecture.
-
----
-
-### 7. git-workflow-phase4-advanced
+### 5. git-workflow-phase4-advanced
 **Goal:** Advanced features for team workflows and automation.
 
 **Delivers:**
@@ -130,13 +122,13 @@ The plans are ordered to maximize safety and enable incremental value delivery.
 - `/plan:cleanup` for stale branches/tags
 - `.claude/git-workflow.json` configuration
 - Pre-merge conflict detection
-- Completion prompt in orchestrator (uses UI adapter)
+- Completion prompt in orchestrator
 
-**Dependencies:** Plans 2-3, 5, 6 (builds on all prior git features + UI decoupling)
+**Dependencies:** Plans 1-4 (builds on all prior git features)
 
 ---
 
-### 8. git-workflow-phase5-worktrees
+### 6. git-workflow-phase5-worktrees
 **Goal:** Enable parallel plan execution via git worktrees.
 
 **Delivers:**
@@ -144,11 +136,110 @@ The plans are ordered to maximize safety and enable incremental value delivery.
 - `/plan:worktree create|list|remove|switch`
 - Multi-orchestrator process management
 - `--all-plans` aggregate status view
-- REST API for frontend integration (builds on plan 6's web adapter)
-- Multi-plan TUI interface (builds on plan 6's adapter system)
+- REST API for frontend integration
+- Multi-plan TUI interface
 - Conflict detection between parallel plans
 
-**Dependencies:** All prior plans, especially plan 6 (capstone feature)
+**Dependencies:** Plans 1-5 (capstone feature for git workflow)
+
+---
+
+### 7. parallel-execution-dependencies
+**Goal:** Enable fine-grained parallelism with task dependencies.
+
+**Delivers:**
+- `(depends: 1.1, 1.2)` syntax in task descriptions
+- DAG-based task scheduling
+- Cross-phase dependencies
+- Pipeline phase overlap
+- Dependency visualization (`deps --graph`)
+
+**Dependencies:** Plan 1 (parallel-execution-foundation)
+
+---
+
+### 8. tui-expansion-analysis
+**Goal:** Analyze TUI expansion opportunities based on completed workflows.
+
+**Delivers:**
+- Git workflow TUI panel designs
+- Parallel/sequential annotation visualization
+- File conflict detection TUI mapping
+- Multi-plan concurrent execution TUI
+- Gap analysis vs current TUI plan
+
+**Dependencies:** Plans 1-7 (analyzes their outputs)
+
+---
+
+### 9. tui-integration-implementation
+**Goal:** Implement enhanced TUI with keyboard navigation and new panels.
+
+**Delivers:**
+- Keyboard navigation (vim-style)
+- Phase progress bars, upcoming tasks panel
+- Command palette with slash commands
+- Dependency graph visualization
+- Findings browser, artifact browser
+- Responsive layouts, configuration persistence
+
+**Dependencies:** Plan 8 (uses analysis results)
+
+---
+
+### 10. orchestrator-event-protocol
+**Goal:** Define event protocol and abstract adapter interface.
+
+**Delivers:**
+- Event types for all orchestration state changes
+- Event payload dataclasses with serialization
+- Control command types (pause, resume, cancel)
+- `OrchestratorUIAdapter` abstract base class
+- `NullAdapter` for headless mode
+- JSON schemas for events and commands
+
+**Dependencies:** None (foundational for UI decoupling)
+
+---
+
+### 11. orchestrator-engine-extraction
+**Goal:** Extract pure orchestration logic from plan_orchestrator.py.
+
+**Delivers:**
+- `OrchestrationEngine` class with no UI dependencies
+- Event emission for all state changes
+- Control command handling (pause, resume, cancel, skip, retry)
+- Integration with DAG scheduling from plan 7
+
+**Dependencies:** Plan 10 (uses event protocol)
+
+---
+
+### 12. orchestrator-core-adapters
+**Goal:** Create essential adapters and integrate with orchestrator.
+
+**Delivers:**
+- `RichTUIAdapter` wrapping existing TUI
+- `PlainTextAdapter` for `--no-tui` mode
+- `JSONStreamAdapter` for machine-readable output
+- `--adapter` CLI flag
+- Backwards compatibility with existing usage
+
+**Dependencies:** Plans 9, 11 (uses TUI patterns and engine)
+
+---
+
+### 13. orchestrator-external-adapters
+**Goal:** Enable external connections via socket and web.
+
+**Delivers:**
+- Socket adapter with multi-viewer support
+- Standalone viewer script
+- Web adapter extending REST API from plan 6
+- Real-time event streaming via WebSocket
+- Control commands from all interfaces
+
+**Dependencies:** Plans 6, 12 (extends web API, uses core adapters)
 
 ---
 
@@ -176,39 +267,59 @@ node scripts/status-cli.js progress
 ## Dependency Graph
 
 ```
-parallel-execution-foundation (1)
+parallel-execution-foundation (1) ✓
     │
-    ├──► git-workflow-phase1-core-branching (2)
+    ├──► git-workflow-phase1-core-branching (2) ✓
     │        │
-    │        └──► git-workflow-phase2-completion (3)
+    │        └──► git-workflow-phase2-completion (3) ✓
     │                 │
-    │                 ├──► git-workflow-phase3-safety (5) ✓
-    │                 │        │
-    │                 │        └──► orchestrator-ui-decoupling (6)
-    │                 │                 │
-    │                 │                 └──► git-workflow-phase4-advanced (7)
-    │                 │                          │
-    │                 │                          └──► git-workflow-phase5-worktrees (8)
-    │                 │                                       ▲
-    └──► parallel-execution-dependencies (4) ───────────────┘
+    │                 └──► git-workflow-phase3-safety (4) ✓
+    │                          │
+    │                          └──► git-workflow-phase4-advanced (5)
+    │                                   │
+    │                                   └──► git-workflow-phase5-worktrees (6)
+    │                                                │
+    │                                                ▼
+    └──► parallel-execution-dependencies (7) ──────► tui-expansion-analysis (8)
+                                                          │
+                                                          └──► tui-integration-implementation (9)
+                                                                        │
+                                                                        ▼
+                                            orchestrator-event-protocol (10)
+                                                          │
+                                                          └──► orchestrator-engine-extraction (11)
+                                                                        │
+                                                                        └──► orchestrator-core-adapters (12)
+                                                                                      │
+                    ┌─────────────────────────────────────────────────────────────────┘
+                    │
+                    └──► orchestrator-external-adapters (13)
+                              ▲
+                              │
+              (also depends on git-workflow-phase5-worktrees for REST API)
 ```
 
 ---
 
 ## Time Estimates
 
-| Plan | Tasks | Est. Iterations | Est. Time |
-|------|-------|-----------------|-----------|
-| 1 | 30 | ~6 | ~1 hour |
-| 2 | 26 | ~6 | ~1 hour |
-| 3 | 35 | ~7 | ~1.5 hours |
-| 4 | 35 | ~7 | ~1.5 hours |
-| 5 | 46 | ~10 | ~2 hours |
-| 6 | 31 | ~7 | ~1.5 hours |
-| 7 | 14 | ~3 | ~0.5 hours |
-| 8 | 84 | ~17 | ~3 hours |
+| Plan | Tasks | Est. Iterations | Status |
+|------|-------|-----------------|--------|
+| 1 | 30 | ~6 | Complete |
+| 2 | 26 | ~6 | Complete |
+| 3 | 35 | ~7 | Complete |
+| 4 | 46 | ~10 | Complete |
+| 5 | 63 | ~13 | Not Started |
+| 6 | 84 | ~17 | Not Started |
+| 7 | 35 | ~7 | Not Started |
+| 8 | 57 | ~12 | Not Started |
+| 9 | 24 | ~5 | Not Started |
+| 10 | 12 | ~3 | Not Started |
+| 11 | 15 | ~4 | Not Started |
+| 12 | 18 | ~4 | Not Started |
+| 13 | 16 | ~4 | Not Started |
 
-**Total: ~12-14 hours of orchestrator runtime**
+**Remaining: 324 tasks, ~69 iterations (~11-12 hours)**
 
 *Estimates assume ~5 tasks/iteration, ~10 min/iteration*
 
@@ -220,14 +331,14 @@ After each plan, you gain usable functionality:
 
 | After Plan | You Can... |
 |------------|------------|
-| 1 | Run multiple CLI sessions safely, see file conflicts |
-| 2 | Work on plans in isolated branches |
-| 3 | Complete plans with clean merge commits |
-| 4 | Get 30%+ speedup on complex plans |
-| 5 | Safely rollback mistakes |
-| 6 | Monitor orchestration via web browser, connect multiple viewers |
-| 7 | Create PRs, sync to remote, auto-complete after orchestration |
-| 8 | Run multiple plans in parallel with unified TUI/web dashboard |
+| 1-4 | ✓ Run safely with branches, rollback, conflict detection |
+| 5 | Create PRs, sync to remote, auto-complete after orchestration |
+| 6 | Run multiple plans in parallel via worktrees, REST API |
+| 7 | Get 30%+ speedup with task-level dependencies |
+| 8-9 | Use keyboard-driven TUI with dependency graphs, command palette |
+| 10-11 | Run headless orchestration with event logging |
+| 12 | Choose adapter (TUI/plain/JSON) via `--adapter` flag |
+| 13 | Monitor orchestration via web browser, connect multiple viewers |
 
 ---
 

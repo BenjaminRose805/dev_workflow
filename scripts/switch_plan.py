@@ -242,19 +242,37 @@ def find_next_plan():
     paths = get_paths()
 
     # Priority order from docs/plans/EXECUTION-ORDER.md
-    # These implement parallel execution and git workflow features
+    # These implement parallel execution, git workflow, TUI, and UI decoupling
+    #
+    # Note: The original orchestrator-ui-decoupling plan was split into 4 focused plans
+    # (orchestrator-event-protocol, orchestrator-engine-extraction, orchestrator-core-adapters,
+    # orchestrator-external-adapters) to reduce risk and leverage infrastructure from earlier plans.
+    # See: docs/plan-outputs/orchestrator-ui-decoupling/findings/split-analysis.md
+    #
     priority_order = [
-        # Parallel Execution & Git Workflow (ordered by dependencies)
+        # Completed plans (1-4)
         'parallel-execution-foundation',
         'git-workflow-phase1-core-branching',
         'git-workflow-phase2-completion',
         'git-workflow-phase3-safety',
-        'orchestrator-ui-decoupling',
+        # Git workflow advanced (5-6)
         'git-workflow-phase4-advanced',
         'git-workflow-phase5-worktrees',
-        'parallel-execution-dependencies',  # Deferred - can run anytime
-        # Other active plans
+        # Parallel dependencies & TUI (7-9)
+        'parallel-execution-dependencies',
+        'tui-expansion-analysis',
         'tui-integration-implementation',
+        # Orchestrator UI decoupling (10-13)
+        # Split from original orchestrator-ui-decoupling plan to:
+        # - Reduce implementation risk with smaller, focused plans
+        # - Leverage REST API from phase5-worktrees
+        # - Leverage TUI patterns from tui-integration-implementation
+        # - Enable parallel development of socket vs web adapters
+        'orchestrator-event-protocol',       # Event types, abstract adapter interface
+        'orchestrator-engine-extraction',    # Extract OrchestrationEngine from plan_orchestrator.py
+        'orchestrator-core-adapters',        # RichTUI, PlainText, JSON adapters
+        'orchestrator-external-adapters',    # Socket multi-viewer, web adapter (extends phase5 API)
+        # Other active plans
         'documentation-cleanup',
         'documentation-standards-analysis',
         'fix-plan-compliance',
