@@ -251,38 +251,126 @@ Rollback a single task by reverting its commit.
 
 **Step 1: Locate the task commit**
 
+Use git log with --grep to find the commit by task ID pattern:
+
 ```bash
 # Get plan name for commit message pattern
 PLAN_NAME=$(basename "$PLAN_PATH" .md)
 
 # Find commit by task ID in commit message
-git log --grep="task $TASK_ID:" --format="%H" -1
+# Pattern matches: "[plan-name] task X.Y: description"
+COMMIT_SHA=$(git log --grep="task $TASK_ID:" --format="%H" -1)
 ```
 
-**Step 2: Handle commit not found**
+**Commit lookup details:**
+- Uses `--grep` to search commit messages for the task ID pattern
+- The pattern `task X.Y:` matches the commit format from `/plan:implement`
+- `--format="%H"` returns only the full commit hash
+- `-1` limits to the most recent matching commit (handles re-implementations)
 
-If no commit is found:
+**Alternative patterns to try if primary fails:**
+```bash
+# Try with plan name prefix (more specific)
+git log --grep="\\[$PLAN_NAME\\] task $TASK_ID:" --format="%H" -1
+
+# Try case-insensitive match
+git log --grep="task $TASK_ID:" --format="%H" -1 -i
+```
+
+**Step 2: Determine task type and handle accordingly**
+
+Check if the task exists and whether it was ever committed:
+
+```bash
+# Check if commit was found
+if [ -z "$COMMIT_SHA" ]; then
+  # No commit found - check task status in status.json
+  TASK_STATUS=$(node scripts/status-cli.js --plan="$PLAN_PATH" status | jq -r ".tasks[] | select(.id == \"$TASK_ID\") | .status")
+
+  if [ "$TASK_STATUS" = "completed" ]; then
+    # Task marked complete but no commit found - likely analysis-only
+    echo "⚠ Task $TASK_ID appears to be analysis-only (no commit found)"
+    # Proceed to status-only rollback (Step 4)
+  elif [ "$TASK_STATUS" = "pending" ]; then
+    echo "⚠ Task $TASK_ID has status 'pending' - nothing to rollback"
+    exit 0
+  else
+    # Task has some status but no commit
+    echo "⚠ No commit found for task $TASK_ID"
+  fi
+fi
+```
+
+**Step 2a: Handle commit not found**
+
+If no commit is found but the task needs rollback:
+
 ```
 ⚠ No commit found for task $TASK_ID
 
 This may happen if:
 - The task was never committed (analysis-only task)
 - The commit message format differs from expected pattern
-- The task was implemented in a batch commit
+- The task was implemented in a batch commit with different ID
 
-Would you like to:
-○ Mark task as pending (status update only)
-○ Cancel rollback
+Options:
+○ Mark task as pending (status update only) - Choose for analysis-only tasks
+○ Search with alternate patterns - Choose if commit format may differ
+○ Cancel rollback - Choose if unsure
 ```
 
-**Step 3: Revert the commit**
+**Analysis-only task detection:**
+```bash
+# Analysis-only tasks typically:
+# 1. Have status "completed" in status.json
+# 2. Have findings written to docs/plan-outputs/{plan}/findings/{task-id}.md
+# 3. Have no associated commit
+
+FINDINGS_PATH="docs/plan-outputs/$PLAN_NAME/findings/$TASK_ID.md"
+if [ -f "$FINDINGS_PATH" ] && [ -z "$COMMIT_SHA" ]; then
+  IS_ANALYSIS_ONLY=true
+  echo "Detected analysis-only task (has findings, no commit)"
+fi
+```
+
+**Step 2b: Handle analysis-only tasks**
+
+For tasks that only produced analysis/findings without code changes:
+
+```
+Task $TASK_ID is analysis-only (no code commit).
+
+Findings file: docs/plan-outputs/$PLAN_NAME/findings/$TASK_ID.md
+
+Rollback actions:
+1. ✓ Mark task status as pending (allowing re-analysis)
+2. ? Delete findings file? (optional - preserves by default)
+
+Proceeding with status-only rollback...
+```
 
 ```bash
-# Show what will be reverted
-git show $SHA --stat
+# For analysis-only rollback, just update status
+# Skip git revert since there's no commit
+SKIP_GIT_REVERT=true
+```
 
-# If not --dry-run, revert
-git revert $SHA --no-edit
+**Step 3: Revert the commit (if found)**
+
+```bash
+if [ -n "$COMMIT_SHA" ] && [ "$SKIP_GIT_REVERT" != "true" ]; then
+  # Show what will be reverted
+  echo "Found commit: ${COMMIT_SHA:0:7}"
+  git show $COMMIT_SHA --stat --oneline
+
+  # If not --dry-run, revert
+  if [ "$DRY_RUN" != "true" ]; then
+    git revert $COMMIT_SHA --no-edit
+    echo "✓ Created revert commit"
+  else
+    echo "[DRY RUN] Would revert commit $COMMIT_SHA"
+  fi
+fi
 ```
 
 **Step 4: Update status.json**
@@ -290,24 +378,93 @@ git revert $SHA --no-edit
 Mark the task as `pending` (allowing re-implementation) or `rolled_back`:
 
 ```bash
-node scripts/status-cli.js --plan="$PLAN_PATH" mark-skipped "$TASK_ID" --reason="Rolled back via /plan:rollback"
+# Determine new status
+# - Use 'pending' if task should be re-implemented
+# - Use status-cli mark-skipped with reason for rolled back state
+
+if [ "$DRY_RUN" != "true" ]; then
+  node scripts/status-cli.js --plan="$PLAN_PATH" mark-skipped "$TASK_ID" \
+    --reason="Rolled back via /plan:rollback"
+  echo "✓ Task $TASK_ID marked as skipped (rolled back)"
+fi
 ```
 
-**Example output:**
+**Status update options:**
+| Scenario | New Status | Command |
+|----------|------------|---------|
+| Normal rollback | `skipped` with rollback reason | `mark-skipped --reason="Rolled back"` |
+| Analysis-only rollback | `skipped` with analysis note | `mark-skipped --reason="Analysis rolled back"` |
+| Re-implementation desired | Reset to pending state | `mark-skipped --reason="Rolled back for re-implementation"` |
+
+**Example output (normal task with commit):**
 
 ```
 Rolling back task 1.1...
 
-Found commit: a1b2c3d
+Locating commit...
+  Found commit: a1b2c3d
   [plan-name] task 1.1: Create auth middleware
+
+  Files changed:
+    src/middleware/auth.ts     | 45 ++++++++
+    src/lib/jwt-utils.ts       | 120 ++++++++++++++++++
+    src/routes/index.ts        | 5 +-
 
 Reverting commit...
   ✓ Created revert commit: d3c2b1a
 
 Updating status...
-  ✓ Task 1.1 marked as pending
+  ✓ Task 1.1 marked as skipped (rolled back)
 
 Rollback complete.
+```
+
+**Example output (analysis-only task):**
+
+```
+Rolling back task 0.2...
+
+Locating commit...
+  ⊘ No commit found
+
+Checking task type...
+  ✓ Task has findings file: docs/plan-outputs/my-plan/findings/0.2.md
+  ✓ Detected as analysis-only task
+
+Performing status-only rollback...
+  (No git revert needed - no code changes to undo)
+
+Updating status...
+  ✓ Task 0.2 marked as skipped (analysis rolled back)
+
+Rollback complete.
+Findings file preserved at: docs/plan-outputs/my-plan/findings/0.2.md
+```
+
+**Example output (commit not found - error case):**
+
+```
+Rolling back task 2.3...
+
+Locating commit...
+  ⚠ No commit found matching pattern "task 2.3:"
+
+Trying alternate patterns...
+  ⚠ No commit found with plan prefix "[my-plan] task 2.3:"
+
+Task status: completed
+
+This may indicate:
+- The task was implemented but commit message format differs
+- The task was part of a batch commit with a different ID
+- The task was committed on a different branch
+
+Options:
+  1. Mark as pending anyway (status-only rollback)
+  2. Specify commit SHA manually: /plan:rollback task 2.3 --sha=<commit>
+  3. Cancel and investigate
+
+Select option [1-3]:
 ```
 
 ---
