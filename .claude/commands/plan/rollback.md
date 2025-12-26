@@ -651,9 +651,47 @@ fi
 | `git revert <first>..<last> --no-commit` | Stage all reverts without committing (for single combined commit) |
 | `git revert <sha> --no-edit` | Revert single commit |
 
-**Step 4: Handle partial phase**
+**Step 4: Handle partial phase (some tasks not committed)**
 
-Some tasks in the phase may not have commits (analysis-only, not yet implemented, etc.):
+Some tasks in the phase may not have commits (analysis-only, not yet implemented, etc.). Before reverting, scan each task to determine which have commits:
+
+```bash
+# Get all task IDs for this phase
+PHASE_TASKS=$(node scripts/status-cli.js --plan="$PLAN_PATH" status | \
+  jq -r ".tasks[] | select(.id | startswith(\"$PHASE_NUM.\")) | .id")
+
+# Build list of tasks with commits vs without
+TASKS_WITH_COMMITS=()
+TASKS_WITHOUT_COMMITS=()
+
+for TASK_ID in $PHASE_TASKS; do
+  # Try to find commit for this task
+  TASK_COMMIT=$(git log --grep="task $TASK_ID:" --format="%H" -1 2>/dev/null)
+
+  if [ -n "$TASK_COMMIT" ]; then
+    TASKS_WITH_COMMITS+=("$TASK_ID:$TASK_COMMIT")
+    echo "  ✓ $TASK_ID: Found commit ${TASK_COMMIT:0:7}"
+  else
+    TASKS_WITHOUT_COMMITS+=("$TASK_ID")
+    echo "  ⊘ $TASK_ID: No commit found (status-only update)"
+  fi
+done
+
+echo ""
+echo "Summary: ${#TASKS_WITH_COMMITS[@]} tasks with commits, ${#TASKS_WITHOUT_COMMITS[@]} without"
+```
+
+**Handling tasks without commits:**
+
+Tasks without commits may be:
+- **Analysis-only tasks:** Produced findings but no code changes
+- **Pending tasks:** Never started implementation
+- **Failed tasks:** Started but didn't complete
+- **Batch-committed tasks:** Part of a larger commit with different ID
+
+For these tasks, only update status.json (no git revert needed).
+
+**Output example:**
 
 ```
 Phase 2 rollback:
@@ -661,6 +699,32 @@ Phase 2 rollback:
   ✓ 2.2: Found commit b2c3d4e
   ⊘ 2.3: No commit found (status-only update)
   ✓ 2.4: Found commit c3d4e5f
+
+Summary: 3 tasks with commits, 1 without
+```
+
+**Reverting only tasks with commits:**
+
+```bash
+# Revert commits in reverse chronological order
+for entry in $(printf '%s\n' "${TASKS_WITH_COMMITS[@]}" | tac); do
+  TASK_ID="${entry%%:*}"
+  COMMIT_SHA="${entry##*:}"
+
+  echo "Reverting task $TASK_ID (${COMMIT_SHA:0:7})..."
+  if git revert "$COMMIT_SHA" --no-edit; then
+    echo "  ✓ Reverted"
+  else
+    echo "  ⚠ Conflict detected - requires manual resolution"
+    break
+  fi
+done
+
+# Update status for ALL tasks (with or without commits)
+for TASK_ID in $PHASE_TASKS; do
+  node scripts/status-cli.js --plan="$PLAN_PATH" mark-skipped "$TASK_ID" \
+    --reason="Rolled back via phase $PHASE_NUM rollback"
+done
 ```
 
 **Step 5: Update status.json for all tasks in phase**
@@ -750,45 +814,157 @@ PLAN_NAME=$(basename "$PLAN_PATH" .md)
 BRANCH_NAME="plan/$PLAN_NAME"
 
 # Check if branch exists (unmerged) or has been merged
-git rev-parse --verify "$BRANCH_NAME" 2>/dev/null
+if git rev-parse --verify "$BRANCH_NAME" 2>/dev/null; then
+  PLAN_STATE="unmerged"
+  echo "Plan state: Unmerged (branch '$BRANCH_NAME' exists)"
+else
+  PLAN_STATE="merged"
+  echo "Plan state: Merged (no branch found)"
+fi
 ```
 
-**Step 2a: Unmerged plan rollback (branch exists)**
+**Step 2a: Unmerged plan rollback (delete branch)**
 
-For unmerged plans, the entire branch will be deleted. This is destructive.
+For unmerged plans, the entire branch will be deleted. This is destructive and requires confirmation.
+
+**Confirmation prompt before destructive action:**
+
+Before proceeding with branch deletion, prompt for confirmation:
 
 ```
-⚠ Plan '$PLAN_NAME' has not been merged.
+⚠ DESTRUCTIVE OPERATION
+
+Plan '$PLAN_NAME' has not been merged.
 
 This will DELETE the branch 'plan/$PLAN_NAME' and all commits.
 This action cannot be undone.
 
-Use --force to confirm deletion.
+Branch: plan/$PLAN_NAME
+Commits: $(git rev-list --count plan/$PLAN_NAME ^main) ahead of main
+Status: X/Y tasks completed
+
+Are you sure you want to delete this branch?
+○ Yes, delete the branch (requires --force)
+○ No, cancel the rollback
 ```
 
-If `--force` is provided:
+**Force flag validation:**
 
 ```bash
-# Switch to main first
-git checkout main
+if [ "$PLAN_STATE" = "unmerged" ] && [ "$FORCE" != "true" ]; then
+  echo "⚠ Plan branch exists (unmerged)."
+  echo ""
+  echo "To delete the unmerged branch, use:"
+  echo "  /plan:rollback plan --force"
+  echo ""
+  echo "This will permanently delete all commits on the plan branch."
+  exit 1
+fi
+```
+
+**Execute unmerged plan rollback:**
+
+If `--force` is provided after confirmation:
+
+```bash
+# Create backup tag before deletion (safety measure)
+TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+BACKUP_TAG="backup/plan-$PLAN_NAME-$TIMESTAMP"
+
+echo "Creating backup tag: $BACKUP_TAG"
+git tag "$BACKUP_TAG" "$BRANCH_NAME"
+
+# Check current branch - can't delete current branch
+CURRENT_BRANCH=$(git branch --show-current)
+if [ "$CURRENT_BRANCH" = "$BRANCH_NAME" ]; then
+  echo "Switching to main (cannot delete current branch)..."
+  git checkout main
+fi
 
 # Delete the plan branch
-git branch -D "plan/$PLAN_NAME"
+echo "Deleting branch: $BRANCH_NAME"
+if git branch -D "$BRANCH_NAME"; then
+  echo "✓ Branch deleted"
+  echo ""
+  echo "Backup available at: git checkout $BACKUP_TAG"
+else
+  echo "✗ Failed to delete branch"
+  exit 1
+fi
 ```
 
-**Step 2b: Merged plan rollback (branch deleted after merge)**
+**Step 2b: Merged plan rollback (revert merge commit)**
 
-For merged plans, find and revert the merge commit:
+For merged plans, find and revert the merge/squash commit.
+
+**Find merge commit using git log --grep:**
+
+The merge commit message follows the format from `/plan:complete`:
+- Pattern: `Plan: {plan-name}` in commit body
+- Alternative: Squash merge message with plan name
 
 ```bash
-# Find the merge/squash commit
-git log main --grep="Plan: $PLAN_NAME" --format="%H" -1
+# Primary pattern: Look for "Plan: {name}" in commit message
+MERGE_SHA=$(git log main --grep="Plan: $PLAN_NAME" --format="%H" -1)
+
+# If not found, try alternative patterns
+if [ -z "$MERGE_SHA" ]; then
+  # Try: squash merge message format
+  MERGE_SHA=$(git log main --grep="Squash merge: plan/$PLAN_NAME" --format="%H" -1)
+fi
+
+if [ -z "$MERGE_SHA" ]; then
+  # Try: merge commit with branch name
+  MERGE_SHA=$(git log main --grep="Merge.*plan/$PLAN_NAME" --format="%H" -1)
+fi
+
+if [ -z "$MERGE_SHA" ]; then
+  # Try: just the plan name (broader search)
+  MERGE_SHA=$(git log main --grep="$PLAN_NAME" --format="%H" -1)
+  if [ -n "$MERGE_SHA" ]; then
+    echo "⚠ Found commit by plan name (may not be merge commit)"
+    echo "  Commit: ${MERGE_SHA:0:7}"
+    git log -1 --oneline "$MERGE_SHA"
+    echo ""
+    echo "Verify this is the correct merge commit before proceeding."
+  fi
+fi
+
+# Final check
+if [ -z "$MERGE_SHA" ]; then
+  echo "✗ No merge commit found for plan '$PLAN_NAME'"
+  echo ""
+  echo "The plan may have:"
+  echo "- Never been merged (use /plan:rollback plan --force to delete branch)"
+  echo "- Been merged with a non-standard commit message"
+  echo "- Already been reverted"
+  echo ""
+  echo "To manually specify the commit, use:"
+  echo "  git revert <commit-sha> --no-edit"
+  exit 1
+fi
+
+echo "Found merge commit: ${MERGE_SHA:0:7}"
+git log -1 --oneline "$MERGE_SHA"
 ```
 
-If found, revert the merge:
+**Revert the merge commit:**
 
 ```bash
-git revert $MERGE_SHA --no-edit
+echo ""
+echo "Reverting merge commit..."
+
+if git revert "$MERGE_SHA" --no-edit; then
+  REVERT_SHA=$(git rev-parse HEAD)
+  echo "✓ Created revert commit: ${REVERT_SHA:0:7}"
+else
+  echo "✗ Revert failed - conflicts detected"
+  echo ""
+  echo "Options:"
+  echo "  1. Resolve conflicts, then: git revert --continue"
+  echo "  2. Abort the revert: git revert --abort"
+  exit 1
+fi
 ```
 
 **Step 3: Update status.json**
@@ -796,8 +972,17 @@ git revert $MERGE_SHA --no-edit
 Mark entire plan as rolled back:
 
 ```bash
-# Mark all tasks as pending
-node scripts/status-cli.js --plan="$PLAN_PATH" validate
+# Get all task IDs for this plan
+ALL_TASKS=$(node scripts/status-cli.js --plan="$PLAN_PATH" status | \
+  jq -r '.tasks[].id')
+
+# Mark all tasks as skipped with rollback reason
+for TASK_ID in $ALL_TASKS; do
+  node scripts/status-cli.js --plan="$PLAN_PATH" mark-skipped "$TASK_ID" \
+    --reason="Rolled back via plan rollback"
+done
+
+echo "✓ All tasks marked as skipped (rolled back)"
 ```
 
 **Example output (unmerged):**
