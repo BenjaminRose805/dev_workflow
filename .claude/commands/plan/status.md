@@ -70,6 +70,13 @@ git branch --show-current
 git status --porcelain | wc -l
 ```
 
+**Get commit count ahead of base branch:**
+```bash
+# Try master first, then main
+git rev-list --count HEAD ^master 2>/dev/null || git rev-list --count HEAD ^main 2>/dev/null
+```
+Returns: `5` (number of commits ahead)
+
 **Get last commit (abbreviated):**
 ```bash
 git log -1 --format="%h %s"
@@ -112,6 +119,7 @@ Template: test-creation.md (if applicable)
 
 Branch: plan/test-suite-implementation
 Uncommitted: 2 files
+Commits: 5 ahead of base branch
 Last Commit: abc1234 - [test-suite-implementation] task 1.3: ...
 
 ═══ Overall Progress ═══
@@ -186,6 +194,7 @@ Phases: 3/5 complete
 
 Branch: plan/test-suite-implementation
 Uncommitted: 0 files
+Commits: 8 ahead of base branch
 Last Commit: abc1234 - [test-suite-implementation] task 1.4: ...
 
 ═══ Status Tracking ═══
