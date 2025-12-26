@@ -639,16 +639,34 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 
 **Step 5: Handle archive tag reference**
 
+The archive tag reference provides a link to the granular commit history preserved before the squash merge. This allows reviewers to:
+- View individual task commits instead of the single squashed commit
+- Understand the implementation sequence and debugging steps
+- Cherry-pick specific changes if needed later
+
 If `--no-archive` was used, omit the Archive section:
 ```bash
 if [[ -n "$ARCHIVE_TAG" ]]; then
+    # Include archive section with usage instructions
     ARCHIVE_SECTION="Archive: $ARCHIVE_TAG
   View individual commits: git log $ARCHIVE_TAG
+  Compare with main: git log main..$ARCHIVE_TAG
+  Restore branch if needed: git checkout -b restored-$PLAN_NAME $ARCHIVE_TAG
 "
 else
     ARCHIVE_SECTION=""
 fi
 ```
+
+**Archive section format:**
+```
+Archive: archive/plan-{name}
+  View individual commits: git log archive/plan-{name}
+  Compare with main: git log main..archive/plan-{name}
+  Restore branch if needed: git checkout -b restored-{name} archive/plan-{name}
+```
+
+**Note:** The archive tag is created in Step 6 (before the merge). If `--no-archive` was specified, this section is omitted from the commit message entirely.
 
 **Example commit message:**
 ```
@@ -666,6 +684,8 @@ Phases:
 
 Archive: archive/plan-my-feature-plan
   View individual commits: git log archive/plan-my-feature-plan
+  Compare with main: git log main..archive/plan-my-feature-plan
+  Restore branch if needed: git checkout -b restored-my-feature-plan archive/plan-my-feature-plan
 
 Outputs: docs/plan-outputs/my-feature-plan/
 
