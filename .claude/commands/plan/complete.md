@@ -607,3 +607,93 @@ Outputs: docs/plan-outputs/my-feature-plan/
 
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 ```
+
+### 10. Create the Merge Commit
+
+Create the final merge commit with the generated message.
+
+**Step 1: Build the full commit message using heredoc**
+```bash
+# Use heredoc to preserve formatting
+COMMIT_MSG=$(cat <<EOF
+Complete: $PLAN_NAME
+
+Plan: $PLAN_TITLE
+Tasks: $COMPLETED/$TOTAL_TASKS
+Duration: $DURATION
+
+Phases:
+$PHASES
+$ARCHIVE_SECTION
+Outputs: docs/plan-outputs/$PLAN_NAME/
+
+🤖 Generated with Claude Code
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+EOF
+)
+```
+
+**Step 2: Create the commit**
+```bash
+git commit -m "$COMMIT_MSG"
+if [[ $? -ne 0 ]]; then
+    echo "✗ Failed to create merge commit"
+    echo ""
+    echo "The staged changes from squash merge are still present."
+    echo "You can manually commit with: git commit"
+    exit 1
+fi
+```
+
+**Step 3: Verify commit was created**
+```bash
+MERGE_COMMIT=$(git rev-parse HEAD)
+echo "✓ Created merge commit: $MERGE_COMMIT"
+echo "  $(git log -1 --oneline HEAD)"
+```
+
+**Step 4: Show commit summary**
+```bash
+# Display brief summary
+echo ""
+echo "Commit summary:"
+git log -1 --stat HEAD | head -20
+```
+
+**Example output (success):**
+```
+✓ Created merge commit: abc123def
+  abc123d Complete: my-feature-plan
+
+Commit summary:
+ .claude/commands/plan/complete.md |  150 +++++
+ docs/plan-outputs/.../status.json |   85 +++
+ src/lib/feature.ts                |  320 ++++++++++
+ tests/feature.test.ts             |  180 ++++++
+ 4 files changed, 735 insertions(+)
+```
+
+**Example output (failure):**
+```
+✗ Failed to create merge commit
+
+The staged changes from squash merge are still present.
+You can manually commit with: git commit
+```
+
+**Handling empty commits:**
+
+If no files changed (rare but possible):
+```bash
+# Check if there are staged changes
+STAGED_COUNT=$(git diff --cached --name-only | wc -l)
+if [[ "$STAGED_COUNT" -eq 0 ]]; then
+    echo "⚠ No changes to commit - plan branch was identical to $MAIN_BRANCH"
+    echo "  Skipping commit creation."
+    MERGE_COMMIT=""
+else
+    # Proceed with normal commit
+    git commit -m "$COMMIT_MSG"
+fi
+```
