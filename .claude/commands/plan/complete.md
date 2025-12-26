@@ -710,6 +710,30 @@ Outputs: docs/plan-outputs/{plan-name}/
 
 **Note:** The outputs directory is always included in the commit message as it provides essential context for understanding the plan's execution history and results.
 
+**Step 7: Add Claude Code attribution footer**
+
+The attribution footer provides traceability for AI-assisted work and includes the co-authorship marker.
+
+```bash
+# The attribution footer is always included
+ATTRIBUTION="🤖 Generated with Claude Code
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+```
+
+**Attribution format:**
+```
+🤖 Generated with Claude Code
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+```
+
+**Notes:**
+- The emoji (🤖) provides visual distinction in git logs
+- The `Co-Authored-By` trailer follows Git's standard format for commit co-authors
+- This attribution is consistent with Claude Code's standard commit message format
+- The footer should always be the last section of the commit message
+
 **Example commit message:**
 ```
 Complete: my-feature-plan
