@@ -33,22 +33,71 @@ Rollback task, phase, or plan changes using git revert operations.
 
 Parse the subcommand and target from the provided arguments.
 
-**Argument parsing:**
+**Argument structure:**
 
 ```
-args = skill arguments
-subcommand = first word (task|phase|plan)
-target = second word (task ID, phase number, or empty for plan)
-options = remaining flags (--dry-run, --force)
+/plan:rollback <subcommand> [target] [options]
+                    │          │        │
+                    │          │        └── --dry-run, --force
+                    │          └── task ID (X.Y), phase number (N), or empty
+                    └── task, phase, or plan
+```
+
+**Parsing algorithm:**
+
+```
+args = skill arguments (string)
+tokens = split args on whitespace
+
+# Extract options first (flags starting with --)
+options = []
+for token in tokens:
+  if token starts with "--":
+    options.push(token)
+    remove from tokens
+
+# Parse subcommand
+subcommand = tokens[0] (lowercase)
+if subcommand not in ["task", "phase", "plan"]:
+  ERROR: "Unknown subcommand '$subcommand'. Expected: task, phase, or plan"
+
+# Parse target based on subcommand
+target = tokens[1] (if exists)
 ```
 
 **Validation rules:**
 
-| Subcommand | Target Required | Valid Format |
-|------------|-----------------|--------------|
-| `task` | Yes | `X.Y` (e.g., `1.1`, `2.3`, `0.1`) |
-| `phase` | Yes | Integer `N` (e.g., `1`, `2`, `0`) |
-| `plan` | No | None (optional `--force` flag) |
+| Subcommand | Target Required | Valid Format | Validation |
+|------------|-----------------|--------------|------------|
+| `task` | Yes | `X.Y` (e.g., `1.1`, `2.3`, `0.1`) | Must match `/^\d+\.\d+$/` |
+| `phase` | Yes | Integer `N` (e.g., `1`, `2`, `0`) | Must match `/^\d+$/` |
+| `plan` | No | None (optional `--force` flag) | N/A |
+
+**Target validation against plan:**
+
+After syntax validation, verify the target exists in the plan:
+
+```
+# For task rollback
+if subcommand == "task":
+  # Check task exists in status.json
+  status = getStatus(planPath)
+  task = status.tasks.find(t => t.id === target)
+  if not task:
+    ERROR: "Task '$target' not found in plan. Available tasks: ..."
+  if task.status == "pending":
+    WARN: "Task '$target' has status 'pending' - nothing to rollback"
+
+# For phase rollback
+if subcommand == "phase":
+  # Check phase exists
+  phaseTasks = status.tasks.filter(t => t.id.startsWith(target + "."))
+  if phaseTasks.length == 0:
+    ERROR: "Phase $target not found in plan. Available phases: ..."
+  completedTasks = phaseTasks.filter(t => t.status == "completed")
+  if completedTasks.length == 0:
+    WARN: "No completed tasks in Phase $target - nothing to rollback"
+```
 
 **Error cases:**
 
@@ -56,6 +105,10 @@ options = remaining flags (--dry-run, --force)
 # Missing subcommand
 /plan:rollback
 → Error: Missing subcommand. Usage: /plan:rollback <task|phase|plan> <target>
+
+# Unknown subcommand
+/plan:rollback foo
+→ Error: Unknown subcommand 'foo'. Expected: task, phase, or plan
 
 # Missing target for task
 /plan:rollback task
@@ -65,6 +118,10 @@ options = remaining flags (--dry-run, --force)
 /plan:rollback task abc
 → Error: Invalid task ID 'abc'. Expected format: X.Y (e.g., 1.1, 2.3)
 
+# Task not found in plan
+/plan:rollback task 99.1
+→ Error: Task '99.1' not found in plan.
+
 # Missing target for phase
 /plan:rollback phase
 → Error: Missing phase number. Usage: /plan:rollback phase <n>
@@ -72,6 +129,36 @@ options = remaining flags (--dry-run, --force)
 # Invalid phase number
 /plan:rollback phase abc
 → Error: Invalid phase number 'abc'. Expected integer (e.g., 1, 2)
+
+# Phase not found in plan
+/plan:rollback phase 99
+→ Error: Phase 99 not found in plan. Available phases: 0, 1, 2, 3
+
+# Plan rollback without --force (unmerged)
+/plan:rollback plan
+→ Error: Plan branch exists (unmerged). Use --force to delete branch.
+```
+
+**Option handling:**
+
+| Option | Effect |
+|--------|--------|
+| `--dry-run` | Show what would be reverted without making changes |
+| `--force` | Required for destructive operations (delete unmerged branch) |
+| `--no-status-update` | Skip updating status.json (for manual recovery) |
+
+**Parsed result structure:**
+
+```javascript
+{
+  subcommand: "task" | "phase" | "plan",
+  target: "1.1" | "2" | null,
+  options: {
+    dryRun: boolean,
+    force: boolean,
+    noStatusUpdate: boolean
+  }
+}
 ```
 
 ### 3. Verify Git Availability
