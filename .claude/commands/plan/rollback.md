@@ -357,6 +357,8 @@ SKIP_GIT_REVERT=true
 
 **Step 3: Revert the commit (if found)**
 
+Execute `git revert <sha> --no-edit` to create a new commit that undoes the task changes.
+
 ```bash
 if [ -n "$COMMIT_SHA" ] && [ "$SKIP_GIT_REVERT" != "true" ]; then
   # Show what will be reverted
@@ -365,12 +367,65 @@ if [ -n "$COMMIT_SHA" ] && [ "$SKIP_GIT_REVERT" != "true" ]; then
 
   # If not --dry-run, revert
   if [ "$DRY_RUN" != "true" ]; then
-    git revert $COMMIT_SHA --no-edit
-    echo "✓ Created revert commit"
+    # Execute the revert with --no-edit to auto-generate commit message
+    if git revert $COMMIT_SHA --no-edit; then
+      REVERT_SHA=$(git rev-parse HEAD)
+      echo "✓ Created revert commit: ${REVERT_SHA:0:7}"
+    else
+      # Revert failed - likely due to conflicts
+      REVERT_FAILED=true
+      echo "⚠ Revert failed - conflicts detected"
+    fi
   else
     echo "[DRY RUN] Would revert commit $COMMIT_SHA"
   fi
 fi
+```
+
+**Revert command details:**
+| Option | Purpose |
+|--------|---------|
+| `git revert <sha>` | Create a new commit that reverses the specified commit |
+| `--no-edit` | Accept the auto-generated revert message without opening editor |
+| `--no-commit` | (alternative) Stage changes without committing - use for batching |
+
+**Handling revert conflicts:**
+
+If the revert encounters conflicts (files modified since the original commit):
+
+```bash
+if [ "$REVERT_FAILED" = "true" ]; then
+  echo ""
+  echo "Revert encountered conflicts. Options:"
+  echo ""
+  echo "  1. Resolve manually:"
+  echo "     - Edit conflicting files"
+  echo "     - git add <files>"
+  echo "     - git revert --continue"
+  echo ""
+  echo "  2. Abort the revert:"
+  echo "     - git revert --abort"
+  echo ""
+  echo "  3. Skip this commit (for phase/plan rollback):"
+  echo "     - git revert --skip"
+  echo ""
+
+  # Show conflicting files
+  echo "Conflicting files:"
+  git diff --name-only --diff-filter=U
+
+  # Exit with error - caller must handle
+  exit 1
+fi
+```
+
+**Generated revert commit message:**
+
+The `--no-edit` flag generates a message like:
+```
+Revert "[plan-name] task 1.1: Create auth middleware"
+
+This reverts commit a1b2c3d4e5f6...
 ```
 
 **Step 4: Update status.json**
