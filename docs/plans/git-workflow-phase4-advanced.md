@@ -152,6 +152,31 @@
 
 ---
 
+## Phase 10: Orchestrator Completion Integration
+
+- [ ] 10.1 Add completion prompt to `/plan:orchestrate`
+  - Read `.claude/commands/plan/orchestrate.md` to see current state
+  - After 100% completion, prompt user: "Plan complete. Run /plan:complete to merge to main? [Y/n]"
+  - If user confirms (Y or Enter), execute `/plan:complete` workflow
+  - If user declines (n), show reminder: "Run /plan:complete when ready to merge"
+  - Add `--no-complete` flag to skip the completion prompt entirely
+  - Add `--auto-complete` flag to run `/plan:complete` automatically without prompting
+
+- [ ] 10.2 Add completion prompt to `/plan:batch`
+  - Read `.claude/commands/plan/batch.md` to see current state
+  - After batch execution, check if plan is 100% complete
+  - If 100%, show same completion prompt as orchestrate
+  - Respect same `--no-complete` and `--auto-complete` flags
+  - If not 100%, show remaining task count instead
+
+- [ ] 10.3 Verify completion integration
+  - Verify orchestrate has completion prompt: `grep -c "plan:complete" .claude/commands/plan/orchestrate.md` >= 1
+  - Verify batch has completion prompt: `grep -c "plan:complete" .claude/commands/plan/batch.md` >= 1
+  - Verify --auto-complete flag documented in both commands
+  - Document results in `docs/plan-outputs/git-workflow-phase4-advanced/findings/10.3.md`
+
+---
+
 ## Success Criteria
 
 - `--pr` creates GitHub pull request with proper description
@@ -162,6 +187,7 @@
 - Configuration system allows full customization
 - All features work without config file (defaults)
 - All features documented with examples
+- Orchestrator and batch prompt for `/plan:complete` when plan finishes
 
 ## Risks
 
