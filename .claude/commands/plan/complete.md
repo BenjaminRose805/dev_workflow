@@ -573,19 +573,43 @@ COMPLETED_AT=$(date -Iseconds)
 ```
 
 **Step 3: Get phase summary**
+
+The phase summary lists each phase by name with its task count, providing a high-level overview of the plan's structure in the commit message.
+
 ```bash
 # Extract unique phases and count tasks per phase
+# Output format: "  - Phase N: Name (X tasks)" per line
 PHASES=$(node -e "
 const status = require('./$STATUS_FILE');
-const phases = {};
+const phases = new Map();  // Preserve phase order
+
+// Count tasks per phase (maintaining insertion order)
 status.tasks.forEach(t => {
-    phases[t.phase] = (phases[t.phase] || 0) + 1;
+    const current = phases.get(t.phase) || 0;
+    phases.set(t.phase, current + 1);
 });
-Object.entries(phases).forEach(([name, count]) => {
-    console.log('  - ' + name + ' (' + count + ' tasks)');
+
+// Format each phase as a list item
+phases.forEach((count, name) => {
+    // Pluralize 'task' correctly
+    const taskWord = count === 1 ? 'task' : 'tasks';
+    console.log('  - ' + name + ' (' + count + ' ' + taskWord + ')');
 });
 ")
 ```
+
+**Phase summary format:**
+```
+Phases:
+  - Phase 1: Setup (3 tasks)
+  - Phase 2: Implementation (8 tasks)
+  - Phase 3: Testing (4 tasks)
+```
+
+**Notes:**
+- Phases appear in the order they were encountered in `status.json` (which reflects plan order)
+- Phase names come from the plan's section headers (e.g., "Phase 2: Core Implementation")
+- Task count reflects total tasks in that phase (regardless of completion status at merge time)
 
 **Step 4: Build commit message**
 
