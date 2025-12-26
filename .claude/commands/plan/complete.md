@@ -379,6 +379,90 @@ git show archive/plan-{name}
 - If dry-run merge fails for non-conflict reasons, log warning
 - Proceed with caution and warn user
 
+## Merge Strategy Guide
+
+Choose the appropriate merge strategy based on your workflow needs:
+
+### `--merge squash` (Default)
+
+**When to use:**
+- Clean main branch history with one commit per plan
+- Completed work doesn't need granular commit history in main
+- Standard workflow for most plans
+- When you want a single, well-documented commit in main
+
+**Behavior:**
+- Creates a single new commit on main with all changes
+- Original commits preserved in archive tag
+- Plan branch is deleted after merge
+
+**Example:**
+```bash
+/plan:complete                    # Uses squash by default
+/plan:complete --merge squash     # Explicit squash
+```
+
+### `--merge commit`
+
+**When to use:**
+- Need to preserve merge point in history
+- Working with long-running plans that diverged from main
+- Team workflows that require merge commits for tracking
+- When bisecting history is important
+
+**Behavior:**
+- Creates a merge commit joining plan branch to main
+- Individual commits remain visible in main history
+- Two-parent commit shows merge point
+
+**Example:**
+```bash
+/plan:complete --merge commit
+```
+
+### `--merge ff` (Fast-Forward)
+
+**When to use:**
+- Plan branch has no divergence from main
+- Want to preserve exact commit history without merge commit
+- Prefer linear history on main
+- Small, quick plans that don't need squashing
+
+**Behavior:**
+- Moves main pointer forward to plan branch HEAD
+- No new commit created
+- All individual commits appear directly in main
+- **Fails if main has diverged** - must rebase or use another strategy
+
+**Example:**
+```bash
+/plan:complete --merge ff         # Fast-forward if possible
+```
+
+### Strategy Comparison
+
+| Strategy | History in Main | Archive Tag | Use When |
+|----------|-----------------|-------------|----------|
+| `squash` | Single commit | Yes (granular history) | Most plans (default) |
+| `commit` | Merge commit + individual | Optional | Long-running branches |
+| `ff` | Individual commits | Optional | Linear history, no divergence |
+
+### Decision Flowchart
+
+```
+Plan complete. Which merge strategy?
+    │
+    ├─→ Want clean main history? → `--merge squash` (default)
+    │
+    ├─→ Plan diverged from main?
+    │   ├─→ Yes, want merge marker → `--merge commit`
+    │   └─→ No divergence, linear OK → `--merge ff`
+    │
+    └─→ Need individual commits visible in main?
+        ├─→ Yes, with merge point → `--merge commit`
+        └─→ Yes, linear history → `--merge ff`
+```
+
 ## Success Criteria
 
 Before proceeding to merge:
