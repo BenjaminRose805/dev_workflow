@@ -248,11 +248,11 @@ def find_next_plan():
         'parallel-execution-foundation',
         'git-workflow-phase1-core-branching',
         'git-workflow-phase2-completion',
-        'parallel-execution-dependencies',
         'git-workflow-phase3-safety',
         'orchestrator-ui-decoupling',
         'git-workflow-phase4-advanced',
         'git-workflow-phase5-worktrees',
+        'parallel-execution-dependencies',  # Deferred - can run anytime
         # Other active plans
         'tui-integration-implementation',
         'documentation-cleanup',
@@ -266,11 +266,21 @@ def find_next_plan():
     ]
 
     for name in priority_order:
+        plan_file = paths['plans'] / f'{name}.md'
         status_file = paths['outputs'] / name / 'status.json'
-        if status_file.exists():
-            summary = load_status(status_file)
-            if summary.get('pending', 0) > 0:
-                return name
+
+        # Skip if plan file doesn't exist
+        if not plan_file.exists():
+            continue
+
+        # If no status.json, plan hasn't started yet - it's next
+        if not status_file.exists():
+            return name
+
+        # If status.json exists, check if there are pending tasks
+        summary = load_status(status_file)
+        if summary.get('pending', 0) > 0:
+            return name
 
     # Fallback: any plan with pending tasks
     for plan_file in paths['plans'].glob('*.md'):
