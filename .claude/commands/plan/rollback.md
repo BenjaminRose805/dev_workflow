@@ -416,38 +416,218 @@ Plan rollback complete.
 
 ## Examples
 
-### Rollback a single task
+### Example 1: Rollback a single task
+
+**Scenario:** Task 1.1 was implemented but introduced a bug. You want to revert just that task.
 
 ```bash
-# Rollback task 1.1
-/plan:rollback task 1.1
-
-# Preview what would be rolled back
-/plan:rollback task 2.3 --dry-run
+# First, preview what will be rolled back
+/plan:rollback task 1.1 --dry-run
 ```
 
-### Rollback an entire phase
+**Output:**
+```
+[DRY RUN] Would rollback task 1.1
+
+Task: 1.1 - Create auth middleware
+Status: completed
+Commit: a1b2c3d4 (2024-12-24 10:30:15)
+
+Changes that would be reverted:
+  M src/middleware/auth.ts (45 lines)
+  A src/lib/jwt-utils.ts (120 lines)
+  M src/routes/index.ts (5 lines)
+
+No changes made (--dry-run mode).
+```
 
 ```bash
-# Rollback all tasks in Phase 2
+# Execute the rollback
+/plan:rollback task 1.1
+```
+
+**Output:**
+```
+Rolling back task 1.1...
+
+Found commit: a1b2c3d4
+  [my-plan] task 1.1: Create auth middleware
+
+Reverting commit...
+  ✓ Created revert commit: e5f6g7h8
+
+Updating status...
+  ✓ Task 1.1 marked as pending
+
+Rollback complete. Task 1.1 can now be re-implemented.
+```
+
+---
+
+### Example 2: Rollback an entire phase
+
+**Scenario:** Phase 2 tasks all need to be redone due to a design change.
+
+```bash
+# Preview which tasks and commits will be affected
+/plan:rollback phase 2 --dry-run
+```
+
+**Output:**
+```
+[DRY RUN] Would rollback Phase 2
+
+Phase 2: Add Authentication (4 tasks)
+
+Tasks in phase:
+  2.1 [completed] Implement login endpoint
+      Commit: b2c3d4e5
+  2.2 [completed] Add session management
+      Commit: c3d4e5f6
+  2.3 [pending]   Add logout endpoint
+      (no commit - status update only)
+  2.4 [completed] Add auth tests
+      Commit: d4e5f6g7
+
+Commits to revert (newest first):
+  d4e5f6g7 - task 2.4: Add auth tests
+  c3d4e5f6 - task 2.2: Add session management
+  b2c3d4e5 - task 2.1: Implement login endpoint
+
+Total: 3 commits, 4 status updates
+
+No changes made (--dry-run mode).
+```
+
+```bash
+# Execute the phase rollback
+/plan:rollback phase 2
+```
+
+---
+
+### Example 3: Rollback an unmerged plan (discard work)
+
+**Scenario:** You want to abandon an incomplete plan and delete all work.
+
+```bash
+# This will fail without --force
+/plan:rollback plan
+```
+
+**Output:**
+```
+⚠ Plan 'my-feature' has not been merged.
+
+Branch: plan/my-feature
+Commits: 8
+Status: 5/12 tasks completed
+
+This will DELETE the branch and all commits.
+This action cannot be undone.
+
+Use --force to confirm deletion:
+  /plan:rollback plan --force
+```
+
+```bash
+# Confirm with --force
+/plan:rollback plan --force
+```
+
+**Output:**
+```
+Rolling back plan 'my-feature'...
+
+⚠ Destructive operation: Deleting unmerged branch
+
+Creating backup tag...
+  ✓ Created tag: backup/plan-my-feature-20241224-103015
+
+Switching to main...
+  ✓ Checked out 'main'
+
+Deleting plan branch...
+  ✓ Deleted branch 'plan/my-feature'
+
+Plan rollback complete.
+Backup available at: git checkout backup/plan-my-feature-20241224-103015
+```
+
+---
+
+### Example 4: Rollback a merged plan
+
+**Scenario:** A plan was completed and merged, but you need to undo it.
+
+```bash
+/plan:rollback plan
+```
+
+**Output:**
+```
+Rolling back plan 'my-feature'...
+
+Plan state: Merged
+
+Searching for merge commit...
+Found: f6e5d4c3
+  Squash merge: plan/my-feature into main
+
+  Summary of changes in merge:
+    12 files changed
+    +450 insertions, -23 deletions
+
+Reverting merge commit...
+  ✓ Created revert commit: g7h8i9j0
+
+Plan rollback complete.
+All plan changes have been reverted on main.
+```
+
+---
+
+### Example 5: Combining with other commands
+
+**Workflow: Re-implement a task after rollback**
+
+```bash
+# Step 1: Rollback the problematic task
+/plan:rollback task 3.2
+
+# Step 2: Verify status shows task as pending
+/plan:status
+
+# Step 3: Re-implement with corrected approach
+/plan:implement 3.2
+```
+
+**Workflow: Rollback and switch to different approach**
+
+```bash
+# Rollback entire phase that used wrong approach
 /plan:rollback phase 2
 
-# Preview phase rollback
-/plan:rollback phase 1 --dry-run
+# View tasks ready for re-implementation
+/plan:status
+
+# Implement with new approach
+/plan:implement phase:2
 ```
 
-### Rollback the entire plan
+---
 
-```bash
-# Rollback merged plan (reverts merge commit)
-/plan:rollback plan
+### Quick Reference
 
-# Rollback unmerged plan (deletes branch - requires --force)
-/plan:rollback plan --force
-
-# Preview plan rollback
-/plan:rollback plan --dry-run
-```
+| Command | Description |
+|---------|-------------|
+| `/plan:rollback task 1.1` | Rollback single task |
+| `/plan:rollback task 1.1 --dry-run` | Preview task rollback |
+| `/plan:rollback phase 2` | Rollback all phase 2 tasks |
+| `/plan:rollback phase 2 --dry-run` | Preview phase rollback |
+| `/plan:rollback plan` | Rollback merged plan |
+| `/plan:rollback plan --force` | Rollback unmerged plan (delete branch) |
+| `/plan:rollback plan --dry-run` | Preview plan rollback |
 
 ## Error Handling
 
