@@ -165,6 +165,61 @@ fi
 
 ---
 
+### `hasUncommittedChanges()`
+
+Check if there are uncommitted changes in the working directory.
+
+```bash
+# Returns 0 (true) if there are uncommitted changes, 1 (false) if clean
+hasUncommittedChanges() {
+    local status_output
+    status_output=$(git status --porcelain 2>/dev/null)
+
+    if [ -n "$status_output" ]; then
+        return 0  # true - has uncommitted changes
+    else
+        return 1  # false - working directory is clean
+    fi
+}
+
+# Usage
+if hasUncommittedChanges; then
+    echo "There are uncommitted changes"
+else
+    echo "Working directory is clean"
+fi
+```
+
+**Alternative inline pattern:**
+```bash
+# Check for any uncommitted changes (staged or unstaged)
+if [ -n "$(git status --porcelain 2>/dev/null)" ]; then
+    echo "Has uncommitted changes"
+fi
+```
+
+**With file count:**
+```bash
+# Get count of changed files
+CHANGE_COUNT=$(git status --porcelain 2>/dev/null | wc -l)
+if [ "$CHANGE_COUNT" -gt 0 ]; then
+    echo "$CHANGE_COUNT files with uncommitted changes"
+fi
+```
+
+**Returns:**
+- Exit code 0 (true) if there are uncommitted changes
+- Exit code 1 (false) if working directory is clean
+- Exit code 1 if not a git repository
+
+**Notes:**
+- `git status --porcelain` provides machine-parseable output
+- Output is empty when working directory is clean
+- Includes both staged and unstaged changes
+- Includes untracked files (use `--untracked-files=no` to exclude)
+
+---
+
 ## Branch Validation Logic
 
 Use this pattern in commands that require branch validation:
