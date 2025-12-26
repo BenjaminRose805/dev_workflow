@@ -17,6 +17,73 @@ Rollback task, phase, or plan changes using git revert operations.
 - `--dry-run` - Show what would be reverted without making changes
 - `--force` - Required for destructive operations (e.g., deleting unmerged plan branch)
 
+## Subcommand Structure
+
+This command uses a subcommand pattern with three distinct operations:
+
+### `task` Subcommand
+
+Rolls back a single task by reverting its commit.
+
+| Aspect | Value |
+|--------|-------|
+| Syntax | `/plan:rollback task <id>` |
+| Target | Task ID (e.g., `1.1`, `2.3`, `0.1`) |
+| Git Operation | `git revert <sha> --no-edit` |
+| Commit Pattern | `git log --grep="task <id>:" --format="%H" -1` |
+| Status Update | Mark task as `pending` (allowing re-implementation) |
+| Edge Cases | Analysis-only tasks (no commit), batch commits |
+
+### `phase` Subcommand
+
+Rolls back all tasks in a phase by reverting the commit range.
+
+| Aspect | Value |
+|--------|-------|
+| Syntax | `/plan:rollback phase <n>` |
+| Target | Phase number (e.g., `1`, `2`, `0`) |
+| Git Operation | Revert all phase commits in reverse order |
+| Commit Pattern | `git log --grep="\\[plan\\] task <n>\\." --format="%H" --reverse` |
+| Status Update | Mark all phase tasks as `pending` |
+| Edge Cases | Partial phases (some tasks without commits) |
+
+### `plan` Subcommand
+
+Rolls back an entire plan. Behavior depends on whether plan is merged or unmerged.
+
+| Aspect | Unmerged Plan | Merged Plan |
+|--------|---------------|-------------|
+| Syntax | `/plan:rollback plan --force` | `/plan:rollback plan` |
+| Detection | `git rev-parse --verify plan/<name>` succeeds | Branch doesn't exist |
+| Git Operation | `git branch -D plan/<name>` | `git revert <merge-sha> --no-edit` |
+| Commit Pattern | N/A (deletes branch) | `git log --grep="Plan: <name>" --format="%H" -1` |
+| Requires `--force` | Yes (destructive) | No |
+| Backup | Creates tag `backup/plan-<name>-<timestamp>` | N/A |
+
+### Subcommand Routing
+
+```
+parse arguments → extract subcommand
+
+if subcommand == "task":
+    → validate task ID format (X.Y)
+    → locate task commit
+    → revert commit
+    → update status.json
+
+else if subcommand == "phase":
+    → validate phase number (integer)
+    → find all phase commits
+    → revert in reverse order
+    → update all task statuses
+
+else if subcommand == "plan":
+    → detect merged vs unmerged
+    → if unmerged: require --force, delete branch
+    → if merged: revert merge commit
+    → update plan status
+```
+
 ## Instructions
 
 ### 1. Load Active Plan and Initialize Status
