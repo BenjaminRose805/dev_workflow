@@ -14,7 +14,7 @@ Implement one or more tasks from the active plan.
 3. Call `initializePlanStatus(planPath)` to ensure status.json exists
 4. Output directory is derived from plan name: `docs/plan-outputs/{plan-name}/`
 
-### 1.1. Git Branch Validation (Optional)
+### 1.1. Git Branch Validation
 
 After loading the active plan, validate that you're on the correct git branch:
 
@@ -547,33 +547,63 @@ After marking a task complete (or failed), commit the changes to git:
    git add -A
    ```
 
-3. **Create commit with task context:**
-   ```bash
-   git commit -m "task {taskId}: {brief description}"
+3. **Create commit with enhanced format:**
+
+   **Commit message format:** `[plan-name] task {id}: {description}`
+
+   The commit includes a multi-line body with plan metadata:
    ```
-   - Use the task ID and a shortened description (first 50 chars)
-   - Example: `task 1.1: Create test suite for authentication`
+   [plan-name] task {id}: {description}
+
+   Plan: {plan-name}
+   Phase: {phase-number} - {phase-name}
+   Task: {task-id}
+   ```
+
+   **Use a heredoc for proper formatting:**
+   ```bash
+   # Get plan name from plan path
+   PLAN_NAME=$(basename "$PLAN_PATH" .md)
+
+   # Get phase info (extract from task context)
+   PHASE_NUM="2"
+   PHASE_NAME="Branch Validation in /plan:implement"
+
+   git commit -m "$(cat <<EOF
+   [$PLAN_NAME] task $TASK_ID: $BRIEF_DESCRIPTION
+
+   Plan: $PLAN_NAME
+   Phase: $PHASE_NUM - $PHASE_NAME
+   Task: $TASK_ID
+   EOF
+   )"
+   ```
 
 4. **Handle commit failures gracefully:**
    - If commit fails (e.g., nothing to commit, hooks reject), log warning but continue
    - Don't fail the task just because the commit failed
 
-**Commit message format:**
-```
-task {id}: {description}
-
-Plan: {plan-name}
-Phase: {phase-name}
-```
-
 **Example:**
 ```bash
-# After completing task 1.1
+# After completing task 1.1 in "implement-authentication" plan
 git add -A
-git commit -m "task 1.1: Create auth middleware
+git commit -m "$(cat <<EOF
+[implement-authentication] task 1.1: Create auth middleware
 
 Plan: implement-authentication
-Phase: Phase 1: Core Implementation"
+Phase: 1 - Core Implementation
+Task: 1.1
+EOF
+)"
+```
+
+**Resulting commit message:**
+```
+[implement-authentication] task 1.1: Create auth middleware
+
+Plan: implement-authentication
+Phase: 1 - Core Implementation
+Task: 1.1
 ```
 
 **Skip commits when:**
