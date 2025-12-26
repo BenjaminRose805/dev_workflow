@@ -50,6 +50,36 @@ reflect actual completion status. Always prefer status.json when available.
 - Count complete criteria
 - Count incomplete criteria
 
+### 2b. Gather Git Information
+
+Before displaying status, gather git information if available:
+
+**Check git availability:**
+```bash
+git --version 2>/dev/null
+```
+If unavailable, skip git section in display.
+
+**Get current branch:**
+```bash
+git branch --show-current
+```
+
+**Get uncommitted file count:**
+```bash
+git status --porcelain | wc -l
+```
+
+**Get last commit (abbreviated):**
+```bash
+git log -1 --format="%h %s"
+```
+Returns: `abc1234 [plan-name] task 1.3: description...`
+
+**Handle unavailable git gracefully:**
+- If git commands fail, omit the "Git Information" section entirely
+- Do not show errors to user, just skip the section
+
 ### 3. Calculate Progress
 
 **Overall progress:**
@@ -77,6 +107,12 @@ For each phase:
 Plan: Test Suite Implementation Plan
 File: docs/plans/test-suite-implementation.md
 Template: test-creation.md (if applicable)
+
+═══ Git Information ═══
+
+Branch: plan/test-suite-implementation
+Uncommitted: 2 files
+Last Commit: abc1234 - [test-suite-implementation] task 1.3: ...
 
 ═══ Overall Progress ═══
 
@@ -145,6 +181,12 @@ Output: docs/plan-outputs/test-suite-implementation/
 
 Tasks: 18/30 complete (12 remaining)
 Phases: 3/5 complete
+
+═══ Git Information ═══
+
+Branch: plan/test-suite-implementation
+Uncommitted: 0 files
+Last Commit: abc1234 - [test-suite-implementation] task 1.4: ...
 
 ═══ Status Tracking ═══
 
