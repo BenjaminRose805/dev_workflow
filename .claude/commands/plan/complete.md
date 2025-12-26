@@ -442,3 +442,66 @@ fi
 ⚠ Warning: Failed to pull from origin/main
   Continuing with local state. Consider manual sync.
 ```
+
+### 8. Perform Squash Merge
+
+Squash all commits from the plan branch into a single staged change.
+
+**Step 1: Execute squash merge**
+```bash
+# PLAN_BRANCH was saved earlier (e.g., "plan/my-plan")
+git merge --squash "$PLAN_BRANCH"
+if [[ $? -ne 0 ]]; then
+    echo "✗ Squash merge failed"
+    echo ""
+    echo "This may happen if:"
+    echo "  - Merge conflicts occurred (resolve manually)"
+    echo "  - Branch has diverged significantly from $MAIN_BRANCH"
+    echo ""
+    echo "To resolve:"
+    echo "  1. Switch back to plan branch: git checkout $PLAN_BRANCH"
+    echo "  2. Merge main into plan: git merge $MAIN_BRANCH"
+    echo "  3. Resolve any conflicts and commit"
+    echo "  4. Re-run /plan:complete"
+    exit 1
+fi
+```
+
+**Step 2: Verify staged changes**
+```bash
+# The squash merge stages all changes but doesn't commit
+STAGED=$(git diff --cached --stat)
+if [[ -z "$STAGED" ]]; then
+    echo "⚠ No changes to merge (plan branch may be identical to $MAIN_BRANCH)"
+    echo "  This can happen if all changes were already merged."
+else
+    FILE_COUNT=$(git diff --cached --name-only | wc -l)
+    echo "✓ Squash merge complete - $FILE_COUNT file(s) staged"
+fi
+```
+
+**Example output (success):**
+```
+✓ Squash merge complete - 12 file(s) staged
+```
+
+**Example output (no changes):**
+```
+⚠ No changes to merge (plan branch may be identical to main)
+  This can happen if all changes were already merged.
+```
+
+**Example output (failure):**
+```
+✗ Squash merge failed
+
+This may happen if:
+  - Merge conflicts occurred (resolve manually)
+  - Branch has diverged significantly from main
+
+To resolve:
+  1. Switch back to plan branch: git checkout plan/my-plan
+  2. Merge main into plan: git merge main
+  3. Resolve any conflicts and commit
+  4. Re-run /plan:complete
+```
