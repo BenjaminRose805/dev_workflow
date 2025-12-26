@@ -574,6 +574,36 @@ if [[ "$MERGE_STRATEGY" == "squash" ]]; then
 fi
 ```
 
+#### Strategy: `--merge commit` (merge commit)
+
+Create a merge commit that preserves the full branch history. Individual commits remain visible in the main branch history.
+
+```bash
+if [[ "$MERGE_STRATEGY" == "commit" ]]; then
+    # PLAN_BRANCH was saved earlier (e.g., "plan/my-plan")
+    git merge --no-ff "$PLAN_BRANCH"
+    if [[ $? -ne 0 ]]; then
+        echo "✗ Merge commit failed"
+        echo ""
+        echo "This may happen if:"
+        echo "  - Merge conflicts occurred (resolve manually)"
+        echo "  - Branch has diverged significantly from $MAIN_BRANCH"
+        echo ""
+        echo "To resolve:"
+        echo "  1. Abort the merge: git merge --abort"
+        echo "  2. Switch back to plan branch: git checkout $PLAN_BRANCH"
+        echo "  3. Merge main into plan: git merge $MAIN_BRANCH"
+        echo "  4. Resolve any conflicts and commit"
+        echo "  5. Re-run /plan:complete --merge commit"
+        exit 1
+    fi
+
+    echo "✓ Merge commit complete - history preserved"
+    echo "  Individual commits visible in history"
+    NEEDS_COMMIT=false  # --no-ff creates its own merge commit
+fi
+```
+
 #### Strategy: `--merge ff` (fast-forward)
 
 Fast-forward merge if the plan branch is ahead of main with no divergence. Preserves individual commits without creating a merge commit.
@@ -611,6 +641,12 @@ if [[ "$MERGE_STRATEGY" == "squash" ]]; then
     fi
 fi
 
+# For commit: verify merge commit was created
+if [[ "$MERGE_STRATEGY" == "commit" ]]; then
+    MERGE_COMMIT=$(git rev-parse HEAD)
+    echo "  Merge commit: $(git log -1 --oneline HEAD)"
+fi
+
 # For ff: verify HEAD moved forward
 if [[ "$MERGE_STRATEGY" == "ff" ]]; then
     NEW_HEAD=$(git rev-parse HEAD)
@@ -621,6 +657,29 @@ fi
 **Example output (squash - success):**
 ```
 ✓ Squash merge complete - 12 file(s) staged
+```
+
+**Example output (commit - success):**
+```
+✓ Merge commit complete - history preserved
+  Individual commits visible in history
+  Merge commit: abc1234 Merge branch 'plan/my-plan'
+```
+
+**Example output (commit - failure):**
+```
+✗ Merge commit failed
+
+This may happen if:
+  - Merge conflicts occurred (resolve manually)
+  - Branch has diverged significantly from main
+
+To resolve:
+  1. Abort the merge: git merge --abort
+  2. Switch back to plan branch: git checkout plan/my-plan
+  3. Merge main into plan: git merge main
+  4. Resolve any conflicts and commit
+  5. Re-run /plan:complete --merge commit
 ```
 
 **Example output (ff - success):**
