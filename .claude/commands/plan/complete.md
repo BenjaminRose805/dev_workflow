@@ -206,6 +206,8 @@ Resolve conflicts before completing:
 
 ### 5. Commit Any Uncommitted Changes
 
+**See:** `.claude/commands/plan/_common/uncommitted-changes-protection.md` for complete uncommitted changes protection patterns.
+
 Before creating archive tags or merging, ensure all changes are committed.
 
 **Step 1: Check for uncommitted changes**

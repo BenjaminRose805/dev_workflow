@@ -1,0 +1,60 @@
+#!/bin/bash
+#
+# Pre-commit hook template for plan-based git workflow
+#
+# Installation:
+#   git config core.hooksPath .githooks
+#
+# Bypass (when needed):
+#   git commit --no-verify -m "message"
+#
+# This hook provides:
+#   1. Warning when committing directly to main/master
+#   2. Info message when not on a plan branch
+#
+
+# Get current branch name
+CURRENT_BRANCH=$(git branch --show-current 2>/dev/null)
+
+# Handle detached HEAD state
+if [ -z "$CURRENT_BRANCH" ]; then
+    echo "[pre-commit] Warning: Detached HEAD state detected"
+    echo "             Consider switching to a branch before committing."
+    exit 0
+fi
+
+# Check for main/master branch commits
+if [ "$CURRENT_BRANCH" = "main" ] || [ "$CURRENT_BRANCH" = "master" ]; then
+    echo ""
+    echo "=============================================="
+    echo "[pre-commit] WARNING: Committing to $CURRENT_BRANCH"
+    echo "=============================================="
+    echo ""
+    echo "You are about to commit directly to the $CURRENT_BRANCH branch."
+    echo "Consider using the plan workflow instead:"
+    echo ""
+    echo "  1. Create a plan: /plan:create <template>"
+    echo "  2. Work on plan branch: plan/<plan-name>"
+    echo "  3. Complete and merge: /plan:complete"
+    echo ""
+    echo "To bypass this warning: git commit --no-verify"
+    echo ""
+    echo "Proceeding with commit..."
+    echo ""
+    # Exit 0 to allow commit (this is a warning, not a block)
+    exit 0
+fi
+
+# Check for plan branch pattern
+if [[ "$CURRENT_BRANCH" == plan/* ]]; then
+    # On a plan branch - this is the expected workflow
+    PLAN_NAME="${CURRENT_BRANCH#plan/}"
+    echo "[pre-commit] Plan branch: $PLAN_NAME"
+    exit 0
+fi
+
+# Not on main/master and not on a plan branch
+echo "[pre-commit] Info: Not on a plan branch (current: $CURRENT_BRANCH)"
+echo "             Plan branches use the pattern: plan/<plan-name>"
+echo ""
+exit 0

@@ -21,6 +21,8 @@ Set the current working plan file for subsequent `/plan:*` commands.
 
 ### 3.0.1 Check for Uncommitted Changes (Before Branch Switch)
 
+**See:** `.claude/commands/plan/_common/uncommitted-changes-protection.md` for complete uncommitted changes protection patterns.
+
 Before switching branches (when git is available), check for uncommitted changes:
 
 ```bash

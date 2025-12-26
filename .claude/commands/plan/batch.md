@@ -14,6 +14,207 @@ Select multiple tasks for batch/parallel execution with detailed preview and pro
 3. Call `initializePlanStatus(planPath)` to create output directory and status.json
 4. Output directory is derived from plan name: `docs/plan-outputs/{plan-name}/`
 
+### 1.1. Git Branch Validation
+
+**See:** `.claude/commands/plan/_common/git-utilities.md` for complete git utility patterns.
+
+After loading the active plan, validate that you're on the correct git branch:
+
+**Step 1: Check if `--no-branch-check` flag is present**
+
+```bash
+# Parse arguments for --no-branch-check flag
+NO_BRANCH_CHECK=false
+for arg in $ARGS; do
+    if [ "$arg" = "--no-branch-check" ]; then
+        NO_BRANCH_CHECK=true
+        # Remove flag from args for further parsing
+    fi
+done
+
+if [ "$NO_BRANCH_CHECK" = true ]; then
+    echo "⚠ Branch validation skipped (--no-branch-check)"
+    # Skip all branch validation steps
+fi
+```
+
+**Step 2: Check git availability**
+
+```bash
+if ! git --version 2>/dev/null; then
+    GIT_AVAILABLE=false
+    echo "⚠ Git not available - skipping branch validation"
+    # Skip all git operations in this section
+fi
+```
+
+**Step 3: Get current branch and expected branch**
+
+```bash
+# Get current branch
+CURRENT_BRANCH=$(git branch --show-current 2>/dev/null)
+
+# Derive expected branch from plan name
+PLAN_NAME=$(basename "$PLAN_PATH" .md)
+EXPECTED_BRANCH="plan/$PLAN_NAME"
+```
+
+**Step 4: Validate branch and take action**
+
+| Current Branch | Action |
+|----------------|--------|
+| `plan/{plan-name}` (correct) | ✓ Continue normally |
+| `plan/{other-plan}` (wrong plan branch) | Auto-switch with prompt (or auto-switch in autonomous mode) |
+| Non-plan branch (e.g., `main`, `feature/x`) | Warn but continue for backwards compatibility |
+| No branch (detached HEAD) | Warn but continue |
+
+**Branch validation logic:**
+
+```bash
+# Case 1: Detached HEAD
+if [ -z "$CURRENT_BRANCH" ]; then
+    echo "⚠ Warning: In detached HEAD state."
+    echo "  Consider checking out the plan branch: git checkout $EXPECTED_BRANCH"
+    echo "  Continuing with batch execution..."
+
+# Case 2: On correct plan branch
+elif [ "$CURRENT_BRANCH" = "$EXPECTED_BRANCH" ]; then
+    echo "✓ Git branch: $CURRENT_BRANCH"
+
+# Case 3: On wrong plan branch
+elif [[ "$CURRENT_BRANCH" == plan/* ]]; then
+    echo "⚠ On wrong plan branch: $CURRENT_BRANCH"
+    echo "  Expected branch: $EXPECTED_BRANCH"
+
+    if [ "$AUTONOMOUS" = true ]; then
+        # Auto-switch in autonomous mode
+        echo "  Auto-switching to correct branch..."
+        if git checkout "$EXPECTED_BRANCH" 2>/dev/null; then
+            echo "  ✓ Switched to $EXPECTED_BRANCH"
+        elif git checkout -b "$EXPECTED_BRANCH" 2>/dev/null; then
+            echo "  ✓ Created and switched to $EXPECTED_BRANCH"
+        else
+            echo "  ✗ Failed to switch branches. Aborting."
+            exit 1
+        fi
+    else
+        # Prompt user in interactive mode
+        # Use AskUserQuestion with options: Switch / Continue / Cancel
+        # See "Auto-Switch Prompt" section below
+    fi
+
+# Case 4: On non-plan branch (backwards compatibility)
+else
+    echo "⚠ Warning: Not on a plan branch (currently on '$CURRENT_BRANCH')."
+    echo "  Expected branch: $EXPECTED_BRANCH"
+    echo "  Run /plan:set to switch to the plan branch."
+    echo "  Continuing with batch execution..."
+fi
+```
+
+**Auto-Switch Prompt (Interactive Mode):**
+
+When on the wrong plan branch and in interactive mode, prompt the user:
+
+```
+⚠ On wrong plan branch: plan/other-plan
+  Expected branch: plan/my-plan
+
+Choose how to proceed:
+○ Switch to correct branch (Recommended) - Switch to plan/my-plan
+○ Continue on current branch - Execute tasks on plan/other-plan
+○ Cancel - Abort batch execution
+```
+
+**Implementation with AskUserQuestion:**
+
+```javascript
+{
+  questions: [{
+    question: "You're on the wrong plan branch. How would you like to proceed?",
+    header: "Branch",
+    options: [
+      {
+        label: "Switch to correct branch (Recommended)",
+        description: `Switch from ${currentBranch} to ${expectedBranch}`
+      },
+      {
+        label: "Continue on current branch",
+        description: `Execute tasks while staying on ${currentBranch}`
+      },
+      {
+        label: "Cancel",
+        description: "Abort batch execution"
+      }
+    ],
+    multiSelect: false
+  }]
+}
+```
+
+**Response handling:**
+
+```bash
+case "$USER_CHOICE" in
+    "Switch"*)
+        if git checkout "$EXPECTED_BRANCH" 2>/dev/null; then
+            echo "✓ Switched to $EXPECTED_BRANCH"
+        elif git checkout -b "$EXPECTED_BRANCH" 2>/dev/null; then
+            echo "✓ Created and switched to $EXPECTED_BRANCH"
+        else
+            echo "✗ Failed to switch branches."
+            echo "  You may have uncommitted changes that conflict."
+            echo "  Please resolve manually and retry."
+            exit 1
+        fi
+        ;;
+    "Continue"*)
+        echo "Continuing on $CURRENT_BRANCH"
+        ;;
+    "Cancel"*)
+        echo "Batch execution cancelled."
+        exit 0
+        ;;
+esac
+```
+
+**Example output (correct branch):**
+```
+✓ Git branch: plan/my-plan
+```
+
+**Example output (wrong plan branch - auto-switched in autonomous mode):**
+```
+⚠ On wrong plan branch: plan/other-plan
+  Expected branch: plan/my-plan
+  Auto-switching to correct branch...
+  ✓ Switched to plan/my-plan
+```
+
+**Example output (non-plan branch - backwards compatibility):**
+```
+⚠ Warning: Not on a plan branch (currently on 'main').
+  Expected branch: plan/my-plan
+  Run /plan:set to switch to the plan branch.
+  Continuing with batch execution...
+```
+
+**Example output (--no-branch-check used):**
+```
+⚠ Branch validation skipped (--no-branch-check)
+```
+
+**Error messages for branch issues:**
+
+| Scenario | Error Message |
+|----------|---------------|
+| Failed to switch | `✗ Failed to switch branches. You may have uncommitted changes that conflict. Please resolve manually and retry.` |
+| Branch doesn't exist | `✗ Branch plan/{name} does not exist. Run /plan:set to create it.` |
+| Detached HEAD | `⚠ Warning: In detached HEAD state. Consider checking out the plan branch: git checkout plan/{name}` |
+| Git unavailable | `⚠ Git not available - skipping branch validation` |
+
+---
+
 ### 1.5. Parse Arguments (if provided)
 
 If arguments are passed to this skill, parse them to determine which tasks to batch execute:
@@ -28,6 +229,7 @@ If arguments are passed to this skill, parse them to determine which tasks to ba
 | All pending | `all` | All pending tasks (with confirmation) |
 | No arguments | (empty) | Interactive selection (step 3) |
 | `--autonomous` | `1.1 1.2 --autonomous` | Skip all interactive prompts |
+| `--no-branch-check` | `1.1 --no-branch-check` | Skip git branch validation |
 
 **Autonomous Mode:**
 
@@ -38,11 +240,12 @@ When `--autonomous` flag is present:
 - Task IDs MUST be provided as arguments
 - Still report progress and final summary normally
 
-**Detecting autonomous mode:**
+**Detecting flags:**
 ```
 args = skill arguments
 autonomous = args contains "--autonomous"
-args = args with "--autonomous" removed (for further parsing)
+noBranchCheck = args contains "--no-branch-check"
+args = args with "--autonomous" and "--no-branch-check" removed (for further parsing)
 ```
 
 **Parsing logic:**
@@ -101,6 +304,12 @@ otherwise:
 
 # Search by description
 /plan:batch websocket
+
+# Skip branch validation
+/plan:batch 1.1 --no-branch-check
+
+# Combined flags
+/plan:batch 1.1 1.2 --autonomous --no-branch-check
 ```
 
 ### 2. Parse Plan File
@@ -518,6 +727,7 @@ The `--autonomous` flag enables non-interactive batch execution for orchestrator
 
 | Step | Interactive Mode | Autonomous Mode |
 |------|-----------------|-----------------|
+| 1.1. Branch validation | Prompt for switch/continue | Auto-switch to correct branch |
 | 3. Batch selection | AskUserQuestion UI | Skipped (IDs required as args) |
 | 5. Execution preview | Show + confirm | Show (no confirmation) |
 | 6-7. Execution | Normal | Normal |
@@ -541,3 +751,27 @@ Run: /plan:batch 1.1 1.2 1.3 --autonomous
 Execute these tasks. On failure, continue with remaining tasks.
 Report final status when complete.
 ```
+
+## Branch Validation Flag Reference
+
+The `--no-branch-check` flag disables git branch validation for advanced use cases.
+
+**Usage:**
+```bash
+/plan:batch 1.1 1.2 --no-branch-check           # Skip branch check
+/plan:batch all --autonomous --no-branch-check  # Combined with autonomous
+```
+
+**When to use `--no-branch-check`:**
+- Running tasks from a different plan on purpose (cross-plan work)
+- CI/CD environments where branch management is handled externally
+- Debugging or testing scenarios
+- When working with worktrees where branch detection may be inconsistent
+
+**Example:**
+```
+⚠ Branch validation skipped (--no-branch-check)
+Proceeding with batch execution on current branch: main
+```
+
+**Note:** Using `--no-branch-check` may result in commits being made to the wrong branch. Use with caution.
