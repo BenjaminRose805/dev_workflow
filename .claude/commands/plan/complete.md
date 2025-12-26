@@ -505,3 +505,105 @@ To resolve:
   3. Resolve any conflicts and commit
   4. Re-run /plan:complete
 ```
+
+### 9. Generate Merge Commit Message
+
+Generate a comprehensive commit message with plan metadata from status.json.
+
+**Step 1: Load status.json for metadata**
+```bash
+STATUS_FILE="docs/plan-outputs/$PLAN_NAME/status.json"
+
+# Extract metadata using node or jq
+TOTAL_TASKS=$(node -e "console.log(require('./$STATUS_FILE').summary.totalTasks)")
+COMPLETED=$(node -e "console.log(require('./$STATUS_FILE').summary.completed)")
+PLAN_TITLE=$(node -e "console.log(require('./$STATUS_FILE').planName)")
+```
+
+**Step 2: Calculate duration**
+```bash
+# Get timestamps from status.json
+CREATED_AT=$(node -e "console.log(require('./$STATUS_FILE').createdAt)")
+COMPLETED_AT=$(date -Iseconds)
+
+# Calculate duration (approximate)
+# Note: Exact duration calculation may vary by platform
+```
+
+**Step 3: Get phase summary**
+```bash
+# Extract unique phases and count tasks per phase
+PHASES=$(node -e "
+const status = require('./$STATUS_FILE');
+const phases = {};
+status.tasks.forEach(t => {
+    phases[t.phase] = (phases[t.phase] || 0) + 1;
+});
+Object.entries(phases).forEach(([name, count]) => {
+    console.log('  - ' + name + ' (' + count + ' tasks)');
+});
+")
+```
+
+**Step 4: Build commit message**
+
+The commit message follows this format:
+
+```
+Complete: {plan-name}
+
+Plan: {plan-title}
+Tasks: {completed}/{total}
+Duration: {duration}
+
+Phases:
+  - Phase 1: Setup (3 tasks)
+  - Phase 2: Implementation (8 tasks)
+  - Phase 3: Testing (4 tasks)
+
+Archive: archive/plan-{name}
+  View individual commits: git log archive/plan-{name}
+
+Outputs: docs/plan-outputs/{plan-name}/
+
+🤖 Generated with Claude Code
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+```
+
+**Step 5: Handle archive tag reference**
+
+If `--no-archive` was used, omit the Archive section:
+```bash
+if [[ -n "$ARCHIVE_TAG" ]]; then
+    ARCHIVE_SECTION="Archive: $ARCHIVE_TAG
+  View individual commits: git log $ARCHIVE_TAG
+"
+else
+    ARCHIVE_SECTION=""
+fi
+```
+
+**Example commit message:**
+```
+Complete: my-feature-plan
+
+Plan: Implementation Plan: My Feature
+Tasks: 15/15
+Duration: 2 days
+
+Phases:
+  - Phase 0: Preparation (2 tasks)
+  - Phase 1: Core Implementation (8 tasks)
+  - Phase 2: Testing (3 tasks)
+  - Phase 3: Documentation (2 tasks)
+
+Archive: archive/plan-my-feature-plan
+  View individual commits: git log archive/plan-my-feature-plan
+
+Outputs: docs/plan-outputs/my-feature-plan/
+
+🤖 Generated with Claude Code
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+```
