@@ -520,7 +520,7 @@ The merge commit message follows a structured format with distinct sections:
 ├─────────────────────────────────────────────────────────────┤
 │ METADATA SECTION:                                           │
 │   Plan: {full plan title from status.json}                  │
-│   Tasks: {completed}/{total}                                │
+│   Tasks: {completed}/{total} | Phases: {phase-count}        │
 │   Duration: {human-readable duration}                       │
 ├─────────────────────────────────────────────────────────────┤
 │ PHASE SUMMARY:                                              │
@@ -548,6 +548,7 @@ The merge commit message follows a structured format with distinct sections:
 | `plan-title` | `status.json → planName` | Full descriptive title |
 | `completed` | `status.json → summary.completed` | Number of completed tasks |
 | `total` | `status.json → summary.totalTasks` | Total task count |
+| `phase-count` | Count of unique phases in `status.json` | Number of phases in plan |
 | `duration` | Calculated from timestamps | Time from plan creation to completion |
 | `phases` | `status.json → tasks[].phase` | Aggregated phase summary |
 | `archive-tag` | Created in Step 6 or null | Reference to archived commits |
@@ -560,6 +561,13 @@ STATUS_FILE="docs/plan-outputs/$PLAN_NAME/status.json"
 TOTAL_TASKS=$(node -e "console.log(require('./$STATUS_FILE').summary.totalTasks)")
 COMPLETED=$(node -e "console.log(require('./$STATUS_FILE').summary.completed)")
 PLAN_TITLE=$(node -e "console.log(require('./$STATUS_FILE').planName)")
+
+# Count unique phases
+PHASE_COUNT=$(node -e "
+const status = require('./$STATUS_FILE');
+const phases = new Set(status.tasks.map(t => t.phase));
+console.log(phases.size);
+")
 ```
 
 **Step 2: Calculate duration**
@@ -619,7 +627,7 @@ The commit message follows this format:
 Complete: {plan-name}
 
 Plan: {plan-title}
-Tasks: {completed}/{total}
+Tasks: {completed}/{total} | Phases: {phase-count}
 Duration: {duration}
 
 Phases:
@@ -707,7 +715,7 @@ Outputs: docs/plan-outputs/{plan-name}/
 Complete: my-feature-plan
 
 Plan: Implementation Plan: My Feature
-Tasks: 15/15
+Tasks: 15/15 | Phases: 4
 Duration: 2 days
 
 Phases:
@@ -739,7 +747,7 @@ COMMIT_MSG=$(cat <<EOF
 Complete: $PLAN_NAME
 
 Plan: $PLAN_TITLE
-Tasks: $COMPLETED/$TOTAL_TASKS
+Tasks: $COMPLETED/$TOTAL_TASKS | Phases: $PHASE_COUNT
 Duration: $DURATION
 
 Phases:
