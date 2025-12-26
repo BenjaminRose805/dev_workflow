@@ -528,17 +528,130 @@ Select option [1-3]:
 
 Rollback all tasks in a phase by reverting the commit range.
 
-**Step 1: Identify phase commits**
+**Step 1: Detect phase commit range**
+
+First, identify all commits that belong to the specified phase. Phase commits follow the pattern `[plan-name] task N.X:` where N is the phase number.
 
 ```bash
 # Get plan name
 PLAN_NAME=$(basename "$PLAN_PATH" .md)
 
 # Find all commits for this phase (tasks N.1, N.2, etc.)
-git log --grep="\\[$PLAN_NAME\\] task $PHASE_NUM\\." --format="%H" --reverse
+# --reverse gives oldest first, which we'll need to find the range
+PHASE_COMMITS=$(git log --grep="\\[$PLAN_NAME\\] task $PHASE_NUM\\." --format="%H" --reverse)
+
+# Count commits found
+COMMIT_COUNT=$(echo "$PHASE_COMMITS" | grep -c . || echo 0)
+echo "Found $COMMIT_COUNT commits for Phase $PHASE_NUM"
 ```
 
-**Step 2: Handle partial phase**
+**Commit detection patterns:**
+| Pattern | Purpose |
+|---------|---------|
+| `[plan-name] task N.` | Matches all tasks in phase N (N.1, N.2, etc.) |
+| `--format="%H"` | Return only commit SHA hashes |
+| `--reverse` | Return oldest commit first (chronological order) |
+
+**Step 2: Find first and last commit for phase**
+
+For range-based operations, identify the commit boundaries:
+
+```bash
+# Get first (oldest) commit in the phase
+FIRST_COMMIT=$(echo "$PHASE_COMMITS" | head -1)
+
+# Get last (newest) commit in the phase
+LAST_COMMIT=$(echo "$PHASE_COMMITS" | tail -1)
+
+# Show the range
+if [ -n "$FIRST_COMMIT" ] && [ -n "$LAST_COMMIT" ]; then
+  echo "Phase $PHASE_NUM commit range:"
+  echo "  First: ${FIRST_COMMIT:0:7} (oldest)"
+  echo "  Last:  ${LAST_COMMIT:0:7} (newest)"
+  echo ""
+
+  # Show commits in the range with details
+  echo "Commits in range:"
+  git log --oneline $FIRST_COMMIT^..$LAST_COMMIT 2>/dev/null || \
+    git log --oneline $FIRST_COMMIT~1..$LAST_COMMIT 2>/dev/null || \
+    git log --oneline $FIRST_COMMIT..$LAST_COMMIT
+fi
+```
+
+**Edge cases for range detection:**
+| Scenario | First | Last | Handling |
+|----------|-------|------|----------|
+| Single commit in phase | abc123 | abc123 | Revert single commit (no range) |
+| Multiple commits | abc123 | def456 | Use range revert |
+| No commits found | null | null | Status-only update |
+| Non-contiguous commits | abc123 | def456 | Revert individually (commits may be interspersed) |
+
+**Checking for non-contiguous commits:**
+
+Phase commits may not be contiguous if tasks from different phases were implemented in interleaved order:
+
+```bash
+# Get all commits between first and last
+ALL_IN_RANGE=$(git rev-list $FIRST_COMMIT^..$LAST_COMMIT 2>/dev/null | wc -l)
+
+# If more commits in range than phase commits, they're non-contiguous
+if [ "$ALL_IN_RANGE" -gt "$COMMIT_COUNT" ]; then
+  echo "⚠ Warning: Phase commits are non-contiguous"
+  echo "  Phase commits: $COMMIT_COUNT"
+  echo "  Total in range: $ALL_IN_RANGE"
+  echo "  Will revert individually to avoid affecting other phases"
+  NON_CONTIGUOUS=true
+fi
+```
+
+**Step 3: Revert commits (range or individual)**
+
+For contiguous commits, use range revert. For non-contiguous, revert individually.
+
+```bash
+if [ "$NON_CONTIGUOUS" = "true" ] || [ "$COMMIT_COUNT" -eq 1 ]; then
+  # Revert individually from newest to oldest
+  echo "Reverting $COMMIT_COUNT commits individually..."
+
+  for SHA in $(echo "$PHASE_COMMITS" | tac); do
+    echo "  Reverting ${SHA:0:7}..."
+    if git revert $SHA --no-edit; then
+      echo "    ✓ Reverted"
+    else
+      echo "    ⚠ Conflict - requires manual resolution"
+      REVERT_FAILED=true
+      break
+    fi
+  done
+else
+  # Use range revert: git revert <first>..<last> --no-edit
+  # Note: This reverts commits in reverse order automatically
+  echo "Reverting commit range ${FIRST_COMMIT:0:7}..${LAST_COMMIT:0:7}..."
+
+  # git revert with range: reverts commits from oldest to newest
+  # We need newest to oldest, so use --no-commit then commit once
+  if git revert ${FIRST_COMMIT}^..${LAST_COMMIT} --no-edit; then
+    echo "✓ Range revert complete"
+  else
+    echo "⚠ Range revert encountered conflicts"
+    echo ""
+    echo "Options:"
+    echo "  1. Resolve conflicts, then: git revert --continue"
+    echo "  2. Abort range revert: git revert --abort"
+    echo "  3. Try individual reverts instead"
+    REVERT_FAILED=true
+  fi
+fi
+```
+
+**Range revert command details:**
+| Command | Effect |
+|---------|--------|
+| `git revert <first>^..<last> --no-edit` | Revert all commits in range, creating one revert commit per original |
+| `git revert <first>..<last> --no-commit` | Stage all reverts without committing (for single combined commit) |
+| `git revert <sha> --no-edit` | Revert single commit |
+
+**Step 4: Handle partial phase**
 
 Some tasks in the phase may not have commits (analysis-only, not yet implemented, etc.):
 
@@ -550,44 +663,75 @@ Phase 2 rollback:
   ✓ 2.4: Found commit c3d4e5f
 ```
 
-**Step 3: Revert commits in reverse order**
+**Step 5: Update status.json for all tasks in phase**
+
+Mark all phase tasks as rolled back, regardless of whether they had commits:
 
 ```bash
-# Revert from newest to oldest to avoid conflicts
-for SHA in $(echo "$COMMITS" | tac); do
-  git revert $SHA --no-edit
+# Get all task IDs for this phase from status.json
+PHASE_TASKS=$(node scripts/status-cli.js --plan="$PLAN_PATH" status | \
+  jq -r ".tasks[] | select(.id | startswith(\"$PHASE_NUM.\")) | .id")
+
+# Track update results
+UPDATED=0
+SKIPPED=0
+
+# Mark each task
+for TASK_ID in $PHASE_TASKS; do
+  # Get current status
+  CURRENT_STATUS=$(node scripts/status-cli.js --plan="$PLAN_PATH" status | \
+    jq -r ".tasks[] | select(.id == \"$TASK_ID\") | .status")
+
+  if [ "$CURRENT_STATUS" = "completed" ] || [ "$CURRENT_STATUS" = "in_progress" ]; then
+    # Mark as skipped with rollback reason
+    node scripts/status-cli.js --plan="$PLAN_PATH" mark-skipped "$TASK_ID" \
+      --reason="Rolled back via phase $PHASE_NUM rollback"
+    echo "  ✓ Task $TASK_ID marked as skipped (rolled back)"
+    UPDATED=$((UPDATED + 1))
+  else
+    echo "  ⊘ Task $TASK_ID already $CURRENT_STATUS (no update needed)"
+    SKIPPED=$((SKIPPED + 1))
+  fi
 done
+
+echo ""
+echo "Status updates: $UPDATED updated, $SKIPPED unchanged"
 ```
 
-**Step 4: Update status.json for all tasks in phase**
-
-```bash
-# Mark all phase tasks as pending
-for TASK_ID in $(get_phase_tasks $PHASE_NUM); do
-  node scripts/status-cli.js --plan="$PLAN_PATH" mark-skipped "$TASK_ID" --reason="Rolled back via phase rollback"
-done
-```
+**Status update summary:**
+| Original Status | New Status | Reason |
+|-----------------|------------|--------|
+| `completed` | `skipped` | "Rolled back via phase N rollback" |
+| `in_progress` | `skipped` | "Rolled back via phase N rollback" |
+| `pending` | `pending` | No change needed |
+| `skipped` | `skipped` | No change needed |
+| `failed` | `skipped` | "Rolled back via phase N rollback" |
 
 **Example output:**
 
 ```
 Rolling back Phase 2...
 
-Found 3 commits for Phase 2:
-  a1b2c3d - task 2.1: Implement feature
-  b2c3d4e - task 2.2: Add tests
-  c3d4e5f - task 2.4: Update docs
+Detecting commit range...
+  Found 3 commits for Phase 2
+  First: a1b2c3d (oldest)
+  Last:  c3d4e5f (newest)
 
-Reverting commits (newest first)...
-  ✓ Reverted c3d4e5f
-  ✓ Reverted b2c3d4e
-  ✓ Reverted a1b2c3d
+Commits in range:
+  a1b2c3d - [my-plan] task 2.1: Implement feature
+  b2c3d4e - [my-plan] task 2.2: Add tests
+  c3d4e5f - [my-plan] task 2.4: Update docs
+
+Reverting commit range a1b2c3d..c3d4e5f...
+  ✓ Range revert complete
 
 Updating status for 4 tasks...
-  ✓ Task 2.1 marked as pending
-  ✓ Task 2.2 marked as pending
-  ✓ Task 2.3 marked as pending (no commit)
-  ✓ Task 2.4 marked as pending
+  ✓ Task 2.1 marked as skipped (rolled back)
+  ✓ Task 2.2 marked as skipped (rolled back)
+  ⊘ Task 2.3 already pending (no update needed)
+  ✓ Task 2.4 marked as skipped (rolled back)
+
+Status updates: 3 updated, 1 unchanged
 
 Phase 2 rollback complete.
 ```
