@@ -250,6 +250,7 @@ def find_next_plan():
         'git-workflow-phase2-completion',
         'parallel-execution-dependencies',
         'git-workflow-phase3-safety',
+        'orchestrator-ui-decoupling',
         'git-workflow-phase4-advanced',
         'git-workflow-phase5-worktrees',
         # Other active plans

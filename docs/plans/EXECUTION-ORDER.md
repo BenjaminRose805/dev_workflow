@@ -20,11 +20,12 @@ The plans are ordered to maximize safety and enable incremental value delivery.
 | 2 | [git-workflow-phase1-core-branching](git-workflow-phase1-core-branching.md) | 26 | Not Started |
 | 3 | [git-workflow-phase2-completion](git-workflow-phase2-completion.md) | 35 | Not Started |
 | 4 | [parallel-execution-dependencies](parallel-execution-dependencies.md) | 35 | Not Started |
-| 5 | [git-workflow-phase3-safety](git-workflow-phase3-safety.md) | 46 | Not Started |
-| 6 | [git-workflow-phase4-advanced](git-workflow-phase4-advanced.md) | 63 | Not Started |
-| 7 | [git-workflow-phase5-worktrees](git-workflow-phase5-worktrees.md) | 84 | Not Started |
+| 5 | [git-workflow-phase3-safety](git-workflow-phase3-safety.md) | 46 | Complete |
+| 6 | [orchestrator-ui-decoupling](orchestrator-ui-decoupling.md) | 31 | Not Started |
+| 7 | [git-workflow-phase4-advanced](git-workflow-phase4-advanced.md) | 14 | Not Started |
+| 8 | [git-workflow-phase5-worktrees](git-workflow-phase5-worktrees.md) | 84 | Not Started |
 
-**Total: 319 tasks across 7 plans**
+**Total: 301 tasks across 8 plans**
 
 ---
 
@@ -103,7 +104,23 @@ The plans are ordered to maximize safety and enable incremental value delivery.
 
 ---
 
-### 6. git-workflow-phase4-advanced
+### 6. orchestrator-ui-decoupling
+**Goal:** Decouple orchestration engine from UI for multiple interface support.
+
+**Delivers:**
+- `OrchestrationEngine` - pure logic, no UI coupling
+- `OrchestratorUIAdapter` - abstract interface for UIs
+- Event protocol (JSON-serializable orchestration events)
+- Adapters: RichTUI, PlainText, JSONStream, Socket, Web
+- Standalone viewer script (read-only TUI for monitoring)
+- HTTP/WebSocket server for web-based monitoring
+- Unix socket for multi-viewer support
+
+**Why here:** Phase 4's completion prompt and Phase 5's multi-TUI depend on this architecture.
+
+---
+
+### 7. git-workflow-phase4-advanced
 **Goal:** Advanced features for team workflows and automation.
 
 **Delivers:**
@@ -113,12 +130,13 @@ The plans are ordered to maximize safety and enable incremental value delivery.
 - `/plan:cleanup` for stale branches/tags
 - `.claude/git-workflow.json` configuration
 - Pre-merge conflict detection
+- Completion prompt in orchestrator (uses UI adapter)
 
-**Dependencies:** Plans 2-3, 5 (builds on all prior git features)
+**Dependencies:** Plans 2-3, 5, 6 (builds on all prior git features + UI decoupling)
 
 ---
 
-### 7. git-workflow-phase5-worktrees
+### 8. git-workflow-phase5-worktrees
 **Goal:** Enable parallel plan execution via git worktrees.
 
 **Delivers:**
@@ -126,11 +144,11 @@ The plans are ordered to maximize safety and enable incremental value delivery.
 - `/plan:worktree create|list|remove|switch`
 - Multi-orchestrator process management
 - `--all-plans` aggregate status view
-- REST API for frontend integration
-- Multi-plan TUI interface
+- REST API for frontend integration (builds on plan 6's web adapter)
+- Multi-plan TUI interface (builds on plan 6's adapter system)
 - Conflict detection between parallel plans
 
-**Dependencies:** All prior plans (capstone feature)
+**Dependencies:** All prior plans, especially plan 6 (capstone feature)
 
 ---
 
@@ -164,13 +182,15 @@ parallel-execution-foundation (1)
     │        │
     │        └──► git-workflow-phase2-completion (3)
     │                 │
-    │                 ├──► git-workflow-phase3-safety (5)
+    │                 ├──► git-workflow-phase3-safety (5) ✓
     │                 │        │
-    │                 │        └──► git-workflow-phase4-advanced (6)
+    │                 │        └──► orchestrator-ui-decoupling (6)
     │                 │                 │
-    │                 │                 └──► git-workflow-phase5-worktrees (7)
-    │                 │                              ▲
-    └──► parallel-execution-dependencies (4) ───────┘
+    │                 │                 └──► git-workflow-phase4-advanced (7)
+    │                 │                          │
+    │                 │                          └──► git-workflow-phase5-worktrees (8)
+    │                 │                                       ▲
+    └──► parallel-execution-dependencies (4) ───────────────┘
 ```
 
 ---
@@ -184,10 +204,11 @@ parallel-execution-foundation (1)
 | 3 | 35 | ~7 | ~1.5 hours |
 | 4 | 35 | ~7 | ~1.5 hours |
 | 5 | 46 | ~10 | ~2 hours |
-| 6 | 63 | ~13 | ~2.5 hours |
-| 7 | 84 | ~17 | ~3 hours |
+| 6 | 31 | ~7 | ~1.5 hours |
+| 7 | 14 | ~3 | ~0.5 hours |
+| 8 | 84 | ~17 | ~3 hours |
 
-**Total: ~12-15 hours of orchestrator runtime**
+**Total: ~12-14 hours of orchestrator runtime**
 
 *Estimates assume ~5 tasks/iteration, ~10 min/iteration*
 
@@ -204,8 +225,9 @@ After each plan, you gain usable functionality:
 | 3 | Complete plans with clean merge commits |
 | 4 | Get 30%+ speedup on complex plans |
 | 5 | Safely rollback mistakes |
-| 6 | Create PRs, sync to remote, configure behavior |
-| 7 | Run multiple plans in parallel |
+| 6 | Monitor orchestration via web browser, connect multiple viewers |
+| 7 | Create PRs, sync to remote, auto-complete after orchestration |
+| 8 | Run multiple plans in parallel with unified TUI/web dashboard |
 
 ---
 
