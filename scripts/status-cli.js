@@ -35,6 +35,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 // Import unified plan status library
 const {
@@ -127,6 +128,71 @@ function parseArgs(args) {
       result.positional.push(arg);
       i += 1;
     }
+  }
+
+  return result;
+}
+
+// =============================================================================
+// Git Information Helper
+// =============================================================================
+
+/**
+ * Get git information for the current repository
+ * Returns null if git is unavailable or not in a git repository
+ *
+ * @returns {Object|null} Git info with branch, uncommittedCount, lastCommit
+ */
+function getGitInfo() {
+  try {
+    // Check if git is available
+    execSync('git --version', { stdio: 'pipe' });
+  } catch (error) {
+    return null;
+  }
+
+  try {
+    // Check if we're in a git repository
+    execSync('git rev-parse --git-dir', { stdio: 'pipe' });
+  } catch (error) {
+    return null;
+  }
+
+  const result = {
+    branch: null,
+    uncommittedCount: 0,
+    lastCommit: null
+  };
+
+  try {
+    // Get current branch
+    result.branch = execSync('git branch --show-current', { encoding: 'utf8', stdio: 'pipe' }).trim();
+  } catch (error) {
+    // Branch unavailable (detached HEAD, etc.)
+  }
+
+  try {
+    // Get uncommitted file count
+    const statusOutput = execSync('git status --porcelain', { encoding: 'utf8', stdio: 'pipe' });
+    result.uncommittedCount = statusOutput.trim() ? statusOutput.trim().split('\n').length : 0;
+  } catch (error) {
+    // Status unavailable
+  }
+
+  try {
+    // Get last commit SHA and message (abbreviated)
+    const logOutput = execSync('git log -1 --format="%h %s"', { encoding: 'utf8', stdio: 'pipe' }).trim();
+    if (logOutput) {
+      const spaceIndex = logOutput.indexOf(' ');
+      if (spaceIndex > 0) {
+        result.lastCommit = {
+          sha: logOutput.slice(0, spaceIndex),
+          message: logOutput.slice(spaceIndex + 1)
+        };
+      }
+    }
+  } catch (error) {
+    // No commits yet or log unavailable
   }
 
   return result;
