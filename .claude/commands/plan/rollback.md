@@ -950,40 +950,139 @@ git log -1 --oneline "$MERGE_SHA"
 
 **Revert the merge commit:**
 
+For merge commits, use `git revert <sha> --no-edit` to create a new commit that reverses all changes introduced by the merge.
+
 ```bash
 echo ""
 echo "Reverting merge commit..."
 
-if git revert "$MERGE_SHA" --no-edit; then
-  REVERT_SHA=$(git rev-parse HEAD)
-  echo "✓ Created revert commit: ${REVERT_SHA:0:7}"
+# Check if commit is a merge commit (has multiple parents)
+PARENT_COUNT=$(git cat-file -p "$MERGE_SHA" | grep -c "^parent")
+
+if [ "$PARENT_COUNT" -gt 1 ]; then
+  # Merge commit - need to specify which parent to revert to
+  # Parent 1 (-m 1) is typically the main branch
+  echo "Detected merge commit with $PARENT_COUNT parents"
+  echo "Reverting to parent 1 (main branch)..."
+
+  if git revert "$MERGE_SHA" --no-edit -m 1; then
+    REVERT_SHA=$(git rev-parse HEAD)
+    echo "✓ Created revert commit: ${REVERT_SHA:0:7}"
+  else
+    REVERT_FAILED=true
+  fi
 else
+  # Squash merge or regular commit - no parent specification needed
+  if git revert "$MERGE_SHA" --no-edit; then
+    REVERT_SHA=$(git rev-parse HEAD)
+    echo "✓ Created revert commit: ${REVERT_SHA:0:7}"
+  else
+    REVERT_FAILED=true
+  fi
+fi
+
+# Handle revert failure
+if [ "$REVERT_FAILED" = "true" ]; then
   echo "✗ Revert failed - conflicts detected"
+  echo ""
+  echo "Conflicting files:"
+  git diff --name-only --diff-filter=U 2>/dev/null || echo "  (none detected)"
   echo ""
   echo "Options:"
   echo "  1. Resolve conflicts, then: git revert --continue"
   echo "  2. Abort the revert: git revert --abort"
+  echo ""
+  echo "After resolution, manually update status.json or re-run rollback."
   exit 1
 fi
 ```
 
+**Revert command options:**
+
+| Option | Purpose |
+|--------|---------|
+| `--no-edit` | Use auto-generated revert message without editor |
+| `-m 1` | For merge commits, revert relative to first parent (main branch) |
+| `--no-commit` | Stage revert changes without committing (for batching) |
+
+**Generated revert commit message:**
+
+The `--no-edit` flag generates a message like:
+```
+Revert "Squash merge: plan/my-feature into main"
+
+This reverts commit f6e5d4c3...
+```
+
 **Step 3: Update status.json**
 
-Mark entire plan as rolled back:
+Mark entire plan as rolled back. This updates the status.json file to reflect the rollback state for all tasks.
 
 ```bash
-# Get all task IDs for this plan
-ALL_TASKS=$(node scripts/status-cli.js --plan="$PLAN_PATH" status | \
-  jq -r '.tasks[].id')
+# Get all task IDs and their current status for this plan
+PLAN_STATUS=$(node scripts/status-cli.js --plan="$PLAN_PATH" status)
+ALL_TASKS=$(echo "$PLAN_STATUS" | jq -r '.tasks[].id')
+TASK_COUNT=$(echo "$PLAN_STATUS" | jq '.tasks | length')
 
-# Mark all tasks as skipped with rollback reason
+echo "Updating status.json for $TASK_COUNT tasks..."
+
+# Track update results
+UPDATED=0
+ALREADY_PENDING=0
+ROLLBACK_TIME=$(date -Iseconds)
+
+# Mark each task appropriately based on current status
 for TASK_ID in $ALL_TASKS; do
-  node scripts/status-cli.js --plan="$PLAN_PATH" mark-skipped "$TASK_ID" \
-    --reason="Rolled back via plan rollback"
+  CURRENT_STATUS=$(echo "$PLAN_STATUS" | jq -r ".tasks[] | select(.id == \"$TASK_ID\") | .status")
+
+  case "$CURRENT_STATUS" in
+    "completed"|"in_progress"|"failed")
+      # Mark as skipped with rollback reason
+      node scripts/status-cli.js --plan="$PLAN_PATH" mark-skipped "$TASK_ID" \
+        --reason="Rolled back via plan rollback at $ROLLBACK_TIME"
+      echo "  ✓ $TASK_ID: $CURRENT_STATUS → skipped (rolled back)"
+      UPDATED=$((UPDATED + 1))
+      ;;
+    "pending")
+      # Already pending - no change needed
+      echo "  ⊘ $TASK_ID: already pending"
+      ALREADY_PENDING=$((ALREADY_PENDING + 1))
+      ;;
+    "skipped")
+      # Already skipped - update reason to reflect plan rollback
+      node scripts/status-cli.js --plan="$PLAN_PATH" mark-skipped "$TASK_ID" \
+        --reason="Rolled back via plan rollback at $ROLLBACK_TIME"
+      echo "  ⊘ $TASK_ID: skipped (reason updated)"
+      ;;
+    *)
+      echo "  ? $TASK_ID: unknown status '$CURRENT_STATUS'"
+      ;;
+  esac
 done
 
-echo "✓ All tasks marked as skipped (rolled back)"
+echo ""
+echo "Status update summary:"
+echo "  Updated: $UPDATED tasks"
+echo "  Already pending: $ALREADY_PENDING tasks"
+echo "  Total: $TASK_COUNT tasks"
+echo ""
+echo "✓ All tasks marked appropriately for plan rollback"
 ```
+
+**Status update rules for plan rollback:**
+
+| Original Status | New Status | Action |
+|-----------------|------------|--------|
+| `completed` | `skipped` | Rolled back - work was undone |
+| `in_progress` | `skipped` | Rolled back - partial work undone |
+| `failed` | `skipped` | Rolled back - failure is moot |
+| `pending` | `pending` | No change - never started |
+| `skipped` | `skipped` | Update reason to reflect plan rollback |
+
+**What gets recorded:**
+- Each affected task gets a `skippedAt` timestamp
+- The `reason` field includes the rollback timestamp for traceability
+- Summary counts are shown for visibility into what changed
 
 **Example output (unmerged):**
 
