@@ -161,6 +161,7 @@ function getGitInfo() {
   const result = {
     branch: null,
     uncommittedCount: 0,
+    commitCount: null,
     lastCommit: null
   };
 
@@ -177,6 +178,29 @@ function getGitInfo() {
     result.uncommittedCount = statusOutput.trim() ? statusOutput.trim().split('\n').length : 0;
   } catch (error) {
     // Status unavailable
+  }
+
+  try {
+    // Get commit count on current branch vs master/main
+    // Try master first, then main
+    let baseBranch = 'master';
+    try {
+      execSync('git rev-parse --verify master', { stdio: 'pipe' });
+    } catch (e) {
+      try {
+        execSync('git rev-parse --verify main', { stdio: 'pipe' });
+        baseBranch = 'main';
+      } catch (e2) {
+        // Neither master nor main exists, skip commit count
+        baseBranch = null;
+      }
+    }
+    if (baseBranch) {
+      const countOutput = execSync(`git rev-list --count HEAD ^${baseBranch}`, { encoding: 'utf8', stdio: 'pipe' }).trim();
+      result.commitCount = parseInt(countOutput, 10);
+    }
+  } catch (error) {
+    // Commit count unavailable
   }
 
   try {
@@ -1032,6 +1056,7 @@ function cmdProgress(planPath, options = {}) {
       jsonOutput.git = {
         branch: gitInfo.branch,
         uncommittedCount: gitInfo.uncommittedCount,
+        commitCount: gitInfo.commitCount,
         lastCommit: gitInfo.lastCommit
       };
     }
@@ -1070,7 +1095,11 @@ function cmdProgress(planPath, options = {}) {
     // Git marker
     const gitInfo = getGitInfo();
     if (gitInfo) {
-      console.log(`[PROGRESS] git branch=${gitInfo.branch || 'detached'} uncommitted=${gitInfo.uncommittedCount}`);
+      let gitMarker = `[PROGRESS] git branch=${gitInfo.branch || 'detached'} uncommitted=${gitInfo.uncommittedCount}`;
+      if (gitInfo.commitCount !== null) {
+        gitMarker += ` commits=${gitInfo.commitCount}`;
+      }
+      console.log(gitMarker);
       if (gitInfo.lastCommit) {
         console.log(`[PROGRESS] git last_commit=${gitInfo.lastCommit.sha}`);
       }
@@ -1146,12 +1175,15 @@ function cmdProgress(planPath, options = {}) {
     console.log('');
     console.log(`Branch: ${gitInfo.branch || '(detached HEAD)'}`);
     console.log(`Uncommitted: ${gitInfo.uncommittedCount} file(s)`);
+    if (gitInfo.commitCount !== null) {
+      console.log(`Commits: ${gitInfo.commitCount} ahead of base branch`);
+    }
     if (gitInfo.lastCommit) {
       // Truncate message to 50 chars for display
       const msg = gitInfo.lastCommit.message.length > 50
         ? gitInfo.lastCommit.message.slice(0, 47) + '...'
         : gitInfo.lastCommit.message;
-      console.log(`Last Commit: ${gitInfo.lastCommit.sha} ${msg}`);
+      console.log(`Last: ${gitInfo.lastCommit.sha} ${msg}`);
     }
   }
 
