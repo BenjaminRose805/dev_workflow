@@ -443,67 +443,126 @@ fi
   Continuing with local state. Consider manual sync.
 ```
 
-### 8. Perform Squash Merge
+### 8. Perform Merge
 
-Squash all commits from the plan branch into a single staged change.
+Merge the plan branch into main using the selected strategy.
 
-**Step 1: Execute squash merge**
+**Step 0: Parse merge strategy**
 ```bash
-# PLAN_BRANCH was saved earlier (e.g., "plan/my-plan")
-git merge --squash "$PLAN_BRANCH"
-if [[ $? -ne 0 ]]; then
-    echo "✗ Squash merge failed"
-    echo ""
-    echo "This may happen if:"
-    echo "  - Merge conflicts occurred (resolve manually)"
-    echo "  - Branch has diverged significantly from $MAIN_BRANCH"
-    echo ""
-    echo "To resolve:"
-    echo "  1. Switch back to plan branch: git checkout $PLAN_BRANCH"
-    echo "  2. Merge main into plan: git merge $MAIN_BRANCH"
-    echo "  3. Resolve any conflicts and commit"
-    echo "  4. Re-run /plan:complete"
-    exit 1
-fi
+# MERGE_STRATEGY is parsed from --merge option (default: "squash")
+# Valid values: "squash", "commit", "ff"
+MERGE_STRATEGY="${MERGE_STRATEGY:-squash}"
 ```
 
-**Step 2: Verify staged changes**
+**Step 1: Execute merge based on strategy**
+
+#### Strategy: `--merge squash` (default)
+
+Squash all commits into a single staged change, then create a new commit.
+
 ```bash
-# The squash merge stages all changes but doesn't commit
-STAGED=$(git diff --cached --stat)
-if [[ -z "$STAGED" ]]; then
-    echo "⚠ No changes to merge (plan branch may be identical to $MAIN_BRANCH)"
-    echo "  This can happen if all changes were already merged."
-else
+if [[ "$MERGE_STRATEGY" == "squash" ]]; then
+    # PLAN_BRANCH was saved earlier (e.g., "plan/my-plan")
+    git merge --squash "$PLAN_BRANCH"
+    if [[ $? -ne 0 ]]; then
+        echo "✗ Squash merge failed"
+        echo ""
+        echo "This may happen if:"
+        echo "  - Merge conflicts occurred (resolve manually)"
+        echo "  - Branch has diverged significantly from $MAIN_BRANCH"
+        echo ""
+        echo "To resolve:"
+        echo "  1. Switch back to plan branch: git checkout $PLAN_BRANCH"
+        echo "  2. Merge main into plan: git merge $MAIN_BRANCH"
+        echo "  3. Resolve any conflicts and commit"
+        echo "  4. Re-run /plan:complete"
+        exit 1
+    fi
+
+    # Squash stages changes but doesn't commit - we'll commit in step 10
     FILE_COUNT=$(git diff --cached --name-only | wc -l)
-    echo "✓ Squash merge complete - $FILE_COUNT file(s) staged"
+    if [[ "$FILE_COUNT" -eq 0 ]]; then
+        echo "⚠ No changes to merge (plan branch may be identical to $MAIN_BRANCH)"
+    else
+        echo "✓ Squash merge complete - $FILE_COUNT file(s) staged"
+    fi
+    NEEDS_COMMIT=true  # Will create commit in step 10
 fi
 ```
 
-**Example output (success):**
+#### Strategy: `--merge ff` (fast-forward)
+
+Fast-forward merge if the plan branch is ahead of main with no divergence. Preserves individual commits without creating a merge commit.
+
+```bash
+if [[ "$MERGE_STRATEGY" == "ff" ]]; then
+    git merge --ff-only "$PLAN_BRANCH"
+    if [[ $? -ne 0 ]]; then
+        echo "✗ Fast-forward merge failed"
+        echo ""
+        echo "Fast-forward is only possible when main has not diverged."
+        echo "The plan branch must be directly ahead of main."
+        echo ""
+        echo "Options:"
+        echo "  1. Use --merge squash (default) to squash all commits"
+        echo "  2. Use --merge commit to create a merge commit"
+        echo "  3. Rebase plan branch onto main first, then retry --merge ff"
+        exit 1
+    fi
+
+    echo "✓ Fast-forward merge complete"
+    echo "  Individual commits preserved in history"
+    NEEDS_COMMIT=false  # FF merge already includes commits
+fi
+```
+
+**Step 2: Verify merge result**
+```bash
+# For squash: verify staged changes exist
+if [[ "$MERGE_STRATEGY" == "squash" ]]; then
+    STAGED=$(git diff --cached --stat)
+    if [[ -z "$STAGED" ]]; then
+        echo "⚠ No changes to merge (plan branch may be identical to $MAIN_BRANCH)"
+        echo "  This can happen if all changes were already merged."
+    fi
+fi
+
+# For ff: verify HEAD moved forward
+if [[ "$MERGE_STRATEGY" == "ff" ]]; then
+    NEW_HEAD=$(git rev-parse HEAD)
+    echo "  HEAD now at: $(git log -1 --oneline HEAD)"
+fi
+```
+
+**Example output (squash - success):**
 ```
 ✓ Squash merge complete - 12 file(s) staged
+```
+
+**Example output (ff - success):**
+```
+✓ Fast-forward merge complete
+  Individual commits preserved in history
+  HEAD now at: abc1234 [my-plan] task 3.5: Final task
+```
+
+**Example output (ff - failure):**
+```
+✗ Fast-forward merge failed
+
+Fast-forward is only possible when main has not diverged.
+The plan branch must be directly ahead of main.
+
+Options:
+  1. Use --merge squash (default) to squash all commits
+  2. Use --merge commit to create a merge commit
+  3. Rebase plan branch onto main first, then retry --merge ff
 ```
 
 **Example output (no changes):**
 ```
 ⚠ No changes to merge (plan branch may be identical to main)
   This can happen if all changes were already merged.
-```
-
-**Example output (failure):**
-```
-✗ Squash merge failed
-
-This may happen if:
-  - Merge conflicts occurred (resolve manually)
-  - Branch has diverged significantly from main
-
-To resolve:
-  1. Switch back to plan branch: git checkout plan/my-plan
-  2. Merge main into plan: git merge main
-  3. Resolve any conflicts and commit
-  4. Re-run /plan:complete
 ```
 
 ### 9. Generate Merge Commit Message
