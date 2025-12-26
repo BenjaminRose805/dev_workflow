@@ -2,6 +2,25 @@
 
 Set the current working plan file for subsequent `/plan:*` commands.
 
+## Options
+
+| Flag | Description |
+|------|-------------|
+| `--push` | Push the plan branch to remote after creation/switch |
+| `--autonomous` | Skip interactive prompts (auto-stash uncommitted changes) |
+
+**Examples:**
+```bash
+# Interactive plan selection
+/plan:set
+
+# Set plan and push branch to remote
+/plan:set --push
+
+# Autonomous mode for orchestrator usage
+/plan:set my-plan --autonomous
+```
+
 ## Instructions
 
 1. **Scan for plan files**: Execute `node scripts/scan-plans.js` to get plan data in JSON format
@@ -53,12 +72,45 @@ Detected N uncommitted changes in working directory.
 
 ### 3.0.2 Git Branch Check and Switch
 
-After detecting uncommitted changes, check if the plan branch exists and switch to it:
+After detecting uncommitted changes, check if the plan branch exists and switch to it.
 
+**Load branching configuration:**
 ```bash
-# Derive branch name from plan name (e.g., "my-feature-plan" -> "plan/my-feature-plan")
+# Check for config file and load branching settings
+CONFIG_FILE=".claude/git-workflow.json"
+
+if [ -f "$CONFIG_FILE" ]; then
+  # Read strategy (default: branch-per-plan)
+  STRATEGY=$(cat "$CONFIG_FILE" | grep -o '"strategy":\s*"[^"]*"' | grep -o '"[^"]*"$' | tr -d '"')
+  STRATEGY=${STRATEGY:-branch-per-plan}
+
+  # Read branch_prefix (default: plan/)
+  BRANCH_PREFIX=$(cat "$CONFIG_FILE" | grep -o '"branch_prefix":\s*"[^"]*"' | grep -o '"[^"]*"$' | tr -d '"')
+  BRANCH_PREFIX=${BRANCH_PREFIX:-plan/}
+else
+  STRATEGY="branch-per-plan"
+  BRANCH_PREFIX="plan/"
+fi
+```
+
+**Derive branch name based on strategy:**
+```bash
 PLAN_NAME=$(basename "$PLAN_PATH" .md)
-BRANCH_NAME="plan/$PLAN_NAME"
+
+if [ "$STRATEGY" = "branch-per-phase" ]; then
+  # For branch-per-phase, start with phase-0 (or phase-1 if no phase 0)
+  # This creates branches like plan/my-feature/phase-1
+  INITIAL_PHASE=$(node -e "
+    const fs = require('fs');
+    const plan = fs.readFileSync('$PLAN_PATH', 'utf8');
+    const match = plan.match(/## Phase (\d+):/);
+    console.log(match ? match[1] : '1');
+  " 2>/dev/null || echo "1")
+  BRANCH_NAME="${BRANCH_PREFIX}${PLAN_NAME}/phase-${INITIAL_PHASE}"
+else
+  # branch-per-plan: single branch for entire plan
+  BRANCH_NAME="${BRANCH_PREFIX}${PLAN_NAME}"
+fi
 
 # Check if branch exists
 git rev-parse --verify "$BRANCH_NAME" 2>/dev/null
@@ -164,7 +216,62 @@ Choose how to proceed:
 ○ Cancel
 ```
 
-### 3.0.4 Record Branch Name in Status Metadata
+### 3.0.4 Push Branch to Remote (if sync_remote enabled)
+
+After creating or switching to the plan branch, optionally push to remote:
+
+**Check sync_remote configuration:**
+```bash
+# Check if .claude/git-workflow.json exists and has sync_remote: true
+SYNC_REMOTE=$(cat .claude/git-workflow.json 2>/dev/null | grep -o '"sync_remote":\s*true' || echo "")
+```
+
+**If sync_remote is enabled OR `--push` flag was passed:**
+
+1. **Check if remote exists:**
+   ```bash
+   git remote get-url origin 2>/dev/null
+   ```
+   - If no remote configured, log warning and skip push
+   - If remote exists, continue with push
+
+2. **Push the branch:**
+   ```bash
+   git push -u origin plan/{plan-name} 2>&1
+   ```
+
+3. **Handle push result:**
+   - **Success:** Log `Pushed branch to remote: origin/plan/{plan-name}`
+   - **Failure:** Log warning but DON'T fail the command (graceful degradation)
+     ```
+     ⚠ Failed to push branch to remote: {error message}
+       Continuing with local-only branch...
+     ```
+
+**Example output (success):**
+```
+Git branch: plan/my-feature-plan
+  ○ Branch does not exist, creating...
+  Created new branch 'plan/my-feature-plan'
+  Pushed branch to remote: origin/plan/my-feature-plan
+```
+
+**Example output (push failed - graceful):**
+```
+Git branch: plan/my-feature-plan
+  ○ Branch does not exist, creating...
+  Created new branch 'plan/my-feature-plan'
+  ⚠ Failed to push branch to remote: Permission denied
+    Continuing with local-only branch...
+```
+
+**Skip push if:**
+- `sync_remote` is false/not set AND `--push` flag not passed
+- Git is not available
+- No remote repository configured
+- Already on an existing branch that was just switched to (not newly created)
+
+### 3.0.5 Record Branch Name in Status Metadata
 
 After successfully switching to the plan branch (or confirming we're on it), record the branch name in the status.json metadata:
 

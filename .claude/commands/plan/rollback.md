@@ -528,6 +528,64 @@ Select option [1-3]:
 
 Rollback all tasks in a phase by reverting the commit range.
 
+**Step 0: Check for phase tag**
+
+Before searching for individual commits, check if a phase tag exists. Phase tags provide a reliable reference point for rollback.
+
+```bash
+PLAN_NAME=$(basename "$PLAN_PATH" .md)
+PHASE_TAG="plan/$PLAN_NAME/phase-$PHASE_NUM"
+
+# Check if phase tag exists
+if git rev-parse --verify "refs/tags/$PHASE_TAG" >/dev/null 2>&1; then
+    PHASE_TAG_EXISTS=true
+    PHASE_TAG_COMMIT=$(git rev-list -n 1 "$PHASE_TAG")
+    echo "Found phase tag: $PHASE_TAG"
+    echo "  Tagged commit: ${PHASE_TAG_COMMIT:0:7}"
+
+    # Get tag annotation for display
+    TAG_MESSAGE=$(git tag -n99 "$PHASE_TAG" | head -1)
+    echo "  Annotation: $TAG_MESSAGE"
+else
+    PHASE_TAG_EXISTS=false
+    echo "No phase tag found - using commit-based detection"
+fi
+```
+
+**Using phase tag for rollback:**
+
+If a phase tag exists, use it to identify the rollback range:
+
+```bash
+if [ "$PHASE_TAG_EXISTS" = "true" ]; then
+    # Find the commit BEFORE the phase started
+    # The tag points to the last commit of the phase
+    # We want to revert everything from tag to HEAD (if after tag)
+    # Or revert everything in the phase (commits between previous phase tag and this tag)
+
+    # Get previous phase tag (if exists)
+    PREV_PHASE_NUM=$((PHASE_NUM - 1))
+    PREV_PHASE_TAG="plan/$PLAN_NAME/phase-$PREV_PHASE_NUM"
+
+    if git rev-parse --verify "refs/tags/$PREV_PHASE_TAG" >/dev/null 2>&1; then
+        # Revert commits between previous phase tag and this phase tag
+        RANGE_START=$(git rev-list -n 1 "$PREV_PHASE_TAG")
+        RANGE_END=$(git rev-list -n 1 "$PHASE_TAG")
+        echo "Rollback range: ${RANGE_START:0:7}..${RANGE_END:0:7}"
+    else
+        # No previous phase tag - find first commit with phase number
+        # Fall back to commit-based detection (Step 1)
+        USE_COMMIT_DETECTION=true
+    fi
+fi
+```
+
+**Phase tag advantages:**
+- More reliable than commit message grep
+- Works even if commit messages were edited
+- Provides clear phase boundaries
+- Includes annotation with phase metadata
+
 **Step 1: Detect phase commit range**
 
 First, identify all commits that belong to the specified phase. Phase commits follow the pattern `[plan-name] task N.X:` where N is the phase number.
@@ -771,10 +829,43 @@ echo "Status updates: $UPDATED updated, $SKIPPED unchanged"
 | `skipped` | `skipped` | No change needed |
 | `failed` | `skipped` | "Rolled back via phase N rollback" |
 
-**Example output:**
+**Example output (with phase tag):**
 
 ```
 Rolling back Phase 2...
+
+Checking for phase tag...
+  ✓ Found phase tag: plan/my-plan/phase-2
+    Tagged commit: c3d4e5f
+    Annotation: Phase 2: Add Authentication
+
+Checking previous phase tag...
+  ✓ Found phase tag: plan/my-plan/phase-1
+    Previous phase ends at: a0b1c2d
+
+Rollback range: a0b1c2d..c3d4e5f (3 commits)
+
+Reverting commit range...
+  ✓ Range revert complete
+
+Updating status for 4 tasks...
+  ✓ Task 2.1 marked as skipped (rolled back)
+  ✓ Task 2.2 marked as skipped (rolled back)
+  ⊘ Task 2.3 already pending (no update needed)
+  ✓ Task 2.4 marked as skipped (rolled back)
+
+Status updates: 3 updated, 1 unchanged
+
+Phase 2 rollback complete.
+```
+
+**Example output (without phase tag - fallback):**
+
+```
+Rolling back Phase 2...
+
+Checking for phase tag...
+  ⊘ No phase tag found - using commit-based detection
 
 Detecting commit range...
   Found 3 commits for Phase 2

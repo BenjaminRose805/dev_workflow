@@ -30,37 +30,84 @@ git --version 2>/dev/null
 # Get current branch
 CURRENT_BRANCH=$(git branch --show-current)
 
+# Load configuration for branch naming
+CONFIG_FILE=".claude/git-workflow.json"
+BRANCH_PREFIX="plan/"
+STRATEGY="branch-per-plan"
+
+if [ -f "$CONFIG_FILE" ]; then
+  BRANCH_PREFIX=$(cat "$CONFIG_FILE" | grep -o '"branch_prefix":\s*"[^"]*"' | grep -o '"[^"]*"$' | tr -d '"')
+  BRANCH_PREFIX=${BRANCH_PREFIX:-plan/}
+  STRATEGY=$(cat "$CONFIG_FILE" | grep -o '"strategy":\s*"[^"]*"' | grep -o '"[^"]*"$' | tr -d '"')
+  STRATEGY=${STRATEGY:-branch-per-plan}
+  # Load enforce_branch setting (default: true)
+  ENFORCE_BRANCH=$(grep -o '"enforce_branch":\s*false' "$CONFIG_FILE" >/dev/null && echo false || echo true)
+else
+  ENFORCE_BRANCH=true
+fi
+
 # Derive expected branch from plan name
 PLAN_NAME=$(basename "$PLAN_PATH" .md)
-EXPECTED_BRANCH="plan/$PLAN_NAME"
+
+if [ "$STRATEGY" = "branch-per-phase" ]; then
+  # For branch-per-phase, check current phase from task context
+  # Expected branch format: {prefix}{plan}/phase-{N}
+  EXPECTED_BRANCH_PATTERN="${BRANCH_PREFIX}${PLAN_NAME}/phase-"
+else
+  EXPECTED_BRANCH="${BRANCH_PREFIX}${PLAN_NAME}"
+fi
 ```
 
 **Step 3: Validate branch and take action**
 
 | Current Branch | Action |
 |----------------|--------|
-| `plan/{plan-name}` (correct) | Continue normally - already on correct branch |
-| `plan/{other-plan}` (wrong plan branch) | Log warning, auto-switch to `plan/{plan-name}` |
-| Non-plan branch (e.g., `master`, `feature/x`) | Warn but continue for backwards compatibility |
+| `{prefix}{plan-name}` (correct for branch-per-plan) | Continue normally |
+| `{prefix}{plan-name}/phase-N` (correct for branch-per-phase) | Continue normally |
+| `{prefix}{other-plan}` (wrong plan branch) | Log warning, auto-switch |
+| Non-plan branch (e.g., `master`, `feature/x`) | Fail if `enforce_branch: true` (default), warn if `enforce_branch: false` |
 | No branch (detached HEAD) | Warn but continue |
 
 **Branch switching logic:**
 ```bash
-# If on wrong plan branch, switch to correct one
-if [[ "$CURRENT_BRANCH" == plan/* ]] && [[ "$CURRENT_BRANCH" != "$EXPECTED_BRANCH" ]]; then
-    echo "Warning: On branch '$CURRENT_BRANCH' but plan expects '$EXPECTED_BRANCH'"
-    git checkout "$EXPECTED_BRANCH" 2>/dev/null || git checkout -b "$EXPECTED_BRANCH"
-    echo "Switched to branch '$EXPECTED_BRANCH'"
+# Check if on a plan branch (with configured prefix)
+if [[ "$CURRENT_BRANCH" == ${BRANCH_PREFIX}* ]]; then
+    if [ "$STRATEGY" = "branch-per-phase" ]; then
+        # For branch-per-phase, verify we're on the correct plan's phase branch
+        if [[ ! "$CURRENT_BRANCH" == ${EXPECTED_BRANCH_PATTERN}* ]]; then
+            echo "Warning: On branch '$CURRENT_BRANCH' but plan expects '${EXPECTED_BRANCH_PATTERN}N'"
+            # Don't auto-switch for branch-per-phase - user needs to complete current phase first
+            echo "  Complete current phase or run /plan:set to switch plans."
+        fi
+    else
+        # For branch-per-plan, verify exact branch match
+        if [[ "$CURRENT_BRANCH" != "$EXPECTED_BRANCH" ]]; then
+            echo "Warning: On branch '$CURRENT_BRANCH' but plan expects '$EXPECTED_BRANCH'"
+            git checkout "$EXPECTED_BRANCH" 2>/dev/null || git checkout -b "$EXPECTED_BRANCH"
+            echo "Switched to branch '$EXPECTED_BRANCH'"
+        fi
+    fi
 fi
 ```
 
-**Backwards compatibility mode (non-plan branch):**
+**Non-plan branch handling:**
 ```bash
-# If on a non-plan branch (no plan/ prefix), warn but continue
-if [[ ! "$CURRENT_BRANCH" == plan/* ]]; then
-    echo "⚠ Warning: Not on a plan branch (currently on '$CURRENT_BRANCH')."
-    echo "  Run /plan:set to switch to the plan branch 'plan/$PLAN_NAME'."
-    echo "  Continuing with task implementation..."
+# If on a non-plan branch (doesn't match configured prefix)
+if [[ ! "$CURRENT_BRANCH" == ${BRANCH_PREFIX}* ]]; then
+    if [ "$ENFORCE_BRANCH" = true ]; then
+        # enforce_branch: true (default) - fail with clear error
+        echo "✗ Error: Not on a plan branch (currently on '$CURRENT_BRANCH')."
+        echo "  This plan requires being on branch '${BRANCH_PREFIX}$PLAN_NAME'."
+        echo ""
+        echo "  To fix: Run /plan:set to switch to the correct plan branch."
+        echo "  To disable: Set \"enforce_branch\": false in .claude/git-workflow.json"
+        exit 1  # Stop execution
+    else
+        # enforce_branch: false - warn but continue (backwards compatibility)
+        echo "⚠ Warning: Not on a plan branch (currently on '$CURRENT_BRANCH')."
+        echo "  Run /plan:set to switch to the plan branch '${BRANCH_PREFIX}$PLAN_NAME'."
+        echo "  Continuing with task implementation..."
+    fi
 fi
 ```
 
@@ -76,7 +123,16 @@ Git branch: plan/my-plan ✓
   Switched to branch 'plan/my-plan'
 ```
 
-**Example output (non-plan branch - backwards compat):**
+**Example output (non-plan branch - enforce_branch: true):**
+```
+✗ Error: Not on a plan branch (currently on 'master').
+  This plan requires being on branch 'plan/my-plan'.
+
+  To fix: Run /plan:set to switch to the correct plan branch.
+  To disable: Set "enforce_branch": false in .claude/git-workflow.json
+```
+
+**Example output (non-plan branch - enforce_branch: false):**
 ```
 ⚠ Warning: Not on a plan branch (currently on 'master').
   Run /plan:set to switch to the plan branch 'plan/my-plan'.
@@ -102,6 +158,7 @@ If arguments are passed to this skill, parse them to determine which tasks to im
 | All pending | `all` | All pending tasks (with confirmation) |
 | No arguments | (empty) | Interactive selection (step 3) |
 | `--autonomous` | `1.1 1.2 --autonomous` | Skip all interactive prompts |
+| `--push` | `1.1 --push` | Push commits to remote after each task |
 
 **Autonomous Mode:**
 
@@ -112,11 +169,12 @@ When `--autonomous` flag is present:
 - Proceed directly with implementation
 - Still report progress and errors normally
 
-**Detecting autonomous mode:**
+**Detecting flags:**
 ```
 args = skill arguments
 autonomous = args contains "--autonomous"
-args = args with "--autonomous" removed (for further parsing)
+push_enabled = args contains "--push"
+args = args with "--autonomous" and "--push" removed (for further parsing)
 ```
 
 **Parsing logic:**
@@ -124,7 +182,8 @@ args = args with "--autonomous" removed (for further parsing)
 ```
 args = skill arguments (may be empty)
 autonomous = args contains "--autonomous"
-args = args with "--autonomous" removed
+push_enabled = args contains "--push"
+args = args with "--autonomous" and "--push" removed
 
 if args is empty:
     if autonomous:
@@ -200,6 +259,12 @@ otherwise:
 
 # ERROR: Autonomous mode without task IDs
 /plan:implement --autonomous  # Will error - task IDs required
+
+# Push commits to remote after each task
+/plan:implement 1.1 1.2 --push
+
+# Combine with autonomous mode
+/plan:implement phase:1 --autonomous --push
 ```
 
 ### 2. Parse Plan File
@@ -532,9 +597,30 @@ markTaskCompleted(planPath, taskId);
 
 ### 6.1. Commit Changes After Task Completion
 
-After marking a task complete (or failed), commit the changes to git:
+After marking a task complete (or failed), commit the changes to git.
 
-**Commit workflow:**
+**Check auto_commit configuration:**
+```bash
+# Load auto_commit setting (default: true)
+CONFIG_FILE=".claude/git-workflow.json"
+AUTO_COMMIT=true
+
+if [ -f "$CONFIG_FILE" ]; then
+  # Check if auto_commit is explicitly set to false
+  if cat "$CONFIG_FILE" | grep -q '"auto_commit":\s*false'; then
+    AUTO_COMMIT=false
+  fi
+fi
+
+if [ "$AUTO_COMMIT" = false ]; then
+  echo "⚠ Auto-commit disabled (auto_commit: false in config)"
+  echo "  Changes remain uncommitted. Commit manually when ready."
+  # Skip commit workflow, continue to next task
+  return 0
+fi
+```
+
+**Commit workflow (when auto_commit is enabled):**
 
 1. **Check for uncommitted changes:**
    ```bash
@@ -612,6 +698,60 @@ Task: 1.1
 - Git is not available or not a repository
 
 **Note:** This creates granular commits per task. For cleaner history, consider squashing when merging feature branches (see git workflow analysis plan).
+
+### 6.2. Push Changes to Remote (if sync_remote enabled)
+
+After committing changes, optionally push to remote:
+
+**Check sync_remote configuration:**
+```bash
+# Check if .claude/git-workflow.json exists and has sync_remote: true
+SYNC_REMOTE=$(cat .claude/git-workflow.json 2>/dev/null | grep -o '"sync_remote":\s*true' || echo "")
+```
+
+**If sync_remote is enabled OR `--push` flag was passed:**
+
+1. **Check if remote exists:**
+   ```bash
+   git remote get-url origin 2>/dev/null
+   ```
+   - If no remote configured, log warning and skip push
+   - If remote exists, continue with push
+
+2. **Push the commit:**
+   ```bash
+   git push 2>&1
+   ```
+
+3. **Handle push result:**
+   - **Success:** Log `Pushed commit to remote`
+   - **Failure:** Log warning but DON'T fail the task (graceful degradation)
+     ```
+     ⚠ Failed to push to remote: {error message}
+       Task completed locally. Push manually with: git push
+     ```
+
+**Example output (success):**
+```
+✓ 1.1 websocket-connection.test.ts - Created tests/unit/lib/websocket-connection.test.ts
+  Committed: [plan-name] task 1.1: Create websocket tests
+  Pushed commit to remote
+```
+
+**Example output (push failed - graceful):**
+```
+✓ 1.1 websocket-connection.test.ts - Created tests/unit/lib/websocket-connection.test.ts
+  Committed: [plan-name] task 1.1: Create websocket tests
+  ⚠ Failed to push to remote: Permission denied
+    Task completed locally. Push manually with: git push
+```
+
+**Skip push if:**
+- `sync_remote` is false/not set AND `--push` flag not passed
+- Git is not available
+- No remote repository configured
+- No commit was created (analysis-only task)
+- Running in `--dry-run` mode (if implemented)
 
 ### 7. Report Progress
 

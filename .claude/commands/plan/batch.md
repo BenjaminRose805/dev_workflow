@@ -57,6 +57,14 @@ CURRENT_BRANCH=$(git branch --show-current 2>/dev/null)
 # Derive expected branch from plan name
 PLAN_NAME=$(basename "$PLAN_PATH" .md)
 EXPECTED_BRANCH="plan/$PLAN_NAME"
+
+# Load enforce_branch setting (default: true)
+CONFIG_FILE=".claude/git-workflow.json"
+if [ -f "$CONFIG_FILE" ]; then
+    ENFORCE_BRANCH=$(grep -o '"enforce_branch":\s*false' "$CONFIG_FILE" >/dev/null && echo false || echo true)
+else
+    ENFORCE_BRANCH=true
+fi
 ```
 
 **Step 4: Validate branch and take action**
@@ -65,7 +73,7 @@ EXPECTED_BRANCH="plan/$PLAN_NAME"
 |----------------|--------|
 | `plan/{plan-name}` (correct) | ✓ Continue normally |
 | `plan/{other-plan}` (wrong plan branch) | Auto-switch with prompt (or auto-switch in autonomous mode) |
-| Non-plan branch (e.g., `main`, `feature/x`) | Warn but continue for backwards compatibility |
+| Non-plan branch (e.g., `main`, `feature/x`) | Fail if `enforce_branch: true` (default), warn if `enforce_branch: false` |
 | No branch (detached HEAD) | Warn but continue |
 
 **Branch validation logic:**
@@ -103,12 +111,23 @@ elif [[ "$CURRENT_BRANCH" == plan/* ]]; then
         # See "Auto-Switch Prompt" section below
     fi
 
-# Case 4: On non-plan branch (backwards compatibility)
+# Case 4: On non-plan branch
 else
-    echo "⚠ Warning: Not on a plan branch (currently on '$CURRENT_BRANCH')."
-    echo "  Expected branch: $EXPECTED_BRANCH"
-    echo "  Run /plan:set to switch to the plan branch."
-    echo "  Continuing with batch execution..."
+    if [ "$ENFORCE_BRANCH" = true ]; then
+        # enforce_branch: true (default) - fail with clear error
+        echo "✗ Error: Not on a plan branch (currently on '$CURRENT_BRANCH')."
+        echo "  This plan requires being on branch '$EXPECTED_BRANCH'."
+        echo ""
+        echo "  To fix: Run /plan:set to switch to the correct plan branch."
+        echo "  To disable: Set \"enforce_branch\": false in .claude/git-workflow.json"
+        exit 1  # Stop execution
+    else
+        # enforce_branch: false - warn but continue (backwards compatibility)
+        echo "⚠ Warning: Not on a plan branch (currently on '$CURRENT_BRANCH')."
+        echo "  Expected branch: $EXPECTED_BRANCH"
+        echo "  Run /plan:set to switch to the plan branch."
+        echo "  Continuing with batch execution..."
+    fi
 fi
 ```
 
@@ -191,7 +210,16 @@ esac
   ✓ Switched to plan/my-plan
 ```
 
-**Example output (non-plan branch - backwards compatibility):**
+**Example output (non-plan branch - enforce_branch: true):**
+```
+✗ Error: Not on a plan branch (currently on 'main').
+  This plan requires being on branch 'plan/my-plan'.
+
+  To fix: Run /plan:set to switch to the correct plan branch.
+  To disable: Set "enforce_branch": false in .claude/git-workflow.json
+```
+
+**Example output (non-plan branch - enforce_branch: false):**
 ```
 ⚠ Warning: Not on a plan branch (currently on 'main').
   Expected branch: plan/my-plan

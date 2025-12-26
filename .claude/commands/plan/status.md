@@ -104,6 +104,37 @@ For each phase:
 - Count incomplete tasks
 - Note blocked tasks if detectable
 
+### 3b. Detect Phase Tags
+
+Check for phase tags to display alongside completed phases:
+
+```bash
+# Get plan name
+PLAN_NAME=$(basename "$PLAN_PATH" .md)
+
+# List all phase tags for this plan
+PHASE_TAGS=$(git tag -l "plan/$PLAN_NAME/phase-*" 2>/dev/null)
+
+# Parse tags to get phase numbers
+# e.g., "plan/my-plan/phase-1" → phase number 1
+for TAG in $PHASE_TAGS; do
+    PHASE_NUM=$(echo "$TAG" | sed 's/.*phase-//')
+    # Store for display: TAGGED_PHASES[N]=true
+done
+```
+
+**For each phase in the breakdown:**
+- If phase is 100% complete AND has a tag → show tag name with 🏷️ indicator
+- If phase is 100% complete but NO tag → show "✓ Complete" only
+- If phase is in progress or not started → no tag indicator
+
+**Tag display format:**
+```
+Phase 1: Critical Unit Tests
+████████████████████ 100% (5/5 tasks)
+✓ Complete  🏷️ plan/my-plan/phase-1
+```
+
 ### 4. Display Status Summary
 
 ```
@@ -133,15 +164,15 @@ Phases: 3/5 complete
 
 Phase 0: Test Directory Restructure
 ████████████████████ 100% (5/5 tasks)
-✓ Complete
+✓ Complete  🏷️ plan/my-plan/phase-0
 
 Phase 1: Critical Unit Tests
-████████████████░░░░ 80% (4/5 tasks)
-⟳ In progress - 1 task remaining
+████████████████████ 100% (5/5 tasks)
+✓ Complete  🏷️ plan/my-plan/phase-1
 
 Phase 2: Mock CLI & Integration
-████████░░░░░░░░░░░░ 40% (2/5 tasks)
-⟳ In progress - 3 tasks remaining
+████████████████░░░░ 80% (4/5 tasks)
+⟳ In progress - 1 task remaining
 
 Phase 3: Integration Tests
 ░░░░░░░░░░░░░░░░░░░░ 0% (0/5 tasks)
@@ -212,7 +243,15 @@ Tasks Failed: 0
 
 ═══ Phase Breakdown ═══
 
-(same as markdown-based display)
+Phase 0: Test Directory Restructure
+████████████████████ 100% (5/5 tasks)
+✓ Complete  🏷️ plan/test-suite-implementation/phase-0
+
+Phase 1: Critical Unit Tests
+████████████████░░░░ 80% (4/5 tasks)
+⟳ In progress - 1 task remaining
+
+(etc.)
 
 ═══ Recent Activity ═══
 

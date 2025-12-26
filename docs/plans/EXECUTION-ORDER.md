@@ -4,10 +4,9 @@ This document defines the recommended order for executing plans in this reposito
 
 ## Overview
 
-These plans implement three major feature sets:
+These plans implement two major feature sets:
 1. **Parallel Execution** - Enable safe concurrent task/plan execution
 2. **Git Workflow** - Branch-per-plan workflow with safety and automation
-3. **UI Decoupling** - Decouple orchestrator from UI for multi-interface support
 
 The plans are ordered to maximize safety and enable incremental value delivery.
 
@@ -26,14 +25,8 @@ The plans are ordered to maximize safety and enable incremental value delivery.
 | 7 | [parallel-execution-dependencies](parallel-execution-dependencies.md) | 35 | Not Started |
 | 8 | [tui-expansion-analysis](tui-expansion-analysis.md) | 57 | Not Started |
 | 9 | [tui-integration-implementation](tui-integration-implementation.md) | 24 | Not Started |
-| 10 | [orchestrator-event-protocol](orchestrator-event-protocol.md) | 12 | Not Started |
-| 11 | [orchestrator-engine-extraction](orchestrator-engine-extraction.md) | 15 | Not Started |
-| 12 | [orchestrator-core-adapters](orchestrator-core-adapters.md) | 18 | Not Started |
-| 13 | [orchestrator-external-adapters](orchestrator-external-adapters.md) | 16 | Not Started |
 
-**Total: 461 tasks across 13 plans**
-
-> **Note:** The original `orchestrator-ui-decoupling` plan was split into 4 focused plans (10-13) to reduce risk and leverage infrastructure from earlier plans. See `docs/plan-outputs/orchestrator-ui-decoupling/findings/split-analysis.md` for details.
+**Total: 400 tasks across 9 plans**
 
 ---
 
@@ -187,62 +180,6 @@ The plans are ordered to maximize safety and enable incremental value delivery.
 
 ---
 
-### 10. orchestrator-event-protocol
-**Goal:** Define event protocol and abstract adapter interface.
-
-**Delivers:**
-- Event types for all orchestration state changes
-- Event payload dataclasses with serialization
-- Control command types (pause, resume, cancel)
-- `OrchestratorUIAdapter` abstract base class
-- `NullAdapter` for headless mode
-- JSON schemas for events and commands
-
-**Dependencies:** None (foundational for UI decoupling)
-
----
-
-### 11. orchestrator-engine-extraction
-**Goal:** Extract pure orchestration logic from plan_orchestrator.py.
-
-**Delivers:**
-- `OrchestrationEngine` class with no UI dependencies
-- Event emission for all state changes
-- Control command handling (pause, resume, cancel, skip, retry)
-- Integration with DAG scheduling from plan 7
-
-**Dependencies:** Plan 10 (uses event protocol)
-
----
-
-### 12. orchestrator-core-adapters
-**Goal:** Create essential adapters and integrate with orchestrator.
-
-**Delivers:**
-- `RichTUIAdapter` wrapping existing TUI
-- `PlainTextAdapter` for `--no-tui` mode
-- `JSONStreamAdapter` for machine-readable output
-- `--adapter` CLI flag
-- Backwards compatibility with existing usage
-
-**Dependencies:** Plans 9, 11 (uses TUI patterns and engine)
-
----
-
-### 13. orchestrator-external-adapters
-**Goal:** Enable external connections via socket and web.
-
-**Delivers:**
-- Socket adapter with multi-viewer support
-- Standalone viewer script
-- Web adapter extending REST API from plan 6
-- Real-time event streaming via WebSocket
-- Control commands from all interfaces
-
-**Dependencies:** Plans 6, 12 (extends web API, uses core adapters)
-
----
-
 ## Running the Plans
 
 ### Start First Plan
@@ -278,25 +215,12 @@ parallel-execution-foundation (1) ✓
     │                          └──► git-workflow-phase4-advanced (5)
     │                                   │
     │                                   └──► git-workflow-phase5-worktrees (6)
-    │                                                │
-    │                                                ▼
-    └──► parallel-execution-dependencies (7) ──────► tui-expansion-analysis (8)
-                                                          │
-                                                          └──► tui-integration-implementation (9)
-                                                                        │
-                                                                        ▼
-                                            orchestrator-event-protocol (10)
-                                                          │
-                                                          └──► orchestrator-engine-extraction (11)
-                                                                        │
-                                                                        └──► orchestrator-core-adapters (12)
-                                                                                      │
-                    ┌─────────────────────────────────────────────────────────────────┘
+    │
+    └──► parallel-execution-dependencies (7)
                     │
-                    └──► orchestrator-external-adapters (13)
-                              ▲
+                    └──► tui-expansion-analysis (8)
                               │
-              (also depends on git-workflow-phase5-worktrees for REST API)
+                              └──► tui-integration-implementation (9)
 ```
 
 ---
@@ -314,12 +238,8 @@ parallel-execution-foundation (1) ✓
 | 7 | 35 | ~7 | Not Started |
 | 8 | 57 | ~12 | Not Started |
 | 9 | 24 | ~5 | Not Started |
-| 10 | 12 | ~3 | Not Started |
-| 11 | 15 | ~4 | Not Started |
-| 12 | 18 | ~4 | Not Started |
-| 13 | 16 | ~4 | Not Started |
 
-**Remaining: 324 tasks, ~69 iterations (~11-12 hours)**
+**Remaining: 263 tasks, ~54 iterations (~9 hours)**
 
 *Estimates assume ~5 tasks/iteration, ~10 min/iteration*
 
@@ -336,9 +256,6 @@ After each plan, you gain usable functionality:
 | 6 | Run multiple plans in parallel via worktrees, REST API |
 | 7 | Get 30%+ speedup with task-level dependencies |
 | 8-9 | Use keyboard-driven TUI with dependency graphs, command palette |
-| 10-11 | Run headless orchestration with event logging |
-| 12 | Choose adapter (TUI/plain/JSON) via `--adapter` flag |
-| 13 | Monitor orchestration via web browser, connect multiple viewers |
 
 ---
 

@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "_comment": "Git workflow configuration for Claude Code plan commands. All options have defaults - this file is optional.",
+
+  "strategy": "branch-per-plan",
+  "branch_prefix": "plan/",
+  "auto_commit": true,
+  "merge_strategy": "squash",
+  "archive_branches": true,
+  "archive_retention_days": 90,
+  "sync_remote": false,
+  "phase_tags": true,
+  "enforce_branch": true,
+  "cleanup_age_days": 30,
+
+  "_schema": {
+    "strategy": {
+      "type": "string",
+      "enum": ["branch-per-plan", "branch-per-phase"],
+      "default": "branch-per-plan",
+      "description": "Branching strategy: 'branch-per-plan' creates one branch per plan, 'branch-per-phase' creates a new branch for each phase."
+    },
+    "branch_prefix": {
+      "type": "string",
+      "default": "plan/",
+      "description": "Prefix for plan branch names. Example: with 'plan/', a plan named 'my-feature' creates branch 'plan/my-feature'."
+    },
+    "auto_commit": {
+      "type": "boolean",
+      "default": true,
+      "description": "Automatically commit changes after each task completion. Set to false for manual commit control."
+    },
+    "merge_strategy": {
+      "type": "string",
+      "enum": ["squash", "commit", "ff"],
+      "default": "squash",
+      "description": "Default merge strategy for /plan:complete. 'squash' combines all commits, 'commit' preserves history with merge commit, 'ff' fast-forwards if possible."
+    },
+    "archive_branches": {
+      "type": "boolean",
+      "default": true,
+      "description": "Create archive tags before deleting branches. Tags preserve commit history after squash merge."
+    },
+    "archive_retention_days": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 90,
+      "description": "Days to retain archive tags before /plan:cleanup considers them for deletion."
+    },
+    "sync_remote": {
+      "type": "boolean",
+      "default": false,
+      "description": "Automatically push to remote after branch creation and task commits. Requires remote 'origin' to be configured."
+    },
+    "phase_tags": {
+      "type": "boolean",
+      "default": true,
+      "description": "Create git tags when phases complete. Tag format: plan/{name}/phase-{N}."
+    },
+    "enforce_branch": {
+      "type": "boolean",
+      "default": true,
+      "description": "Require being on the correct plan branch for plan commands. Set to false for legacy workflows."
+    },
+    "cleanup_age_days": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 30,
+      "description": "Days of inactivity before /plan:cleanup considers a branch stale."
+    }
+  },
+
+  "_examples": {
+    "team_workflow": {
+      "_comment": "Configuration for team workflows with remote sync and PR creation",
+      "sync_remote": true,
+      "merge_strategy": "squash",
+      "archive_branches": true,
+      "phase_tags": true
+    },
+    "solo_developer": {
+      "_comment": "Minimal configuration for solo developers",
+      "sync_remote": false,
+      "archive_branches": false,
+      "phase_tags": false
+    },
+    "strict_workflow": {
+      "_comment": "Strict workflow with branch enforcement and long retention",
+      "enforce_branch": true,
+      "archive_retention_days": 180,
+      "cleanup_age_days": 60
+    }
+  }
+}

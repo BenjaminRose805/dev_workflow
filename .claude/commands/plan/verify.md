@@ -28,6 +28,7 @@ If arguments are passed to this skill, parse them to determine which tasks to ve
 | All tasks | `all` | All tasks (pending and completed) |
 | No arguments | (empty) | Interactive selection (step 3) |
 | `--autonomous` | `1.1 1.2 --autonomous` | Skip all interactive prompts |
+| `--push-tags` | `1.1 --push-tags` | Push phase tags to remote if phase completes |
 
 **Autonomous Mode:**
 
@@ -37,11 +38,12 @@ When `--autonomous` flag is present:
 - Automatically apply recommended status updates without asking
 - Still report verification results normally
 
-**Detecting autonomous mode:**
+**Detecting flags:**
 ```
 args = skill arguments
 autonomous = args contains "--autonomous"
-args = args with "--autonomous" removed (for further parsing)
+push_tags = args contains "--push-tags"
+args = args with "--autonomous" and "--push-tags" removed (for further parsing)
 ```
 
 **Parsing logic:**
@@ -99,6 +101,12 @@ otherwise:
 
 # Search by description
 /plan:verify websocket
+
+# Push phase tags to remote if phase completes
+/plan:verify phase:1 --push-tags
+
+# Combine with autonomous mode
+/plan:verify all --autonomous --push-tags
 ```
 
 ### 2. Parse Plan File
@@ -458,6 +466,121 @@ Status updated:
 
 Plan markdown file preserved for reference.
 Run /plan:implement to work on remaining tasks.
+```
+
+### 9. Check for Phase Completion and Create Phase Tag
+
+After updating task status, check if any phase is now 100% complete and create a phase tag.
+
+**Check for newly completed phases:**
+
+```bash
+# Get plan name
+PLAN_NAME=$(basename "$PLAN_PATH" .md)
+
+# Get phases with completion status
+node scripts/status-cli.js --plan="$PLAN_PATH" phases
+```
+
+**Output format:**
+```json
+{
+  "phases": [
+    {"number": 0, "name": "Test Directory Restructure", "completed": 5, "total": 5, "percentage": 100},
+    {"number": 1, "name": "Critical Unit Tests", "completed": 5, "total": 5, "percentage": 100},
+    {"number": 2, "name": "Mock CLI & Integration", "completed": 2, "total": 5, "percentage": 40}
+  ]
+}
+```
+
+**For each phase at 100% completion:**
+
+1. **Check if phase tag already exists:**
+   ```bash
+   PHASE_TAG="plan/$PLAN_NAME/phase-$PHASE_NUM"
+   if git rev-parse --verify "refs/tags/$PHASE_TAG" >/dev/null 2>&1; then
+     echo "Phase $PHASE_NUM tag already exists: $PHASE_TAG"
+   else
+     # Create new phase tag
+   fi
+   ```
+
+2. **Create annotated tag with phase name:**
+
+   Tag format: `plan/{name}/phase-{N}` (e.g., `plan/my-feature/phase-1`)
+
+   ```bash
+   PHASE_TAG="plan/$PLAN_NAME/phase-$PHASE_NUM"
+   PHASE_NAME="Phase $PHASE_NUM: $PHASE_TITLE"
+
+   # Create annotated tag with phase name in annotation
+   git tag -a "$PHASE_TAG" -m "$(cat <<EOF
+   $PHASE_NAME
+
+   Plan: $PLAN_NAME
+   Phase: $PHASE_NUM
+   Tasks: $COMPLETED_COUNT completed
+   Tagged at: $(date -Iseconds)
+   EOF
+   )"
+
+   echo "✓ Created phase tag: $PHASE_TAG"
+   ```
+
+3. **Push tag if sync_remote enabled or --push-tags flag:**
+   ```bash
+   # Check if sync_remote is enabled or --push-tags flag was passed
+   SYNC_REMOTE=$(cat .claude/git-workflow.json 2>/dev/null | grep -o '"sync_remote":\s*true' || echo "")
+
+   # PUSH_TAGS is set from argument parsing (--push-tags flag)
+   if [ -n "$SYNC_REMOTE" ] || [ "$PUSH_TAGS" = "true" ]; then
+     if git push origin "$PHASE_TAG" 2>/dev/null; then
+       echo "  Pushed tag to remote"
+     else
+       echo "  ⚠ Failed to push tag (continuing anyway)"
+     fi
+   fi
+   ```
+
+**Example output (with --push-tags):**
+
+```
+Status updated:
+- Marked 2 tasks as complete in status.json
+
+Phase completion check:
+✓ Phase 1 is now 100% complete (5/5 tasks)
+  Creating phase tag: plan/my-feature/phase-1
+  ✓ Tag created with annotation: "Phase 1: Critical Unit Tests"
+  Pushed tag to remote
+
+Run /plan:implement to continue with Phase 2.
+```
+
+**Example output (without --push-tags):**
+
+```
+Phase completion check:
+✓ Phase 1 is now 100% complete (5/5 tasks)
+  Creating phase tag: plan/my-feature/phase-1
+  ✓ Tag created with annotation: "Phase 1: Critical Unit Tests"
+  (Use --push-tags to push to remote)
+```
+
+**Skip phase tagging if:**
+- Git is not available
+- `phase_tags` is explicitly disabled in `.claude/git-workflow.json`
+- All phases were already tagged (no new completions)
+
+**Configuration check:**
+```bash
+# Check if phase_tags is disabled (default is true/enabled)
+PHASE_TAGS_DISABLED=$(cat .claude/git-workflow.json 2>/dev/null | grep -o '"phase_tags":\s*false' || echo "")
+
+if [ -n "$PHASE_TAGS_DISABLED" ]; then
+  echo "Phase tagging disabled in configuration"
+  # Skip phase tag creation
+fi
 ```
 
 ## Verification Techniques

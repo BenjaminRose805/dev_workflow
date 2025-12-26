@@ -140,9 +140,36 @@ The detailed plans served their purpose (defining scope and boundaries). They're
 - Context loading
 - Notifications
 
-### Git Integration
-- Commits per task during plan execution
-- Branch-per-plan workflow (analysis pending)
+### Git Workflow Integration
+
+The plan system integrates deeply with git for branch isolation, commit tracking, and team collaboration.
+
+**Branch Management:**
+- `/plan:set` creates/switches to `plan/{plan-name}` branch
+- `/plan:complete` merges back to main with configurable strategy
+- `/plan:cleanup` removes stale branches with optional archiving
+
+**Automatic Commits:**
+- Each completed task creates a commit: `[plan-name] task {id}: {description}`
+- Phase completion creates git tags: `plan/{plan-name}/phase-{N}`
+- Archive tags preserve history before squash merges
+
+**Remote Sync (Optional):**
+- `sync_remote: true` enables automatic push after commits
+- `--pr` flag creates GitHub pull requests from `/plan:complete`
+- Phase tags can be pushed with `--push-tags`
+
+**Configuration:**
+All options in `.claude/git-workflow.json` with sensible defaults:
+- `strategy`: `branch-per-plan` or `branch-per-phase`
+- `merge_strategy`: `squash`, `commit`, or `ff`
+- `enforce_branch`: Require correct plan branch (default: true)
+- `auto_commit`: Commit after each task (default: true)
+
+**Safety Features:**
+- Pre-merge conflict detection with resolution options
+- Uncommitted changes protection before switching plans
+- Branch enforcement prevents accidental work on wrong branch
 
 ## Success Metrics
 

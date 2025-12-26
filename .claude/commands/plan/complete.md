@@ -14,6 +14,7 @@ Complete a plan by merging it to main with squash merge workflow.
 - `--merge <strategy>` - Merge strategy: `squash` (default), `commit`, `ff`
 - `--pr` - Create a GitHub Pull Request instead of local merge
 - `--draft` - Create as draft PR (requires `--pr`)
+- `--force` - Skip conflict check and proceed with merge (may result in conflicts)
 
 ## Instructions
 
@@ -170,7 +171,8 @@ git merge --abort 2>/dev/null || true
 
 **Step 5: Handle conflicts**
 
-If conflicts were detected, abort with helpful message:
+If conflicts were detected, present resolution options to the user:
+
 ```
 ✗ Merge conflicts detected with main branch.
 
@@ -179,11 +181,101 @@ Conflicting files:
 - src/routes/api.ts
 - tests/auth.test.ts
 
-Resolve conflicts before completing:
-1. Merge main into your branch: git merge main
-2. Resolve conflicts in listed files
-3. Commit the resolution: git commit
-4. Re-run /plan:complete
+How would you like to resolve these conflicts?
+```
+
+**Step 6: Offer Resolution Options**
+
+Use `AskUserQuestion` to present the user with resolution choices:
+
+```
+question: "How would you like to resolve merge conflicts?"
+header: "Conflicts"
+options:
+  - label: "Rebase onto main (Recommended)"
+    description: "Replay your commits on top of main. Results in cleaner linear history."
+  - label: "Manual resolve"
+    description: "Stop here. You'll resolve conflicts manually and re-run /plan:complete."
+  - label: "Abort completion"
+    description: "Cancel plan completion. No changes will be made."
+```
+
+**Step 7: Execute chosen resolution**
+
+Based on user choice, execute the appropriate resolution:
+
+#### Option 1: Rebase onto main
+
+```bash
+if [[ "$RESOLUTION_CHOICE" == "rebase" ]]; then
+    echo "Rebasing onto $MAIN_BRANCH..."
+
+    # Attempt rebase
+    git rebase "$MAIN_BRANCH"
+    REBASE_EXIT_CODE=$?
+
+    if [[ $REBASE_EXIT_CODE -ne 0 ]]; then
+        # Rebase has conflicts - provide guidance
+        echo ""
+        echo "✗ Rebase encountered conflicts."
+        echo ""
+        echo "Resolve the conflicts and then:"
+        echo "  1. Edit conflicting files to resolve"
+        echo "  2. Stage resolved files: git add <file>"
+        echo "  3. Continue rebase: git rebase --continue"
+        echo "  4. Re-run /plan:complete"
+        echo ""
+        echo "Or abort the rebase: git rebase --abort"
+        exit 1
+    fi
+
+    echo "✓ Successfully rebased onto $MAIN_BRANCH"
+    echo "  Proceeding with plan completion..."
+
+    # Continue with completion (no conflicts after successful rebase)
+fi
+```
+
+#### Option 2: Manual resolve
+
+```bash
+if [[ "$RESOLUTION_CHOICE" == "manual" ]]; then
+    echo ""
+    echo "Manual conflict resolution selected."
+    echo ""
+    echo "To resolve conflicts:"
+    echo "  1. Merge main into your branch: git merge $MAIN_BRANCH"
+    echo "  2. Resolve conflicts in the listed files"
+    echo "  3. Stage resolved files: git add <file>"
+    echo "  4. Commit the merge: git commit"
+    echo "  5. Re-run /plan:complete"
+    exit 0
+fi
+```
+
+#### Option 3: Abort completion
+
+```bash
+if [[ "$RESOLUTION_CHOICE" == "abort" ]]; then
+    echo ""
+    echo "⊘ Plan completion aborted."
+    echo "  No changes were made. Your branch remains as-is."
+    exit 0
+fi
+```
+
+**Step 8: Skip conflict check with --force flag**
+
+If `--force` flag is provided, skip the conflict check entirely:
+
+```bash
+if [[ "$FORCE_COMPLETE" == "true" ]]; then
+    echo "⚠ Skipping conflict check (--force)"
+    echo "  Proceeding with merge - conflicts may occur"
+    # Skip Steps 1-7, proceed directly to merge
+else
+    # Perform conflict check as described above
+fi
 ```
 
 **Example output (success - no conflicts):**
@@ -191,7 +283,7 @@ Resolve conflicts before completing:
 ✓ No merge conflicts with main
 ```
 
-**Example output (conflicts detected - abort):**
+**Example output (conflicts detected - options presented):**
 ```
 ✗ Merge conflicts detected with main branch.
 
@@ -199,11 +291,51 @@ Conflicting files:
 - src/lib/auth.ts
 - src/routes/api.ts
 
-Resolve conflicts before completing:
-1. Merge main into your branch: git merge main
-2. Resolve conflicts in listed files
-3. Commit the resolution: git commit
-4. Re-run /plan:complete
+How would you like to resolve these conflicts?
+  ○ Rebase onto main (Recommended)
+  ○ Manual resolve
+  ○ Abort completion
+```
+
+**Example output (rebase successful):**
+```
+Rebasing onto main...
+Successfully rebased and updated refs/heads/plan/my-plan.
+✓ Successfully rebased onto main
+  Proceeding with plan completion...
+```
+
+**Example output (rebase with conflicts):**
+```
+Rebasing onto main...
+
+✗ Rebase encountered conflicts.
+
+Resolve the conflicts and then:
+  1. Edit conflicting files to resolve
+  2. Stage resolved files: git add <file>
+  3. Continue rebase: git rebase --continue
+  4. Re-run /plan:complete
+
+Or abort the rebase: git rebase --abort
+```
+
+**Example output (manual resolve selected):**
+```
+Manual conflict resolution selected.
+
+To resolve conflicts:
+  1. Merge main into your branch: git merge main
+  2. Resolve conflicts in the listed files
+  3. Stage resolved files: git add <file>
+  4. Commit the merge: git commit
+  5. Re-run /plan:complete
+```
+
+**Example output (abort selected):**
+```
+⊘ Plan completion aborted.
+  No changes were made. Your branch remains as-is.
 ```
 
 ### 5. Commit Any Uncommitted Changes
@@ -265,12 +397,40 @@ fi
 
 Create an archive tag to preserve the complete branch history before squashing.
 
-**Note:** Skip this step if `--no-archive` option was provided.
-
-**Step 1: Check if --no-archive was passed**
+**Step 0: Determine archive behavior from config and flags**
 ```bash
+# Load archive_branches setting from config (default: true)
+CONFIG_FILE=".claude/git-workflow.json"
+ARCHIVE_ENABLED=true
+
+if [ -f "$CONFIG_FILE" ]; then
+  # Check if archive_branches is explicitly set to false
+  if cat "$CONFIG_FILE" | grep -q '"archive_branches":\s*false'; then
+    ARCHIVE_ENABLED=false
+  fi
+fi
+
+# Command-line flags override config:
+# --no-archive: Skip archive (overrides config)
+# --archive: Force archive (future flag, overrides config if archive_branches: false)
 if [[ "$NO_ARCHIVE" == "true" ]]; then
-    echo "⊘ Skipping archive tag (--no-archive)"
+  ARCHIVE_ENABLED=false
+fi
+```
+
+**Precedence:**
+1. Command-line flag `--no-archive` (highest priority - disables archiving)
+2. Configuration file `.claude/git-workflow.json` → `archive_branches`
+3. Built-in default: `true` (archiving enabled)
+
+**Step 1: Check if archiving is enabled**
+```bash
+if [[ "$ARCHIVE_ENABLED" == "false" ]]; then
+    if [[ "$NO_ARCHIVE" == "true" ]]; then
+        echo "⊘ Skipping archive tag (--no-archive)"
+    else
+        echo "⊘ Skipping archive tag (archive_branches: false in config)"
+    fi
     ARCHIVE_TAG=""
 else
     # Continue to create archive tag
@@ -898,10 +1058,32 @@ Merge the plan branch into main using the selected strategy.
 
 **Step 0: Parse merge strategy**
 ```bash
-# MERGE_STRATEGY is parsed from --merge option (default: "squash")
+# Load default merge strategy from config
+CONFIG_FILE=".claude/git-workflow.json"
+DEFAULT_MERGE_STRATEGY="squash"
+
+if [ -f "$CONFIG_FILE" ]; then
+  CONFIGURED_STRATEGY=$(cat "$CONFIG_FILE" | grep -o '"merge_strategy":\s*"[^"]*"' | grep -o '"[^"]*"$' | tr -d '"')
+  if [ -n "$CONFIGURED_STRATEGY" ]; then
+    DEFAULT_MERGE_STRATEGY="$CONFIGURED_STRATEGY"
+  fi
+fi
+
+# MERGE_STRATEGY from --merge option overrides config default
 # Valid values: "squash", "commit", "ff"
-MERGE_STRATEGY="${MERGE_STRATEGY:-squash}"
+if [ -z "$MERGE_STRATEGY_ARG" ]; then
+  MERGE_STRATEGY="$DEFAULT_MERGE_STRATEGY"
+else
+  MERGE_STRATEGY="$MERGE_STRATEGY_ARG"
+fi
+
+echo "Merge strategy: $MERGE_STRATEGY"
 ```
+
+**Precedence:**
+1. Command-line flag `--merge <strategy>` (highest priority)
+2. Configuration file `.claude/git-workflow.json` → `merge_strategy`
+3. Built-in default: `squash`
 
 **Step 1: Execute merge based on strategy**
 
