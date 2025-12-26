@@ -257,6 +257,114 @@ fi
   Commit: abc1234 [my-plan] Final changes before completion
 ```
 
+### 6. Create Archive Tag (Before Merge)
+
+Create an archive tag to preserve the complete branch history before squashing.
+
+**Note:** Skip this step if `--no-archive` option was provided.
+
+**Step 1: Check if --no-archive was passed**
+```bash
+if [[ "$NO_ARCHIVE" == "true" ]]; then
+    echo "⊘ Skipping archive tag (--no-archive)"
+    ARCHIVE_TAG=""
+else
+    # Continue to create archive tag
+fi
+```
+
+**Step 2: Create annotated archive tag**
+```bash
+# Create tag name
+ARCHIVE_TAG="archive/plan-$PLAN_NAME"
+
+# Create annotated tag pointing to current HEAD
+git tag -a "$ARCHIVE_TAG" -m "$(cat <<EOF
+Archive: $PLAN_NAME
+
+Plan completed on $(date -Iseconds)
+This tag preserves the individual commit history before squash merge.
+
+To view commits:
+  git log $ARCHIVE_TAG
+
+To restore branch:
+  git checkout -b restored-$PLAN_NAME $ARCHIVE_TAG
+EOF
+)"
+
+if [[ $? -ne 0 ]]; then
+    echo "⚠ Warning: Failed to create archive tag"
+    echo "  Tag may already exist. Continuing without archive."
+    ARCHIVE_TAG=""
+else
+    echo "✓ Created archive tag: $ARCHIVE_TAG"
+fi
+```
+
+**Step 3: Verify tag was created**
+```bash
+if [[ -n "$ARCHIVE_TAG" ]]; then
+    # Verify tag exists and points to current HEAD
+    TAG_SHA=$(git rev-parse "$ARCHIVE_TAG" 2>/dev/null)
+    HEAD_SHA=$(git rev-parse HEAD)
+
+    if [[ "$TAG_SHA" == "$HEAD_SHA" ]]; then
+        echo "  Tag points to: $(git log -1 --oneline HEAD)"
+    else
+        echo "⚠ Warning: Tag does not point to HEAD"
+    fi
+fi
+```
+
+**Example output (tag created):**
+```
+✓ Created archive tag: archive/plan-my-plan
+  Tag points to: abc1234 [my-plan] task 3.5: Final task
+```
+
+**Example output (skipped with --no-archive):**
+```
+⊘ Skipping archive tag (--no-archive)
+```
+
+**Example output (tag already exists):**
+```
+⚠ Warning: Failed to create archive tag
+  Tag may already exist. Continuing without archive.
+```
+
+### Accessing Archived History
+
+After a plan is completed with squash merge, the original individual commits are preserved in the archive tag.
+
+**View individual commits:**
+```bash
+# List all commits from the archived branch
+git log archive/plan-{name}
+
+# Show commits with diffs
+git log -p archive/plan-{name}
+
+# Compare archive to main
+git log main..archive/plan-{name}
+```
+
+**Restore the original branch (if needed):**
+```bash
+# Create a new branch from the archive tag
+git checkout -b restored-{plan-name} archive/plan-{name}
+```
+
+**Find all archived plans:**
+```bash
+# List all archive tags
+git tag -l "archive/plan-*"
+
+# Show archive tag details
+git show archive/plan-{name}
+```
+
 ## Error Handling
 
 **Git not available:**
