@@ -668,6 +668,40 @@ Archive: archive/plan-{name}
 
 **Note:** The archive tag is created in Step 6 (before the merge). If `--no-archive` was specified, this section is omitted from the commit message entirely.
 
+**Step 6: Include outputs directory link**
+
+The outputs directory link points to the plan's output artifacts, including:
+- `status.json` - Execution state and timing data
+- `findings/` - Task analysis outputs and findings documents
+- Any other artifacts generated during plan execution
+
+```bash
+# The outputs directory path is always included
+OUTPUTS_DIR="docs/plan-outputs/$PLAN_NAME/"
+
+# Verify the directory exists (it should, if status.json was used)
+if [[ -d "$OUTPUTS_DIR" ]]; then
+    OUTPUTS_SECTION="Outputs: $OUTPUTS_DIR"
+else
+    # Directory should always exist, but handle gracefully
+    OUTPUTS_SECTION="Outputs: $OUTPUTS_DIR (not created)"
+fi
+```
+
+**Outputs section format:**
+```
+Outputs: docs/plan-outputs/{plan-name}/
+```
+
+**What's in the outputs directory:**
+| File/Directory | Description |
+|----------------|-------------|
+| `status.json` | Task execution status, timestamps, and run history |
+| `findings/` | Task-specific findings and analysis documents (e.g., `1.1.md`, `2.3.md`) |
+| Custom outputs | Any additional artifacts created by tasks |
+
+**Note:** The outputs directory is always included in the commit message as it provides essential context for understanding the plan's execution history and results.
+
 **Example commit message:**
 ```
 Complete: my-feature-plan
