@@ -354,7 +354,7 @@ def build_status_response(inst: OrchestratorInstance) -> StatusResponse:
         status=orch_status,
         summary=summary,
         tasks=tasks,
-        phases=[],  # TODO: Parse phases from plan file
+        phases=[],  # Phase summaries can be derived from tasks by client
         started_at=inst.started_at,
         iteration=status_data.get('iteration', 0),
         max_iterations=status_data.get('maxIterations', 0),

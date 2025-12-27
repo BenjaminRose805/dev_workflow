@@ -1,0 +1,220 @@
+{
+  "_comment": "This file is the authoritative source of truth for task execution state. The markdown plan file is read-only reference documentation. Use status-cli.js to update task status.",
+  "planPath": "docs/plans/orchestrator-api-server.md",
+  "planName": "Implementation Plan: Orchestrator API Server",
+  "createdAt": "2025-12-27T07:52:44.482Z",
+  "lastUpdatedAt": "2025-12-27T08:41:34.800Z",
+  "currentPhase": "Phase 1: Event Bus Foundation",
+  "dependencyGraph": {
+    "1.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "1.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "1.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "4.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "4.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "5.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    }
+  },
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Event Bus Foundation",
+      "description": "Create `scripts/lib/event_bus.py` with async event bus implementation",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T08:29:35.128Z"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Event Bus Foundation",
+      "description": "Integrate event bus into `StatusMonitor` in `scripts/lib/status_monitor.py`",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T08:29:40.385Z",
+      "completedAt": "2025-12-27T08:31:28.220Z",
+      "duration": 107835
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Event Bus Foundation",
+      "description": "Integrate event bus into `StreamingClaudeRunner` in `scripts/lib/claude_runner.py`",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T08:29:40.403Z",
+      "completedAt": "2025-12-27T08:31:28.237Z",
+      "duration": 107834
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: FastAPI Server Core",
+      "description": "Create `scripts/orchestrator_server.py` with FastAPI application",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T08:31:32.420Z",
+      "completedAt": "2025-12-27T08:33:12.534Z",
+      "duration": 100114
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: FastAPI Server Core",
+      "description": "Add command endpoints that proxy to existing IPC",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T08:33:12.924Z",
+      "completedAt": "2025-12-27T08:34:21.526Z",
+      "duration": 68602
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: FastAPI Server Core",
+      "description": "Add plan and task query endpoints",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T08:35:18.641Z",
+      "completedAt": "2025-12-27T08:35:31.995Z",
+      "duration": 13354,
+      "notes": "All plan and task query endpoints already implemented: /api/plans, /api/plans/{plan_name}/status, /api/plans/{plan_name}/tasks, /api/plans/{plan_name}/findings, /api/plans/{plan_name}/findings/{task_id}"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: WebSocket Real-time Streaming",
+      "description": "Implement WebSocket endpoint with event bus subscription",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T08:35:42.291Z",
+      "completedAt": "2025-12-27T08:36:40.982Z",
+      "duration": 58691,
+      "notes": "Added WebSocket endpoint /api/orchestrators/{instance_id}/events with: WebSocketManager class for connection management, event bus subscription per instance, heartbeat/ping for stale connection detection, initial status message on connect, cleanup on disconnect"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: WebSocket Real-time Streaming",
+      "description": "Implement activity stream endpoint",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T08:36:41.374Z",
+      "completedAt": "2025-12-27T08:37:30.276Z",
+      "duration": 48902,
+      "notes": "Added /api/orchestrators/{instance_id}/activity WebSocket endpoint with ActivityStreamManager class, filtering to only TOOL_STARTED and TOOL_COMPLETED events, backpressure handling via queue (drops oldest on full), tool-specific fields (tool_name, tool_id, duration_ms, success)"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: WebSocket Real-time Streaming",
+      "description": "Add Server-Sent Events (SSE) alternative",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T08:37:30.672Z",
+      "completedAt": "2025-12-27T08:38:13.747Z",
+      "duration": 43075,
+      "notes": "Added SSE endpoint /api/orchestrators/{instance_id}/events-sse with: async generator for event streaming, event bus subscription, initial status on connect, heartbeat every 1 second, proper cleanup on disconnect, nginx buffering disabled"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Orchestrator Integration",
+      "description": "Add API server mode to `plan_orchestrator.py`",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T08:38:14.139Z",
+      "completedAt": "2025-12-27T08:41:34.800Z",
+      "duration": 200661,
+      "notes": "Added API server mode to plan_orchestrator.py with: --api-server flag to enable HTTP server alongside orchestration, --api-port flag (default 8000), --api-only flag for monitor mode, event bus integration with StatusMonitor and StreamingClaudeRunner, uvicorn running in background thread, graceful shutdown of both orchestrator and API server"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Orchestrator Integration",
+      "description": "Create standalone server runner script",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T08:43:00.000Z",
+      "completedAt": "2025-12-27T08:44:00.000Z",
+      "notes": "Created scripts/run_api_server.py for running API server independently with --host, --port, --reload flags"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Documentation and TypeScript Types",
+      "description": "Generate OpenAPI spec and TypeScript types",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T08:44:00.000Z",
+      "completedAt": "2025-12-27T08:50:00.000Z",
+      "notes": "Created scripts/generate_api_types.py, enhanced orchestrator_server.py with better docs, generated openapi.json, api-types.ts, api-client.ts, and README.md"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 12,
+    "completed": 12,
+    "pending": 0,
+    "in_progress": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "completedAt": "2025-12-27T02:50:30-06:00",
+  "mergedAt": "2025-12-27T02:50:30-06:00",
+  "mergeCommit": "8ed1cea00eca39dea2e70116b564a43865c0029b",
+  "archiveTag": "archive/plan-orchestrator-api-server"
+}

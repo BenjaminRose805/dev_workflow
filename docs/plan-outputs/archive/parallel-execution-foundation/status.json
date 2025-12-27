@@ -1,0 +1,323 @@
+{
+  "_comment": "This file is the authoritative source of truth for task execution state. The markdown plan file is read-only reference documentation. Use status-cli.js to update task status.",
+  "planPath": "docs/plans/parallel-execution-foundation.md",
+  "planName": "Implementation Plan: Parallel Execution Foundation",
+  "createdAt": "2025-12-25T21:28:26.761Z",
+  "lastUpdatedAt": "2025-12-25T22:17:50.318Z",
+  "currentPhase": "Phase 0: Preparation",
+  "tasks": [
+    {
+      "id": "0.1",
+      "phase": "Phase 0: Preparation",
+      "description": "Create backup of current `scripts/status-cli.js` and `scripts/lib/plan-status.js` before modifications",
+      "status": "completed",
+      "startedAt": "2025-12-25T21:41:44.352Z",
+      "completedAt": "2025-12-25T21:42:18.323Z",
+      "duration": 33971,
+      "notes": "Created backups at docs/plan-outputs/parallel-execution-foundation/backups/"
+    },
+    {
+      "id": "0.2",
+      "phase": "Phase 0: Preparation",
+      "description": "Review current argument parsing in `status-cli.js` to understand extension points",
+      "status": "completed",
+      "startedAt": "2025-12-25T21:42:18.711Z",
+      "completedAt": "2025-12-25T21:43:01.926Z",
+      "duration": 43215,
+      "notes": "Analyzed argument parsing structure, identified extension points for --plan argument"
+    },
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Explicit Plan Argument",
+      "description": "Add `--plan <path>` argument parsing to `scripts/status-cli.js` main function",
+      "status": "completed",
+      "startedAt": "2025-12-25T21:44:06.360Z",
+      "completedAt": "2025-12-25T21:44:51.766Z",
+      "duration": 45406,
+      "notes": "Added extractPlanArg() function and --plan argument parsing to main(). Validates plan file exists before use."
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Explicit Plan Argument",
+      "description": "Create `getPlanPathFromArgs(args)` helper function in `scripts/lib/plan-status.js`",
+      "status": "completed",
+      "startedAt": "2025-12-25T21:44:56.444Z",
+      "completedAt": "2025-12-25T21:45:50.432Z",
+      "duration": 53988,
+      "notes": "Added getPlanPathFromArgs() helper that checks --plan arg first, falls back to getActivePlanPath(), validates file exists."
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Explicit Plan Argument",
+      "description": "Update all command handlers in `status-cli.js` to use the new helper",
+      "status": "completed",
+      "startedAt": "2025-12-25T21:45:54.915Z",
+      "completedAt": "2025-12-25T21:46:53.530Z",
+      "duration": 58615,
+      "notes": "Refactored main() to use getPlanPathFromArgs() library helper. All command handlers already receive planPath parameter."
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Explicit Plan Argument",
+      "description": "Update `--help` output to document `--plan` argument",
+      "status": "completed",
+      "startedAt": "2025-12-25T21:46:57.504Z",
+      "completedAt": "2025-12-25T21:47:40.881Z",
+      "duration": 43377,
+      "notes": "Updated help to document --plan global option with examples"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Explicit Plan Argument",
+      "description": "Add integration tests for `--plan` argument in `scripts/tests/test-plan-arg.js`",
+      "status": "completed",
+      "startedAt": "2025-12-25T21:47:46.100Z",
+      "completedAt": "2025-12-25T21:49:34.461Z",
+      "duration": 108361,
+      "notes": "Created test-plan-arg.js with 27 tests covering explicit path, equals syntax, fallback, error handling, and library function"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: File Conflict Detection",
+      "description": "Create `extractFileReferences(taskDescription)` function in `scripts/lib/plan-status.js`",
+      "status": "completed",
+      "startedAt": "2025-12-25T21:50:21.159Z",
+      "completedAt": "2025-12-25T21:51:00.107Z",
+      "duration": 38948,
+      "notes": "Added extractFileReferences() function with 4 patterns: backtick-quoted paths, common directory prefixes, modify/update patterns, and 'in filename' patterns"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: File Conflict Detection",
+      "description": "Create `detectFileConflicts(tasks)` function in `scripts/lib/plan-status.js`",
+      "status": "completed",
+      "completedAt": "2025-12-25T21:51:07.557Z",
+      "notes": "Added detectFileConflicts() function that builds file->taskIds map and returns conflicts array sorted by file path"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: File Conflict Detection",
+      "description": "Integrate conflict detection into `cmdNext()` in `status-cli.js`",
+      "status": "completed",
+      "startedAt": "2025-12-25T21:51:18.352Z",
+      "completedAt": "2025-12-25T21:51:57.455Z",
+      "duration": 39103,
+      "notes": "Integrated conflict detection into cmdNext() - added conflict detection after task selection with fileConflict, conflictsWith, and conflictingFiles fields"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: File Conflict Detection",
+      "description": "Update `next` command JSON output to include conflict information",
+      "status": "completed",
+      "completedAt": "2025-12-25T21:51:57.471Z",
+      "notes": "JSON output now includes fileConflicts array at top level and per-task conflict properties"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: File Conflict Detection",
+      "description": "Add unit tests for file reference extraction in `scripts/tests/test-file-conflicts.js`",
+      "status": "completed",
+      "startedAt": "2025-12-25T21:52:13.405Z",
+      "completedAt": "2025-12-25T21:53:23.266Z",
+      "duration": 69861,
+      "notes": "Added 31 unit tests covering extractFileReferences() and detectFileConflicts() - all patterns, edge cases, and real-world scenarios"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Serial Git Commit Queue",
+      "description": "Create `scripts/lib/git-queue.js` with commit queue implementation",
+      "status": "completed",
+      "startedAt": "2025-12-25T21:54:17.366Z",
+      "completedAt": "2025-12-25T21:55:30.328Z",
+      "duration": 72962,
+      "notes": "Created git-queue.js with queue data structure, queueCommit function, processQueue for sequential execution, and lock mechanism"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Serial Git Commit Queue",
+      "description": "Add `commitWithQueue(message, files)` async wrapper function",
+      "status": "completed",
+      "startedAt": "2025-12-25T21:55:42.323Z",
+      "completedAt": "2025-12-25T21:55:54.613Z",
+      "duration": 12290,
+      "notes": "commitWithQueue(message, files) async wrapper already implemented in git-queue.js - returns promise, handles commit failures gracefully"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Serial Git Commit Queue",
+      "description": "Create queue status file at `docs/plan-outputs/.git-queue-status.json`",
+      "status": "completed",
+      "startedAt": "2025-12-25T21:56:03.322Z",
+      "completedAt": "2025-12-25T21:56:26.525Z",
+      "duration": 23203,
+      "notes": "Queue status file created at docs/plan-outputs/.git-queue-status.json - tracks pending commits, last commit timestamp, and enables crash recovery"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Serial Git Commit Queue",
+      "description": "Add `--no-queue` flag to bypass queue for manual operations",
+      "status": "completed",
+      "startedAt": "2025-12-25T21:56:35.977Z",
+      "completedAt": "2025-12-25T21:57:26.629Z",
+      "duration": 50652,
+      "notes": "Added noQueue option to commitWithQueue and commitDirect convenience function to bypass queue for manual operations"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Serial Git Commit Queue",
+      "description": "Integrate queue into plan-status.js commit operations",
+      "status": "completed",
+      "startedAt": "2025-12-25T21:57:35.589Z",
+      "completedAt": "2025-12-25T21:58:18.450Z",
+      "duration": 42861,
+      "notes": "Added commitTaskChanges, getCommitQueueStatus, and waitForCommitQueue functions to plan-status.js - all use git-queue for serialized commits"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Serial Git Commit Queue",
+      "description": "Add queue status to `status-cli.js progress` output",
+      "status": "completed",
+      "startedAt": "2025-12-25T21:59:25.259Z",
+      "completedAt": "2025-12-25T21:59:55.878Z",
+      "duration": 30619,
+      "notes": "Added git queue status display to cmdProgress function, shows pending commits count if > 0"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: PARALLEL Phase Annotation",
+      "description": "Add `[PARALLEL]` annotation parsing to `parseExecutionNotes()` in `plan-status.js`",
+      "status": "completed",
+      "startedAt": "2025-12-25T22:00:09.831Z",
+      "completedAt": "2025-12-25T22:01:12.399Z",
+      "duration": 62568,
+      "notes": "Added [PARALLEL] annotation parsing for phases, backward-compatible with existing sequential parsing"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: PARALLEL Phase Annotation",
+      "description": "Create `getParallelPhases(planPath)` function",
+      "status": "completed",
+      "startedAt": "2025-12-25T22:01:27.030Z",
+      "completedAt": "2025-12-25T22:02:32.602Z",
+      "duration": 65572,
+      "notes": "Created getParallelPhases function that returns parallel groups with file conflict detection between phases"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: PARALLEL Phase Annotation",
+      "description": "Update `cmdNext()` to consider parallel phases",
+      "status": "completed",
+      "startedAt": "2025-12-25T22:02:48.906Z",
+      "completedAt": "2025-12-25T22:03:52.632Z",
+      "duration": 63726,
+      "notes": "Updated cmdNext to support parallel phases: returns tasks from parallel phase groups, respects sequential annotations, includes parallelPhase markers in output"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: PARALLEL Phase Annotation",
+      "description": "Document `[PARALLEL]` annotation usage in `.claude/commands/plan/_common/status-tracking.md`",
+      "status": "completed",
+      "startedAt": "2025-12-25T22:04:09.785Z",
+      "completedAt": "2025-12-25T22:04:51.031Z",
+      "duration": 41246,
+      "notes": "Added comprehensive documentation for [PARALLEL] and [SEQUENTIAL] annotations including syntax, behavior, range formats, conflict detection, and API reference"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: PARALLEL Phase Annotation",
+      "description": "Add tests for parallel phase detection",
+      "status": "completed",
+      "startedAt": "2025-12-25T22:06:16.089Z",
+      "completedAt": "2025-12-25T22:07:49.925Z",
+      "duration": 93836,
+      "notes": "Created test-parallel-phases.js with 53 tests for parallel phase detection"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Enhanced Progress Output",
+      "description": "Add `--format` flag to `status-cli.js progress` command",
+      "status": "completed",
+      "startedAt": "2025-12-25T22:08:07.457Z",
+      "completedAt": "2025-12-25T22:09:16.256Z",
+      "duration": 68799,
+      "notes": "Added --format flag with text, json, and markers output modes"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Enhanced Progress Output",
+      "description": "Define progress marker format",
+      "status": "completed",
+      "startedAt": "2025-12-25T22:09:33.916Z",
+      "completedAt": "2025-12-25T22:09:45.016Z",
+      "duration": 11100,
+      "notes": "Progress marker format defined and implemented in 5.1. Format: [PROGRESS] task/phase/plan status=X [percent=X]"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Enhanced Progress Output",
+      "description": "Add `--watch` flag for continuous progress output",
+      "status": "completed",
+      "startedAt": "2025-12-25T22:10:00.870Z",
+      "completedAt": "2025-12-25T22:10:59.875Z",
+      "duration": 59005,
+      "notes": "Added --watch flag that polls status.json every 2 seconds and outputs changes"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Enhanced Progress Output",
+      "description": "Document progress marker format for TUI integration",
+      "status": "completed",
+      "startedAt": "2025-12-25T22:11:17.023Z",
+      "completedAt": "2025-12-25T22:11:45.878Z",
+      "duration": 28855,
+      "notes": "Added comprehensive documentation for progress marker format in status-tracking.md"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Integration Testing",
+      "description": "Create end-to-end test script `scripts/tests/test-parallel-foundation.js`",
+      "status": "completed",
+      "startedAt": "2025-12-25T22:12:38.253Z",
+      "completedAt": "2025-12-25T22:15:26.573Z",
+      "duration": 168320,
+      "notes": "Created test-parallel-foundation.js with 53 tests covering: concurrent plan sessions, file conflict detection, parallel phase annotations, git queue, and progress output formats. Fixed --format=X argument parsing."
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Integration Testing",
+      "description": "Test with actual orchestrator execution",
+      "status": "completed",
+      "startedAt": "2025-12-25T22:15:42.647Z",
+      "completedAt": "2025-12-25T22:16:56.527Z",
+      "duration": 73880,
+      "notes": "Verified concurrent orchestrator execution: 20 parallel status checks, rapid state changes across 2 plans, no race conditions. All 164 unit tests passed across 4 test suites."
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Integration Testing",
+      "description": "Document test results in findings",
+      "status": "completed",
+      "startedAt": "2025-12-25T22:17:16.131Z",
+      "completedAt": "2025-12-25T22:17:50.318Z",
+      "duration": 34187,
+      "notes": "Created comprehensive test results findings document covering 164 tests, concurrent session testing, feature verification, and bug fix documentation"
+    }
+  ],
+  "runs": [
+    {
+      "runId": "run-1766699948814",
+      "startedAt": "2025-12-25T21:59:08.814Z",
+      "tasksCompleted": 5,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-25T22:05:00.451Z"
+    }
+  ],
+  "summary": {
+    "totalTasks": 30,
+    "completed": 30,
+    "pending": 0,
+    "in_progress": 0,
+    "failed": 0,
+    "skipped": 0
+  }
+}

@@ -1,0 +1,317 @@
+{
+  "_comment": "This file is the authoritative source of truth for task execution state. The markdown plan file is read-only reference documentation. Use status-cli.js to update task status.",
+  "planPath": "docs/plans/parallel-execution-architecture.md",
+  "planName": "Analysis Plan: Parallel Execution Architecture",
+  "createdAt": "2025-12-25T19:39:44.040Z",
+  "lastUpdatedAt": "2025-12-25T20:14:13.678Z",
+  "currentPhase": "Phase 1: Discovery - Current Implementation",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Discovery - Current Implementation",
+      "description": "Map all plan-related files and their relationships",
+      "status": "completed",
+      "startedAt": "2025-12-25T19:44:00.999Z",
+      "completedAt": "2025-12-25T19:45:39.930Z",
+      "duration": 98931,
+      "notes": "Mapped all plan-related files in .claude/commands/plan/ and scripts/, documented relationships and state files"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Discovery - Current Implementation",
+      "description": "Document the orchestrator implementation (`plan:orchestrate`)",
+      "status": "completed",
+      "startedAt": "2025-12-25T19:45:40.320Z",
+      "completedAt": "2025-12-25T19:45:44.947Z",
+      "duration": 4627,
+      "notes": "Documented orchestrator execution loop, parallelization rules, batch sizing, and error handling"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Discovery - Current Implementation",
+      "description": "Analyze how `plan:implement` executes tasks",
+      "status": "completed",
+      "startedAt": "2025-12-25T19:45:45.339Z",
+      "completedAt": "2025-12-25T19:45:50.145Z",
+      "duration": 4806,
+      "notes": "Analyzed implement execution flow, agent strategies, read-only pattern, and task lifecycle"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Discovery - Current Implementation",
+      "description": "Identify current execution flow (sequential vs parallel)",
+      "status": "completed",
+      "startedAt": "2025-12-25T19:45:50.531Z",
+      "completedAt": "2025-12-25T19:45:55.585Z",
+      "duration": 5054,
+      "notes": "Identified parallelism levels (plans=NO, phases=LIMITED, tasks=YES, agents=YES), sequential enforcement rules"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Discovery - Current Implementation",
+      "description": "Document task dependency handling mechanisms",
+      "status": "completed",
+      "startedAt": "2025-12-25T19:45:55.967Z",
+      "completedAt": "2025-12-25T19:46:00.271Z",
+      "duration": 4304,
+      "notes": "Documented dependency sources, constraint parsing, 80% phase threshold, retry/stuck mechanisms"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Parallel Plans Analysis",
+      "description": "Investigate if multiple plans can run concurrently",
+      "status": "completed",
+      "startedAt": "2025-12-25T19:47:08.793Z",
+      "completedAt": "2025-12-25T19:49:16.811Z",
+      "duration": 128018,
+      "notes": "Analyzed current-plan.txt singleton constraint preventing concurrent plans"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Parallel Plans Analysis",
+      "description": "Identify shared state/resources between plans",
+      "status": "completed",
+      "startedAt": "2025-12-25T19:49:17.202Z",
+      "completedAt": "2025-12-25T19:49:22.595Z",
+      "duration": 5393,
+      "notes": "Identified shared resources: current-plan.txt, git working dir, filesystem. Status.json is properly isolated per-plan."
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Parallel Plans Analysis",
+      "description": "Document potential conflicts (file locks, status tracking)",
+      "status": "completed",
+      "startedAt": "2025-12-25T19:49:22.978Z",
+      "completedAt": "2025-12-25T19:49:28.125Z",
+      "duration": 5147,
+      "notes": "Documented conflict scenarios: pointer overwrite, git conflicts, file lock issues. Created conflict matrix and severity assessment."
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Parallel Plans Analysis",
+      "description": "Analyze plan isolation requirements",
+      "status": "completed",
+      "startedAt": "2025-12-25T19:49:28.513Z",
+      "completedAt": "2025-12-25T19:49:34.429Z",
+      "duration": 5916,
+      "notes": "Analyzed isolation requirements: R1-Plan context isolation, R2-Git operation isolation, R3-File system conflict detection. Defined minimum viable and full isolation requirements."
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Parallel Plans Analysis",
+      "description": "Identify patterns for inter-plan coordination",
+      "status": "completed",
+      "startedAt": "2025-12-25T19:49:34.819Z",
+      "completedAt": "2025-12-25T19:49:40.425Z",
+      "duration": 5606,
+      "notes": "Identified 5 coordination patterns: Independent Plans, Sequential Queue, Resource-Based Coordination, Worktree Isolation, Meta-Orchestrator. Created implementation priority roadmap."
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Parallel Phases Analysis",
+      "description": "Examine phase dependencies in current plans",
+      "status": "completed",
+      "startedAt": "2025-12-25T19:51:04.695Z",
+      "completedAt": "2025-12-25T19:53:19.943Z",
+      "duration": 135248,
+      "notes": "Examined phase dependencies in 6 plans: documentation-cleanup, high-priority-fixes, tui-integration, git-workflow, plan-system-analysis, parallel-execution"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Parallel Phases Analysis",
+      "description": "Identify phases that could run in parallel",
+      "status": "completed",
+      "startedAt": "2025-12-25T19:53:20.334Z",
+      "completedAt": "2025-12-25T19:53:25.876Z",
+      "duration": 5542,
+      "notes": "Identified parallel phase opportunities: high-priority-fixes has 30-40% potential, documentation-cleanup has 15% potential, most plans are sequential"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Parallel Phases Analysis",
+      "description": "Analyze VERIFY task implications for parallel phases",
+      "status": "completed",
+      "startedAt": "2025-12-25T19:53:26.274Z",
+      "completedAt": "2025-12-25T19:53:31.582Z",
+      "duration": 5308,
+      "notes": "Analyzed VERIFY as synchronization barriers: strict vs relaxed enforcement, VERIFY task categories, implications for phase overlap"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Parallel Phases Analysis",
+      "description": "Document phase synchronization requirements",
+      "status": "completed",
+      "startedAt": "2025-12-25T19:53:31.974Z",
+      "completedAt": "2025-12-25T19:53:37.521Z",
+      "duration": 5547,
+      "notes": "Documented 4 synchronization mechanisms needed: phase barrier, resource lock, dependency wait, VERIFY gate. Created synchronization matrix."
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Parallel Phases Analysis",
+      "description": "Identify patterns for phase-level parallelism",
+      "status": "completed",
+      "startedAt": "2025-12-25T19:53:37.911Z",
+      "completedAt": "2025-12-25T19:53:45.425Z",
+      "duration": 7514,
+      "notes": "Identified 5 patterns: Independent Parallel, Staggered Pipeline, Fork-Join, Conditional, Dependency DAG. Created applicability matrix."
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Parallel Tasks Analysis",
+      "description": "Examine task-level dependencies within phases",
+      "status": "completed",
+      "startedAt": "2025-12-25T19:55:12.393Z",
+      "completedAt": "2025-12-25T20:05:07.560Z",
+      "duration": 595167,
+      "notes": "Analyzed task-level dependency patterns including [SEQUENTIAL] annotations, implicit phase ordering, and file conflict detection mechanisms"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Parallel Tasks Analysis",
+      "description": "Identify tasks that could run in parallel",
+      "status": "completed",
+      "startedAt": "2025-12-25T19:55:12.409Z",
+      "completedAt": "2025-12-25T20:05:07.943Z",
+      "duration": 595534,
+      "notes": "Identified ~65% of tasks are parallel candidates; documented [SEQUENTIAL] usage patterns and safeguards"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Parallel Tasks Analysis",
+      "description": "Analyze task output/artifact handling for parallel execution",
+      "status": "completed",
+      "startedAt": "2025-12-25T19:55:12.424Z",
+      "completedAt": "2025-12-25T20:05:08.336Z",
+      "duration": 595912,
+      "notes": "Analyzed status.json locking, atomic writes, task-isolated findings, and read-only agent pattern"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Parallel Tasks Analysis",
+      "description": "Document task synchronization and fan-in/fan-out patterns",
+      "status": "completed",
+      "startedAt": "2025-12-25T19:55:12.439Z",
+      "completedAt": "2025-12-25T20:05:08.728Z",
+      "duration": 596289,
+      "notes": "Documented 80% phase barrier, fan-out via parallel agents, fan-in via TaskOutput, and [SEQUENTIAL] enforcement"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Parallel Tasks Analysis",
+      "description": "Review existing batch execution implementation",
+      "status": "completed",
+      "startedAt": "2025-12-25T19:55:12.454Z",
+      "completedAt": "2025-12-25T20:05:09.128Z",
+      "duration": 596674,
+      "notes": "Reviewed cmdNext() algorithm, plan:batch skill, and orchestrator autonomous loop implementation"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Implementation Patterns",
+      "description": "Document pattern: Independent parallel execution",
+      "status": "completed",
+      "startedAt": "2025-12-25T20:06:55.782Z",
+      "completedAt": "2025-12-25T20:09:37.337Z",
+      "duration": 161555,
+      "notes": "Documented independent parallel execution pattern with architecture, implementation, and metrics"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Implementation Patterns",
+      "description": "Document pattern: Dependency-aware parallel execution",
+      "status": "completed",
+      "startedAt": "2025-12-25T20:09:37.722Z",
+      "completedAt": "2025-12-25T20:09:45.106Z",
+      "duration": 7384,
+      "notes": "Documented dependency-aware DAG-based parallel execution pattern with implementation and graph algorithms"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Implementation Patterns",
+      "description": "Document pattern: Batched parallel execution",
+      "status": "completed",
+      "startedAt": "2025-12-25T20:09:45.491Z",
+      "completedAt": "2025-12-25T20:09:45.507Z",
+      "duration": 16,
+      "notes": "Documented batched parallel execution pattern (current default) with batch selection and sizing"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Implementation Patterns",
+      "description": "Document pattern: Pipeline parallelism (phases overlap)",
+      "status": "completed",
+      "startedAt": "2025-12-25T20:09:52.950Z",
+      "completedAt": "2025-12-25T20:09:52.965Z",
+      "duration": 15,
+      "notes": "Documented pipeline parallelism pattern with phase overlap and non-blocking VERIFY"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Implementation Patterns",
+      "description": "Compare tradeoffs between patterns",
+      "status": "completed",
+      "startedAt": "2025-12-25T20:09:53.353Z",
+      "completedAt": "2025-12-25T20:09:53.369Z",
+      "duration": 16,
+      "notes": "Created comprehensive tradeoff comparison with metrics, decision flowchart, and implementation roadmap"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Synthesis & Recommendations",
+      "description": "Prioritize parallelism opportunities by impact",
+      "status": "completed",
+      "startedAt": "2025-12-25T20:11:26.473Z",
+      "completedAt": "2025-12-25T20:13:38.449Z",
+      "duration": 131976,
+      "notes": "Created prioritized opportunity matrix with impact/effort scores across 10 parallelism opportunities in 3 tiers"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Synthesis & Recommendations",
+      "description": "Identify quick wins vs architectural changes",
+      "status": "completed",
+      "startedAt": "2025-12-25T20:13:38.836Z",
+      "completedAt": "2025-12-25T20:13:50.982Z",
+      "duration": 12146,
+      "notes": "Documented 5 quick wins (1-3 days each), 5 medium-term improvements (1-2 weeks), and 3 architectural changes (1-2 months) with implementation details"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Synthesis & Recommendations",
+      "description": "Document implementation risks and mitigations",
+      "status": "completed",
+      "startedAt": "2025-12-25T20:13:51.371Z",
+      "completedAt": "2025-12-25T20:14:02.444Z",
+      "duration": 11073,
+      "notes": "Documented 7 risks with severity assessment: race conditions (HIGH), git conflicts (HIGH), status corruption (MEDIUM), agent timeouts (MEDIUM), complexity explosion (HIGH), dependency cycles (MEDIUM), resource exhaustion (MEDIUM). Provided code examples for mitigations."
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Synthesis & Recommendations",
+      "description": "Create recommended implementation roadmap",
+      "status": "completed",
+      "startedAt": "2025-12-25T20:14:02.840Z",
+      "completedAt": "2025-12-25T20:14:13.677Z",
+      "duration": 10837,
+      "notes": "Created 8-week implementation roadmap with 4 phases: Foundation (Week 1-2), Enhanced Parallelism (Week 3-4), Plan Isolation (Week 5-6), Advanced Features (Week 7-8). Includes decision points, success criteria, and rollback plan."
+    }
+  ],
+  "runs": [
+    {
+      "runId": "run-1766692494152",
+      "startedAt": "2025-12-25T19:54:54.152Z",
+      "tasksCompleted": 5,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-25T20:05:20.292Z"
+    }
+  ],
+  "summary": {
+    "totalTasks": 29,
+    "completed": 29,
+    "pending": 0,
+    "in_progress": 0,
+    "failed": 0,
+    "skipped": 0
+  }
+}

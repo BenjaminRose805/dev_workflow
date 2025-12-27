@@ -1,0 +1,597 @@
+{
+  "_comment": "This file is the authoritative source of truth for task execution state. The markdown plan file is read-only reference documentation. Use status-cli.js to update task status.",
+  "planPath": "docs/plans/parallel-execution-dependencies.md",
+  "planName": "Implementation Plan: Parallel Execution Dependencies",
+  "createdAt": "2025-12-25T21:26:59.150Z",
+  "lastUpdatedAt": "2025-12-27T01:54:03.527Z",
+  "currentPhase": "Phase 1: Dependency Syntax Parsing",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Dependency Syntax Parsing",
+      "description": "Define dependency syntax specification",
+      "status": "completed",
+      "startedAt": "2025-12-26T22:41:12.109Z",
+      "completedAt": "2025-12-26T22:42:09.315Z",
+      "duration": 57206,
+      "notes": "Documented (depends: X.Y) syntax in status-tracking.md with format specification, behavior, validation rules, and examples",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Dependency Syntax Parsing",
+      "description": "Create `parseDependencies(taskDescription)` function in `scripts/lib/plan-status.js`",
+      "status": "completed",
+      "startedAt": "2025-12-26T22:42:18.615Z",
+      "completedAt": "2025-12-26T22:43:10.347Z",
+      "duration": 51732,
+      "notes": "Created parseDependencies() function - extracts task IDs from (depends: X.Y) syntax with case-insensitive matching and flexible whitespace",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Dependency Syntax Parsing",
+      "description": "Create `validateDependencies(taskId, dependencies, allTaskIds)` function",
+      "status": "completed",
+      "startedAt": "2025-12-26T22:43:19.778Z",
+      "completedAt": "2025-12-26T22:44:04.067Z",
+      "duration": 44289,
+      "notes": "Created validateDependencies() function - validates dependencies exist and detects self-dependency, returns structured result with errors",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Dependency Syntax Parsing",
+      "description": "Add unit tests for dependency parsing in `scripts/tests/test-dependencies.js`",
+      "status": "completed",
+      "startedAt": "2025-12-26T22:44:14.376Z",
+      "completedAt": "2025-12-26T22:46:04.144Z",
+      "duration": 109768,
+      "notes": "Created test-dependencies.js with 51 tests covering parseDependencies and validateDependencies functions",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Dependency Graph Construction",
+      "description": "Create `buildDependencyGraph(tasks)` function in `scripts/lib/plan-status.js`",
+      "status": "completed",
+      "startedAt": "2025-12-26T22:47:14.943Z",
+      "completedAt": "2025-12-26T22:48:16.278Z",
+      "duration": 61335,
+      "notes": "Implemented buildDependencyGraph function in plan-status.js",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Dependency Graph Construction",
+      "description": "Create `detectDependencyCycles(graph)` function",
+      "status": "completed",
+      "completedAt": "2025-12-26T22:48:16.673Z",
+      "notes": "Implemented detectDependencyCycles function with DFS algorithm",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Dependency Graph Construction",
+      "description": "Extend `initializePlanStatus()` to build and store dependency graph",
+      "status": "completed",
+      "startedAt": "2025-12-26T22:48:26.182Z",
+      "completedAt": "2025-12-26T22:50:45.121Z",
+      "duration": 138939,
+      "notes": "Extended initializePlanStatus to build dependency graph, detect cycles, and store graph in status.json",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Dependency Graph Construction",
+      "description": "Add `dependencies` and `dependents` fields to task objects in status.json",
+      "status": "completed",
+      "completedAt": "2025-12-26T22:50:45.511Z",
+      "notes": "Added dependencies and dependents arrays to task objects in status.json",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Dependency Graph Construction",
+      "description": "Create `refreshDependencyGraph(planPath)` function",
+      "status": "completed",
+      "completedAt": "2025-12-26T22:50:45.908Z",
+      "notes": "Created refreshDependencyGraph function to rebuild graph from plan file after edits",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: DAG-Aware Task Selection",
+      "description": "Create `getReadyTasks(status, maxTasks)` function in `scripts/lib/plan-status.js`",
+      "status": "completed",
+      "completedAt": "2025-12-26T22:52:49.189Z",
+      "notes": "Created getReadyTasks() and getBlockedTasks() functions in plan-status.js with DAG-aware task selection based on dependency completion status",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: DAG-Aware Task Selection",
+      "description": "Modify `cmdNext()` in `status-cli.js` to use DAG-aware selection",
+      "status": "completed",
+      "startedAt": "2025-12-26T22:53:03.217Z",
+      "completedAt": "2025-12-26T22:55:34.013Z",
+      "duration": 150796,
+      "notes": "Updated cmdNext() to use DAG-aware getReadyTasks() function",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: DAG-Aware Task Selection",
+      "description": "Add `blockedBy` field to task output when task has unmet dependencies",
+      "status": "completed",
+      "completedAt": "2025-12-26T22:55:53.724Z",
+      "notes": "Added blockedBy field to task output when task has unmet dependencies",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: DAG-Aware Task Selection",
+      "description": "Add `--ignore-deps` flag to `next` command",
+      "status": "completed",
+      "completedAt": "2025-12-26T22:55:53.742Z",
+      "notes": "Added --ignore-deps flag to next command for bypassing dependency checking",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: DAG-Aware Task Selection",
+      "description": "Update `next` command JSON output format",
+      "status": "completed",
+      "completedAt": "2025-12-26T22:55:53.761Z",
+      "notes": "Updated JSON output format with dependencies, dependents, blockedBy, and blockedTaskCount fields",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Cross-Phase Dependencies",
+      "description": "Update `getReadyTasks()` to allow cross-phase scheduling",
+      "status": "completed",
+      "startedAt": "2025-12-26T22:57:33.956Z",
+      "completedAt": "2025-12-26T23:00:07.166Z",
+      "duration": 153210,
+      "notes": "Added cross-phase scheduling to getReadyTasks() with documentation. Tasks are now selected based on dependency completion, not phase boundaries.",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Cross-Phase Dependencies",
+      "description": "Preserve phase ordering as tiebreaker",
+      "status": "completed",
+      "completedAt": "2025-12-26T23:00:07.568Z",
+      "notes": "Added --phase-priority flag to next command and phasePriority option to getReadyTasks() to enable strict phase ordering when needed.",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Cross-Phase Dependencies",
+      "description": "Update progress display to show cross-phase execution",
+      "status": "completed",
+      "completedAt": "2025-12-26T23:00:07.974Z",
+      "notes": "Updated progress display in all three formats (text, json, markers) to show cross-phase execution with activePhases field.",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Cross-Phase Dependencies",
+      "description": "Document cross-phase dependency behavior",
+      "status": "completed",
+      "startedAt": "2025-12-26T23:00:18.688Z",
+      "completedAt": "2025-12-26T23:01:14.345Z",
+      "duration": 55657,
+      "notes": "Added comprehensive documentation for cross-phase dependency behavior in status-tracking.md including best practices, CLI options, and progress display formats.",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Pipeline Phase Overlap",
+      "description": "Add `(non-blocking)` annotation for VERIFY tasks",
+      "status": "completed",
+      "startedAt": "2025-12-26T23:01:14.742Z",
+      "completedAt": "2025-12-26T23:03:52.031Z",
+      "duration": 157289,
+      "notes": "Added (non-blocking) annotation parsing for VERIFY tasks. Pattern: **VERIFY Phase N:** (non-blocking). Includes getNonBlockingVerifyPhases() helper function and documentation.",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Pipeline Phase Overlap",
+      "description": "Implement `pipeline-start` annotation parsing",
+      "status": "completed",
+      "startedAt": "2025-12-26T23:06:14.266Z",
+      "completedAt": "2025-12-26T23:08:30.934Z",
+      "duration": 136668,
+      "notes": "Implemented pipeline-start annotation parsing with two patterns: standalone (**pipeline-start:** when X.Y completes) and inline (## Phase N: Title (pipeline-start: when X.Y completes)). Added getPipelineStartTriggers() helper function and unit tests.",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Pipeline Phase Overlap",
+      "description": "Update `getReadyTasks()` to handle pipeline annotations",
+      "status": "completed",
+      "startedAt": "2025-12-26T23:08:38.467Z",
+      "completedAt": "2025-12-26T23:10:44.261Z",
+      "duration": 125794,
+      "notes": "Updated getReadyTasks() to accept pipelineStartTriggers option and mark tasks as pipelineTriggered when their phase's trigger task completes. Updated cmdNext() to pass pipeline triggers and include pipelineStartTriggers in output.",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Pipeline Phase Overlap",
+      "description": "Add pipeline visualization to progress output",
+      "status": "completed",
+      "startedAt": "2025-12-26T23:10:51.507Z",
+      "completedAt": "2025-12-26T23:12:16.150Z",
+      "duration": 84643,
+      "notes": "Added pipeline visualization to progress output. JSON format includes pipeline.triggers and pipeline.activeOverlaps. Markers format includes [PROGRESS] pipeline phase=N trigger=X.Y active=true/false. Text format shows 'Pipeline Triggers:' section with status icons.",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Pipeline Phase Overlap",
+      "description": "Document pipeline patterns and when to use them",
+      "status": "completed",
+      "startedAt": "2025-12-26T23:12:24.000Z",
+      "completedAt": "2025-12-26T23:13:25.951Z",
+      "duration": 61951,
+      "notes": "Added comprehensive documentation for pipeline-start annotations in status-tracking.md. Includes syntax examples, behavior description, when-to-use guide, execution order comparison, API reference, and progress visualization formats (text, JSON, markers).",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Dependency Visualization",
+      "description": "Add `deps` command to status-cli.js",
+      "status": "completed",
+      "startedAt": "2025-12-26T23:13:33.017Z",
+      "completedAt": "2025-12-26T23:16:04.053Z",
+      "duration": 151036,
+      "notes": "Implemented deps command with three modes: summary (default), --graph for ASCII visualization, and --task X.Y for specific task dependencies. Includes critical path calculation, blocked task detection, and both text and JSON output formats.",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Dependency Visualization",
+      "description": "Implement ASCII dependency graph output",
+      "status": "completed",
+      "completedAt": "2025-12-27T01:32:21.330Z",
+      "notes": "Enhanced generateAsciiGraph() with ready/blocked highlighting, stats header, description truncation, and dependency status indicators",
+      "dependencies": [],
+      "dependents": []
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Dependency Visualization",
+      "description": "Add `--validate-deps` flag to `init` command",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T01:34:16.799Z",
+      "notes": "Added --validate-deps flag to init command with comprehensive validation output"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Dependency Visualization",
+      "description": "Add dependency info to `/plan:status` skill output",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T01:35:26.561Z",
+      "notes": "Added Dependency Status section to status.md with critical path, ready/blocked counts, and blocked task details"
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Orchestrator Integration",
+      "description": "Update `.claude/commands/plan/orchestrate.md` to use DAG-aware `next`",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T01:36:26.940Z",
+      "notes": "Updated orchestrate.md with DAG-aware next documentation, cross-phase parallelism, and dependency handling"
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Orchestrator Integration",
+      "description": "Update `.claude/commands/plan/batch.md` to respect dependencies",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T01:37:29.136Z",
+      "notes": "Updated batch.md with DAG-aware execution plan building, dependency detection, and topological ordering"
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: Orchestrator Integration",
+      "description": "Update `.claude/commands/plan/implement.md` dependency checking",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T01:38:56.414Z",
+      "completedAt": "2025-12-27T01:40:05.742Z",
+      "duration": 69328
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: Orchestrator Integration",
+      "description": "Add dependency-aware progress estimation",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T01:40:14.684Z",
+      "completedAt": "2025-12-27T01:42:56.347Z",
+      "duration": 161663
+    },
+    {
+      "id": "8.1",
+      "phase": "Phase 8: Integration Testing",
+      "description": "Create test plan with complex dependencies",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T01:43:05.196Z",
+      "completedAt": "2025-12-27T01:44:14.069Z",
+      "duration": 68873
+    },
+    {
+      "id": "8.2",
+      "phase": "Phase 8: Integration Testing",
+      "description": "Run test plan through orchestrator",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T01:44:23.322Z",
+      "completedAt": "2025-12-27T01:49:30.708Z",
+      "duration": 307386
+    },
+    {
+      "id": "8.3",
+      "phase": "Phase 8: Integration Testing",
+      "description": "Test edge cases",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T01:49:40.187Z",
+      "completedAt": "2025-12-27T01:50:49.035Z",
+      "duration": 68848
+    },
+    {
+      "id": "8.4",
+      "phase": "Phase 8: Integration Testing",
+      "description": "Document test results and performance measurements",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T01:52:21.906Z",
+      "completedAt": "2025-12-27T01:54:03.526Z",
+      "duration": 101620,
+      "notes": "Documented all test results (62/62 unit tests passing), performance measurements (3.7x speedup, 73% efficiency gain), edge case validation, and feature verification summary in findings/8.4-test-results.md"
+    }
+  ],
+  "runs": [
+    {
+      "runId": "run-1766788859047",
+      "startedAt": "2025-12-26T22:40:59.047Z",
+      "tasksCompleted": 4,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-26T22:46:14.719Z"
+    },
+    {
+      "runId": "run-1766799520209",
+      "startedAt": "2025-12-27T01:38:40.209Z",
+      "tasksCompleted": 0,
+      "tasksFailed": 0
+    }
+  ],
+  "summary": {
+    "totalTasks": 35,
+    "completed": 35,
+    "pending": 0,
+    "in_progress": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "dependencyGraph": {
+    "1.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "1.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "1.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "1.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.5": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.5": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "4.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "4.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "4.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "4.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "5.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "5.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "5.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "5.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "5.5": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "6.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "6.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "6.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "6.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "7.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "7.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "7.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "7.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "8.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "8.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "8.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "8.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    }
+  }
+}

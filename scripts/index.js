@@ -13,9 +13,6 @@
  * Available Commands:
  *   scan-plans                  Scan all plan files and generate JSON summary
  *   parse-plan-structure        Parse a plan file structure
- *   research-for-implement      Research tasks before implementation
- *   verify-with-agent           Verify implementation with agent
- *   parallel-research-pipeline  Run parallel research pipeline
  *   check-file-status           Check file existence and status
  *   substitute-variables        Substitute variables in templates
  *   cache-clear                 Clear various cache types
@@ -36,9 +33,6 @@ const fs = require('fs');
 const COMMANDS = {
   'scan-plans': 'scan-plans.js',
   'parse-plan-structure': 'parse-plan-structure.js',
-  'research-for-implement': 'research-for-implement.js',
-  'verify-with-agent': 'verify-with-agent.js',
-  'parallel-research-pipeline': 'parallel-research-pipeline.js',
   'check-file-status': 'check-file-status.js',
   'substitute-variables': 'substitute-variables.js',
   'cache-clear': 'cache-clear.js',
@@ -49,9 +43,6 @@ const COMMANDS = {
 const DESCRIPTIONS = {
   'scan-plans': 'Scan all plan files in docs/plans/ and generate JSON summary',
   'parse-plan-structure': 'Parse the structure of a specific plan file',
-  'research-for-implement': 'Research tasks before implementation using AI agents',
-  'verify-with-agent': 'Verify implementation results with AI agent',
-  'parallel-research-pipeline': 'Run parallel research pipeline for batch tasks',
   'check-file-status': 'Check file existence, size, mtime, and optionally run tests',
   'substitute-variables': 'Substitute variables in prompt templates',
   'cache-clear': 'Clear various cache types (scripts, research)',
@@ -93,7 +84,6 @@ Global Options:
 Examples:
   node scripts/index.js scan-plans
   node scripts/index.js cache-clear --all --verbose
-  node scripts/index.js research-for-implement tasks.json
   node scripts/index.js check-file-status --files file1.js file2.js --run-tests
 
 For command-specific help:

@@ -1,0 +1,917 @@
+{
+  "_comment": "This file is the authoritative source of truth for task execution state. The markdown plan file is read-only reference documentation. Use status-cli.js to update task status.",
+  "planPath": "docs/plans/tui-expansion-analysis.md",
+  "planName": "Analysis Plan: TUI Workflow Expansion Analysis",
+  "createdAt": "2025-12-26T01:44:55.160Z",
+  "lastUpdatedAt": "2025-12-27T05:27:07.095Z",
+  "currentPhase": "Phase 1: Git Workflow Feature Inventory",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Git Workflow Feature Inventory",
+      "description": "Review git-workflow-phase1 findings for branch operations",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T03:49:05.215Z",
+      "completedAt": "2025-12-27T03:50:01.638Z",
+      "duration": 56423,
+      "notes": "Documented branch operations from phase1 findings"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Git Workflow Feature Inventory",
+      "description": "Review git-workflow-phase2 findings for completion workflow",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T03:50:07.915Z",
+      "completedAt": "2025-12-27T03:51:26.594Z",
+      "duration": 78679,
+      "notes": "Documented completion workflow from phase2 findings and complete.md"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Git Workflow Feature Inventory",
+      "description": "Identify git operations currently available via CLI",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T03:51:27.070Z",
+      "completedAt": "2025-12-27T03:52:44.279Z",
+      "duration": 77209,
+      "notes": "Documented all git operations in status-cli.js and plan commands"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Git Workflow Feature Inventory",
+      "description": "Map git features to potential TUI panels/actions",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T03:52:44.743Z",
+      "completedAt": "2025-12-27T03:54:07.425Z",
+      "duration": 82682,
+      "notes": "Created feature-to-panel mapping with priority matrix and implementation phases"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Parallel/Sequential Annotation System Analysis",
+      "description": "Analyze `[SEQUENTIAL]` annotation parsing",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T03:54:07.896Z",
+      "completedAt": "2025-12-27T03:55:34.784Z",
+      "duration": 86888,
+      "notes": "Documented SEQUENTIAL annotation parsing: regex patterns, task expansion, data flow, TUI opportunities"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Parallel/Sequential Annotation System Analysis",
+      "description": "Analyze `[PARALLEL]` phase annotation parsing",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T03:56:54.733Z",
+      "completedAt": "2025-12-27T03:58:25.303Z",
+      "duration": 90570,
+      "notes": "Documented PARALLEL phase annotation: regex patterns, expandPhaseRange(), data flow, getParallelPhases API, TUI opportunities"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Parallel/Sequential Annotation System Analysis",
+      "description": "Trace annotation flow through orchestration pipeline",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T03:58:29.227Z",
+      "completedAt": "2025-12-27T03:59:48.096Z",
+      "duration": 78869,
+      "notes": "Traced annotation flow: Plan file → parseExecutionNotes → status-cli cmdNext → orchestrator filter → Claude session. Identified gaps and TUI hooks."
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Parallel/Sequential Annotation System Analysis",
+      "description": "Analyze execution note block parsing",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T03:59:48.561Z",
+      "completedAt": "2025-12-27T04:01:00.477Z",
+      "duration": 71916,
+      "notes": "Documented all 4 annotation types: [SEQUENTIAL], [PARALLEL], (non-blocking), pipeline-start. Complete regex patterns, syntax variants, expansion functions, edge cases."
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Parallel/Sequential Annotation System Analysis",
+      "description": "Map annotation system to TUI display opportunities",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:01:00.940Z",
+      "completedAt": "2025-12-27T04:02:50.476Z",
+      "duration": 109536,
+      "notes": "Mapped all 5 constraint types to TUI displays. Proposed 3 new panels, priority matrix, integration with existing TUI plan."
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: File Conflict Detection Analysis",
+      "description": "Analyze file reference extraction algorithm",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:02:50.942Z",
+      "completedAt": "2025-12-27T04:04:13.323Z",
+      "duration": 82381,
+      "notes": "Documented all 4 regex patterns: backtick-quoted, directory prefix, action verb, in-file. Analyzed edge cases, test coverage, TUI opportunities, enhancement recommendations."
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: File Conflict Detection Analysis",
+      "description": "Analyze conflict detection algorithm",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T04:07:04.288Z",
+      "notes": "Documented conflict detection algorithm: file-to-task mapping, case-insensitive comparison, conflict identification logic, data flow, TUI opportunities"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: File Conflict Detection Analysis",
+      "description": "Test conflict detection edge cases",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:07:12.735Z",
+      "completedAt": "2025-12-27T04:08:35.317Z",
+      "duration": 82582,
+      "notes": "Documented 14 edge case categories: partial paths, case sensitivity, glob patterns, extensionless files, relative paths, duplicates, Windows paths, spaces, code snippets, multi-file, empty inputs, long paths, special chars, numeric filenames"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: File Conflict Detection Analysis",
+      "description": "Analyze conflict data in `next` command output",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:08:35.781Z",
+      "completedAt": "2025-12-27T04:09:56.275Z",
+      "duration": 80494,
+      "notes": "Documented all conflict fields in next output: fileConflict, conflictsWith, conflictingFiles, fileConflicts. Also parallel phases, cross-phase execution, pipeline-start triggers, blockedTaskCount."
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: File Conflict Detection Analysis",
+      "description": "Map conflict detection to TUI visualization",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:09:56.736Z",
+      "completedAt": "2025-12-27T04:11:43.177Z",
+      "duration": 106441,
+      "notes": "Mapped conflict data to 5 TUI enhancements: task badges, progress bar count, conflict panel, footer warning, tooltip. Included color coding, icons, data flow integration, implementation priority."
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Task Dependency Graph Analysis",
+      "description": "Analyze current phase-based ordering",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:11:43.661Z",
+      "completedAt": "2025-12-27T04:13:16.247Z",
+      "duration": 92586,
+      "notes": "Analyzed phase-based ordering: no 80% threshold exists - uses DAG-based deps with phase as sort key. Cross-phase execution enabled by default. --phase-priority flag for strict ordering. Pipeline-start triggers for early phase starts."
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Task Dependency Graph Analysis",
+      "description": "Analyze planned `depends:` syntax",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T04:24:12.509Z"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Task Dependency Graph Analysis",
+      "description": "Analyze implicit dependency detection",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T04:24:12.527Z"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Task Dependency Graph Analysis",
+      "description": "Compare phase-based vs DAG-based scheduling",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T04:24:12.546Z"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Task Dependency Graph Analysis",
+      "description": "Map dependency system to TUI visualization",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T04:24:12.569Z"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Git Commit Queue & Serialization Analysis",
+      "description": "Analyze git commit queue implementation",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T04:24:12.585Z"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Git Commit Queue & Serialization Analysis",
+      "description": "Analyze queue status reporting",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T04:27:37.203Z",
+      "notes": "Queue status reporting analysis complete"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Git Commit Queue & Serialization Analysis",
+      "description": "Analyze race condition prevention patterns",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T04:27:37.221Z",
+      "notes": "Race condition prevention patterns analysis complete"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Git Commit Queue & Serialization Analysis",
+      "description": "Analyze commit serialization in parallel execution",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T04:27:37.239Z",
+      "notes": "Commit serialization analysis complete"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Git Commit Queue & Serialization Analysis",
+      "description": "Map serialization system to TUI visualization",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T04:27:37.259Z",
+      "notes": "Serialization to TUI visualization mapping complete"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Multi-Plan Concurrent Execution Analysis",
+      "description": "Analyze `--plan` argument implementation",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T04:27:37.276Z",
+      "notes": true
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Multi-Plan Concurrent Execution Analysis",
+      "description": "Analyze plan isolation mechanisms",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:28:43.422Z",
+      "completedAt": "2025-12-27T04:33:14.180Z",
+      "duration": 270758,
+      "notes": "Documented plan isolation: separate status.json, output dirs, orchestrator registry duplicate prevention, worktree context resolution. Identified TUI opportunities for isolation status panel and conflict warnings."
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Multi-Plan Concurrent Execution Analysis",
+      "description": "Analyze planned git worktree integration",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:28:43.440Z",
+      "completedAt": "2025-12-27T04:33:14.638Z",
+      "duration": 271198,
+      "notes": "Documented git worktree integration from Phase 5 plan: 12 phases covering worktree command, context system, orchestrator support, multi-plan TUI. Mapped worktree features to TUI visualization opportunities."
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Multi-Plan Concurrent Execution Analysis",
+      "description": "Analyze multi-session orchestration",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:28:43.458Z",
+      "completedAt": "2025-12-27T04:33:15.106Z",
+      "duration": 271648,
+      "notes": "Documented multi-session orchestration: registry system, duplicate prevention, heartbeat, IPC commands (status/shutdown/pause/resume), management CLI. Identified TUI control panel opportunities."
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Multi-Plan Concurrent Execution Analysis",
+      "description": "Map multi-plan execution to TUI visualization",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:28:43.480Z",
+      "completedAt": "2025-12-27T04:33:15.577Z",
+      "duration": 272097,
+      "notes": "Mapped multi-plan execution to 6 TUI panels: dashboard, plan switcher, event stream, progress comparison, resource controls, worktree status. Defined data sources and refresh strategy."
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Batch Execution & Parallelism Limits Analysis",
+      "description": "Analyze batch size configuration",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:28:43.498Z",
+      "completedAt": "2025-12-27T04:33:16.037Z",
+      "duration": 272539,
+      "notes": "Documented batch size: default 5, CLI --batch-size flag, sequential filtering reducing effective batch. Mapped to 4 TUI panels: batch control, composition, history, adaptive batching."
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Batch Execution & Parallelism Limits Analysis",
+      "description": "Analyze task selection for batches",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T04:40:30.402Z"
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: Batch Execution & Parallelism Limits Analysis",
+      "description": "Analyze parallel agent spawning",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T04:40:30.420Z"
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: Batch Execution & Parallelism Limits Analysis",
+      "description": "Analyze batch progress tracking",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T04:40:30.442Z"
+    },
+    {
+      "id": "7.5",
+      "phase": "Phase 7: Batch Execution & Parallelism Limits Analysis",
+      "description": "Map batching system to TUI visualization",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T04:40:30.459Z"
+    },
+    {
+      "id": "8.1",
+      "phase": "Phase 8: Orchestrator Control & Events Analysis",
+      "description": "Review current orchestrator capabilities",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T04:40:30.476Z"
+    },
+    {
+      "id": "8.2",
+      "phase": "Phase 8: Orchestrator Control & Events Analysis",
+      "description": "Review orchestration gap analysis",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:41:45.170Z",
+      "completedAt": "2025-12-27T04:43:10.386Z",
+      "duration": 85216,
+      "notes": "Reviewed orchestration gap analysis, documented 6 gaps and TUI opportunities"
+    },
+    {
+      "id": "8.3",
+      "phase": "Phase 8: Orchestrator Control & Events Analysis",
+      "description": "Identify orchestrator events suitable for TUI streaming",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:43:15.635Z",
+      "completedAt": "2025-12-27T04:44:30.616Z",
+      "duration": 74981,
+      "notes": "Identified 3 current event channels, 6 missing event types, proposed event bus architecture"
+    },
+    {
+      "id": "8.4",
+      "phase": "Phase 8: Orchestrator Control & Events Analysis",
+      "description": "Analyze stuck detection and recovery",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:44:31.093Z",
+      "completedAt": "2025-12-27T04:45:41.578Z",
+      "duration": 70485,
+      "notes": "Documented 30-min threshold, auto-retry mechanism, and 5 TUI intervention opportunities"
+    },
+    {
+      "id": "8.5",
+      "phase": "Phase 8: Orchestrator Control & Events Analysis",
+      "description": "Map orchestrator features to TUI control opportunities",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:45:42.043Z",
+      "completedAt": "2025-12-27T04:46:59.588Z",
+      "duration": 77545,
+      "notes": "Mapped 28 orchestrator features to TUI controls, defined 6 detailed control specs, keyboard mapping"
+    },
+    {
+      "id": "9.1",
+      "phase": "Phase 9: Gap Analysis vs Current TUI Plan",
+      "description": "Review current TUI plan phases and panels",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:47:00.061Z",
+      "completedAt": "2025-12-27T04:48:08.325Z",
+      "duration": 68264,
+      "notes": "Reviewed 5 phases, 24 tasks, 13 panels - identified 9 features NOT in current plan"
+    },
+    {
+      "id": "9.2",
+      "phase": "Phase 9: Gap Analysis vs Current TUI Plan",
+      "description": "Identify git workflow features NOT in current TUI plan",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:49:51.109Z",
+      "completedAt": "2025-12-27T04:50:45.530Z",
+      "duration": 54421,
+      "notes": "Identified 15 missing git features in current TUI plan across 4 categories"
+    },
+    {
+      "id": "9.3",
+      "phase": "Phase 9: Gap Analysis vs Current TUI Plan",
+      "description": "Identify parallel/sequential features NOT in current TUI plan",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:50:46.029Z",
+      "completedAt": "2025-12-27T04:52:05.052Z",
+      "duration": 79023,
+      "notes": "Identified 24 missing parallel/sequential features across 6 categories"
+    },
+    {
+      "id": "9.4",
+      "phase": "Phase 9: Gap Analysis vs Current TUI Plan",
+      "description": "Identify orchestrator features NOT in current TUI plan",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:52:05.531Z",
+      "completedAt": "2025-12-27T04:53:20.532Z",
+      "duration": 75001,
+      "notes": "Identified 22 missing orchestrator features across 5 categories"
+    },
+    {
+      "id": "9.5",
+      "phase": "Phase 9: Gap Analysis vs Current TUI Plan",
+      "description": "Categorize gaps by implementation complexity",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:53:21.005Z",
+      "completedAt": "2025-12-27T04:54:33.236Z",
+      "duration": 72231,
+      "notes": "Categorized 61 features into Quick Win (19), Medium Effort (24), and Architectural (18)"
+    },
+    {
+      "id": "10.1",
+      "phase": "Phase 10: Expansion Opportunity Design",
+      "description": "Design Git Status Panel expansion",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T04:54:33.708Z",
+      "completedAt": "2025-12-27T04:56:13.918Z",
+      "duration": 100210,
+      "notes": "Complete design for Git Status Panel with collapsed/expanded views, effort estimates (12-26 hours), data contracts, and implementation specs"
+    },
+    {
+      "id": "10.2",
+      "phase": "Phase 10: Expansion Opportunity Design",
+      "description": "Design Parallel Execution Dashboard",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T05:10:00.000Z",
+      "notes": "Complete design for Parallel Execution Dashboard: 20-28 hours effort, collapsed/expanded views, active sessions, constraints, commit queue sections"
+    },
+    {
+      "id": "10.3",
+      "phase": "Phase 10: Expansion Opportunity Design",
+      "description": "Design Task Constraint Panel",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T05:10:00.000Z",
+      "notes": "Complete design for Task Constraint Panel: 16-24 hours effort, constraint categories (sequential, file conflict, dependency), override controls"
+    },
+    {
+      "id": "10.4",
+      "phase": "Phase 10: Expansion Opportunity Design",
+      "description": "Design Orchestrator Control Panel",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T05:10:00.000Z",
+      "notes": "Complete design for Orchestrator Control Panel: 36-48 hours effort (includes IPC infrastructure), pause/resume/stop, batch size, retry/skip, stuck intervention"
+    },
+    {
+      "id": "10.5",
+      "phase": "Phase 10: Expansion Opportunity Design",
+      "description": "Design Multi-Plan View",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T05:10:00.000Z",
+      "notes": "Complete design for Multi-Plan View: 40-56 hours effort, plan selector, dashboard, comparison view, resource allocation, PlanRegistry class"
+    },
+    {
+      "id": "10.6",
+      "phase": "Phase 10: Expansion Opportunity Design",
+      "description": "Design Real-time Event Stream panel",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T05:10:00.000Z",
+      "notes": "Complete design for Real-time Event Stream: 32-44 hours effort, EventBus architecture, event types, filterable stream, event cards"
+    },
+    {
+      "id": "10.7",
+      "phase": "Phase 10: Expansion Opportunity Design",
+      "description": "Design Batch Execution Panel",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T05:14:21.593Z"
+    },
+    {
+      "id": "11.1",
+      "phase": "Phase 11: Synthesis and Recommendations",
+      "description": "Prioritize expansions by value/effort ratio",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T05:15:33.632Z"
+    },
+    {
+      "id": "11.2",
+      "phase": "Phase 11: Synthesis and Recommendations",
+      "description": "Identify quick wins (high value, low effort)",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T05:16:59.428Z"
+    },
+    {
+      "id": "11.3",
+      "phase": "Phase 11: Synthesis and Recommendations",
+      "description": "Identify integration points with existing TUI plan",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T05:18:38.461Z"
+    },
+    {
+      "id": "11.4",
+      "phase": "Phase 11: Synthesis and Recommendations",
+      "description": "Create expansion implementation roadmap",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T05:20:14.714Z"
+    },
+    {
+      "id": "11.5",
+      "phase": "Phase 11: Synthesis and Recommendations",
+      "description": "Document architectural considerations",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T05:23:39.862Z"
+    },
+    {
+      "id": "11.6",
+      "phase": "Phase 11: Synthesis and Recommendations",
+      "description": "Create implementation plan or plan amendment",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T05:27:07.095Z"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 57,
+    "completed": 57,
+    "pending": 0,
+    "in_progress": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "dependencyGraph": {
+    "1.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "1.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "1.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "1.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.5": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.5": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "4.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "4.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "4.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "4.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "4.5": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "5.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "5.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "5.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "5.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "5.5": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "6.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "6.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "6.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "6.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "6.5": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "7.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "7.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "7.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "7.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "7.5": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "8.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "8.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "8.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "8.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "8.5": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "9.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "9.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "9.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "9.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "9.5": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "10.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "10.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "10.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "10.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "10.5": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "10.6": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "10.7": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "11.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "11.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "11.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "11.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "11.5": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "11.6": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    }
+  }
+}

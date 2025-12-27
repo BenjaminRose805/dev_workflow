@@ -25,7 +25,6 @@ CLAUDE_DIR = PROJECT_ROOT / ".claude"
 
 # Store original values
 original_plan_path = ""
-# Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
 
 def log(msg):
@@ -56,7 +55,6 @@ def setup_test_environment():
 
     # Save original values
     plan_path_file = CLAUDE_DIR / "current-plan.txt"
-    # Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
     try:
         original_plan_path = plan_path_file.read_text().strip()
@@ -124,7 +122,6 @@ def cleanup_test_environment():
     # Restore original values
     if original_plan_path:
         (CLAUDE_DIR / "current-plan.txt").write_text(original_plan_path)
-    # Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
     # Clean up test files
     try:

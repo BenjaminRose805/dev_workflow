@@ -1,0 +1,441 @@
+{
+  "_comment": "This file is the authoritative source of truth for task execution state. The markdown plan file is read-only reference documentation. Use status-cli.js to update task status.",
+  "planPath": "docs/plans/git-workflow-phase3-safety.md",
+  "planName": "Implementation Plan: Git Workflow Phase 3 - Safety & Rollback",
+  "createdAt": "2025-12-25T05:00:53.511Z",
+  "lastUpdatedAt": "2025-12-26T03:12:15.494Z",
+  "currentPhase": "Phase 1: Create /plan:rollback Command",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Create /plan:rollback Command",
+      "description": "Create `.claude/commands/plan/rollback.md` command file",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:28:30.935Z",
+      "completedAt": "2025-12-26T02:29:42.340Z",
+      "duration": 71405,
+      "notes": "Created rollback.md with full command structure, subcommand parsing, and implementation instructions"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Create /plan:rollback Command",
+      "description": "Define subcommand structure: `task`, `phase`, `plan`",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:32:39.260Z",
+      "completedAt": "2025-12-26T02:33:24.271Z",
+      "duration": 45011
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Create /plan:rollback Command",
+      "description": "Add argument parsing for rollback targets",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:29:54.406Z",
+      "completedAt": "2025-12-26T02:30:38.772Z",
+      "duration": 44366,
+      "notes": "Enhanced argument parsing with detailed algorithm, validation against plan, option handling, and parsed result structure"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Create /plan:rollback Command",
+      "description": "Document command usage with examples",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:30:49.135Z",
+      "completedAt": "2025-12-26T02:31:37.603Z",
+      "duration": 48468,
+      "notes": "Added comprehensive examples with scenarios, expected outputs, workflow combinations, and quick reference table"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Task-Level Rollback",
+      "description": "Implement task commit lookup: `git log --grep=\"task {id}:\" --format=\"%H\" -1`",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:34:37.925Z",
+      "completedAt": "2025-12-26T02:35:41.361Z",
+      "duration": 63436,
+      "notes": "Enhanced section 4.1 with detailed git log --grep commit lookup implementation"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Task-Level Rollback",
+      "description": "Implement task revert: `git revert <sha> --no-edit`",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:37:45.337Z",
+      "completedAt": "2025-12-26T02:38:19.273Z",
+      "duration": 33936,
+      "notes": "Enhanced Step 3 with git revert implementation, conflict handling, and revert options table"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Task-Level Rollback",
+      "description": "Update status.json to mark task as `rolled_back` or `pending`",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:35:51.067Z",
+      "completedAt": "2025-12-26T02:35:51.087Z",
+      "duration": 20,
+      "notes": "Added status update options table and mark-skipped command examples in Step 4"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Task-Level Rollback",
+      "description": "Handle case where task commit not found",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:35:51.481Z",
+      "completedAt": "2025-12-26T02:35:51.497Z",
+      "duration": 16,
+      "notes": "Added Step 2a with commit not found handling, alternate patterns, and error output examples"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Task-Level Rollback",
+      "description": "Handle case where task was never committed (analysis-only)",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:35:51.894Z",
+      "completedAt": "2025-12-26T02:35:51.910Z",
+      "duration": 16,
+      "notes": "Added Step 2b with analysis-only task detection and status-only rollback flow"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Phase-Level Rollback",
+      "description": "Implement phase commit range detection",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:38:28.991Z",
+      "completedAt": "2025-12-26T02:39:38.117Z",
+      "duration": 69126,
+      "notes": "Added Step 1 with phase commit range detection using git log --grep pattern matching"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Phase-Level Rollback",
+      "description": "Find first and last commit for phase using git log",
+      "status": "completed",
+      "completedAt": "2025-12-26T02:39:38.508Z",
+      "notes": "Added Step 2 with first/last commit detection using head/tail, edge case handling table, and non-contiguous commit detection"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Phase-Level Rollback",
+      "description": "Implement range revert: `git revert <first>..<last> --no-edit`",
+      "status": "completed",
+      "completedAt": "2025-12-26T02:39:38.901Z",
+      "notes": "Added Step 3 with range revert implementation, individual fallback for non-contiguous commits, and range revert command details table"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Phase-Level Rollback",
+      "description": "Update status.json for all tasks in phase",
+      "status": "completed",
+      "completedAt": "2025-12-26T02:39:39.299Z",
+      "notes": "Added Step 5 with status.json updates for all phase tasks, conditional updates based on current status, and status update summary table"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Phase-Level Rollback",
+      "description": "Handle partial phase (some tasks not committed)",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:42:16.724Z",
+      "completedAt": "2025-12-26T02:43:33.338Z",
+      "duration": 76614
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Plan-Level Rollback",
+      "description": "Implement unmerged plan rollback (delete branch)",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:43:33.736Z",
+      "completedAt": "2025-12-26T02:43:46.839Z",
+      "duration": 13103
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Plan-Level Rollback",
+      "description": "Add confirmation prompt before destructive action",
+      "status": "completed",
+      "completedAt": "2025-12-26T02:43:46.856Z"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Plan-Level Rollback",
+      "description": "Implement merged plan rollback (revert merge commit)",
+      "status": "completed",
+      "completedAt": "2025-12-26T02:43:46.877Z"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Plan-Level Rollback",
+      "description": "Find merge commit: `git log --grep=\"Plan: {name}\" --format=\"%H\" -1`",
+      "status": "completed",
+      "completedAt": "2025-12-26T02:43:46.893Z"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Plan-Level Rollback",
+      "description": "Revert merge: `git revert <sha> --no-edit`",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:45:33.588Z",
+      "completedAt": "2025-12-26T02:46:36.207Z",
+      "duration": 62619,
+      "notes": "Enhanced merge revert section with: parent detection for merge commits, -m 1 option for multi-parent commits, comprehensive conflict handling, revert options table, and generated message example"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Plan-Level Rollback",
+      "description": "Update status.json appropriately",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:46:42.071Z",
+      "completedAt": "2025-12-26T02:46:47.581Z",
+      "duration": 5510,
+      "notes": "Enhanced status.json update section with: status-based conditional updates, rollback timestamp tracking, summary counts output, status update rules table, and documentation of what gets recorded"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Create /plan:abandon Command",
+      "description": "Create `.claude/commands/plan/abandon.md` command file",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:48:01.880Z",
+      "completedAt": "2025-12-26T02:49:44.150Z",
+      "duration": 102270,
+      "notes": "Created abandon.md with full command structure, options parsing, confirmation prompt, backup tag, branch deletion, and status.json update"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Create /plan:abandon Command",
+      "description": "Add confirmation prompt (skip with `--force`)",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:49:55.020Z",
+      "completedAt": "2025-12-26T02:50:10.473Z",
+      "duration": 15453,
+      "notes": "Confirmation prompt implemented in Section 4 with --force flag to skip confirmation, clear destructive operation warning, and AskUserQuestion-style prompts"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Create /plan:abandon Command",
+      "description": "Add optional backup tag: `backup/plan-{name}-{timestamp}`",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:50:18.818Z",
+      "completedAt": "2025-12-26T02:50:27.190Z",
+      "duration": 8372,
+      "notes": "Backup tag implemented in Section 6 with format backup/plan-{name}-{timestamp}, --no-backup option to skip, annotated tag with restoration instructions"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Create /plan:abandon Command",
+      "description": "Implement: switch to main, delete plan branch",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:50:27.578Z",
+      "completedAt": "2025-12-26T02:50:39.089Z",
+      "duration": 11511,
+      "notes": "Implemented in Sections 7-8: detect main/master, git checkout main, verify not on plan branch, git branch -D to delete plan branch"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Create /plan:abandon Command",
+      "description": "Update status.json with abandoned state",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:50:39.478Z",
+      "completedAt": "2025-12-26T02:50:55.864Z",
+      "duration": 16386,
+      "notes": "Implemented in Section 9: adds abandonedAt timestamp, abandoned: true flag, and backupTag reference to status.json"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: Create /plan:abandon Command",
+      "description": "Handle uncommitted changes before abandon",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:52:10.463Z",
+      "completedAt": "2025-12-26T02:54:58.925Z",
+      "duration": 168462,
+      "notes": "Enhanced abandon.md with interactive uncommitted changes handling: Stash/Discard/Cancel options for interactive mode, auto-stash for --force mode, reference to common protection patterns"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Uncommitted Changes Protection",
+      "description": "Standardize uncommitted changes detection across commands",
+      "status": "completed",
+      "completedAt": "2025-12-26T02:54:59.312Z",
+      "notes": "Created _common/uncommitted-changes-protection.md with standardized detectUncommittedChanges() and getChangeDetails() functions"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Uncommitted Changes Protection",
+      "description": "Create reusable prompt pattern: Commit / Stash / Cancel",
+      "status": "completed",
+      "completedAt": "2025-12-26T02:54:59.749Z",
+      "notes": "Implemented reusable AskUserQuestion prompt pattern with Commit/Stash/Cancel options including autonomous mode handling"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Uncommitted Changes Protection",
+      "description": "Implement stash creation: `git stash push -m \"plan/{name} WIP\"`",
+      "status": "completed",
+      "completedAt": "2025-12-26T02:55:00.150Z",
+      "notes": "Implemented createPlanStash() function with format: git stash push -m 'plan/{plan-name} {operation} WIP'"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Uncommitted Changes Protection",
+      "description": "Implement stash application after switch",
+      "status": "completed",
+      "completedAt": "2025-12-26T02:55:00.535Z",
+      "notes": "Implemented applyPlanStash() function with verification and conflict handling"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Uncommitted Changes Protection",
+      "description": "Add to `/plan:set`, `/plan:complete`, `/plan:abandon`",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:56:18.211Z",
+      "completedAt": "2025-12-26T02:57:12.047Z",
+      "duration": 53836,
+      "notes": "Added cross-references to uncommitted-changes-protection.md in set.md and complete.md (abandon.md already had reference)"
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Branch Validation Enhancement",
+      "description": "Add branch validation to `/plan:batch`",
+      "status": "completed",
+      "startedAt": "2025-12-26T02:57:19.816Z",
+      "completedAt": "2025-12-26T02:59:25.531Z",
+      "duration": 125715,
+      "notes": "Added section 1.1 with complete branch validation logic, git utility reference, and 4-case validation table"
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Branch Validation Enhancement",
+      "description": "Add auto-switch option when on wrong branch",
+      "status": "completed",
+      "completedAt": "2025-12-26T02:59:25.920Z",
+      "notes": "Added auto-switch prompt for interactive mode with AskUserQuestion, auto-switch in autonomous mode"
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: Branch Validation Enhancement",
+      "description": "Add `--no-branch-check` flag for override",
+      "status": "completed",
+      "completedAt": "2025-12-26T02:59:26.311Z",
+      "notes": "Added --no-branch-check flag to argument formats, parsing logic, examples, and reference section"
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: Branch Validation Enhancement",
+      "description": "Improve error messages for branch issues",
+      "status": "completed",
+      "completedAt": "2025-12-26T02:59:26.706Z",
+      "notes": "Added error messages table with scenarios: failed switch, branch not exist, detached HEAD, git unavailable"
+    },
+    {
+      "id": "8.1",
+      "phase": "Phase 8: Pre-commit Hook Template",
+      "description": "Create `.githooks/pre-commit` template file",
+      "status": "completed",
+      "startedAt": "2025-12-26T03:00:39.283Z",
+      "completedAt": "2025-12-26T03:01:14.706Z",
+      "duration": 35423,
+      "notes": "Created .githooks/pre-commit with shebang, main/master warning, and plan branch pattern check"
+    },
+    {
+      "id": "8.2",
+      "phase": "Phase 8: Pre-commit Hook Template",
+      "description": "Add warning when committing directly to main",
+      "status": "completed",
+      "startedAt": "2025-12-26T03:01:24.531Z",
+      "completedAt": "2025-12-26T03:01:40.442Z",
+      "duration": 15911,
+      "notes": "Warning for main/master implemented in lines 26-46 with visual banner, workflow guidance, and bypass hint"
+    },
+    {
+      "id": "8.3",
+      "phase": "Phase 8: Pre-commit Hook Template",
+      "description": "Add check for plan branch pattern",
+      "status": "completed",
+      "startedAt": "2025-12-26T03:01:45.714Z",
+      "completedAt": "2025-12-26T03:01:53.449Z",
+      "duration": 7735,
+      "notes": "Plan branch pattern check in lines 48-54: detects plan/* prefix, extracts plan name, provides info message for non-plan branches"
+    },
+    {
+      "id": "8.4",
+      "phase": "Phase 8: Pre-commit Hook Template",
+      "description": "Document hook installation in README",
+      "status": "completed",
+      "startedAt": "2025-12-26T03:01:58.671Z",
+      "completedAt": "2025-12-26T03:02:22.263Z",
+      "duration": 23592,
+      "notes": "Created .githooks/README.md with installation, hook descriptions, bypass docs, uninstall, and troubleshooting"
+    },
+    {
+      "id": "8.5",
+      "phase": "Phase 8: Pre-commit Hook Template",
+      "description": "Add `--no-verify` bypass documentation",
+      "status": "completed",
+      "startedAt": "2025-12-26T03:02:33.627Z",
+      "completedAt": "2025-12-26T03:02:47.504Z",
+      "duration": 13877,
+      "notes": "Bypass documented in pre-commit header, warning message, README bypass section, and troubleshooting"
+    },
+    {
+      "id": "9.1",
+      "phase": "Phase 9: Integration Testing",
+      "description": "Test task rollback during plan execution",
+      "status": "completed",
+      "completedAt": "2025-12-26T03:04:21.000Z",
+      "notes": "Task rollback test passed - git revert with --grep pattern works correctly"
+    },
+    {
+      "id": "9.2",
+      "phase": "Phase 9: Integration Testing",
+      "description": "Test phase rollback",
+      "status": "completed",
+      "completedAt": "2025-12-26T03:04:45.000Z",
+      "notes": "Phase rollback test passed - reverse order revert of all phase commits"
+    },
+    {
+      "id": "9.3",
+      "phase": "Phase 9: Integration Testing",
+      "description": "Test plan rollback (unmerged)",
+      "status": "completed",
+      "completedAt": "2025-12-26T03:05:22.000Z",
+      "notes": "Plan rollback (unmerged) test passed - backup tag, branch deletion, recovery verified"
+    },
+    {
+      "id": "9.4",
+      "phase": "Phase 9: Integration Testing",
+      "description": "Test plan rollback (merged)",
+      "status": "completed",
+      "completedAt": "2025-12-26T03:05:53.000Z",
+      "notes": "Plan rollback (merged) test passed - squash merge revert with --grep pattern"
+    },
+    {
+      "id": "9.5",
+      "phase": "Phase 9: Integration Testing",
+      "description": "Test abandon with backup tag",
+      "status": "completed",
+      "completedAt": "2025-12-26T03:06:30.000Z",
+      "notes": "Abandon with backup tag test passed - annotated tag, branch deletion, full restoration"
+    },
+    {
+      "id": "9.6",
+      "phase": "Phase 9: Integration Testing",
+      "description": "Test uncommitted changes scenarios",
+      "status": "completed",
+      "startedAt": "2025-12-26T03:09:28.267Z",
+      "completedAt": "2025-12-26T03:12:15.494Z",
+      "duration": 167227,
+      "notes": "All uncommitted changes protection tests PASSED - 15 scenarios tested including stash creation/application, conflict handling, and abandon workflow"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 46,
+    "completed": 46,
+    "pending": 0,
+    "in_progress": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "completedAt": "2025-12-26T03:46:39.506Z",
+  "mergedAt": "2025-12-26T03:46:39.509Z",
+  "mergeCommit": "0bb94a52148841200c7162efb9e1c5c736ff6913",
+  "archiveTag": "archive/plan-git-workflow-phase3-safety"
+}

@@ -1,0 +1,938 @@
+{
+  "_comment": "This file is the authoritative source of truth for task execution state. The markdown plan file is read-only reference documentation. Use status-cli.js to update task status.",
+  "planPath": "docs/plans/test-dependency-patterns.md",
+  "planName": "Test Plan: Dependency Patterns Validation",
+  "createdAt": "2025-12-27T01:48:23.720Z",
+  "lastUpdatedAt": "2025-12-27T03:33:13.730Z",
+  "currentPhase": "Phase 1: Foundation (No Dependencies)",
+  "dependencyGraph": {
+    "1.1": {
+      "dependencies": [],
+      "dependents": [
+        "2.1",
+        "4.1"
+      ],
+      "inDegree": 0
+    },
+    "1.2": {
+      "dependencies": [],
+      "dependents": [
+        "2.2",
+        "4.2"
+      ],
+      "inDegree": 0
+    },
+    "1.3": {
+      "dependencies": [],
+      "dependents": [
+        "2.3"
+      ],
+      "inDegree": 0
+    },
+    "1.4": {
+      "dependencies": [],
+      "dependents": [
+        "2.4",
+        "4.3"
+      ],
+      "inDegree": 0
+    },
+    "2.1": {
+      "dependencies": [
+        "1.1"
+      ],
+      "dependents": [
+        "4.1"
+      ],
+      "inDegree": 1
+    },
+    "2.2": {
+      "dependencies": [
+        "1.2"
+      ],
+      "dependents": [],
+      "inDegree": 1
+    },
+    "2.3": {
+      "dependencies": [
+        "1.3"
+      ],
+      "dependents": [],
+      "inDegree": 1
+    },
+    "2.4": {
+      "dependencies": [
+        "1.4"
+      ],
+      "dependents": [
+        "4.3"
+      ],
+      "inDegree": 1
+    },
+    "3.1": {
+      "dependencies": [],
+      "dependents": [
+        "3.2",
+        "3.3"
+      ],
+      "inDegree": 0
+    },
+    "3.2": {
+      "dependencies": [
+        "3.1"
+      ],
+      "dependents": [
+        "3.4"
+      ],
+      "inDegree": 1
+    },
+    "3.3": {
+      "dependencies": [
+        "3.1"
+      ],
+      "dependents": [
+        "3.4"
+      ],
+      "inDegree": 1
+    },
+    "3.4": {
+      "dependencies": [
+        "3.2",
+        "3.3"
+      ],
+      "dependents": [
+        "4.2",
+        "4.3"
+      ],
+      "inDegree": 2
+    },
+    "4.1": {
+      "dependencies": [
+        "1.1",
+        "2.1"
+      ],
+      "dependents": [],
+      "inDegree": 2
+    },
+    "4.2": {
+      "dependencies": [
+        "1.2",
+        "3.4"
+      ],
+      "dependents": [],
+      "inDegree": 2
+    },
+    "4.3": {
+      "dependencies": [
+        "1.4",
+        "2.4",
+        "3.4"
+      ],
+      "dependents": [
+        "8.1"
+      ],
+      "inDegree": 3
+    },
+    "5.1": {
+      "dependencies": [],
+      "dependents": [
+        "5.2"
+      ],
+      "inDegree": 0
+    },
+    "5.2": {
+      "dependencies": [
+        "5.1"
+      ],
+      "dependents": [
+        "5.3"
+      ],
+      "inDegree": 1
+    },
+    "5.3": {
+      "dependencies": [
+        "5.2"
+      ],
+      "dependents": [
+        "5.4"
+      ],
+      "inDegree": 1
+    },
+    "5.4": {
+      "dependencies": [
+        "5.3"
+      ],
+      "dependents": [
+        "5.5"
+      ],
+      "inDegree": 1
+    },
+    "5.5": {
+      "dependencies": [
+        "5.4"
+      ],
+      "dependents": [
+        "5.6"
+      ],
+      "inDegree": 1
+    },
+    "5.6": {
+      "dependencies": [
+        "5.5"
+      ],
+      "dependents": [
+        "8.2"
+      ],
+      "inDegree": 1
+    },
+    "6.1": {
+      "dependencies": [],
+      "dependents": [
+        "6.2",
+        "6.3",
+        "6.4"
+      ],
+      "inDegree": 0
+    },
+    "6.2": {
+      "dependencies": [
+        "6.1"
+      ],
+      "dependents": [
+        "6.5"
+      ],
+      "inDegree": 1
+    },
+    "6.3": {
+      "dependencies": [
+        "6.1"
+      ],
+      "dependents": [
+        "6.6"
+      ],
+      "inDegree": 1
+    },
+    "6.4": {
+      "dependencies": [
+        "6.1"
+      ],
+      "dependents": [
+        "6.7"
+      ],
+      "inDegree": 1
+    },
+    "6.5": {
+      "dependencies": [
+        "6.2"
+      ],
+      "dependents": [
+        "7.1"
+      ],
+      "inDegree": 1
+    },
+    "6.6": {
+      "dependencies": [
+        "6.3"
+      ],
+      "dependents": [
+        "7.2"
+      ],
+      "inDegree": 1
+    },
+    "6.7": {
+      "dependencies": [
+        "6.4"
+      ],
+      "dependents": [
+        "7.3"
+      ],
+      "inDegree": 1
+    },
+    "7.1": {
+      "dependencies": [
+        "6.5"
+      ],
+      "dependents": [
+        "7.4"
+      ],
+      "inDegree": 1
+    },
+    "7.2": {
+      "dependencies": [
+        "6.6"
+      ],
+      "dependents": [
+        "7.4"
+      ],
+      "inDegree": 1
+    },
+    "7.3": {
+      "dependencies": [
+        "6.7"
+      ],
+      "dependents": [
+        "7.4"
+      ],
+      "inDegree": 1
+    },
+    "7.4": {
+      "dependencies": [
+        "7.1",
+        "7.2",
+        "7.3"
+      ],
+      "dependents": [
+        "8.3"
+      ],
+      "inDegree": 3
+    },
+    "8.1": {
+      "dependencies": [
+        "4.3"
+      ],
+      "dependents": [
+        "8.2",
+        "8.3"
+      ],
+      "inDegree": 1
+    },
+    "8.2": {
+      "dependencies": [
+        "8.1",
+        "5.6"
+      ],
+      "dependents": [
+        "8.4"
+      ],
+      "inDegree": 2
+    },
+    "8.3": {
+      "dependencies": [
+        "8.1",
+        "7.4"
+      ],
+      "dependents": [
+        "8.4"
+      ],
+      "inDegree": 2
+    },
+    "8.4": {
+      "dependencies": [
+        "8.2",
+        "8.3"
+      ],
+      "dependents": [
+        "8.5"
+      ],
+      "inDegree": 2
+    },
+    "8.5": {
+      "dependencies": [
+        "8.4"
+      ],
+      "dependents": [],
+      "inDegree": 1
+    }
+  },
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Foundation (No Dependencies)",
+      "description": "Create base configuration file",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [
+        "2.1",
+        "4.1"
+      ],
+      "completedAt": "2025-12-27T01:48:53.436Z"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Foundation (No Dependencies)",
+      "description": "Set up test fixtures",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [
+        "2.2",
+        "4.2"
+      ],
+      "startedAt": "2025-12-27T02:44:32.017Z",
+      "completedAt": "2025-12-27T02:45:48.050Z",
+      "duration": 76033,
+      "notes": "Created test fixtures in fixtures/sample-data.json with sample users, tasks, and test cases for dependency pattern validation"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Foundation (No Dependencies)",
+      "description": "Initialize test database",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [
+        "2.3"
+      ],
+      "startedAt": "2025-12-27T02:44:32.498Z",
+      "completedAt": "2025-12-27T02:45:48.517Z",
+      "duration": 76019,
+      "notes": "Initialized test database in db/test-database.json with schema for tasks, dependencies, and runs tables"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Foundation (No Dependencies)",
+      "description": "Create shared utility functions",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [
+        "2.4",
+        "4.3"
+      ],
+      "startedAt": "2025-12-27T02:44:32.980Z",
+      "completedAt": "2025-12-27T02:45:48.982Z",
+      "duration": 76002,
+      "notes": "Created shared utility functions in utils/shared-utils.js with parseDependencies, findReadyTasks, calculateCriticalPathLength, and detectCycles"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Simple Dependencies",
+      "description": "Extend configuration (depends: 1.1)",
+      "status": "completed",
+      "dependencies": [
+        "1.1"
+      ],
+      "dependents": [
+        "4.1"
+      ],
+      "startedAt": "2025-12-27T02:44:33.460Z",
+      "completedAt": "2025-12-27T02:45:49.452Z",
+      "duration": 75992,
+      "notes": "Extended configuration in config/extended-config.json with scheduling, validation, reporting, and pattern definitions"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Simple Dependencies",
+      "description": "Create fixture helpers (depends: 1.2)",
+      "status": "completed",
+      "dependencies": [
+        "1.2"
+      ],
+      "dependents": [],
+      "startedAt": "2025-12-27T02:47:38.614Z",
+      "completedAt": "2025-12-27T02:54:28.396Z",
+      "duration": 409782,
+      "notes": "Created fixture-helpers.js with loading, cloning, and mock data generation functions"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Simple Dependencies",
+      "description": "Add database migrations (depends: 1.3)",
+      "status": "completed",
+      "dependencies": [
+        "1.3"
+      ],
+      "dependents": [],
+      "startedAt": "2025-12-27T02:47:39.068Z",
+      "completedAt": "2025-12-27T02:54:28.848Z",
+      "duration": 409780,
+      "notes": "Created migrations.js with MigrationManager class for up/down/reset operations"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Simple Dependencies",
+      "description": "Build utility wrappers (depends: 1.4)",
+      "status": "completed",
+      "dependencies": [
+        "1.4"
+      ],
+      "dependents": [
+        "4.3"
+      ],
+      "startedAt": "2025-12-27T02:47:39.539Z",
+      "completedAt": "2025-12-27T02:54:29.313Z",
+      "duration": 409774,
+      "notes": "Created utility-wrappers.js with BatchOperations, LoggingWrapper, TaskGraphVisualizer, and ExecutionStatusSummary classes"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Diamond Pattern",
+      "description": "Create shared interface",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [
+        "3.2",
+        "3.3"
+      ],
+      "completedAt": "2025-12-27T01:48:53.453Z"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Diamond Pattern",
+      "description": "Implement strategy A (depends: 3.1)",
+      "status": "completed",
+      "dependencies": [
+        "3.1"
+      ],
+      "dependents": [
+        "3.4"
+      ],
+      "completedAt": "2025-12-27T01:49:08.928Z"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Diamond Pattern",
+      "description": "Implement strategy B (depends: 3.1)",
+      "status": "completed",
+      "dependencies": [
+        "3.1"
+      ],
+      "dependents": [
+        "3.4"
+      ],
+      "completedAt": "2025-12-27T01:49:08.969Z"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Diamond Pattern",
+      "description": "Combine strategies (depends: 3.2, 3.3)",
+      "status": "completed",
+      "dependencies": [
+        "3.2",
+        "3.3"
+      ],
+      "dependents": [
+        "4.2",
+        "4.3"
+      ],
+      "startedAt": "2025-12-27T02:44:33.927Z",
+      "completedAt": "2025-12-27T02:45:49.910Z",
+      "duration": 75983,
+      "notes": "Combined Strategy A (Eager Execution) and Strategy B (Critical Path First) into Adaptive Scheduling strategy in strategies/combined-strategy.js"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Cross-Phase Dependencies",
+      "description": "Create integration module (depends: 1.1, 2.1)",
+      "status": "completed",
+      "dependencies": [
+        "1.1",
+        "2.1"
+      ],
+      "dependents": [],
+      "startedAt": "2025-12-27T02:47:40.004Z",
+      "completedAt": "2025-12-27T02:54:29.784Z",
+      "duration": 409780,
+      "notes": "Created integration-module.js with config merging, validation, and SchedulerExecutor class"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Cross-Phase Dependencies",
+      "description": "Build end-to-end tests (depends: 1.2, 3.4)",
+      "status": "completed",
+      "dependencies": [
+        "1.2",
+        "3.4"
+      ],
+      "dependents": [],
+      "startedAt": "2025-12-27T02:47:40.482Z",
+      "completedAt": "2025-12-27T02:54:30.251Z",
+      "duration": 409769,
+      "notes": "Created e2e-tests.js with comprehensive tests for all dependency patterns (linear, diamond, fan-out, fan-in) and edge cases"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Cross-Phase Dependencies",
+      "description": "Generate documentation (depends: 1.4, 2.4, 3.4)",
+      "status": "completed",
+      "dependencies": [
+        "1.4",
+        "2.4",
+        "3.4"
+      ],
+      "dependents": [
+        "8.1"
+      ],
+      "startedAt": "2025-12-27T02:56:04.635Z",
+      "completedAt": "2025-12-27T02:58:36.939Z",
+      "duration": 152304
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Long Chain",
+      "description": "Step 1 of pipeline",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [
+        "5.2"
+      ],
+      "startedAt": "2025-12-27T02:56:05.090Z",
+      "completedAt": "2025-12-27T02:58:37.411Z",
+      "duration": 152321
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Long Chain",
+      "description": "Step 2 of pipeline (depends: 5.1)",
+      "status": "completed",
+      "dependencies": [
+        "5.1"
+      ],
+      "dependents": [
+        "5.3"
+      ],
+      "startedAt": "2025-12-27T03:00:02.919Z",
+      "completedAt": "2025-12-27T03:03:01.591Z",
+      "duration": 178672,
+      "notes": "Created step-2.js with validation logic and executeStep2() function"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Long Chain",
+      "description": "Step 3 of pipeline (depends: 5.2)",
+      "status": "completed",
+      "dependencies": [
+        "5.2"
+      ],
+      "dependents": [
+        "5.4"
+      ],
+      "startedAt": "2025-12-27T03:04:22.908Z",
+      "completedAt": "2025-12-27T03:08:33.714Z",
+      "duration": 250806,
+      "notes": "Created pipeline/step-3.js - Transform Data step with normalization, enrichment, and restructuring"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Long Chain",
+      "description": "Step 4 of pipeline (depends: 5.3)",
+      "status": "completed",
+      "dependencies": [
+        "5.3"
+      ],
+      "dependents": [
+        "5.5"
+      ],
+      "completedAt": "2025-12-27T03:10:30.000Z",
+      "notes": "Created pipeline/step-4.js - Process Data step with filtering, enrichment, and computation"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Long Chain",
+      "description": "Step 5 of pipeline (depends: 5.4)",
+      "status": "completed",
+      "dependencies": [
+        "5.4"
+      ],
+      "dependents": [
+        "5.6"
+      ],
+      "startedAt": "2025-12-27T03:15:30.098Z",
+      "completedAt": "2025-12-27T03:17:53.219Z",
+      "duration": 143121,
+      "notes": "Created step-5.js implementing data aggregation with summarization, consolidation, and reporting operations"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: Long Chain",
+      "description": "Step 6 of pipeline (depends: 5.5)",
+      "status": "completed",
+      "dependencies": [
+        "5.5"
+      ],
+      "dependents": [
+        "8.2"
+      ],
+      "completedAt": "2025-12-27T03:21:19.315Z",
+      "notes": "Implemented step 6 of pipeline - final output generation with JSON, text, and summary formats"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Fan-Out Pattern",
+      "description": "Create base service",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [
+        "6.2",
+        "6.3",
+        "6.4"
+      ],
+      "startedAt": "2025-12-27T02:56:05.555Z",
+      "completedAt": "2025-12-27T02:58:37.878Z",
+      "duration": 152323
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Fan-Out Pattern",
+      "description": "Feature A module (depends: 6.1)",
+      "status": "completed",
+      "dependencies": [
+        "6.1"
+      ],
+      "dependents": [
+        "6.5"
+      ],
+      "startedAt": "2025-12-27T03:00:03.384Z",
+      "completedAt": "2025-12-27T03:03:02.051Z",
+      "duration": 178667,
+      "notes": "Created feature-a-service.js with FeatureAService class for data processing"
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Fan-Out Pattern",
+      "description": "Feature B module (depends: 6.1)",
+      "status": "completed",
+      "dependencies": [
+        "6.1"
+      ],
+      "dependents": [
+        "6.6"
+      ],
+      "startedAt": "2025-12-27T03:00:03.848Z",
+      "completedAt": "2025-12-27T03:03:02.500Z",
+      "duration": 178652,
+      "notes": "Created feature-b-service.js with FeatureBService class for caching"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Fan-Out Pattern",
+      "description": "Feature C module (depends: 6.1)",
+      "status": "completed",
+      "dependencies": [
+        "6.1"
+      ],
+      "dependents": [
+        "6.7"
+      ],
+      "startedAt": "2025-12-27T03:00:04.308Z",
+      "completedAt": "2025-12-27T03:03:02.966Z",
+      "duration": 178658,
+      "notes": "Created feature-c-service.js with FeatureCService class for logging"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Fan-Out Pattern",
+      "description": "Feature A tests (depends: 6.2)",
+      "status": "completed",
+      "dependencies": [
+        "6.2"
+      ],
+      "dependents": [
+        "7.1"
+      ],
+      "startedAt": "2025-12-27T03:04:22.929Z",
+      "completedAt": "2025-12-27T03:08:33.731Z",
+      "duration": 250802,
+      "notes": "Created tests/feature-a.test.js with 35+ tests covering data processing, validation, transformation, and caching"
+    },
+    {
+      "id": "6.6",
+      "phase": "Phase 6: Fan-Out Pattern",
+      "description": "Feature B tests (depends: 6.3)",
+      "status": "completed",
+      "dependencies": [
+        "6.3"
+      ],
+      "dependents": [
+        "7.2"
+      ],
+      "startedAt": "2025-12-27T03:04:22.946Z",
+      "completedAt": "2025-12-27T03:08:33.752Z",
+      "duration": 250806,
+      "notes": "Created tests/feature-b.test.js with 40+ tests covering cache operations, TTL, eviction, and statistics"
+    },
+    {
+      "id": "6.7",
+      "phase": "Phase 6: Fan-Out Pattern",
+      "description": "Feature C tests (depends: 6.4)",
+      "status": "completed",
+      "dependencies": [
+        "6.4"
+      ],
+      "dependents": [
+        "7.3"
+      ],
+      "startedAt": "2025-12-27T03:04:22.962Z",
+      "completedAt": "2025-12-27T03:08:33.771Z",
+      "duration": 250809,
+      "notes": "Created tests/feature-c.test.js with 35+ tests covering logging, filtering, rotation, and statistics"
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Fan-In Pattern",
+      "description": "Component A (depends: 6.5)",
+      "status": "completed",
+      "dependencies": [
+        "6.5"
+      ],
+      "dependents": [
+        "7.4"
+      ],
+      "completedAt": "2025-12-27T03:12:30.000Z",
+      "notes": "Created components/component-a.js - Data Processing Component with batch processing and pipelines"
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Fan-In Pattern",
+      "description": "Component B (depends: 6.6)",
+      "status": "completed",
+      "dependencies": [
+        "6.6"
+      ],
+      "dependents": [
+        "7.4"
+      ],
+      "completedAt": "2025-12-27T03:12:30.000Z",
+      "notes": "Created components/component-b.js - Cache Management Component with namespaces and groups"
+    },
+    {
+      "id": "7.3",
+      "phase": "Phase 7: Fan-In Pattern",
+      "description": "Component C (depends: 6.7)",
+      "status": "completed",
+      "dependencies": [
+        "6.7"
+      ],
+      "dependents": [
+        "7.4"
+      ],
+      "completedAt": "2025-12-27T03:12:30.000Z",
+      "notes": "Created components/component-c.js - Logging & Monitoring Component with structured logging and alerts"
+    },
+    {
+      "id": "7.4",
+      "phase": "Phase 7: Fan-In Pattern",
+      "description": "Final integration (depends: 7.1, 7.2, 7.3)",
+      "status": "completed",
+      "dependencies": [
+        "7.1",
+        "7.2",
+        "7.3"
+      ],
+      "dependents": [
+        "8.3"
+      ],
+      "startedAt": "2025-12-27T03:15:30.559Z",
+      "completedAt": "2025-12-27T03:17:53.690Z",
+      "duration": 143131,
+      "notes": "Created final-integration.js combining ComponentA, ComponentB, and ComponentC into IntegratedSystem class"
+    },
+    {
+      "id": "8.1",
+      "phase": "Phase 8: Mixed Complex Pattern",
+      "description": "Initialize complex module (depends: 4.3)",
+      "status": "completed",
+      "dependencies": [
+        "4.3"
+      ],
+      "dependents": [
+        "8.2",
+        "8.3"
+      ],
+      "startedAt": "2025-12-27T03:00:04.767Z",
+      "completedAt": "2025-12-27T03:03:03.451Z",
+      "duration": 178684,
+      "notes": "Created complex-module.js integrating components from phases 1-4"
+    },
+    {
+      "id": "8.2",
+      "phase": "Phase 8: Mixed Complex Pattern",
+      "description": "Build feature X (depends: 8.1, 5.6)",
+      "status": "completed",
+      "dependencies": [
+        "8.1",
+        "5.6"
+      ],
+      "dependents": [
+        "8.4"
+      ],
+      "completedAt": "2025-12-27T03:26:30.000Z",
+      "notes": "Implemented Feature X - pipeline-aware task execution combining ComplexModule (8.1) and Pipeline Step 6 (5.6) for multi-format output generation"
+    },
+    {
+      "id": "8.3",
+      "phase": "Phase 8: Mixed Complex Pattern",
+      "description": "Build feature Y (depends: 8.1, 7.4)",
+      "status": "completed",
+      "dependencies": [
+        "8.1",
+        "7.4"
+      ],
+      "dependents": [
+        "8.4"
+      ],
+      "completedAt": "2025-12-27T03:21:19.789Z",
+      "notes": "Implemented Feature Y - unified monitoring and reporting combining ComplexModule (8.1) and IntegratedSystem (7.4)"
+    },
+    {
+      "id": "8.4",
+      "phase": "Phase 8: Mixed Complex Pattern",
+      "description": "Combine features (depends: 8.2, 8.3)",
+      "status": "completed",
+      "dependencies": [
+        "8.2",
+        "8.3"
+      ],
+      "dependents": [
+        "8.5"
+      ],
+      "startedAt": "2025-12-27T03:26:46.563Z",
+      "completedAt": "2025-12-27T03:29:19.326Z",
+      "duration": 152763,
+      "notes": "Created combined-features.js that integrates FeatureX (pipeline/output from 8.2) and FeatureY (monitoring/reporting from 8.3) into a unified system with coordinated, parallel, and sequential operation modes"
+    },
+    {
+      "id": "8.5",
+      "phase": "Phase 8: Mixed Complex Pattern",
+      "description": "Final validation (depends: 8.4)",
+      "status": "completed",
+      "dependencies": [
+        "8.4"
+      ],
+      "dependents": [],
+      "startedAt": "2025-12-27T03:30:16.328Z",
+      "completedAt": "2025-12-27T03:33:13.730Z",
+      "duration": 177402,
+      "notes": "Created final-validation.js implementing complete system verification with dependency pattern validation, integration testing, functionality checks, and performance metrics"
+    }
+  ],
+  "runs": [
+    {
+      "runId": "run-1766803431639",
+      "startedAt": "2025-12-27T02:43:51.640Z",
+      "tasksCompleted": 5,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-27T02:46:11.417Z"
+    },
+    {
+      "runId": "run-1766803630556",
+      "startedAt": "2025-12-27T02:47:10.556Z",
+      "tasksCompleted": 5,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-27T02:54:38.530Z"
+    },
+    {
+      "runId": "run-1766804144000",
+      "startedAt": "2025-12-27T02:55:44.000Z",
+      "tasksCompleted": 3,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-27T02:58:54.191Z"
+    },
+    {
+      "runId": "run-1766804375120",
+      "startedAt": "2025-12-27T02:59:35.120Z",
+      "tasksCompleted": 5,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-27T03:03:12.199Z"
+    }
+  ],
+  "summary": {
+    "totalTasks": 37,
+    "completed": 37,
+    "pending": 0,
+    "in_progress": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "completedAt": "2025-12-26T21:46:52-06:00",
+  "mergedAt": "2025-12-26T21:46:52-06:00",
+  "mergeCommit": "dd5bbce29cea211441cca343d394e239f29e022a",
+  "archiveTag": "archive/plan-test-dependency-patterns"
+}

@@ -1,0 +1,147 @@
+{
+  "_comment": "This file is the authoritative source of truth for task execution state. The markdown plan file is read-only reference documentation. Use status-cli.js to update task status.",
+  "planPath": "docs/plans/documentation-standards-analysis.md",
+  "planName": "Documentation Standards Analysis Plan",
+  "createdAt": "2025-12-25T06:22:41.708Z",
+  "lastUpdatedAt": "2025-12-25T06:50:39.973Z",
+  "currentPhase": "Phase 1: Documentation Inventory",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Documentation Inventory",
+      "description": "Catalog and assess core documentation files",
+      "status": "completed",
+      "startedAt": "2025-12-25T06:24:35.794Z",
+      "completedAt": "2025-12-25T06:25:21.059Z",
+      "duration": 45265,
+      "notes": "Assessed 4 core docs: VISION.md, ARCHITECTURE.md, ORCHESTRATOR.md (KEEP), PLAN-EXECUTION-TRACKER.md (CONSOLIDATE)"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Documentation Inventory",
+      "description": "Catalog and assess standards documentation",
+      "status": "completed",
+      "startedAt": "2025-12-25T06:25:31.755Z",
+      "completedAt": "2025-12-25T06:27:14.111Z",
+      "duration": 102356,
+      "notes": "Assessed 9 standards files: 5 KEEP (implementation-plan-standards, artifact-type-registry, subcommand-naming, priority-matrix, config-guide), 4 CONSOLIDATE (selection guides for unimplemented commands)"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Documentation Inventory",
+      "description": "Catalog and assess plan templates",
+      "status": "completed",
+      "startedAt": "2025-12-25T06:27:23.062Z",
+      "completedAt": "2025-12-25T06:28:47.652Z",
+      "duration": 84590,
+      "notes": "Assessed 45 templates: 2 meta templates, 5 generic templates, 38 implement-* templates. All KEEP - no duplicates or obsolete files found."
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Documentation Inventory",
+      "description": "Catalog and assess schema files",
+      "status": "completed",
+      "startedAt": "2025-12-25T06:28:56.904Z",
+      "completedAt": "2025-12-25T06:30:16.835Z",
+      "duration": 79931,
+      "notes": "Assessed 9 schema files: 5 in docs/schemas/ (artifact output), 4 in scripts/lib/schemas/ (internal validation). All KEEP - no duplicates or inconsistencies found."
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Obsolescence Analysis",
+      "description": "Analyze archive directories and identify cleanup candidates",
+      "status": "completed",
+      "startedAt": "2025-12-25T06:31:22.016Z",
+      "completedAt": "2025-12-25T06:37:19.453Z",
+      "duration": 357437,
+      "notes": "Analyzed archive directories: 53 plans in archive, 52 output directories. Identified 49 .bak files for deletion and empty 'docs/completed plans/' directory to remove. All archived content has historical value."
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Obsolescence Analysis",
+      "description": "Identify duplicate and overlapping documentation",
+      "status": "completed",
+      "startedAt": "2025-12-25T06:31:22.409Z",
+      "completedAt": "2025-12-25T06:37:19.857Z",
+      "duration": 357448,
+      "notes": "Found HIGH duplication in orchestrator docs (3 files, 85% overlap), MEDIUM overlap in migration docs, and 95%+ similarity across 38 command templates (~10K duplicate lines)."
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Obsolescence Analysis",
+      "description": "Identify outdated documentation requiring update or removal",
+      "status": "completed",
+      "startedAt": "2025-12-25T06:31:22.812Z",
+      "completedAt": "2025-12-25T06:37:20.244Z",
+      "duration": 357432,
+      "notes": "Found 8 critical outdated references to deleted files (plan-runner.sh, plan-orchestrator.js, status-manager.js, current-plan-output.txt). 5 docs need immediate updates."
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Standards Authority Analysis",
+      "description": "Map plan standards and identify gaps",
+      "status": "completed",
+      "startedAt": "2025-12-25T06:38:25.707Z",
+      "completedAt": "2025-12-25T06:44:56.402Z",
+      "duration": 390695,
+      "notes": "Mapped all documents defining plan standards. Authoritative source: implementation-plan-standards.md. Found 15 gaps and 6 conflicts."
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Standards Authority Analysis",
+      "description": "Map phase standards and identify gaps",
+      "status": "completed",
+      "startedAt": "2025-12-25T06:38:26.102Z",
+      "completedAt": "2025-12-25T06:44:56.803Z",
+      "duration": 390701,
+      "notes": "Mapped all documents defining phase standards. Authoritative source: implementation-plan-standards.md. Found 10 gaps and 3 conflicts."
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Standards Authority Analysis",
+      "description": "Map task standards and identify gaps",
+      "status": "completed",
+      "startedAt": "2025-12-25T06:38:26.494Z",
+      "completedAt": "2025-12-25T06:44:57.200Z",
+      "duration": 390706,
+      "notes": "Mapped all documents defining task standards. Primary authority: plan-status.json schema. Secondary: implementation-plan-standards.md. Found 10 gaps and 2 conflicts."
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Consolidation Recommendations",
+      "description": "Produce comprehensive documentation cleanup action plan",
+      "status": "completed",
+      "startedAt": "2025-12-25T06:45:59.815Z",
+      "completedAt": "2025-12-25T06:47:25.032Z",
+      "duration": 85217,
+      "notes": "Created comprehensive cleanup-plan.md with DELETE (49 backup files, 1 directory), ARCHIVE (4 guides), MERGE (orchestrator docs), and UPDATE (8 outdated files) actions"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Consolidation Recommendations",
+      "description": "Propose authoritative standards document and hierarchy",
+      "status": "completed",
+      "startedAt": "2025-12-25T06:47:30.632Z",
+      "completedAt": "2025-12-25T06:50:39.973Z",
+      "duration": 189341,
+      "notes": "Created proposed-standards.md (unified PLAN-STANDARDS.md specification) and standards-hierarchy.md (authority chain diagram and document relationships)"
+    }
+  ],
+  "runs": [],
+  "completionNote": "Analysis complete. Downstream cleanup plan (documentation-cleanup.md) has been executed successfully. All identified cleanup actions have been implemented: 49 backup files deleted, 4 guides archived, orchestrator documentation consolidated, outdated references fixed, cross-references added, and unified PLAN-STANDARDS.md created.",
+  "downstreamPlans": [
+    {
+      "name": "documentation-cleanup.md",
+      "status": "completed",
+      "completedAt": "2025-12-25"
+    }
+  ],
+  "summary": {
+    "totalTasks": 12,
+    "completed": 12,
+    "pending": 0,
+    "in_progress": 0,
+    "failed": 0,
+    "skipped": 0
+  }
+}

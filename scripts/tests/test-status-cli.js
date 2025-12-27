@@ -19,7 +19,6 @@ const STATUS_CLI = 'node scripts/status-cli.js';
 
 // Store original values to restore
 let originalPlanPath = '';
-// Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
 // Track test results
 let passed = 0;
@@ -81,7 +80,6 @@ function setupTestEnvironment() {
   } catch (e) {
     originalPlanPath = '';
   }
-  // Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
   // Create test directories
   fs.mkdirSync(TEST_PLAN_DIR, { recursive: true });
@@ -152,7 +150,6 @@ function cleanupTestEnvironment() {
   if (originalPlanPath) {
     fs.writeFileSync(path.join(claudeDir, 'current-plan.txt'), originalPlanPath);
   }
-  // Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
   // Clean up test files
   try {

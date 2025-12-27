@@ -1,0 +1,402 @@
+{
+  "_comment": "This file is the authoritative source of truth for task execution state.",
+  "planPath": "docs/plans/tui-integration-implementation.md",
+  "planName": "Implementation Plan: TUI Integration Enhancement",
+  "createdAt": "2025-12-24T22:26:30.219Z",
+  "lastUpdatedAt": "2025-12-27T07:21:59.891Z",
+  "currentPhase": "Phase 1: Keyboard Foundation",
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Keyboard Foundation",
+      "description": "Create `KeyboardHandler` class in `scripts/tui/keyboard.py`",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T06:06:32.945Z",
+      "completedAt": "2025-12-27T06:08:08.574Z",
+      "duration": 95629
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Keyboard Foundation",
+      "description": "Implement task navigation in TUI panels",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T06:08:17.333Z",
+      "completedAt": "2025-12-27T06:10:37.327Z",
+      "duration": 139994
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Keyboard Foundation",
+      "description": "Create help overlay system",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T06:10:46.530Z",
+      "completedAt": "2025-12-27T06:12:04.004Z",
+      "duration": 77474
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Keyboard Foundation",
+      "description": "Integrate keyboard handler with main TUI loop",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T06:12:11.994Z",
+      "completedAt": "2025-12-27T06:13:35.958Z",
+      "duration": 83964
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Quick Win Panels",
+      "description": "Implement Phase Progress Bars (Gap G1)",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T06:13:44.283Z",
+      "completedAt": "2025-12-27T06:16:10.945Z",
+      "duration": 146662
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Quick Win Panels",
+      "description": "Implement Upcoming Tasks Panel (Gap G5)",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T06:20:27.184Z",
+      "notes": "Implemented UpcomingPanel with numbered list, VERIFY highlighting, and TUI layout integration"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Quick Win Panels",
+      "description": "Implement Retry History Indicator (Gap G3)",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T06:21:15.275Z",
+      "completedAt": "2025-12-27T06:23:06.777Z",
+      "duration": 111502,
+      "notes": "Implemented retry history indicator with color-coded [Retry N/3] suffix and expandable error preview for selected tasks"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Quick Win Panels",
+      "description": "Implement Inline Blockers Display (Gap B1 partial)",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T06:27:22.177Z",
+      "completedAt": "2025-12-27T06:30:12.312Z",
+      "duration": 170135,
+      "notes": "Implemented inline blockers display with: 1) _check_task_blockers() method to query status-cli.js check, 2) _get_blocker_indicator() method for formatting [Blocked by: X.Y] text, 3) Updated _render_tasks_in_progress() to show blockers and dim blocked tasks, 4) Updated UpcomingPanel with blockers field and blocker display in upcoming panel"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Quick Win Panels",
+      "description": "Implement Run History Panel (Enhancement E5)",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T06:36:16.478Z",
+      "completedAt": "2025-12-27T06:38:39.201Z",
+      "duration": 142723,
+      "notes": "Implemented RunHistoryPanel with: 1) RunInfo dataclass for run data, 2) Panel showing run #, start time, duration, tasks completed/failed, 3) Color-coded status indicators, 4) Integration with TUI layout via attach_run_history_panel()"
+    },
+    {
+      "id": "2.6",
+      "phase": "Phase 2: Quick Win Panels",
+      "description": "Implement Panel Toggle Keys",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T06:53:03.606Z"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Command Integration",
+      "description": "Implement Command Palette (Gaps G8, B3)",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T06:23:23.107Z",
+      "completedAt": "2025-12-27T06:26:26.577Z",
+      "duration": 183470,
+      "notes": "Implemented CommandPaletteModal with fuzzy search, tab completion, and integration with overlay manager and TUI"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Command Integration",
+      "description": "Implement Task Picker Modal (Gap B3)",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T06:30:28.732Z",
+      "completedAt": "2025-12-27T06:32:42.442Z",
+      "duration": 133710,
+      "notes": "Implemented TaskPickerModal with: 1) PickableTask dataclass for task data, 2) Filtering/search by typing, 3) Multi-select with Space key, 4) Blocker display, 5) Integrated with OverlayManager via show_task_picker()"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Command Integration",
+      "description": "Implement Task Action Keys (Gap G9)",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T06:32:57.357Z",
+      "completedAt": "2025-12-27T06:35:08.090Z",
+      "duration": 130733,
+      "notes": "Implemented TaskActionHandler with: 1) ActionResult dataclass for action responses, 2) Handlers for e/i/v (explain/implement/verify via callbacks), 3) s key to skip tasks via status-cli.js, 4) f key to view findings from docs/plan-outputs, 5) d key to show dependencies via status-cli.js check, 6) Integration with RichTUIManager.attach_task_action_handler()"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Command Integration",
+      "description": "Implement Command Output Streaming",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T06:38:58.443Z",
+      "completedAt": "2025-12-27T06:40:40.435Z",
+      "duration": 101992,
+      "notes": "Implemented CommandRunner and CommandOutputStreamer with: 1) Spawns Claude via StreamingClaudeRunner, 2) Streams tool calls to ActivityTracker, 3) Parses tool start/end events, 4) Handles completion/error states, 5) Background thread execution"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Advanced Visualization",
+      "description": "Implement Dependency Graph Panel (Gap B1)",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T06:40:58.073Z",
+      "completedAt": "2025-12-27T06:43:52.165Z",
+      "duration": 174092,
+      "notes": "Implemented DependencyGraphPanel with: 1) DependencyNode dataclass for graph nodes, 2) Vertical tree layout with box-drawing characters, 3) Color-coded by status (green/yellow/dim), 4) Highlights selected task dependencies, 5) Integration with TUI layout via attach_dependency_graph_panel()"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Advanced Visualization",
+      "description": "Implement Parallel Agent Tracking (Gap B2)",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T06:53:03.623Z"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Advanced Visualization",
+      "description": "Implement Subtask Tree View (Gap G6)",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T06:58:33.454Z",
+      "notes": "Implemented SubtaskTreePanel with: 1) SubtaskNode dataclass for tree structure, 2) X.Y.Z notation parsing, 3) Collapse/expand with +/- keys, 4) Child progress display (N/M), 5) Integration with TUI layout via 7 key toggle"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Advanced Visualization",
+      "description": "Implement Findings Browser Modal (Gap G2)",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T07:15:17.652Z",
+      "notes": "Implemented FindingsBrowserModal with: 1) Finding dataclass for finding data, 2) Full-screen modal overlay, 3) Markdown rendering via Rich, 4) j/k/arrow scrolling, 5) n/p navigation between findings, 6) q/Escape to close"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Advanced Visualization",
+      "description": "Implement Artifact Browser Panel (Gap G7)",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T07:16:38.352Z",
+      "completedAt": "2025-12-27T07:21:59.890Z",
+      "duration": 321538,
+      "notes": "Implemented ArtifactBrowserPanel with:\n- Artifact dataclass for file metadata (path, filename, task_id, title, size, modified time)\n- ArtifactBrowserPanel class with full/compact render modes\n- Artifact list with task ID association\n- Preview artifact content on selection\n- Open artifact in external editor via $EDITOR environment variable\n- Integration with RichTUIManager (toggle with key 8)\n- Focus mode support\n- Config persistence"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Polish and Enhancement",
+      "description": "Implement Search Mode",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T07:01:43.840Z",
+      "notes": "Implemented Search Mode with: 1) / key to enter search, 2) Search across task descriptions, 3) Magenta highlighting for matches, 4) n/N navigation between matches, 5) Footer displays search input while typing"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Polish and Enhancement",
+      "description": "Implement Responsive Layouts",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T07:04:12.122Z",
+      "notes": "Implemented Responsive Layouts with: 1) LayoutMode enum (COMPACT/STANDARD/FULL), 2) Terminal size detection and resize handling, 3) Responsive panel sizes per mode, 4) Auto-hide of low-priority panels in compact mode"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Polish and Enhancement",
+      "description": "Implement Configuration Persistence",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T07:15:18.063Z",
+      "notes": "Implemented TUI Configuration Persistence with: 1) TUIConfig dataclass for settings, 2) ConfigManager for load/save, 3) Panel visibility persistence, 4) Keybinding customizations, 5) Search history, 6) ~/.config/claude-code/tui-panels.json location"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Polish and Enhancement",
+      "description": "Implement Focus Mode",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T07:15:18.457Z",
+      "notes": "Implemented Focus Mode with: 1) F key toggle in keyboard handler, 2) Focus mode state in RichTUIManager, 3) Maximized panel layout, 4) Focus panel selection memory, 5) Config persistence integration"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Polish and Enhancement",
+      "description": "Add Error Handling and Recovery",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T07:15:18.856Z",
+      "notes": "Implemented Error Handling and Recovery with: 1) ErrorHandler class with categorization, 2) ErrorRecovery for automatic recovery, 3) ErrorNotifier for TUI display, 4) TUIError dataclass, 5) Context managers and decorators, 6) Integration with TUI manager"
+    }
+  ],
+  "runs": [],
+  "summary": {
+    "totalTasks": 24,
+    "completed": 24,
+    "pending": 0,
+    "in_progress": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "dependencyGraph": {
+    "1.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "1.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "1.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "1.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.5": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.6": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "4.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "4.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "4.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "4.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "4.5": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "5.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "5.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "5.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "5.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "5.5": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    }
+  }
+}

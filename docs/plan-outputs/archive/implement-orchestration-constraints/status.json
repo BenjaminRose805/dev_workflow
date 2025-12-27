@@ -1,0 +1,468 @@
+{
+  "_comment": "This file is the authoritative source of truth for task execution state. The markdown plan file is read-only reference documentation. Use status-cli.js to update task status.",
+  "planPath": "docs/plans/implement-orchestration-constraints.md",
+  "planName": "Implementation Plan: Orchestration Constraint Parsing",
+  "createdAt": "2025-12-25T15:43:02.900Z",
+  "lastUpdatedAt": "2025-12-25T16:46:21.143Z",
+  "currentPhase": "Phase 0: Schema and Type Definitions",
+  "tasks": [
+    {
+      "id": "0.1",
+      "phase": "Phase 0: Schema and Type Definitions",
+      "description": "Add `executionConstraints` field to `scripts/lib/schemas/plan-status.json`:",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:03:17.459Z",
+      "completedAt": "2025-12-25T16:04:07.759Z",
+      "duration": 50300,
+      "notes": "Added executionConstraints field with sequential, sequentialGroup, and reason properties"
+    },
+    {
+      "id": "0.2",
+      "phase": "Phase 0: Schema and Type Definitions",
+      "description": "Create type definitions for constraint metadata in new file `scripts/lib/constraint-types.js`:",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:03:17.852Z",
+      "completedAt": "2025-12-25T16:04:08.145Z",
+      "duration": 50293,
+      "notes": "Created constraint-types.js with SequentialConstraint and ExecutionConstraints type definitions, factory functions, utility functions, and validation"
+    },
+    {
+      "id": "0.3",
+      "phase": "Phase 0: Schema and Type Definitions",
+      "description": "Verify: Schema validates with `ajv` (if schema validation is used)",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:04:25.032Z",
+      "completedAt": "2025-12-25T16:05:08.777Z",
+      "duration": 43745,
+      "notes": "Schema is valid JSON Schema Draft-07 and loads correctly. Existing validate-status-files.js test passes (9 valid, 0 invalid). ajv-cli not installed but schema structure is compatible."
+    },
+    {
+      "id": "0.4",
+      "phase": "Phase 0: Schema and Type Definitions",
+      "description": "Verify: Type definitions can be imported in status-cli.js",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:05:23.779Z",
+      "completedAt": "2025-12-25T16:05:55.343Z",
+      "duration": 31564,
+      "notes": "constraint-types.js can be imported from status-cli.js context. All 6 exported functions work: createSequentialConstraint, createExecutionConstraints, isSequential, inSameSequentialGroup, validateSequentialConstraint, validateExecutionConstraints"
+    },
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Constraint Parsing in plan-status.js",
+      "description": "Add `parseExecutionNotes(planContent)` function to `scripts/lib/plan-status.js`:",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:07:11.188Z",
+      "completedAt": "2025-12-25T16:08:18.026Z",
+      "duration": 66838,
+      "notes": "Added parseExecutionNotes function that parses **Execution Note:** blocks and extracts [SEQUENTIAL] constraints"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Constraint Parsing in plan-status.js",
+      "description": "Add `expandTaskRange(rangeStr)` helper function:",
+      "status": "completed",
+      "completedAt": "2025-12-25T16:08:18.027Z",
+      "notes": "Added expandTaskRange helper that handles ranges (3.1-3.4), singles (3.1), and lists (3.1,3.3)"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Constraint Parsing in plan-status.js",
+      "description": "Add `getTaskConstraints(planPath, taskId)` function:",
+      "status": "completed",
+      "completedAt": "2025-12-25T16:08:18.028Z",
+      "notes": "Added getTaskConstraints that returns {sequential, sequentialGroup, reason} for a task"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Constraint Parsing in plan-status.js",
+      "description": "Export new functions from plan-status.js module",
+      "status": "completed",
+      "completedAt": "2025-12-25T16:08:18.028Z",
+      "notes": "Exported expandTaskRange, parseExecutionNotes, getTaskConstraints from module"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Constraint Parsing in plan-status.js",
+      "description": "Create test file `scripts/tests/test-constraint-parsing.js`:",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:08:35.299Z",
+      "completedAt": "2025-12-25T16:09:59.383Z",
+      "duration": 84084,
+      "notes": "Created test-constraint-parsing.js with 42 tests covering expandTaskRange, parseExecutionNotes, getTaskConstraints"
+    },
+    {
+      "id": "1.6",
+      "phase": "Phase 1: Constraint Parsing in plan-status.js",
+      "description": "Run: `node scripts/tests/test-constraint-parsing.js` passes",
+      "status": "completed",
+      "completedAt": "2025-12-25T16:11:04.427Z",
+      "notes": "All 42 tests pass for constraint parsing functions"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Update cmdNext() to Return Constraints",
+      "description": "Import constraint parsing functions in `scripts/status-cli.js`:",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:11:16.908Z",
+      "completedAt": "2025-12-25T16:11:26.648Z",
+      "duration": 9740,
+      "notes": "Added imports for parseExecutionNotes and getTaskConstraints",
+      "executionConstraints": {
+        "sequential": true,
+        "sequentialGroup": "2.1-2.3",
+        "reason": "all modify cmdNext() in status-cli.js"
+      }
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Update cmdNext() to Return Constraints",
+      "description": "Update `cmdNext()` function (lines 373-473) to read plan file:",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:11:27.038Z",
+      "completedAt": "2025-12-25T16:11:50.674Z",
+      "duration": 23636,
+      "notes": "Added plan file reading and parseExecutionNotes() call in cmdNext()",
+      "executionConstraints": {
+        "sequential": true,
+        "sequentialGroup": "2.1-2.3",
+        "reason": "all modify cmdNext() in status-cli.js"
+      }
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Update cmdNext() to Return Constraints",
+      "description": "Update task object construction in `cmdNext()` to include constraint metadata:",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:11:51.064Z",
+      "completedAt": "2025-12-25T16:12:46.587Z",
+      "duration": 55523,
+      "notes": "Added constraint metadata spread to all task object constructions in cmdNext()",
+      "executionConstraints": {
+        "sequential": true,
+        "sequentialGroup": "2.1-2.3",
+        "reason": "all modify cmdNext() in status-cli.js"
+      }
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Update cmdNext() to Return Constraints",
+      "description": "Test: `node scripts/status-cli.js next 5` on a plan with [SEQUENTIAL] annotations returns constraint metadata",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:12:46.977Z",
+      "completedAt": "2025-12-25T16:14:20.095Z",
+      "duration": 93118,
+      "notes": "Verified: next command returns sequential, sequentialGroup, and sequentialReason fields for tasks with [SEQUENTIAL] annotations"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Update cmdNext() to Return Constraints",
+      "description": "Test: `node scripts/status-cli.js next 5` on a plan without annotations still works (backward compatible)",
+      "status": "completed",
+      "completedAt": "2025-12-25T16:16:19.372Z",
+      "notes": "Tested on tui-integration-implementation plan which has no SEQUENTIAL annotations - next 5 command returned tasks with sequential:false, confirming backward compatibility"
+    },
+    {
+      "id": "2.6",
+      "phase": "Phase 2: Update cmdNext() to Return Constraints",
+      "description": "Verify JSON output includes new fields: `grep \"sequential\" <<< $(node scripts/status-cli.js next)`",
+      "status": "completed",
+      "completedAt": "2025-12-25T16:16:19.765Z",
+      "notes": "Verified with 'node scripts/status-cli.js next | grep sequential' - output includes sequential field for all tasks"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Populate Constraints During Init",
+      "description": "Update `initializePlanStatus()` in `scripts/lib/plan-status.js`:",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:17:15.237Z",
+      "completedAt": "2025-12-25T16:17:52.053Z",
+      "duration": 36816,
+      "notes": "Updated initializePlanStatus() to parse execution notes, attach executionConstraints to tasks, and store sequentialGroups at top level"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Populate Constraints During Init",
+      "description": "Update `saveStatus()` in `scripts/lib/plan-status.js` to include constraints:",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:18:25.492Z",
+      "completedAt": "2025-12-25T16:18:41.305Z",
+      "duration": 15813,
+      "notes": "Updated saveStatus() JSDoc to document constraint preservation, added cleanup for undefined sequentialGroups"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Populate Constraints During Init",
+      "description": "Add `refreshConstraints(planPath)` function:",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:19:00.271Z",
+      "completedAt": "2025-12-25T16:19:53.432Z",
+      "duration": 53161,
+      "notes": "Added refreshConstraints() function that re-reads plan file and updates constraints in status.json"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Populate Constraints During Init",
+      "description": "Test: `node scripts/status-cli.js init` on a plan with [SEQUENTIAL] creates status.json with constraints",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:20:13.982Z",
+      "completedAt": "2025-12-25T16:20:47.932Z",
+      "duration": 33950,
+      "notes": "Verified: status-cli.js init creates status.json with sequentialGroups (1 group) and executionConstraints on tasks 2.1, 2.2, 2.3"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Populate Constraints During Init",
+      "description": "Verify: `cat status.json | jq '.tasks[].executionConstraints'` shows constraint objects",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:21:08.270Z",
+      "completedAt": "2025-12-25T16:21:41.993Z",
+      "duration": 33723,
+      "notes": "Verified with jq: 3 tasks (2.1, 2.2, 2.3) have executionConstraints objects with sequential:true, sequentialGroup:\"2.1-2.3\", and reason field"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Populate Constraints During Init",
+      "description": "Verify: `cat status.json | jq '.sequentialGroups'` shows plan-level summary",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:23:03.322Z",
+      "completedAt": "2025-12-25T16:23:14.080Z",
+      "duration": 10758,
+      "notes": "Verified: sequentialGroups shows 1 group with taskRange 2.1-2.3, taskIds array, and reason field"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Update plan_orchestrator.py",
+      "description": "Update `get_next_tasks()` in `scripts/plan_orchestrator.py` to handle constraint metadata:",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:23:24.108Z",
+      "completedAt": "2025-12-25T16:23:47.305Z",
+      "duration": 23197,
+      "notes": "Updated get_next_tasks() with docstring documenting constraint fields and debug logging for sequential constraints"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Update plan_orchestrator.py",
+      "description": "Add `_filter_sequential_tasks(tasks)` method:",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:23:47.696Z",
+      "completedAt": "2025-12-25T16:24:15.231Z",
+      "duration": 27535,
+      "notes": "Added _filter_sequential_tasks() method that filters out duplicate tasks from the same sequentialGroup, keeping only the first one. Logs held-back tasks."
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Update plan_orchestrator.py",
+      "description": "Update `_build_prompt()` to include constraint information:",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:24:15.619Z",
+      "completedAt": "2025-12-25T16:24:54.060Z",
+      "duration": 38441,
+      "notes": "Updated _build_prompt() to include constraints section and added _build_constraints_section() helper that formats Sequential Constraints section"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Update plan_orchestrator.py",
+      "description": "Add constraint awareness to batch logic:",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:24:54.442Z",
+      "completedAt": "2025-12-25T16:25:22.973Z",
+      "duration": 28531,
+      "notes": "Added constraint awareness to batch logic: filters tasks with _filter_sequential_tasks() before sending to Claude, logs when tasks are filtered out"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Update plan_orchestrator.py",
+      "description": "Test: Run orchestrator on plan with [SEQUENTIAL] tasks, verify only one from group is batched at a time",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:26:48.737Z",
+      "completedAt": "2025-12-25T16:28:10.730Z",
+      "duration": 81993
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Update plan_orchestrator.py",
+      "description": "Verify: Prompt includes \"Sequential Constraints\" section when constraints exist",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:28:24.317Z",
+      "completedAt": "2025-12-25T16:28:46.450Z",
+      "duration": 22133
+    },
+    {
+      "id": "4.7",
+      "phase": "Phase 4: Update plan_orchestrator.py",
+      "description": "Verify: Log shows \"Task 3.2 held back (sequential with 3.1)\" when applicable",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:28:59.520Z",
+      "completedAt": "2025-12-25T16:29:23.542Z",
+      "duration": 24022
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Integration Testing",
+      "description": "Create test plan with [SEQUENTIAL] annotations: `docs/plans/test-sequential-constraints.md`:",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:30:37.672Z",
+      "completedAt": "2025-12-25T16:31:06.429Z",
+      "duration": 28757,
+      "notes": "Created test-sequential-constraints.md with Phase 1 (3 parallel tasks), Phase 2 (4 sequential tasks), and Phase 3 (mixed tasks)"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Integration Testing",
+      "description": "Run integration test:",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:31:14.643Z",
+      "completedAt": "2025-12-25T16:32:24.110Z",
+      "duration": 69467,
+      "notes": "Verified: init creates status.json with sequentialGroups (2 groups: 2.1-2.4 and 3.3-3.4), next command returns sequential/sequentialGroup/sequentialReason fields for constrained tasks"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Integration Testing",
+      "description": "Test orchestrator dry-run:",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:32:31.548Z",
+      "completedAt": "2025-12-25T16:36:15.640Z",
+      "duration": 224092,
+      "notes": "Verified: Orchestrator dry-run shows constraint detection (Task 3.4 held back sequential with 3.3), filtering (5 to 4 tasks), and Sequential Constraints section in prompts"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Integration Testing",
+      "description": "Clean up test plan after verification",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:36:21.888Z",
+      "completedAt": "2025-12-25T16:36:33.937Z",
+      "duration": 12049,
+      "notes": "Deleted test-sequential-constraints.md and its output directory"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Integration Testing",
+      "description": "Integration test passes: constraints flow from plan → status.json → next → orchestrator",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:36:34.331Z",
+      "completedAt": "2025-12-25T16:36:53.019Z",
+      "duration": 18688,
+      "notes": "Integration verified: constraints flow from plan (parseExecutionNotes) → status.json (initializePlanStatus with sequentialGroups) → next command (returns sequential/sequentialGroup/sequentialReason) → orchestrator (_filter_sequential_tasks holds back duplicate groups)"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: Integration Testing",
+      "description": "No regressions: existing plans without [SEQUENTIAL] work correctly",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:37:46.512Z",
+      "completedAt": "2025-12-25T16:40:06.134Z",
+      "duration": 139622,
+      "notes": "Verified no regressions: plans without [SEQUENTIAL] work correctly. Tested parseExecutionNotes, getTaskConstraints, expandTaskRange, and orchestrator filter function."
+    },
+    {
+      "id": "5.7",
+      "phase": "Phase 5: Integration Testing",
+      "description": "Delete test plan: `rm docs/plans/test-sequential-constraints.md`",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:40:22.763Z",
+      "completedAt": "2025-12-25T16:40:54.064Z",
+      "duration": 31301,
+      "notes": "Test plan file docs/plans/test-sequential-constraints.md does not exist - already deleted or never created. Task complete."
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Documentation and Cleanup",
+      "description": "Update `docs/architecture/orchestrator-system.md` to document constraint pipeline:",
+      "status": "completed",
+      "completedAt": "2025-12-25T16:42:47.079Z"
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Documentation and Cleanup",
+      "description": "Update this plan's deferred work section in `docs/plans/documentation-cleanup.md`:",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:43:08.731Z",
+      "completedAt": "2025-12-25T16:43:34.187Z",
+      "duration": 25456
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Documentation and Cleanup",
+      "description": "Add JSDoc comments to new functions in plan-status.js",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:43:39.404Z",
+      "completedAt": "2025-12-25T16:44:11.235Z",
+      "duration": 31831,
+      "notes": "JSDoc comments already present on all new constraint functions: expandTaskRange, parseExecutionNotes, getTaskConstraints, refreshConstraints"
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Documentation and Cleanup",
+      "description": "Add docstrings to new methods in plan_orchestrator.py",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:44:21.671Z",
+      "completedAt": "2025-12-25T16:44:42.484Z",
+      "duration": 20813,
+      "notes": "Docstrings already present on all new constraint methods: get_next_tasks (updated with constraint fields), _filter_sequential_tasks, _build_constraints_section"
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Documentation and Cleanup",
+      "description": "Verify: `grep \"Execution Constraint\" docs/architecture/orchestrator-system.md` returns matches",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:44:53.122Z",
+      "completedAt": "2025-12-25T16:45:01.980Z",
+      "duration": 8858,
+      "notes": "Verification passed: grep found 'Execution Constraint Handling' section header"
+    },
+    {
+      "id": "6.6",
+      "phase": "Phase 6: Documentation and Cleanup",
+      "description": "Verify: All new functions have documentation comments",
+      "status": "completed",
+      "startedAt": "2025-12-25T16:45:56.047Z",
+      "completedAt": "2025-12-25T16:46:21.143Z",
+      "duration": 25096,
+      "notes": "Verified all new functions have documentation comments: expandTaskRange, parseExecutionNotes, getTaskConstraints, refreshConstraints in plan-status.js; all 6 functions in constraint-types.js; _filter_sequential_tasks, _build_constraints_section in plan_orchestrator.py"
+    }
+  ],
+  "runs": [
+    {
+      "runId": "run-1766678592432",
+      "startedAt": "2025-12-25T16:03:12.432Z",
+      "tasksCompleted": 4,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-25T16:06:10.964Z"
+    },
+    {
+      "runId": "run-1766678824576",
+      "startedAt": "2025-12-25T16:07:04.576Z",
+      "tasksCompleted": 5,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-25T16:09:59.384Z"
+    },
+    {
+      "runId": "run-1766680658672",
+      "startedAt": "2025-12-25T16:37:38.672Z",
+      "tasksCompleted": 2,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-25T16:41:01.334Z"
+    }
+  ],
+  "summary": {
+    "totalTasks": 42,
+    "completed": 42,
+    "pending": 0,
+    "in_progress": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "sequentialGroups": [
+    {
+      "taskRange": "2.1-2.3",
+      "taskIds": [
+        "2.1",
+        "2.2",
+        "2.3"
+      ],
+      "reason": "all modify cmdNext() in status-cli.js"
+    }
+  ]
+}

@@ -21,7 +21,6 @@ const UPDATES_PER_PROCESS = 3;
 
 // Store original values
 let originalPlanPath = '';
-// Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
 function log(msg) {
   console.log(msg);
@@ -36,7 +35,6 @@ function setupTestEnvironment() {
   } catch (e) {
     originalPlanPath = '';
   }
-  // Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
   // Create test directories
   fs.mkdirSync(TEST_OUTPUT_DIR, { recursive: true });
@@ -104,7 +102,6 @@ function cleanupTestEnvironment() {
   if (originalPlanPath) {
     fs.writeFileSync(path.join(claudeDir, 'current-plan.txt'), originalPlanPath);
   }
-  // Note: current-plan-output.txt is no longer used - output path is derived from plan name
 
   // Clean up test files
   try {

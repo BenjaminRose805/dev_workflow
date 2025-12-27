@@ -1,0 +1,458 @@
+{
+  "_comment": "This file is the authoritative source of truth for task execution state. The markdown plan file is read-only reference documentation. Use status-cli.js to update task status.",
+  "planPath": "docs/plans/documentation-cleanup.md",
+  "planName": "Implementation Plan: Documentation Cleanup",
+  "createdAt": "2025-12-25T07:42:12.073Z",
+  "lastUpdatedAt": "2025-12-25T08:50:59.608Z",
+  "currentPhase": "Phase 0: Orchestration Prerequisites",
+  "tasks": [
+    {
+      "id": "0.1",
+      "phase": "Phase 0: Orchestration Prerequisites",
+      "description": "Update `.claude/commands/plan/implement.md` with [SEQUENTIAL] support:",
+      "status": "completed",
+      "startedAt": "2025-12-25T07:48:48.355Z",
+      "completedAt": "2025-12-25T07:49:51.930Z",
+      "duration": 63575,
+      "notes": "Added [SEQUENTIAL] constraint parsing to Step 2 and updated Parallel Execution Rules with [SEQUENTIAL] as highest priority"
+    },
+    {
+      "id": "0.2",
+      "phase": "Phase 0: Orchestration Prerequisites",
+      "description": "Update `scripts/plan_orchestrator.py` `_build_prompt()`:",
+      "status": "completed",
+      "startedAt": "2025-12-25T07:50:25.405Z",
+      "completedAt": "2025-12-25T07:50:45.991Z",
+      "duration": 20586,
+      "notes": "Rules already present in _build_prompt(): Check for [SEQUENTIAL] annotations and detect file conflicts (included in previous commit)"
+    },
+    {
+      "id": "0.3",
+      "phase": "Phase 0: Orchestration Prerequisites",
+      "description": "`/plan:implement` documentation includes constraint parsing instructions",
+      "status": "completed",
+      "startedAt": "2025-12-25T07:50:55.015Z",
+      "completedAt": "2025-12-25T07:51:06.436Z",
+      "duration": 11421,
+      "notes": "Verified: implement.md contains [SEQUENTIAL] parsing at lines 153-156 (Step 2), 263-291 (Step 4), and 583-591 (Parallel Execution Rules)"
+    },
+    {
+      "id": "0.4",
+      "phase": "Phase 0: Orchestration Prerequisites",
+      "description": "Orchestrator prompt includes constraint rules",
+      "status": "completed",
+      "startedAt": "2025-12-25T07:51:06.881Z",
+      "completedAt": "2025-12-25T07:51:17.739Z",
+      "duration": 10858,
+      "notes": "Verified: plan_orchestrator.py _build_prompt() contains rules at lines 634-635: Check for [SEQUENTIAL] annotations, Detect file conflicts"
+    },
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Quick Wins - File Cleanup",
+      "description": "Delete 49 backup files: `find docs/plan-outputs/archive -name \"status.json.bak\" -delete`",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:19:19.943Z",
+      "completedAt": "2025-12-25T08:19:39.166Z",
+      "duration": 19223,
+      "notes": "Deleted all status.json.bak files from docs/plan-outputs/archive"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Quick Wins - File Cleanup",
+      "description": "Delete empty directory: `rmdir \"docs/completed plans\"`",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:19:20.347Z",
+      "completedAt": "2025-12-25T08:19:39.550Z",
+      "duration": 19203,
+      "notes": "Directory already did not exist (goal achieved)"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Quick Wins - File Cleanup",
+      "description": "Create archive directory: `mkdir -p docs/standards/archive`",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:20:05.496Z",
+      "completedAt": "2025-12-25T08:20:05.512Z",
+      "duration": 16,
+      "notes": "Archive directory already exists"
+    },
+    {
+      "id": "1.4",
+      "phase": "Phase 1: Quick Wins - File Cleanup",
+      "description": "Move docs/standards/analysis-command-selection-guide.md to docs/standards/archive/",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:20:05.895Z",
+      "completedAt": "2025-12-25T08:20:05.911Z",
+      "duration": 16,
+      "notes": "File already moved to docs/standards/archive/"
+    },
+    {
+      "id": "1.5",
+      "phase": "Phase 1: Quick Wins - File Cleanup",
+      "description": "Move docs/standards/architecture-command-selection-guide.md to docs/standards/archive/",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:20:06.303Z",
+      "completedAt": "2025-12-25T08:20:06.318Z",
+      "duration": 15,
+      "notes": "File already moved to docs/standards/archive/"
+    },
+    {
+      "id": "1.6",
+      "phase": "Phase 1: Quick Wins - File Cleanup",
+      "description": "Move docs/standards/documentation-command-selection-guide.md to docs/standards/archive/",
+      "status": "completed",
+      "completedAt": "2025-12-25T08:21:25.238Z",
+      "notes": "Moved to docs/standards/archive/"
+    },
+    {
+      "id": "1.7",
+      "phase": "Phase 1: Quick Wins - File Cleanup",
+      "description": "Move docs/standards/quality-verification-command-selection-guide.md to docs/standards/archive/",
+      "status": "completed",
+      "completedAt": "2025-12-25T08:21:25.623Z",
+      "notes": "Moved to docs/standards/archive/"
+    },
+    {
+      "id": "1.8",
+      "phase": "Phase 1: Quick Wins - File Cleanup",
+      "description": "Verify: `find docs/plan-outputs -name \"*.bak\"` returns empty",
+      "status": "completed",
+      "completedAt": "2025-12-25T08:21:26.015Z",
+      "notes": "Returns empty - no .bak files found"
+    },
+    {
+      "id": "1.9",
+      "phase": "Phase 1: Quick Wins - File Cleanup",
+      "description": "Verify: `ls \"docs/completed plans\"` returns error (directory removed)",
+      "status": "completed",
+      "completedAt": "2025-12-25T08:21:26.406Z",
+      "notes": "Returns error - directory removed"
+    },
+    {
+      "id": "1.10",
+      "phase": "Phase 1: Quick Wins - File Cleanup",
+      "description": "Verify: `ls docs/standards/archive/` shows 4 archived guides",
+      "status": "completed",
+      "completedAt": "2025-12-25T08:21:26.793Z",
+      "notes": "Shows 4 archived guides: analysis, architecture, documentation, quality-verification"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Fix Outdated References",
+      "description": "Update docs/ORCHESTRATOR.md:",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:22:24.340Z",
+      "completedAt": "2025-12-25T08:23:42.377Z",
+      "duration": 78037,
+      "notes": "Updated architecture diagram: removed plan-runner.sh, updated to plan-status.js as unified API"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Fix Outdated References",
+      "description": "Verify docs/ARCHITECTURE.md already shows correct architecture (plan_orchestrator.py, no plan-runner.sh or plan-orchestrator.js)",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:23:54.332Z",
+      "completedAt": "2025-12-25T08:24:14.486Z",
+      "duration": 20154,
+      "notes": "Verified: Already shows correct architecture (plan_orchestrator.py → status-cli.js → plan-status.js). No obsolete references found."
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Fix Outdated References",
+      "description": "Update docs/architecture/orchestrator-system.md:",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:24:25.813Z",
+      "completedAt": "2025-12-25T08:25:35.998Z",
+      "duration": 70185,
+      "notes": "Removed current-plan-output.txt, updated to plan-status.js unified API"
+    },
+    {
+      "id": "2.4",
+      "phase": "Phase 2: Fix Outdated References",
+      "description": "Update .claude/commands/plan/migrate.md:",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:25:47.040Z",
+      "completedAt": "2025-12-25T08:26:16.694Z",
+      "duration": 29654,
+      "notes": "Removed current-plan-output.txt reference, updated to plan-status.js import"
+    },
+    {
+      "id": "2.5",
+      "phase": "Phase 2: Fix Outdated References",
+      "description": "Verify docs/claude-commands/ARCHITECTURE.md already shows plan-status.js as unified API (no changes needed if already correct)",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:26:27.571Z",
+      "completedAt": "2025-12-25T08:26:45.153Z",
+      "duration": 17582,
+      "notes": "Verified: Already shows plan-status.js as unified API (line 48). No obsolete references."
+    },
+    {
+      "id": "2.6",
+      "phase": "Phase 2: Fix Outdated References",
+      "description": "Verify no dead references: `grep -r \"plan-runner.sh\\|plan-orchestrator.js\\|status-manager.js\\|current-plan-output.txt\" docs/` returns no matches",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:27:55.857Z",
+      "completedAt": "2025-12-25T08:28:35.194Z",
+      "duration": 39337,
+      "notes": "Fixed reference to current-plan-output.txt in docs/plan-templates/implement-context-loading-hook.md. Verified no dead references in docs/ (excluding plan-outputs archives)"
+    },
+    {
+      "id": "2.7",
+      "phase": "Phase 2: Fix Outdated References",
+      "description": "Verify: Both docs/ARCHITECTURE.md and docs/architecture/orchestrator-system.md contain \"plan_orchestrator.py\" and \"status-cli.js\"",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:28:44.996Z",
+      "completedAt": "2025-12-25T08:29:02.636Z",
+      "duration": 17640,
+      "notes": "Verified: docs/ARCHITECTURE.md contains plan_orchestrator.py (2x) and status-cli.js (14x). docs/architecture/orchestrator-system.md contains plan_orchestrator.py (2x) and status-cli.js (5x)"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Orchestrator Documentation Consolidation",
+      "description": "Merge FROM docs/ORCHESTRATOR.md TO docs/architecture/orchestrator-system.md:",
+      "status": "completed",
+      "completedAt": "2025-12-25T08:33:41.130Z",
+      "notes": "Merged Troubleshooting, Debug Commands, Log Analysis, Orchestrator Settings to orchestrator-system.md"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Orchestrator Documentation Consolidation",
+      "description": "Merge FROM docs/ARCHITECTURE.md TO docs/architecture/orchestrator-system.md:",
+      "status": "completed",
+      "completedAt": "2025-12-25T08:33:41.528Z",
+      "notes": "Added Key Design Decisions section from ARCHITECTURE.md"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Orchestrator Documentation Consolidation",
+      "description": "Create redirect file at docs/ORCHESTRATOR.md:",
+      "status": "completed",
+      "completedAt": "2025-12-25T08:33:41.924Z",
+      "notes": "Created redirect file pointing to architecture/orchestrator-system.md"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Orchestrator Documentation Consolidation",
+      "description": "Remove orchestrator section from docs/ARCHITECTURE.md (keep file, remove duplicate section)",
+      "status": "completed",
+      "completedAt": "2025-12-25T08:33:42.316Z",
+      "notes": "Removed duplicate section, added cross-reference"
+    },
+    {
+      "id": "3.5",
+      "phase": "Phase 3: Orchestrator Documentation Consolidation",
+      "description": "Verify: `grep -c \"Troubleshooting\\|Common Issues\" docs/architecture/orchestrator-system.md` returns >0",
+      "status": "completed",
+      "completedAt": "2025-12-25T08:33:42.713Z",
+      "notes": "Verification passed: grep -c returns 2"
+    },
+    {
+      "id": "3.6",
+      "phase": "Phase 3: Orchestrator Documentation Consolidation",
+      "description": "Verify: `grep \"has been consolidated\" docs/ORCHESTRATOR.md` returns match",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:34:29.834Z",
+      "completedAt": "2025-12-25T08:34:36.971Z",
+      "duration": 7137
+    },
+    {
+      "id": "3.7",
+      "phase": "Phase 3: Orchestrator Documentation Consolidation",
+      "description": "Verify: `grep -c \"orchestrator\" docs/ARCHITECTURE.md` returns <5 (only reference, not full section)",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:34:47.857Z",
+      "completedAt": "2025-12-25T08:34:57.129Z",
+      "duration": 9272
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Plan Migration Documentation Cross-References",
+      "description": "Add to top of docs/plan-system/COMPLETED-PLANS.md:",
+      "status": "completed",
+      "completedAt": "2025-12-25T08:37:09.128Z",
+      "notes": "Added 'See also' cross-reference to COMPLETED-PLANS.md"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Plan Migration Documentation Cross-References",
+      "description": "Add to top of docs/plan-system/MIGRATION-GUIDE.md:",
+      "status": "completed",
+      "completedAt": "2025-12-25T08:37:09.523Z",
+      "notes": "Added 'See also' cross-reference to MIGRATION-GUIDE.md"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Plan Migration Documentation Cross-References",
+      "description": "In docs/plan-system/COMPLETED-PLANS.md: Remove duplicate command examples (search for migration/archive command blocks) and replace with: \"See MIGRATION-GUIDE.md for complete commands\"",
+      "status": "completed",
+      "completedAt": "2025-12-25T08:37:09.924Z",
+      "notes": "Replaced duplicate command examples with 'See MIGRATION-GUIDE.md for complete commands'"
+    },
+    {
+      "id": "4.4",
+      "phase": "Phase 4: Plan Migration Documentation Cross-References",
+      "description": "In docs/plan-system/COMPLETED-PLANS.md and docs/plan-system/MIGRATION-GUIDE.md: replace \"docs/completed plans/\" with \"docs/plans/archive/\"",
+      "status": "completed",
+      "completedAt": "2025-12-25T08:37:10.319Z",
+      "notes": "Replaced 'docs/completed plans/' with 'docs/plans/archive/' in both files"
+    },
+    {
+      "id": "4.5",
+      "phase": "Phase 4: Plan Migration Documentation Cross-References",
+      "description": "Verify: `grep \"See also\" docs/plan-system/COMPLETED-PLANS.md docs/plan-system/MIGRATION-GUIDE.md` returns matches in both",
+      "status": "completed",
+      "completedAt": "2025-12-25T08:37:10.709Z",
+      "notes": "Verified 'See also' exists in both files via grep"
+    },
+    {
+      "id": "4.6",
+      "phase": "Phase 4: Plan Migration Documentation Cross-References",
+      "description": "Verify: `grep -c \"MIGRATION-GUIDE.md for complete commands\" docs/plan-system/COMPLETED-PLANS.md` returns >0",
+      "status": "completed",
+      "completedAt": "2025-12-25T08:38:36.551Z",
+      "notes": "Verified: grep returns 1 for 'for complete commands' pattern - content is on line 45 as markdown link format"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Create Unified Standards Document",
+      "description": "Create docs/standards/PLAN-STANDARDS.md from docs/plan-outputs/documentation-standards-analysis/proposed-standards.md",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:38:49.778Z",
+      "completedAt": "2025-12-25T08:41:37.671Z",
+      "duration": 167893,
+      "notes": "Created docs/standards/PLAN-STANDARDS.md from proposed-standards.md (522 lines)"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Create Unified Standards Document",
+      "description": "Add deprecation notice to docs/standards/implementation-plan-standards.md:",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:41:44.278Z",
+      "completedAt": "2025-12-25T08:42:15.658Z",
+      "duration": 31380,
+      "notes": "Added deprecation notice to implementation-plan-standards.md pointing to PLAN-STANDARDS.md"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Create Unified Standards Document",
+      "description": "Update docs/plan-templates/TEMPLATE.md to reference PLAN-STANDARDS.md",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:42:17.910Z",
+      "completedAt": "2025-12-25T08:42:39.870Z",
+      "duration": 21960,
+      "notes": "Added reference to PLAN-STANDARDS.md in docs/plan-templates/TEMPLATE.md header"
+    },
+    {
+      "id": "5.4",
+      "phase": "Phase 5: Create Unified Standards Document",
+      "description": "Update docs/plan-templates/CANONICAL-COMMAND-TEMPLATE.md header to reference standards",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:42:41.984Z",
+      "completedAt": "2025-12-25T08:43:06.016Z",
+      "duration": 24032,
+      "notes": "Added reference to PLAN-STANDARDS.md in CANONICAL-COMMAND-TEMPLATE.md header"
+    },
+    {
+      "id": "5.5",
+      "phase": "Phase 5: Create Unified Standards Document",
+      "description": "Verify: `test -f docs/standards/PLAN-STANDARDS.md && wc -l docs/standards/PLAN-STANDARDS.md` shows file exists with >100 lines",
+      "status": "completed",
+      "completedAt": "2025-12-25T08:43:55.738Z",
+      "notes": "Verified: PLAN-STANDARDS.md exists with 739 lines"
+    },
+    {
+      "id": "5.6",
+      "phase": "Phase 5: Create Unified Standards Document",
+      "description": "Verify: `grep \"superseded by\" docs/standards/implementation-plan-standards.md` returns match",
+      "status": "completed",
+      "completedAt": "2025-12-25T08:43:56.130Z",
+      "notes": "Verified: deprecation notice found in implementation-plan-standards.md"
+    },
+    {
+      "id": "5.7",
+      "phase": "Phase 5: Create Unified Standards Document",
+      "description": "Verify: `grep \"PLAN-STANDARDS\" docs/plan-templates/TEMPLATE.md docs/plan-templates/CANONICAL-COMMAND-TEMPLATE.md` returns matches",
+      "status": "completed",
+      "completedAt": "2025-12-25T08:43:56.518Z",
+      "notes": "Verified: PLAN-STANDARDS references found in both template files"
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Final Verification",
+      "description": "Run comprehensive verification:",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:44:48.436Z",
+      "completedAt": "2025-12-25T08:45:31.687Z",
+      "duration": 43251
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Final Verification",
+      "description": "Update documentation-standards-analysis status to reflect cleanup completion",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:45:59.472Z",
+      "completedAt": "2025-12-25T08:46:30.363Z",
+      "duration": 30891
+    },
+    {
+      "id": "6.3",
+      "phase": "Phase 6: Final Verification",
+      "description": "Document any deferred items (e.g., template consolidation, status-cli.js code changes)",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:46:50.579Z",
+      "completedAt": "2025-12-25T08:47:32.481Z",
+      "duration": 41902
+    },
+    {
+      "id": "6.4",
+      "phase": "Phase 6: Final Verification",
+      "description": "All verification criteria from cleanup-plan.md satisfied",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:47:50.238Z",
+      "completedAt": "2025-12-25T08:48:23.354Z",
+      "duration": 33116
+    },
+    {
+      "id": "6.5",
+      "phase": "Phase 6: Final Verification",
+      "description": "No new documentation issues introduced",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:48:42.198Z",
+      "completedAt": "2025-12-25T08:49:12.993Z",
+      "duration": 30795
+    },
+    {
+      "id": "6.6",
+      "phase": "Phase 6: Final Verification",
+      "description": "`/plan:implement` correctly describes `[SEQUENTIAL]` handling",
+      "status": "completed",
+      "startedAt": "2025-12-25T08:50:44.594Z",
+      "completedAt": "2025-12-25T08:50:59.608Z",
+      "duration": 15014,
+      "notes": "Verified /plan:implement correctly describes [SEQUENTIAL] handling: Step 2 (lines 153-156) documents parsing Execution Note blocks, Step 4 (lines 259-298) has CRITICAL section for constraint checking with file conflict detection, and Parallel Execution Rules (lines 581-598) lists [SEQUENTIAL] as first priority rule with example"
+    }
+  ],
+  "runs": [
+    {
+      "runId": "run-1766648917405",
+      "startedAt": "2025-12-25T07:48:37.405Z",
+      "tasksCompleted": 4,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-25T07:51:29.965Z"
+    },
+    {
+      "runId": "run-1766649212189",
+      "startedAt": "2025-12-25T07:53:32.189Z",
+      "tasksCompleted": 0,
+      "tasksFailed": 0
+    }
+  ],
+  "summary": {
+    "totalTasks": 47,
+    "completed": 47,
+    "pending": 0,
+    "in_progress": 0,
+    "failed": 0,
+    "skipped": 0
+  }
+}

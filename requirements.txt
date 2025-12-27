@@ -1,0 +1,16 @@
+# Core dependencies for the dev_workflow orchestration system
+
+# FastAPI web framework (API server)
+fastapi>=0.100.0
+
+# Pydantic for data validation (required by FastAPI)
+pydantic>=2.0.0
+
+# Uvicorn ASGI server (runs the API server)
+uvicorn>=0.23.0
+
+# HTTP client library
+requests>=2.31.0
+
+# Terminal UI library
+rich>=13.0.0
