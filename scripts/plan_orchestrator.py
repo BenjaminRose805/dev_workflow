@@ -14,6 +14,7 @@ It handles:
 - Multi-orchestrator registry and IPC
 - Daemon mode for background execution
 - Graceful shutdown via signals or IPC
+- HTTP/WebSocket API server for web frontend integration
 
 Usage:
     python scripts/plan_orchestrator.py [options]
@@ -31,6 +32,11 @@ Execution Options:
     --no-auto-complete  Disable auto-complete (don't merge when done)
     --daemon            Run in background (daemon mode)
 
+API Server Options:
+    --api-server        Enable HTTP/WebSocket API server alongside orchestration
+    --api-port PORT     API server port (default: 8000)
+    --api-only          Run API server only (monitor mode, no orchestration)
+
 Management Commands:
     --list              List all registered orchestrator instances
     --stop ID           Stop a specific orchestrator instance
@@ -46,6 +52,7 @@ import os
 import signal
 import subprocess
 import sys
+import threading
 import time
 from pathlib import Path
 from typing import Dict, Optional
@@ -72,11 +79,13 @@ from scripts.lib.orchestrator_ipc import (
     IPCError,
     get_socket_path,
 )
+from scripts.lib.event_bus import EventBus, get_event_bus
 
 # Configuration
 DEFAULT_MAX_ITERATIONS = 50
 DEFAULT_TIMEOUT = 600  # 10 minutes per session
 DEFAULT_BATCH_SIZE = 5
+DEFAULT_API_PORT = 8000
 # Node script for status queries - unified CLI replacing plan-orchestrator.js
 STATUS_CLI_JS = "scripts/status-cli.js"
 STATUS_CHECK_INTERVAL = 2  # seconds between status checks
@@ -135,6 +144,9 @@ class PlanOrchestrator:
         verbose: bool = False,
         use_tui: bool = True,
         auto_complete: bool = True,
+        api_server: bool = False,
+        api_port: int = DEFAULT_API_PORT,
+        api_only: bool = False,
     ):
         self.plan_path = plan_path
         self.max_iterations = max_iterations
@@ -144,6 +156,11 @@ class PlanOrchestrator:
         self.verbose = verbose
         self.use_tui = use_tui and RICH_AVAILABLE
         self.auto_complete = auto_complete
+
+        # API server mode
+        self.api_server = api_server or api_only
+        self.api_port = api_port
+        self.api_only = api_only
 
         self.iteration = 0
         self.start_time = None
@@ -156,6 +173,10 @@ class PlanOrchestrator:
         self.ipc_server: Optional[IPCServer] = None
         self._shutdown_requested = False
         self._paused = False
+
+        # API server components
+        self.event_bus: Optional[EventBus] = None
+        self._api_server_thread: Optional[threading.Thread] = None
 
         # Task 4.1-4.3: Worktree support
         # Auto-detect worktree from current directory if not specified
@@ -710,6 +731,134 @@ class PlanOrchestrator:
         signal.signal(signal.SIGTERM, handle_signal)
         signal.signal(signal.SIGINT, handle_signal)
 
+    # =========================================================================
+    # API Server Mode
+    # =========================================================================
+
+    def _start_api_server(self):
+        """Start the uvicorn API server in a background thread.
+
+        The API server runs alongside the orchestrator and provides:
+        - REST endpoints for querying status
+        - WebSocket endpoints for real-time event streaming
+        - Command endpoints that proxy to IPC
+        """
+        if not self.api_server:
+            return
+
+        # Initialize event bus if not already done
+        if not self.event_bus:
+            self.event_bus = get_event_bus()
+
+        def run_server():
+            """Run uvicorn in the background thread."""
+            try:
+                import uvicorn
+                import asyncio
+
+                # Create new event loop for this thread
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+
+                # Start event bus in this loop
+                self.event_bus.start(loop)
+
+                # Run uvicorn
+                config = uvicorn.Config(
+                    "scripts.orchestrator_server:app",
+                    host="0.0.0.0",
+                    port=self.api_port,
+                    log_level="warning" if not self.verbose else "info",
+                    access_log=self.verbose,
+                )
+                server = uvicorn.Server(config)
+
+                # Store server reference for shutdown
+                self._uvicorn_server = server
+
+                loop.run_until_complete(server.serve())
+            except Exception as e:
+                self.logger.error(f"API server error: {e}")
+
+        self._api_server_thread = threading.Thread(
+            target=run_server,
+            daemon=True,
+            name="api-server"
+        )
+        self._api_server_thread.start()
+        self.logger.info(f"API server started on port {self.api_port}")
+
+    def _stop_api_server(self):
+        """Stop the uvicorn API server gracefully."""
+        if hasattr(self, '_uvicorn_server') and self._uvicorn_server:
+            self._uvicorn_server.should_exit = True
+            self.logger.debug("API server shutdown requested")
+
+        if self._api_server_thread and self._api_server_thread.is_alive():
+            self._api_server_thread.join(timeout=5.0)
+            self.logger.debug("API server thread stopped")
+
+        if self.event_bus:
+            # Event bus stop needs to be called from async context
+            # Since we're in sync context, just mark it as stopped
+            self.event_bus._running = False
+            self.logger.debug("Event bus stopped")
+
+    def run_api_only(self) -> int:
+        """Run in API-only mode (monitor mode without orchestration).
+
+        In this mode, the server runs and monitors orchestrator instances
+        but doesn't execute any tasks. Useful for dashboards that monitor
+        multiple running orchestrators.
+
+        Returns:
+            Exit code (0 for success, 1 for error)
+        """
+        self.logger.info("Starting API server in monitor mode...")
+
+        # Initialize event bus
+        self.event_bus = get_event_bus()
+
+        # Set up signal handlers
+        self._setup_signal_handlers()
+
+        try:
+            import uvicorn
+            import asyncio
+
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+
+            # Start event bus
+            self.event_bus.start(loop)
+
+            # Run uvicorn in the main thread (blocking)
+            config = uvicorn.Config(
+                "scripts.orchestrator_server:app",
+                host="0.0.0.0",
+                port=self.api_port,
+                log_level="info",
+                access_log=True,
+            )
+            server = uvicorn.Server(config)
+
+            self.logger.info(f"API server listening on http://0.0.0.0:{self.api_port}")
+            self.logger.info("Press Ctrl+C to stop")
+
+            loop.run_until_complete(server.serve())
+
+            return 0
+
+        except KeyboardInterrupt:
+            self.logger.info("Shutting down...")
+            return 0
+        except ImportError:
+            self.logger.error("uvicorn not installed. Install with: pip install uvicorn")
+            return 1
+        except Exception as e:
+            self.logger.error(f"API server error: {e}")
+            return 1
+
     def run(self) -> int:
         """Main orchestration loop. Returns exit code."""
         self.start_time = time.time()
@@ -733,6 +882,11 @@ class PlanOrchestrator:
         except DuplicatePlanError as e:
             self.logger.error(str(e))
             return 1
+
+        # Initialize event bus for API server mode
+        if self.api_server:
+            self.event_bus = get_event_bus()
+            self._start_api_server()
 
         # Initialize TUI if enabled
         if self.use_tui:
@@ -760,7 +914,9 @@ class PlanOrchestrator:
                         self.status_monitor = StatusMonitor(
                             status_path,
                             self._on_status_update,
-                            interval=0.5  # Reduced from 1.0s for better responsiveness
+                            interval=0.5,  # Reduced from 1.0s for better responsiveness
+                            event_bus=self.event_bus,
+                            instance_id=self.instance.id if self.instance else None,
                         )
                         self.status_monitor.start()
 
@@ -771,7 +927,9 @@ class PlanOrchestrator:
                     on_tool_end=self._on_tool_end,
                     timeout=self.timeout,
                     working_dir=self.working_dir,
-                    worktree_path=self.worktree_path
+                    worktree_path=self.worktree_path,
+                    event_bus=self.event_bus,
+                    instance_id=self.instance.id if self.instance else None,
                 )
 
                 self.tui.start()
@@ -1004,9 +1162,12 @@ class PlanOrchestrator:
             return False
 
     def _cleanup(self):
-        """Clean up TUI, monitor resources, and unregister from registry."""
+        """Clean up TUI, monitor resources, API server, and unregister from registry."""
         # Unregister from orchestrator registry first
         self._unregister_instance()
+
+        # Stop API server if running
+        self._stop_api_server()
 
         if self.status_monitor:
             self.status_monitor.stop()
@@ -1362,6 +1523,24 @@ def main():
         help="Force shutdown (used with --stop or --shutdown-all)",
     )
 
+    # API server mode arguments
+    parser.add_argument(
+        "--api-server",
+        action="store_true",
+        help="Enable HTTP/WebSocket API server alongside orchestration",
+    )
+    parser.add_argument(
+        "--api-port",
+        type=int,
+        default=DEFAULT_API_PORT,
+        help=f"API server port (default: {DEFAULT_API_PORT})",
+    )
+    parser.add_argument(
+        "--api-only",
+        action="store_true",
+        help="Run API server only (monitor mode, no orchestration)",
+    )
+
     args = parser.parse_args()
 
     # Handle management commands first
@@ -1377,6 +1556,17 @@ def main():
     if args.status:
         return cmd_status(args.status)
 
+    # API-only mode: run just the API server (no orchestration)
+    if args.api_only:
+        orchestrator = PlanOrchestrator(
+            verbose=args.verbose,
+            api_server=True,
+            api_port=args.api_port,
+            api_only=True,
+            use_tui=False,
+        )
+        return orchestrator.run_api_only()
+
     # Daemon mode: fork to background
     if args.daemon:
         # Change to working directory before daemonizing
@@ -1384,13 +1574,15 @@ def main():
         daemonize()
         os.chdir(working_dir)
 
-    # Confirmation prompt unless --continue or --daemon
-    if not args.continue_run and not args.dry_run and not args.daemon:
+    # Confirmation prompt unless --continue or --daemon or --api-server
+    if not args.continue_run and not args.dry_run and not args.daemon and not args.api_server:
         print("\nPlan Orchestrator")
         print("=" * 40)
         print("This will run Claude Code repeatedly until the plan is complete.")
         print(f"Max iterations: {args.max_iterations}")
         print(f"Timeout per session: {args.timeout}s")
+        if args.api_server:
+            print(f"API server: http://0.0.0.0:{args.api_port}")
         print()
 
         try:
@@ -1415,6 +1607,8 @@ def main():
         verbose=args.verbose,
         use_tui=use_tui,
         auto_complete=not args.no_auto_complete,
+        api_server=args.api_server,
+        api_port=args.api_port,
     )
 
     try:

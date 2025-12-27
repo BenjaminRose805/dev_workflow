@@ -12,7 +12,10 @@ Part of the plan_orchestrator module split.
 import json
 import subprocess
 import time
-from typing import Callable, Dict, List, Optional, Tuple
+from typing import Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .event_bus import EventBus
 
 __all__ = ['StreamingClaudeRunner']
 
@@ -25,6 +28,9 @@ class StreamingClaudeRunner:
     - type: "assistant" - assistant messages with tool_use or text content
     - type: "user" - tool results
     - type: "result" - session completion
+
+    Optionally integrates with an EventBus to emit TOOL_STARTED and TOOL_COMPLETED
+    events, allowing decoupled subscribers to track tool execution.
     """
 
     def __init__(
@@ -34,7 +40,9 @@ class StreamingClaudeRunner:
         on_text: Optional[Callable[[str], None]] = None,
         timeout: int = 600,
         working_dir: Optional[str] = None,
-        worktree_path: Optional[str] = None
+        worktree_path: Optional[str] = None,
+        event_bus: Optional['EventBus'] = None,
+        instance_id: Optional[str] = None,
     ):
         self.on_tool_start = on_tool_start
         self.on_tool_end = on_tool_end  # (tool_name, tool_id, duration_seconds) -> None
@@ -42,6 +50,8 @@ class StreamingClaudeRunner:
         self.timeout = timeout
         self.working_dir = working_dir
         self.worktree_path = worktree_path
+        self.event_bus = event_bus
+        self.instance_id = instance_id
         self.process: Optional[subprocess.Popen] = None
         # Track active tool calls: tool_id -> {name, start_time, input}
         self._active_tools: Dict[str, Dict] = {}
@@ -148,6 +158,10 @@ class StreamingClaudeRunner:
                         if self.on_tool_start:
                             self.on_tool_start(tool_name, {'id': tool_id, **tool_input})
 
+                        # Emit event to event bus
+                        if self.event_bus:
+                            self._emit_tool_started(tool_id, tool_name, tool_input)
+
                     elif content_type == 'text':
                         # Text output
                         text = content.get('text', '')
@@ -173,6 +187,15 @@ class StreamingClaudeRunner:
                             if self.on_tool_end:
                                 self.on_tool_end(tool_info['name'], tool_id, duration)
 
+                            # Emit event to event bus
+                            if self.event_bus:
+                                # Determine success based on tool_result content
+                                result_content = content.get('content', '')
+                                is_error = content.get('is_error', False)
+                                self._emit_tool_completed(
+                                    tool_id, tool_info['name'], duration, not is_error
+                                )
+
                             # Clean up
                             del self._active_tools[tool_id]
 
@@ -194,3 +217,63 @@ class StreamingClaudeRunner:
             except subprocess.TimeoutExpired:
                 self.process.kill()
                 self.process.wait()
+
+    def _emit_tool_started(self, tool_id: str, tool_name: str, tool_input: Dict):
+        """Emit TOOL_STARTED event to the event bus.
+
+        Args:
+            tool_id: Unique ID of the tool call
+            tool_name: Name of the tool being called
+            tool_input: Input parameters for the tool
+        """
+        # Import here to avoid circular imports at module load
+        from .event_bus import EventType
+
+        # Create a summary of the input (truncate long values)
+        input_summary = {}
+        for key, value in tool_input.items():
+            if isinstance(value, str) and len(value) > 100:
+                input_summary[key] = value[:100] + '...'
+            elif isinstance(value, (dict, list)):
+                input_summary[key] = f"<{type(value).__name__}>"
+            else:
+                input_summary[key] = value
+
+        self.event_bus.emit_sync(
+            EventType.TOOL_STARTED,
+            data={
+                'tool_id': tool_id,
+                'tool_name': tool_name,
+                'input_summary': input_summary,
+            },
+            instance_id=self.instance_id,
+        )
+
+    def _emit_tool_completed(
+        self,
+        tool_id: str,
+        tool_name: str,
+        duration: float,
+        success: bool,
+    ):
+        """Emit TOOL_COMPLETED event to the event bus.
+
+        Args:
+            tool_id: Unique ID of the tool call
+            tool_name: Name of the tool that was called
+            duration: Duration of the tool call in seconds
+            success: Whether the tool call succeeded
+        """
+        # Import here to avoid circular imports at module load
+        from .event_bus import EventType
+
+        self.event_bus.emit_sync(
+            EventType.TOOL_COMPLETED,
+            data={
+                'tool_id': tool_id,
+                'tool_name': tool_name,
+                'duration': round(duration, 3),
+                'success': success,
+            },
+            instance_id=self.instance_id,
+        )
