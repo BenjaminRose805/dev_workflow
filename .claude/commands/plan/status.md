@@ -135,6 +135,50 @@ Phase 1: Critical Unit Tests
 ✓ Complete  🏷️ plan/my-plan/phase-1
 ```
 
+### 3c. Gather Dependency Information (Task 6.4)
+
+When status.json exists and contains dependency data, gather information for the "Dependency Status" section:
+
+**Get dependency summary using status-cli:**
+```bash
+node scripts/status-cli.js deps --format=json
+```
+
+**The JSON output includes:**
+```json
+{
+  "summary": {
+    "totalTasks": 30,
+    "tasksWithDeps": 12,
+    "totalDependencies": 18,
+    "satisfied": 14,
+    "unsatisfied": 4
+  },
+  "criticalPath": ["1.1", "1.3", "2.1", "2.3", "3.1"],
+  "criticalPathLength": 5
+}
+```
+
+**Calculate ready vs blocked tasks:**
+- Ready tasks: pending tasks with all dependencies satisfied (completed or skipped)
+- Blocked tasks: pending tasks with at least one unsatisfied dependency
+
+**Get blocked task details:**
+```bash
+node scripts/status-cli.js deps --task <blocked-task-id> --format=json
+```
+
+**Display logic:**
+- Only show "Dependency Status" section if the plan has tasks with dependencies
+- Show critical path (longest dependency chain) to help understand minimum completion time
+- List up to 5 blocked tasks with their blockers
+- If more than 5 blocked tasks, show "... and N more blocked"
+
+**Skip this section if:**
+- No status.json exists (legacy plan without output separation)
+- No tasks have dependencies (simple linear plan)
+- All dependencies are already satisfied
+
 ### 4. Display Status Summary
 
 ```
@@ -259,11 +303,22 @@ Phase 1: Critical Unit Tests
 ✓ 1.3 api-utils.test.ts (1m 12s)
 ⟳ 1.5 advance/route.test.ts (in progress)
 
+═══ Dependency Status ═══
+
+Critical Path: 1.1 → 1.3 → 2.1 → 2.3 → 3.1 (5 tasks)
+  Ready: 3 tasks (can execute now)
+  Blocked: 2 tasks (waiting on dependencies)
+
+Blocked Tasks:
+  ◯ 2.2 - blocked by: 2.1 (in_progress)
+  ◯ 3.2 - blocked by: 2.1, 2.2
+
 ═══ Quick Actions ═══
 
 → /plan:implement - Work on next task
 → /plan:batch - Execute multiple tasks
 → /plan:verify - Check task completion status
+→ /plan:deps --graph - View dependency graph
 
 ═══════════════════════════════════════════════════════
 ```

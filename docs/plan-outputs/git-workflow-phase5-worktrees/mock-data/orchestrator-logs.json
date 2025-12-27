@@ -1,0 +1,135 @@
+{
+  "plan": "git-workflow-phase5-worktrees",
+  "logFile": "orchestrator-git-workflow-phase5-worktrees.log",
+  "entries": [
+    {
+      "timestamp": "2024-12-26T21:00:00.000Z",
+      "level": "info",
+      "message": "Orchestrator started in batch mode",
+      "details": {
+        "tasks": ["12.6", "13.1", "13.2", "13.3", "13.4"],
+        "autonomous": true
+      }
+    },
+    {
+      "timestamp": "2024-12-26T21:00:01.000Z",
+      "level": "info",
+      "message": "Plan loaded: git-workflow-phase5-worktrees",
+      "details": {
+        "totalTasks": 84,
+        "completed": 76,
+        "pending": 8
+      }
+    },
+    {
+      "timestamp": "2024-12-26T21:00:02.000Z",
+      "level": "debug",
+      "message": "Validating task dependencies",
+      "details": {
+        "tasks": ["12.6"]
+      }
+    },
+    {
+      "timestamp": "2024-12-26T21:00:05.000Z",
+      "level": "info",
+      "message": "Starting task 12.6: Create mock data for frontend development",
+      "details": {
+        "phase": "Phase 12: NextJS Frontend Preparation"
+      }
+    },
+    {
+      "timestamp": "2024-12-26T21:00:06.000Z",
+      "level": "debug",
+      "message": "Launching Claude session",
+      "details": {
+        "sessionId": "session-abc123",
+        "workingDir": "/home/benjamin/tools/dev_workflow"
+      }
+    },
+    {
+      "timestamp": "2024-12-26T21:00:10.000Z",
+      "level": "info",
+      "message": "Claude session active",
+      "details": {
+        "sessionId": "session-abc123"
+      }
+    },
+    {
+      "timestamp": "2024-12-26T21:02:30.000Z",
+      "level": "info",
+      "message": "File created: docs/plan-outputs/.../mock-data/plans.json",
+      "details": {
+        "taskId": "12.6"
+      }
+    },
+    {
+      "timestamp": "2024-12-26T21:03:00.000Z",
+      "level": "info",
+      "message": "File created: docs/plan-outputs/.../mock-data/plan-detail.json",
+      "details": {
+        "taskId": "12.6"
+      }
+    },
+    {
+      "timestamp": "2024-12-26T21:03:30.000Z",
+      "level": "info",
+      "message": "File created: docs/plan-outputs/.../mock-data/worktrees.json",
+      "details": {
+        "taskId": "12.6"
+      }
+    },
+    {
+      "timestamp": "2024-12-26T21:04:00.000Z",
+      "level": "info",
+      "message": "File created: docs/plan-outputs/.../mock-data/resources.json",
+      "details": {
+        "taskId": "12.6"
+      }
+    },
+    {
+      "timestamp": "2024-12-26T21:04:30.000Z",
+      "level": "info",
+      "message": "File created: docs/plan-outputs/.../mock-data/websocket-messages.json",
+      "details": {
+        "taskId": "12.6"
+      }
+    },
+    {
+      "timestamp": "2024-12-26T21:05:00.000Z",
+      "level": "info",
+      "message": "Task 12.6 completed successfully",
+      "details": {
+        "duration": "5m 0s",
+        "filesCreated": 6
+      }
+    },
+    {
+      "timestamp": "2024-12-26T21:05:01.000Z",
+      "level": "info",
+      "message": "Git commit created",
+      "details": {
+        "message": "[git-workflow-phase5-worktrees] task 12.6: Create mock data",
+        "hash": "abc123def"
+      }
+    },
+    {
+      "timestamp": "2024-12-26T21:05:02.000Z",
+      "level": "info",
+      "message": "Moving to next task",
+      "details": {
+        "nextTask": "13.1"
+      }
+    }
+  ],
+  "summary": {
+    "totalEntries": 14,
+    "byLevel": {
+      "debug": 2,
+      "info": 12,
+      "warn": 0,
+      "error": 0
+    },
+    "startedAt": "2024-12-26T21:00:00.000Z",
+    "lastEntry": "2024-12-26T21:05:02.000Z"
+  }
+}

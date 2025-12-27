@@ -13,6 +13,20 @@
   "enforce_branch": true,
   "cleanup_age_days": 30,
 
+  "worktrees": {
+    "enabled": true,
+    "directory": "worktrees",
+    "max_concurrent": 3,
+    "auto_cleanup": true,
+    "stale_days": 14
+  },
+
+  "resources": {
+    "min_disk_space_mb": 500,
+    "warn_disk_space_mb": 1000,
+    "check_disk_space": true
+  },
+
   "_schema": {
     "strategy": {
       "type": "string",
@@ -67,6 +81,63 @@
       "minimum": 1,
       "default": 30,
       "description": "Days of inactivity before /plan:cleanup considers a branch stale."
+    },
+    "worktrees": {
+      "type": "object",
+      "description": "Git worktree configuration for parallel plan execution.",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable worktree-based parallel plan execution."
+        },
+        "directory": {
+          "type": "string",
+          "default": "worktrees",
+          "description": "Directory for worktrees relative to repo root. Default creates worktrees/plan-{name}/ structure."
+        },
+        "max_concurrent": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "default": 3,
+          "description": "Maximum number of concurrent worktrees/plans allowed."
+        },
+        "auto_cleanup": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically clean up worktrees after plan completion."
+        },
+        "stale_days": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 14,
+          "description": "Days of inactivity before a worktree is considered stale."
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "description": "Resource management configuration for worktrees.",
+      "properties": {
+        "min_disk_space_mb": {
+          "type": "integer",
+          "minimum": 100,
+          "default": 500,
+          "description": "Minimum disk space in MB required to create a new worktree."
+        },
+        "warn_disk_space_mb": {
+          "type": "integer",
+          "minimum": 100,
+          "default": 1000,
+          "description": "Disk space threshold in MB that triggers a warning."
+        },
+        "check_disk_space": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable disk space checking before creating worktrees."
+        }
+      }
     }
   },
 
@@ -89,6 +160,16 @@
       "enforce_branch": true,
       "archive_retention_days": 180,
       "cleanup_age_days": 60
+    },
+    "parallel_development": {
+      "_comment": "Configuration for parallel plan execution with worktrees",
+      "worktrees": {
+        "enabled": true,
+        "directory": "worktrees",
+        "max_concurrent": 5,
+        "auto_cleanup": true,
+        "stale_days": 7
+      }
     }
   }
 }

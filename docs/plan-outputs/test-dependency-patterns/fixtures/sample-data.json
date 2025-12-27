@@ -1,0 +1,47 @@
+{
+  "testFixtures": {
+    "name": "Test Dependency Patterns Fixtures",
+    "created": "2025-12-26T20:45:00Z",
+    "version": "1.0.0"
+  },
+  "sampleUsers": [
+    {
+      "id": "user-001",
+      "name": "Test User Alpha",
+      "email": "alpha@test.example"
+    },
+    {
+      "id": "user-002",
+      "name": "Test User Beta",
+      "email": "beta@test.example"
+    }
+  ],
+  "sampleTasks": [
+    {
+      "id": "task-001",
+      "title": "Validate DAG scheduling",
+      "status": "pending",
+      "dependencies": []
+    },
+    {
+      "id": "task-002",
+      "title": "Test diamond pattern",
+      "status": "pending",
+      "dependencies": ["task-001"]
+    }
+  ],
+  "testCases": {
+    "dependencyPatterns": [
+      "linear",
+      "diamond",
+      "fan-out",
+      "fan-in",
+      "cross-phase"
+    ],
+    "edgeCases": [
+      "no-dependencies",
+      "circular-detection",
+      "multi-dependency"
+    ]
+  }
+}

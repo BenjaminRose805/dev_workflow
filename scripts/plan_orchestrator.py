@@ -10,12 +10,17 @@ It handles:
 - Logging progress and errors
 - Graceful interruption and resume
 - Rich TUI with live activity tracking
+- Git worktree support for parallel plan execution
+- Multi-orchestrator registry and IPC
+- Daemon mode for background execution
+- Graceful shutdown via signals or IPC
 
 Usage:
     python scripts/plan_orchestrator.py [options]
 
-Options:
+Execution Options:
     --plan PATH         Path to plan file (uses active plan if not specified)
+    --worktree PATH     Path to worktree directory for parallel execution
     --max-iterations N  Maximum number of Claude invocations (default: 50)
     --batch-size N      Tasks per iteration hint (default: 5)
     --timeout SECONDS   Timeout per Claude session (default: 600)
@@ -23,12 +28,21 @@ Options:
     --verbose           Enable verbose logging
     --continue          Continue from last run (skip confirmation)
     --no-tui            Disable Rich TUI (use plain text output)
+    --daemon            Run in background (daemon mode)
+
+Management Commands:
+    --list              List all registered orchestrator instances
+    --stop ID           Stop a specific orchestrator instance
+    --shutdown-all      Shutdown all running orchestrator instances
+    --status ID         Get status of a specific orchestrator instance
+    --force             Force shutdown (used with --stop or --shutdown-all)
 """
 
 import argparse
 import json
 import logging
 import os
+import signal
 import subprocess
 import sys
 import time
@@ -45,6 +59,18 @@ if str(_project_root) not in sys.path:
 from scripts.lib.tui import RichTUIManager, RICH_AVAILABLE
 from scripts.lib.claude_runner import StreamingClaudeRunner
 from scripts.lib.status_monitor import StatusMonitor
+from scripts.lib.orchestrator_registry import (
+    OrchestratorRegistry,
+    OrchestratorInstance,
+    HeartbeatThread,
+    DuplicatePlanError,
+)
+from scripts.lib.orchestrator_ipc import (
+    IPCServer,
+    IPCClient,
+    IPCError,
+    get_socket_path,
+)
 
 # Configuration
 DEFAULT_MAX_ITERATIONS = 50
@@ -100,6 +126,7 @@ class PlanOrchestrator:
     def __init__(
         self,
         plan_path: Optional[str] = None,
+        worktree_path: Optional[str] = None,
         max_iterations: int = DEFAULT_MAX_ITERATIONS,
         timeout: int = DEFAULT_TIMEOUT,
         batch_size: int = DEFAULT_BATCH_SIZE,
@@ -119,6 +146,19 @@ class PlanOrchestrator:
         self.start_time = None
         self.tasks_completed_this_run = 0
 
+        # Phase 5: Multi-orchestrator support
+        self.registry: Optional[OrchestratorRegistry] = None
+        self.instance: Optional[OrchestratorInstance] = None
+        self.heartbeat_thread: Optional[HeartbeatThread] = None
+        self.ipc_server: Optional[IPCServer] = None
+        self._shutdown_requested = False
+        self._paused = False
+
+        # Task 4.1-4.3: Worktree support
+        # Auto-detect worktree from current directory if not specified
+        self.worktree_path = self._resolve_worktree_path(worktree_path)
+        self.working_dir = self._get_working_directory()
+
         # TUI components (initialized in run() if use_tui is True)
         self.tui: Optional[RichTUIManager] = None
         self.status_monitor: Optional[StatusMonitor] = None
@@ -133,20 +173,84 @@ class PlanOrchestrator:
 
         log_format = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s", datefmt="%H:%M:%S")
 
+        # Task 4.4: Use worktree-specific log file
+        self.log_file = self._get_log_file_path()
+
         if use_tui:
             # Log to file when TUI is active (stdout would mess up the display)
-            self.log_file = "orchestrator.log"
             file_handler = logging.FileHandler(self.log_file, mode='a')
             file_handler.setLevel(logging.DEBUG if verbose else logging.INFO)
             file_handler.setFormatter(log_format)
             self.logger.addHandler(file_handler)
         else:
             # Log to stdout when TUI is disabled
-            self.log_file = None
             stream_handler = logging.StreamHandler()
             stream_handler.setLevel(logging.DEBUG if verbose else logging.INFO)
             stream_handler.setFormatter(log_format)
             self.logger.addHandler(stream_handler)
+
+    def _resolve_worktree_path(self, explicit_path: Optional[str]) -> Optional[str]:
+        """Task 4.1 + 4.2: Resolve worktree path.
+
+        Priority:
+        1. Explicitly provided --worktree flag
+        2. Auto-detect from current directory (.claude-context/ presence)
+        3. CLAUDE_WORKTREE environment variable
+        4. None (not in a worktree)
+        """
+        # Priority 1: Explicit --worktree flag
+        if explicit_path:
+            resolved = Path(explicit_path).resolve()
+            if resolved.exists():
+                return str(resolved)
+            self.logger.warning(f"Specified worktree path does not exist: {explicit_path}")
+            return None
+
+        # Priority 2: Auto-detect from current directory
+        cwd = Path.cwd()
+        if (cwd / ".claude-context").exists():
+            return str(cwd)
+
+        # Priority 3: CLAUDE_WORKTREE environment variable
+        env_worktree = os.environ.get("CLAUDE_WORKTREE")
+        if env_worktree and Path(env_worktree).exists():
+            return env_worktree
+
+        return None
+
+    def _get_working_directory(self) -> str:
+        """Task 4.3: Get the working directory for Claude sessions.
+
+        Returns worktree path if in a worktree, otherwise current directory.
+        """
+        if self.worktree_path:
+            return self.worktree_path
+        return str(Path.cwd())
+
+    def _get_log_file_path(self) -> str:
+        """Task 4.4: Get worktree-specific log file path.
+
+        Format: orchestrator-{plan-name}.log in the working directory.
+        Falls back to orchestrator.log if plan name cannot be determined.
+        """
+        # Try to get plan name from plan_path or worktree context
+        plan_name = None
+
+        if self.plan_path:
+            plan_name = Path(self.plan_path).stem
+        elif self.worktree_path:
+            # Try to read from .claude-context/current-plan.txt
+            plan_pointer = Path(self.worktree_path) / ".claude-context" / "current-plan.txt"
+            if plan_pointer.exists():
+                try:
+                    plan_path = plan_pointer.read_text().strip()
+                    plan_name = Path(plan_path).stem
+                except Exception:
+                    pass
+
+        if plan_name:
+            return str(Path(self.working_dir) / f"orchestrator-{plan_name}.log")
+        return str(Path(self.working_dir) / "orchestrator.log")
 
     def get_status(self) -> Optional[PlanStatus]:
         """Get current plan status via node scripts/status-cli.js."""
@@ -156,6 +260,7 @@ class PlanOrchestrator:
                 capture_output=True,
                 text=True,
                 timeout=30,
+                cwd=self.working_dir,
             )
             if result.returncode != 0:
                 self.logger.error(f"Status check failed: {result.stderr}")
@@ -192,6 +297,7 @@ class PlanOrchestrator:
                 capture_output=True,
                 text=True,
                 timeout=30,
+                cwd=self.working_dir,
             )
             if result.returncode != 0:
                 return []
@@ -268,6 +374,7 @@ class PlanOrchestrator:
                 capture_output=True,
                 text=True,
                 timeout=30,
+                cwd=self.working_dir,
             )
             if result.returncode != 0:
                 return []
@@ -286,6 +393,7 @@ class PlanOrchestrator:
                 capture_output=True,
                 text=True,
                 timeout=30,
+                cwd=self.working_dir,
             )
             if result.returncode != 0:
                 return {"canRetry": False, "error": result.stderr}
@@ -303,6 +411,7 @@ class PlanOrchestrator:
                 capture_output=True,
                 text=True,
                 timeout=30,
+                cwd=self.working_dir,
             )
             return result.returncode == 0
         except Exception as e:
@@ -317,6 +426,7 @@ class PlanOrchestrator:
                 capture_output=True,
                 text=True,
                 timeout=30,
+                cwd=self.working_dir,
             )
             if result.returncode != 0:
                 return []
@@ -336,13 +446,19 @@ class PlanOrchestrator:
         try:
             self.logger.info("Starting Claude Code session...")
 
+            # Task 4.3 + 4.5: Set working directory and pass worktree context
+            env = os.environ.copy()
+            if self.worktree_path:
+                env["CLAUDE_WORKTREE"] = self.worktree_path
+
             # Run claude with the orchestrate command
             result = subprocess.run(
                 ["claude", "-p", prompt, "--dangerously-skip-permissions"],
                 capture_output=True,
                 text=True,
                 timeout=self.timeout,
-                cwd=os.getcwd(),
+                cwd=self.working_dir,
+                env=env,
             )
 
             success = result.returncode == 0
@@ -370,6 +486,8 @@ class PlanOrchestrator:
         print("═" * 65)
         print(f"  Plan: {status.plan_name}")
         print(f"  Phase: {status.current_phase}")
+        if self.worktree_path:
+            print(f"  Worktree: {self.worktree_path}")
         print(f"  Status: {status}")
         print("═" * 65 + "\n")
 
@@ -404,6 +522,10 @@ class PlanOrchestrator:
 
         Derives output path from plan name: docs/plan-outputs/{plan-name}/
         Uses status.plan_path if available, falls back to self.plan_path.
+
+        Task 4.6: When in a worktree context, returns an absolute path
+        relative to the worktree's working directory. Otherwise returns
+        a relative path that will be resolved from the current directory.
         """
         plan_path = None
         if status and status.plan_path:
@@ -413,7 +535,14 @@ class PlanOrchestrator:
 
         if plan_path:
             plan_name = Path(plan_path).stem
-            return f"docs/plan-outputs/{plan_name}"
+            output_dir = f"docs/plan-outputs/{plan_name}"
+
+            # Task 4.6: Handle worktree path in status monitoring
+            # When in a worktree, make the path absolute relative to working_dir
+            if self.worktree_path:
+                return os.path.join(self.working_dir, output_dir)
+
+            return output_dir
         return None
 
     def _on_tool_start(self, tool_name: str, details: Dict):
@@ -450,9 +579,140 @@ class PlanOrchestrator:
             completed = [t for t in tasks if t.get('status') == 'completed'][-5:]
             self.tui.update_tasks(in_progress, list(reversed(completed)))
 
+    # =========================================================================
+    # Phase 5: Multi-orchestrator support - Registry, IPC, Daemon, Shutdown
+    # =========================================================================
+
+    def _register_instance(self, plan_path: str):
+        """Register this orchestrator instance with the registry.
+
+        Args:
+            plan_path: Path to the plan being executed.
+
+        Raises:
+            DuplicatePlanError: If the plan is already being executed.
+        """
+        self.registry = OrchestratorRegistry()
+
+        # Clean up stale instances first
+        self.registry.cleanup_stale()
+
+        # Create and register instance
+        socket_path = get_socket_path(f"orch-{int(time.time() * 1000)}")
+        self.instance = OrchestratorInstance.create(
+            plan_path=plan_path,
+            worktree_path=self.worktree_path,
+            socket_path=socket_path,
+        )
+
+        # Register (raises DuplicatePlanError if duplicate)
+        self.registry.register(self.instance)
+        self.logger.info(f"Registered orchestrator instance: {self.instance.id}")
+
+        # Start heartbeat thread
+        self.heartbeat_thread = HeartbeatThread(
+            self.registry,
+            self.instance.id,
+        )
+        self.heartbeat_thread.start()
+
+        # Start IPC server
+        self._start_ipc_server()
+
+    def _unregister_instance(self):
+        """Unregister this orchestrator instance from the registry."""
+        # Stop IPC server
+        if self.ipc_server:
+            self.ipc_server.stop()
+            self.ipc_server = None
+
+        # Stop heartbeat
+        if self.heartbeat_thread:
+            self.heartbeat_thread.stop()
+            self.heartbeat_thread = None
+
+        # Unregister from registry
+        if self.registry and self.instance:
+            self.registry.unregister(self.instance.id)
+            self.logger.info(f"Unregistered orchestrator instance: {self.instance.id}")
+            self.instance = None
+
+    def _start_ipc_server(self):
+        """Start the IPC server for receiving commands."""
+        if not self.instance or not self.instance.socket_path:
+            return
+
+        self.ipc_server = IPCServer(self.instance.socket_path)
+        self.ipc_server.on_command = self._handle_ipc_command
+        self.ipc_server.start()
+        self.logger.debug(f"IPC server started: {self.instance.socket_path}")
+
+    def _handle_ipc_command(self, command: str, payload: Dict) -> Dict:
+        """Handle an incoming IPC command.
+
+        Args:
+            command: Command name.
+            payload: Command payload.
+
+        Returns:
+            Response payload.
+        """
+        if command == "status":
+            status = self.get_status()
+            return {
+                "instance_id": self.instance.id if self.instance else None,
+                "plan_path": status.plan_path if status else None,
+                "progress": status.percentage if status else 0,
+                "completed": status.completed if status else 0,
+                "total": status.total if status else 0,
+                "iteration": self.iteration,
+                "paused": self._paused,
+                "shutdown_requested": self._shutdown_requested,
+            }
+
+        elif command == "shutdown":
+            force = payload.get("force", False)
+            self._shutdown_requested = True
+            self.logger.info(f"Shutdown requested via IPC (force={force})")
+
+            if self.registry and self.instance:
+                self.registry.update_status(self.instance.id, "stopping")
+
+            return {"ack": True, "message": "Shutdown initiated"}
+
+        elif command == "pause":
+            self._paused = True
+            self.logger.info("Pause requested via IPC")
+            return {"ack": True, "message": "Paused"}
+
+        elif command == "resume":
+            self._paused = False
+            self.logger.info("Resume requested via IPC")
+            return {"ack": True, "message": "Resumed"}
+
+        else:
+            return {"error": f"Unknown command: {command}"}
+
+    def _setup_signal_handlers(self):
+        """Set up signal handlers for graceful shutdown."""
+        def handle_signal(signum, frame):
+            sig_name = signal.Signals(signum).name
+            self.logger.info(f"Received {sig_name}, initiating graceful shutdown...")
+            self._shutdown_requested = True
+
+            if self.registry and self.instance:
+                self.registry.update_status(self.instance.id, "stopping")
+
+        # Handle SIGTERM and SIGINT
+        signal.signal(signal.SIGTERM, handle_signal)
+        signal.signal(signal.SIGINT, handle_signal)
+
     def run(self) -> int:
         """Main orchestration loop. Returns exit code."""
         self.start_time = time.time()
+
+        # Set up signal handlers for graceful shutdown
+        self._setup_signal_handlers()
 
         # Initial status check
         status = self.get_status()
@@ -464,6 +724,13 @@ class PlanOrchestrator:
             self.logger.error("No active plan. Use /plan:set to choose a plan first.")
             return 1
 
+        # Register with orchestrator registry (prevents duplicate plans)
+        try:
+            self._register_instance(status.plan_path)
+        except DuplicatePlanError as e:
+            self.logger.error(str(e))
+            return 1
+
         # Initialize TUI if enabled
         if self.use_tui:
             try:
@@ -473,9 +740,11 @@ class PlanOrchestrator:
                 self.tui.set_iteration(0, self.max_iterations)
 
                 # Start status monitor with faster polling (500ms)
+                # Task 4.6: Handle worktree path in status monitoring
                 output_dir = self._get_output_dir(status)
                 if output_dir:
                     status_path = os.path.join(output_dir, 'status.json')
+                    self.logger.debug(f"Status monitor path: {status_path}")
                     if os.path.exists(status_path):
                         # Initial read to populate recent_completions immediately
                         try:
@@ -493,10 +762,13 @@ class PlanOrchestrator:
                         self.status_monitor.start()
 
                 # Initialize streaming runner with callbacks for real-time activity display
+                # Task 4.5: Pass worktree context to Claude sessions
                 self.streaming_runner = StreamingClaudeRunner(
                     on_tool_start=self._on_tool_start,
                     on_tool_end=self._on_tool_end,
-                    timeout=self.timeout
+                    timeout=self.timeout,
+                    working_dir=self.working_dir,
+                    worktree_path=self.worktree_path
                 )
 
                 self.tui.start()
@@ -525,6 +797,25 @@ class PlanOrchestrator:
         try:
             # Main loop
             while self.iteration < self.max_iterations:
+                # Check for shutdown request (from signal or IPC)
+                if self._shutdown_requested:
+                    self.logger.info("Shutdown requested, stopping gracefully...")
+                    status = self.get_status()
+                    if status:
+                        if self.use_tui:
+                            self.tui.set_status("Shutdown requested")
+                            time.sleep(1)
+                        else:
+                            self.print_completion(status, "shutdown requested")
+                    self._cleanup()
+                    return 0
+
+                # Check for pause request
+                while self._paused and not self._shutdown_requested:
+                    if self.use_tui:
+                        self.tui.set_status("Paused (waiting for resume)")
+                    time.sleep(1)
+
                 self.iteration += 1
 
                 if self.use_tui:
@@ -669,7 +960,10 @@ class PlanOrchestrator:
             raise
 
     def _cleanup(self):
-        """Clean up TUI and monitor resources."""
+        """Clean up TUI, monitor resources, and unregister from registry."""
+        # Unregister from orchestrator registry first
+        self._unregister_instance()
+
         if self.status_monitor:
             self.status_monitor.stop()
             self.status_monitor = None
@@ -749,6 +1043,188 @@ Run: /plan:implement {task_ids} --autonomous
         return "\n".join(lines)
 
 
+def daemonize():
+    """Fork the process to run in the background (Unix only)."""
+    if sys.platform == "win32":
+        raise NotImplementedError("Daemon mode not supported on Windows")
+
+    # First fork
+    try:
+        pid = os.fork()
+        if pid > 0:
+            # Parent exits
+            sys.exit(0)
+    except OSError as e:
+        sys.stderr.write(f"Fork #1 failed: {e}\n")
+        sys.exit(1)
+
+    # Decouple from parent environment
+    os.chdir("/")
+    os.setsid()
+    os.umask(0)
+
+    # Second fork
+    try:
+        pid = os.fork()
+        if pid > 0:
+            # Parent exits
+            print(f"Daemon started with PID {pid}")
+            sys.exit(0)
+    except OSError as e:
+        sys.stderr.write(f"Fork #2 failed: {e}\n")
+        sys.exit(1)
+
+    # Redirect standard file descriptors
+    sys.stdout.flush()
+    sys.stderr.flush()
+    with open("/dev/null", "r") as devnull:
+        os.dup2(devnull.fileno(), sys.stdin.fileno())
+    # Keep stdout/stderr for logging (will be redirected to file by orchestrator)
+
+
+def cmd_list():
+    """List all registered orchestrator instances."""
+    registry = OrchestratorRegistry()
+    registry.cleanup_stale()  # Clean up first
+
+    instances = registry.get_all()
+    if not instances:
+        print("No orchestrators registered")
+        return 0
+
+    print("\nRegistered Orchestrators")
+    print("=" * 70)
+
+    for inst in instances:
+        status_indicator = {
+            "running": "●",
+            "stopping": "○",
+            "stopped": "◌",
+            "crashed": "✗",
+        }.get(inst.status, "?")
+
+        alive_str = "alive" if inst.is_alive() else "dead"
+        stale_str = "stale" if inst.is_stale() else "fresh"
+
+        plan_name = Path(inst.plan_path).stem if inst.plan_path else "unknown"
+        worktree_str = f" [{Path(inst.worktree_path).name}]" if inst.worktree_path else ""
+
+        print(f"  {status_indicator} {inst.id}")
+        print(f"      Plan: {plan_name}{worktree_str}")
+        print(f"      PID: {inst.pid} ({alive_str}), heartbeat: {stale_str}")
+        print(f"      Started: {inst.started_at}")
+        print()
+
+    return 0
+
+
+def cmd_stop(instance_id: str, force: bool = False):
+    """Stop a specific orchestrator instance."""
+    registry = OrchestratorRegistry()
+    instance = registry.get_instance(instance_id)
+
+    if not instance:
+        print(f"Instance not found: {instance_id}")
+        return 1
+
+    if not instance.socket_path:
+        print(f"Instance has no IPC socket: {instance_id}")
+        return 1
+
+    try:
+        client = IPCClient(instance.socket_path)
+        if client.is_available():
+            print(f"Sending shutdown to {instance_id}...")
+            response = client.request_shutdown(force=force)
+            if response:
+                print(f"Shutdown acknowledged: {instance_id}")
+                return 0
+            else:
+                print(f"Shutdown not acknowledged: {instance_id}")
+                return 1
+        else:
+            print(f"Instance not responding, removing from registry: {instance_id}")
+            registry.unregister(instance_id)
+            return 0
+    except IPCError as e:
+        print(f"IPC error: {e}")
+        return 1
+
+
+def cmd_shutdown_all(force: bool = False, timeout: float = 30.0):
+    """Shutdown all running orchestrator instances."""
+    registry = OrchestratorRegistry()
+    registry.cleanup_stale()
+
+    instances = registry.get_running()
+    if not instances:
+        print("No running orchestrators")
+        return 0
+
+    print(f"Shutting down {len(instances)} orchestrator(s)...")
+
+    for inst in instances:
+        if inst.socket_path:
+            try:
+                client = IPCClient(inst.socket_path)
+                if client.is_available():
+                    print(f"  Sending shutdown to {inst.id}...")
+                    client.request_shutdown(force=force)
+            except IPCError:
+                pass
+
+    # Wait for graceful shutdown
+    print(f"Waiting up to {timeout}s for graceful shutdown...")
+    start = time.time()
+    while time.time() - start < timeout:
+        registry.cleanup_stale()
+        if not registry.get_running():
+            print("All orchestrators stopped")
+            return 0
+        time.sleep(1)
+
+    # Force kill remaining
+    remaining = registry.get_running()
+    if remaining:
+        print(f"Force killing {len(remaining)} remaining orchestrator(s)...")
+        for inst in remaining:
+            try:
+                os.kill(inst.pid, signal.SIGKILL)
+            except (OSError, ProcessLookupError):
+                pass
+            registry.unregister(inst.id)
+
+    print("All orchestrators stopped")
+    return 0
+
+
+def cmd_status(instance_id: str):
+    """Get status of a specific orchestrator instance."""
+    registry = OrchestratorRegistry()
+    instance = registry.get_instance(instance_id)
+
+    if not instance:
+        print(f"Instance not found: {instance_id}")
+        return 1
+
+    if not instance.socket_path:
+        print(f"Instance has no IPC socket: {instance_id}")
+        return 1
+
+    try:
+        client = IPCClient(instance.socket_path)
+        if not client.is_available():
+            print(f"Instance not responding: {instance_id}")
+            return 1
+
+        status = client.get_status()
+        print(json.dumps(status, indent=2))
+        return 0
+    except IPCError as e:
+        print(f"IPC error: {e}")
+        return 1
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Orchestrate plan execution across multiple Claude Code sessions"
@@ -757,6 +1233,11 @@ def main():
         "--plan",
         type=str,
         help="Path to plan file (uses active plan if not specified)",
+    )
+    parser.add_argument(
+        "--worktree",
+        type=str,
+        help="Path to worktree directory for parallel execution (auto-detects if not specified)",
     )
     parser.add_argument(
         "--max-iterations",
@@ -798,10 +1279,64 @@ def main():
         help="Disable Rich TUI (use plain text output)",
     )
 
+    # Phase 5: Multi-orchestrator management commands
+    parser.add_argument(
+        "--daemon",
+        action="store_true",
+        help="Run in daemon mode (background)",
+    )
+    parser.add_argument(
+        "--list",
+        action="store_true",
+        help="List all registered orchestrator instances",
+    )
+    parser.add_argument(
+        "--stop",
+        type=str,
+        metavar="INSTANCE_ID",
+        help="Stop a specific orchestrator instance",
+    )
+    parser.add_argument(
+        "--shutdown-all",
+        action="store_true",
+        help="Shutdown all running orchestrator instances",
+    )
+    parser.add_argument(
+        "--status",
+        type=str,
+        metavar="INSTANCE_ID",
+        help="Get status of a specific orchestrator instance",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Force shutdown (used with --stop or --shutdown-all)",
+    )
+
     args = parser.parse_args()
 
-    # Confirmation prompt unless --continue
-    if not args.continue_run and not args.dry_run:
+    # Handle management commands first
+    if args.list:
+        return cmd_list()
+
+    if args.stop:
+        return cmd_stop(args.stop, force=args.force)
+
+    if args.shutdown_all:
+        return cmd_shutdown_all(force=args.force)
+
+    if args.status:
+        return cmd_status(args.status)
+
+    # Daemon mode: fork to background
+    if args.daemon:
+        # Change to working directory before daemonizing
+        working_dir = Path.cwd()
+        daemonize()
+        os.chdir(working_dir)
+
+    # Confirmation prompt unless --continue or --daemon
+    if not args.continue_run and not args.dry_run and not args.daemon:
         print("\nPlan Orchestrator")
         print("=" * 40)
         print("This will run Claude Code repeatedly until the plan is complete.")
@@ -818,14 +1353,18 @@ def main():
             print("\nAborted.")
             return 0
 
+    # Daemon mode implies no TUI
+    use_tui = not args.no_tui and not args.daemon
+
     orchestrator = PlanOrchestrator(
         plan_path=args.plan,
+        worktree_path=args.worktree,
         max_iterations=args.max_iterations,
         timeout=args.timeout,
         batch_size=args.batch_size,
         dry_run=args.dry_run,
         verbose=args.verbose,
-        use_tui=not args.no_tui,
+        use_tui=use_tui,
     )
 
     try:

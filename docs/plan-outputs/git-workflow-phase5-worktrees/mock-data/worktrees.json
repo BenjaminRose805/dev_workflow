@@ -1,0 +1,61 @@
+{
+  "worktrees": [
+    {
+      "path": "worktrees/plan-api-refactor",
+      "branch": "plan/api-refactor",
+      "plan": "api-refactor",
+      "createdAt": "2024-12-25T14:30:00.000Z",
+      "lastActivityAt": "2024-12-26T20:30:00.000Z",
+      "status": "active",
+      "orchestrator": {
+        "running": true,
+        "pid": 23456
+      },
+      "diskUsage": {
+        "bytes": 52428800,
+        "formatted": "50 MB"
+      }
+    },
+    {
+      "path": "worktrees/plan-database-migration",
+      "branch": "plan/database-migration",
+      "plan": "database-migration",
+      "createdAt": "2024-12-24T09:00:00.000Z",
+      "lastActivityAt": "2024-12-26T15:45:00.000Z",
+      "status": "active",
+      "orchestrator": null,
+      "diskUsage": {
+        "bytes": 78643200,
+        "formatted": "75 MB"
+      }
+    },
+    {
+      "path": "worktrees/plan-feature-old",
+      "branch": "plan/feature-old",
+      "plan": "feature-old",
+      "createdAt": "2024-12-10T10:00:00.000Z",
+      "lastActivityAt": "2024-12-12T16:00:00.000Z",
+      "status": "stale",
+      "orchestrator": null,
+      "diskUsage": {
+        "bytes": 41943040,
+        "formatted": "40 MB"
+      },
+      "staleWarning": "Last activity 14 days ago"
+    }
+  ],
+  "summary": {
+    "totalWorktrees": 3,
+    "active": 2,
+    "stale": 1,
+    "totalDiskUsage": {
+      "bytes": 173015040,
+      "formatted": "165 MB"
+    }
+  },
+  "limits": {
+    "maxConcurrent": 3,
+    "currentCount": 3,
+    "available": 0
+  }
+}

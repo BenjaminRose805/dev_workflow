@@ -32,18 +32,28 @@ class StreamingClaudeRunner:
         on_tool_start: Optional[Callable[[str, Dict], None]] = None,
         on_tool_end: Optional[Callable[[str, str, float], None]] = None,
         on_text: Optional[Callable[[str], None]] = None,
-        timeout: int = 600
+        timeout: int = 600,
+        working_dir: Optional[str] = None,
+        worktree_path: Optional[str] = None
     ):
         self.on_tool_start = on_tool_start
         self.on_tool_end = on_tool_end  # (tool_name, tool_id, duration_seconds) -> None
         self.on_text = on_text
         self.timeout = timeout
+        self.working_dir = working_dir
+        self.worktree_path = worktree_path
         self.process: Optional[subprocess.Popen] = None
         # Track active tool calls: tool_id -> {name, start_time, input}
         self._active_tools: Dict[str, Dict] = {}
 
     def run(self, prompt: str) -> Tuple[bool, str]:
-        """Run Claude with streaming output, calling callbacks for events."""
+        """Run Claude with streaming output, calling callbacks for events.
+
+        Uses working_dir and worktree_path if set during initialization
+        to properly run Claude in the correct worktree context.
+        """
+        import os
+
         cmd = [
             "claude", "-p", prompt,
             "--dangerously-skip-permissions",
@@ -51,13 +61,21 @@ class StreamingClaudeRunner:
             "--verbose"  # Required for stream-json with -p
         ]
 
+        # Build environment with worktree context if specified
+        env = None
+        if self.worktree_path:
+            env = os.environ.copy()
+            env["CLAUDE_WORKTREE"] = self.worktree_path
+
         try:
             self.process = subprocess.Popen(
                 cmd,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
-                bufsize=1
+                bufsize=1,
+                cwd=self.working_dir,
+                env=env
             )
 
             output_parts = []

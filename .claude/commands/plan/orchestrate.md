@@ -43,16 +43,42 @@ Parse the JSON response for:
 
 **REPEAT THE FOLLOWING UNTIL COMPLETE:**
 
-#### Step 2.1: Get Next Tasks
+#### Step 2.1: Get Next Tasks (DAG-Aware)
 
 ```bash
 node scripts/status-cli.js next 5
 ```
 
-This returns the next recommended tasks (up to 5). Parse the JSON to get task IDs and descriptions.
+This returns the next recommended tasks (up to 5) **using dependency-graph-aware selection**.
+
+**DAG-aware behavior (Task 7.1):**
+- Tasks are selected based on their dependencies, not just phase order
+- A task is "ready" when all its dependencies are completed or skipped
+- Cross-phase execution is enabled: task 3.1 can start before Phase 2 completes if its dependencies are met
+- The output includes dependency metadata for each task
+
+**Parse the JSON response:**
+```json
+{
+  "count": 3,
+  "tasks": [
+    {
+      "id": "2.1",
+      "description": "Create auth middleware",
+      "phase": 2,
+      "dependencies": ["1.1", "1.2"],
+      "dependents": ["2.2", "2.3"],
+      "reason": "pending - ready to implement"
+    }
+  ],
+  "crossPhaseExecution": true,
+  "activePhases": [2, 3]
+}
+```
 
 **If no tasks returned:**
 - Check for failed tasks that need retry
+- Check `blockedTaskCount` in response - tasks may be blocked by dependencies
 - If truly blocked, output status and STOP
 - Otherwise, continue
 
@@ -150,11 +176,26 @@ Output Directory: {output_dir}
 
 ## Execution Strategy
 
-### Parallelization Rules
+### Parallelization Rules (DAG-Aware)
 
-1. **Same phase tasks**: Can run in parallel (up to 5)
-2. **Cross-phase tasks**: Complete earlier phases first
-3. **Dependencies**: Check task dependencies before parallel execution
+The orchestrator uses dependency-graph-aware scheduling:
+
+1. **Dependency-first**: Tasks run when their dependencies are complete (not phase-order)
+2. **Cross-phase execution**: Tasks from different phases can run together if dependencies allow
+3. **File conflicts**: Tasks modifying the same file are serialized automatically
+4. **[SEQUENTIAL] tasks**: Tasks marked `[SEQUENTIAL]` in the plan run one at a time
+
+**Example DAG execution:**
+```
+Phase 1: [1.1, 1.2]  ─┬─► Both complete
+                      │
+Phase 2: [2.1 (deps: 1.1)]  ─► 2.1 ready when 1.1 completes (not waiting for 1.2)
+Phase 3: [3.1 (deps: 1.1)]  ─► 3.1 ready when 1.1 completes (cross-phase parallelism!)
+```
+
+**Command options:**
+- `node scripts/status-cli.js next 5 --phase-priority` - Prefer tasks from earlier phases
+- `node scripts/status-cli.js next 5 --ignore-deps` - Bypass dependency checking (use with caution)
 
 ### Batch Sizes
 
@@ -168,14 +209,20 @@ Output Directory: {output_dir}
 
 **Task fails:**
 1. Mark as failed in status.json
-2. Check if blocker for other tasks
+2. Check if blocker for other tasks (tasks with this task as a dependency)
 3. Continue with non-dependent tasks
 4. Retry failed tasks at end (max 2 retries)
+
+**Blocked tasks (dependency-related):**
+1. If `next` returns `blockedTaskCount > 0`, tasks are waiting on dependencies
+2. Check dependency graph: `node scripts/status-cli.js deps --graph`
+3. A task is blocked if any of its dependencies are pending/in_progress/failed
+4. Blocked tasks become ready automatically when blockers complete
 
 **Agent timeout:**
 1. Default timeout: 10 minutes per task
 2. If timeout, mark task as failed
-3. Continue with other tasks
+3. Continue with other tasks (dependents become blocked)
 
 ---
 
@@ -223,7 +270,10 @@ Output Directory: {output_dir}
 ## Important Notes
 
 - **Autonomous execution** - Do not stop for confirmations
+- **DAG-aware scheduling** - Tasks run based on dependencies, not just phase order
+- **Cross-phase parallelism** - Tasks from different phases can execute together
 - **Parallel agents** - Always batch tasks for efficiency
 - **Direct implementation** - Do not use Skill() invocations
 - **Progress visibility** - Report after each batch
-- **Graceful failures** - Continue despite individual task failures
+- **Graceful failures** - Continue despite individual task failures (dependents become blocked)
+- **Dependency metadata** - Each task includes `dependencies` and `dependents` arrays

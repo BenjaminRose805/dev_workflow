@@ -383,7 +383,10 @@
 
 - [ ] 11.3 Identify integration points with existing TUI plan
   - Map: Where expansions fit into tui-integration-implementation.md phases
-  - Consider: Modify existing plan vs create new plan
+  - Decision criteria for Amend vs New Plan:
+    - **AMEND** if ALL of: ≤15 new tasks, ≤2 new phases, no architectural changes
+    - **NEW PLAN** if ANY of: >15 new tasks, >2 new phases, requires new infrastructure (e.g., event streaming, new data layer)
+    - **HYBRID** option: Amend for quick wins, new plan for architectural features
 
 - [ ] 11.4 Create expansion implementation roadmap
   - Phase expansions by dependency order
@@ -397,9 +400,11 @@
   - Consider: Real-time event streaming architecture
 
 - [ ] 11.6 Create implementation plan or plan amendment
-  - Option A: Amend tui-integration-implementation.md
-  - Option B: Create new tui-parallel-workflow-expansion.md plan
-  - Output: Ready-to-execute implementation plan
+  - Apply decision from 11.3:
+    - **If AMEND:** Add new tasks to existing phases in tui-integration-implementation.md, update task counts
+    - **If NEW PLAN:** Create tui-workflow-expansion.md with phases for architectural features
+    - **If HYBRID:** Amend tui-integration-implementation.md with quick wins, create tui-workflow-expansion.md for infrastructure
+  - Output: Ready-to-execute implementation plan(s) with clear phase boundaries
 
 - [ ] **VERIFY 11:** Recommendations complete with actionable roadmap
 

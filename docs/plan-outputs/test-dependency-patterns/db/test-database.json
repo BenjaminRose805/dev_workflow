@@ -1,0 +1,43 @@
+{
+  "database": {
+    "name": "test-dependency-patterns-db",
+    "type": "in-memory",
+    "initialized": "2025-12-26T20:45:00Z",
+    "version": "1.0.0"
+  },
+  "schema": {
+    "tables": {
+      "tasks": {
+        "columns": ["id", "title", "status", "phase", "dependencies", "created_at", "completed_at"],
+        "primaryKey": "id",
+        "indexes": ["status", "phase"]
+      },
+      "dependencies": {
+        "columns": ["task_id", "depends_on", "created_at"],
+        "primaryKey": ["task_id", "depends_on"],
+        "foreignKeys": {
+          "task_id": "tasks.id",
+          "depends_on": "tasks.id"
+        }
+      },
+      "runs": {
+        "columns": ["run_id", "started_at", "completed_at", "tasks_completed", "tasks_failed"],
+        "primaryKey": "run_id"
+      }
+    }
+  },
+  "seedData": {
+    "tasks": [
+      {"id": "1.1", "title": "Create base configuration file", "status": "completed", "phase": 1},
+      {"id": "1.2", "title": "Set up test fixtures", "status": "pending", "phase": 1},
+      {"id": "1.3", "title": "Initialize test database", "status": "pending", "phase": 1},
+      {"id": "1.4", "title": "Create shared utility functions", "status": "pending", "phase": 1}
+    ],
+    "dependencies": []
+  },
+  "constraints": {
+    "maxParallelTasks": 5,
+    "maxRetries": 3,
+    "taskTimeoutMs": 300000
+  }
+}

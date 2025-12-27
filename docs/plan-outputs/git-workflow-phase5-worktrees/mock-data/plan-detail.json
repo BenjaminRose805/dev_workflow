@@ -1,0 +1,245 @@
+{
+  "name": "git-workflow-phase5-worktrees",
+  "path": "docs/plans/git-workflow-phase5-worktrees.md",
+  "title": "Implementation Plan: Git Workflow Phase 5 - Worktrees & Parallel Execution",
+  "status": "in_progress",
+  "progress": {
+    "total": 84,
+    "completed": 76,
+    "pending": 8,
+    "in_progress": 1,
+    "failed": 0,
+    "percentage": 90
+  },
+  "currentPhase": "Phase 13: Integration Testing",
+  "worktree": null,
+  "orchestrator": {
+    "running": true,
+    "pid": 12345,
+    "mode": "batch",
+    "startedAt": "2024-12-26T21:00:00.000Z",
+    "currentTask": "12.6"
+  },
+  "lastUpdatedAt": "2024-12-26T21:52:03.811Z",
+  "phases": [
+    {
+      "number": 1,
+      "name": "Worktree Management Command",
+      "total": 7,
+      "completed": 7,
+      "percentage": 100
+    },
+    {
+      "number": 2,
+      "name": "Worktree Creation Workflow",
+      "total": 7,
+      "completed": 7,
+      "percentage": 100
+    },
+    {
+      "number": 3,
+      "name": "Per-Worktree Context",
+      "total": 6,
+      "completed": 6,
+      "percentage": 100
+    },
+    {
+      "number": 4,
+      "name": "Orchestrator Worktree Support",
+      "total": 6,
+      "completed": 6,
+      "percentage": 100
+    },
+    {
+      "number": 5,
+      "name": "Parallel Orchestrator Instances",
+      "total": 6,
+      "completed": 6,
+      "percentage": 100
+    },
+    {
+      "number": 6,
+      "name": "Aggregate Status View",
+      "total": 6,
+      "completed": 6,
+      "percentage": 100
+    },
+    {
+      "number": 7,
+      "name": "TUI Multi-Plan Support",
+      "total": 7,
+      "completed": 7,
+      "percentage": 100
+    },
+    {
+      "number": 8,
+      "name": "Worktree Completion & Cleanup",
+      "total": 6,
+      "completed": 6,
+      "percentage": 100
+    },
+    {
+      "number": 9,
+      "name": "Conflict Management",
+      "total": 6,
+      "completed": 6,
+      "percentage": 100
+    },
+    {
+      "number": 10,
+      "name": "Resource Management",
+      "total": 6,
+      "completed": 6,
+      "percentage": 100
+    },
+    {
+      "number": 11,
+      "name": "API for External Integration",
+      "total": 8,
+      "completed": 8,
+      "percentage": 100
+    },
+    {
+      "number": 12,
+      "name": "NextJS Frontend Preparation",
+      "total": 6,
+      "completed": 5,
+      "pending": 1,
+      "percentage": 83
+    },
+    {
+      "number": 13,
+      "name": "Integration Testing",
+      "total": 7,
+      "completed": 0,
+      "pending": 7,
+      "percentage": 0
+    }
+  ],
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Worktree Management Command",
+      "description": "Create `.claude/commands/plan/worktree.md` command file",
+      "status": "completed",
+      "completedAt": "2024-12-26T06:39:36.492Z"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Worktree Management Command",
+      "description": "Implement `create` subcommand: creates worktree + plan branch",
+      "status": "completed",
+      "completedAt": "2024-12-26T06:39:58.679Z"
+    },
+    {
+      "id": "12.1",
+      "phase": "Phase 12: NextJS Frontend Preparation",
+      "description": "Document frontend requirements and architecture",
+      "status": "completed",
+      "completedAt": "2024-12-26T21:52:03.809Z"
+    },
+    {
+      "id": "12.2",
+      "phase": "Phase 12: NextJS Frontend Preparation",
+      "description": "Define WebSocket message format for updates",
+      "status": "completed",
+      "completedAt": "2024-12-26T21:52:03.809Z"
+    },
+    {
+      "id": "12.3",
+      "phase": "Phase 12: NextJS Frontend Preparation",
+      "description": "Create OpenAPI spec for plan management API",
+      "status": "completed",
+      "completedAt": "2024-12-26T21:52:03.810Z"
+    },
+    {
+      "id": "12.4",
+      "phase": "Phase 12: NextJS Frontend Preparation",
+      "description": "Design component structure for plan dashboard",
+      "status": "completed",
+      "completedAt": "2024-12-26T21:52:03.811Z"
+    },
+    {
+      "id": "12.5",
+      "phase": "Phase 12: NextJS Frontend Preparation",
+      "description": "Implement server-side plan status fetching",
+      "status": "completed",
+      "completedAt": "2024-12-26T21:52:03.811Z"
+    },
+    {
+      "id": "12.6",
+      "phase": "Phase 12: NextJS Frontend Preparation",
+      "description": "Create mock data for frontend development",
+      "status": "in_progress",
+      "startedAt": "2024-12-26T22:00:00.000Z"
+    },
+    {
+      "id": "13.1",
+      "phase": "Phase 13: Integration Testing",
+      "description": "Test creating multiple worktrees simultaneously",
+      "status": "pending"
+    },
+    {
+      "id": "13.2",
+      "phase": "Phase 13: Integration Testing",
+      "description": "Test running 3 orchestrators in parallel",
+      "status": "pending"
+    },
+    {
+      "id": "13.3",
+      "phase": "Phase 13: Integration Testing",
+      "description": "Test completing plans in different orders",
+      "status": "pending"
+    },
+    {
+      "id": "13.4",
+      "phase": "Phase 13: Integration Testing",
+      "description": "Test conflict detection between plans",
+      "status": "pending"
+    },
+    {
+      "id": "13.5",
+      "phase": "Phase 13: Integration Testing",
+      "description": "Test TUI with multiple active plans",
+      "status": "pending"
+    },
+    {
+      "id": "13.6",
+      "phase": "Phase 13: Integration Testing",
+      "description": "Test API endpoints under load",
+      "status": "pending"
+    },
+    {
+      "id": "13.7",
+      "phase": "Phase 13: Integration Testing",
+      "description": "Test cleanup after failures",
+      "status": "pending"
+    }
+  ],
+  "recentActivity": [
+    {
+      "taskId": "12.5",
+      "action": "completed",
+      "description": "Implement server-side plan status fetching",
+      "timestamp": "2024-12-26T21:52:03.811Z"
+    },
+    {
+      "taskId": "12.4",
+      "action": "completed",
+      "description": "Design component structure for plan dashboard",
+      "timestamp": "2024-12-26T21:52:03.811Z"
+    },
+    {
+      "taskId": "12.3",
+      "action": "completed",
+      "description": "Create OpenAPI spec for plan management API",
+      "timestamp": "2024-12-26T21:52:03.810Z"
+    },
+    {
+      "taskId": "12.6",
+      "action": "in_progress",
+      "description": "Create mock data for frontend development",
+      "timestamp": "2024-12-26T22:00:00.000Z"
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "plans": [
+    {
+      "name": "git-workflow-phase5-worktrees",
+      "path": "docs/plans/git-workflow-phase5-worktrees.md",
+      "title": "Implementation Plan: Git Workflow Phase 5 - Worktrees & Parallel Execution",
+      "status": "in_progress",
+      "progress": {
+        "total": 84,
+        "completed": 76,
+        "pending": 8,
+        "in_progress": 1,
+        "failed": 0,
+        "percentage": 90
+      },
+      "currentPhase": "Phase 13: Integration Testing",
+      "worktree": null,
+      "orchestrator": {
+        "running": true,
+        "pid": 12345
+      },
+      "lastUpdatedAt": "2024-12-26T21:52:03.811Z"
+    },
+    {
+      "name": "api-refactor",
+      "path": "docs/plans/api-refactor.md",
+      "title": "API Refactoring Plan",
+      "status": "in_progress",
+      "progress": {
+        "total": 42,
+        "completed": 28,
+        "pending": 12,
+        "in_progress": 2,
+        "failed": 0,
+        "percentage": 67
+      },
+      "currentPhase": "Phase 3: Endpoint Migration",
+      "worktree": {
+        "active": true,
+        "path": "worktrees/plan-api-refactor"
+      },
+      "orchestrator": {
+        "running": true,
+        "pid": 23456
+      },
+      "lastUpdatedAt": "2024-12-26T20:30:00.000Z"
+    },
+    {
+      "name": "auth-implementation",
+      "path": "docs/plans/auth-implementation.md",
+      "title": "User Authentication Implementation",
+      "status": "pending",
+      "progress": {
+        "total": 35,
+        "completed": 0,
+        "pending": 35,
+        "in_progress": 0,
+        "failed": 0,
+        "percentage": 0
+      },
+      "currentPhase": "Phase 1: Core Authentication",
+      "worktree": null,
+      "orchestrator": null,
+      "lastUpdatedAt": "2024-12-25T10:00:00.000Z"
+    },
+    {
+      "name": "performance-optimization",
+      "path": "docs/plans/performance-optimization.md",
+      "title": "Performance Optimization Sprint",
+      "status": "completed",
+      "progress": {
+        "total": 28,
+        "completed": 28,
+        "pending": 0,
+        "in_progress": 0,
+        "failed": 0,
+        "percentage": 100
+      },
+      "currentPhase": null,
+      "worktree": null,
+      "orchestrator": null,
+      "lastUpdatedAt": "2024-12-24T18:00:00.000Z"
+    },
+    {
+      "name": "database-migration",
+      "path": "docs/plans/database-migration.md",
+      "title": "Database Migration to PostgreSQL",
+      "status": "in_progress",
+      "progress": {
+        "total": 20,
+        "completed": 15,
+        "pending": 3,
+        "in_progress": 1,
+        "failed": 1,
+        "percentage": 75
+      },
+      "currentPhase": "Phase 4: Data Validation",
+      "worktree": {
+        "active": true,
+        "path": "worktrees/plan-database-migration"
+      },
+      "orchestrator": null,
+      "lastUpdatedAt": "2024-12-26T15:45:00.000Z"
+    }
+  ],
+  "summary": {
+    "totalPlans": 5,
+    "running": 2,
+    "pending": 1,
+    "completed": 1
+  }
+}

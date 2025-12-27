@@ -159,6 +159,8 @@ If arguments are passed to this skill, parse them to determine which tasks to im
 | No arguments | (empty) | Interactive selection (step 3) |
 | `--autonomous` | `1.1 1.2 --autonomous` | Skip all interactive prompts |
 | `--push` | `1.1 --push` | Push commits to remote after each task |
+| `--force` | `1.1 --force` | Skip dependency checking |
+| `--strict-deps` | `1.1 --strict-deps` | Fail if task has unmet dependencies |
 
 **Autonomous Mode:**
 
@@ -174,7 +176,9 @@ When `--autonomous` flag is present:
 args = skill arguments
 autonomous = args contains "--autonomous"
 push_enabled = args contains "--push"
-args = args with "--autonomous" and "--push" removed (for further parsing)
+force_deps = args contains "--force"
+strict_deps = args contains "--strict-deps"
+args = args with all flags removed (for further parsing)
 ```
 
 **Parsing logic:**
@@ -183,7 +187,9 @@ args = args with "--autonomous" and "--push" removed (for further parsing)
 args = skill arguments (may be empty)
 autonomous = args contains "--autonomous"
 push_enabled = args contains "--push"
-args = args with "--autonomous" and "--push" removed
+force_deps = args contains "--force"
+strict_deps = args contains "--strict-deps"
+args = args with all flags removed
 
 if args is empty:
     if autonomous:
@@ -450,6 +456,91 @@ Before implementing tasks:
    const runId = startRun(planPath);
    console.log(`Started execution run: ${runId}`);
    ```
+
+### 4.2. Check for Unmet Dependencies
+
+**Before implementing each task, check if it has unmet dependencies.**
+
+Tasks may declare dependencies using the `(depends: X.Y, X.Z)` syntax in their description.
+A task with unmet dependencies should not normally be implemented, as it may fail or produce incorrect results.
+
+**Check dependencies using status-cli.js:**
+```bash
+# Get task dependency info
+node scripts/status-cli.js deps --task 2.1
+```
+
+**Or check via status.json:**
+```javascript
+const status = loadStatus(planPath);
+const task = status.tasks.find(t => t.id === taskId);
+const dependencies = task.dependencies || [];
+
+// Check each dependency
+const unmetDeps = [];
+for (const depId of dependencies) {
+  const depTask = status.tasks.find(t => t.id === depId);
+  if (depTask && depTask.status !== 'completed' && depTask.status !== 'skipped') {
+    unmetDeps.push({ id: depId, status: depTask.status });
+  }
+}
+```
+
+**Behavior when unmet dependencies exist:**
+
+| Mode | Behavior |
+|------|----------|
+| Interactive | Show warning and ask for confirmation |
+| Autonomous | Show warning but continue unless `--strict-deps` is passed |
+| With `--force` | Skip dependency check entirely |
+| With `--strict-deps` | Fail immediately if any dependencies are unmet |
+
+**Warning message format:**
+```
+⚠ Task 2.1 has unmet dependencies:
+  - 1.3 (pending) - Create authentication service
+  - 1.4 (in_progress) - Set up database schema
+
+Implementing a task with unmet dependencies may cause:
+  - Missing types or interfaces that haven't been created yet
+  - References to functions that don't exist
+  - Integration issues with incomplete features
+
+Options:
+  ○ Continue anyway (may require fixes later)
+  ○ Implement dependencies first (recommended)
+  ○ Skip this task
+```
+
+**In autonomous mode:**
+```
+⚠ Task 2.1 has unmet dependencies: 1.3 (pending), 1.4 (in_progress)
+  Continuing anyway (autonomous mode)...
+```
+
+**With `--strict-deps` flag (for CI/orchestrator):**
+```
+✗ Task 2.1 blocked by unmet dependencies: 1.3, 1.4
+  Use --force to override or implement dependencies first.
+```
+
+**Example flags:**
+```bash
+# Interactive mode - will prompt for confirmation
+/plan:implement 2.1
+
+# Autonomous mode - warns but continues
+/plan:implement 2.1 --autonomous
+
+# Skip dependency checking entirely
+/plan:implement 2.1 --force
+
+# Strict mode - fail on unmet dependencies (for CI)
+/plan:implement 2.1 --strict-deps
+
+# Autonomous with strict deps (orchestrator use)
+/plan:implement 2.1 --autonomous --strict-deps
+```
 
 ### 5. Implement Each Task
 

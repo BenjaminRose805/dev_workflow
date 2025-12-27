@@ -244,13 +244,13 @@ def find_next_plan():
     # Priority order from docs/plans/EXECUTION-ORDER.md
     # These implement parallel execution, git workflow, and TUI features
     priority_order = [
-        # Completed plans (1-4)
+        # Completed plans (1-5)
         'parallel-execution-foundation',
         'git-workflow-phase1-core-branching',
         'git-workflow-phase2-completion',
         'git-workflow-phase3-safety',
-        # Git workflow advanced (5-6)
         'git-workflow-phase4-advanced',
+        # Git workflow worktrees (6)
         'git-workflow-phase5-worktrees',
         # Parallel dependencies & TUI (7-9)
         'parallel-execution-dependencies',

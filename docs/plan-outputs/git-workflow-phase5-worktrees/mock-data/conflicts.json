@@ -1,0 +1,94 @@
+{
+  "conflicts": [
+    {
+      "type": "file_overlap",
+      "file": "src/lib/auth.ts",
+      "plans": [
+        {
+          "name": "api-refactor",
+          "branch": "plan/api-refactor",
+          "modifiedLines": 45,
+          "lastModified": "2024-12-26T18:00:00.000Z"
+        },
+        {
+          "name": "auth-implementation",
+          "branch": "plan/auth-implementation",
+          "modifiedLines": 120,
+          "lastModified": "2024-12-26T16:00:00.000Z"
+        }
+      ],
+      "severity": "high",
+      "recommendation": "Merge api-refactor first (fewer changes), then rebase auth-implementation"
+    },
+    {
+      "type": "file_overlap",
+      "file": "src/routes/index.ts",
+      "plans": [
+        {
+          "name": "api-refactor",
+          "branch": "plan/api-refactor",
+          "modifiedLines": 30,
+          "lastModified": "2024-12-26T19:00:00.000Z"
+        },
+        {
+          "name": "database-migration",
+          "branch": "plan/database-migration",
+          "modifiedLines": 15,
+          "lastModified": "2024-12-26T14:00:00.000Z"
+        }
+      ],
+      "severity": "medium",
+      "recommendation": "Non-overlapping changes likely - manual review recommended"
+    }
+  ],
+  "mergeOrder": [
+    {
+      "rank": 1,
+      "plan": "database-migration",
+      "branch": "plan/database-migration",
+      "score": 85,
+      "reason": "Highest completion percentage (75%), fewer file conflicts"
+    },
+    {
+      "rank": 2,
+      "plan": "api-refactor",
+      "branch": "plan/api-refactor",
+      "score": 70,
+      "reason": "Good progress (67%), some file overlaps with other plans"
+    },
+    {
+      "rank": 3,
+      "plan": "auth-implementation",
+      "branch": "plan/auth-implementation",
+      "score": 30,
+      "reason": "Not started, depends on api-refactor changes"
+    }
+  ],
+  "rebaseStatus": [
+    {
+      "plan": "api-refactor",
+      "branch": "plan/api-refactor",
+      "baseBranch": "main",
+      "commitsAhead": 12,
+      "commitsBehind": 3,
+      "needsRebase": true,
+      "lastChecked": "2024-12-26T22:00:00.000Z"
+    },
+    {
+      "plan": "database-migration",
+      "branch": "plan/database-migration",
+      "baseBranch": "main",
+      "commitsAhead": 8,
+      "commitsBehind": 0,
+      "needsRebase": false,
+      "lastChecked": "2024-12-26T22:00:00.000Z"
+    }
+  ],
+  "summary": {
+    "totalConflicts": 2,
+    "highSeverity": 1,
+    "mediumSeverity": 1,
+    "lowSeverity": 0,
+    "plansNeedingRebase": 1
+  }
+}

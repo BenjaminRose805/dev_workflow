@@ -41,3 +41,7 @@ npm-debug.log*
 # Optional: Ignore plan outputs if you don't want to track execution state
 docs/plan-outputs/*/status.json
 docs/plan-outputs/*/status.json.bak
+
+# Git worktrees directory (created by /plan:worktree create)
+# Worktrees are separate working directories and should not be nested
+worktrees/

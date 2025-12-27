@@ -1,0 +1,761 @@
+openapi: 3.1.0
+info:
+  title: Plan Management API
+  description: |
+    REST API for managing plan execution, worktrees, and orchestrator instances.
+
+    This API enables integration with web frontends (like NextJS dashboards),
+    external tools, and automation workflows.
+
+    ## Authentication
+
+    When authentication is enabled (`auth_required: true` in config), all endpoints
+    require a Bearer token in the Authorization header:
+
+    ```
+    Authorization: Bearer <api-key>
+    ```
+
+    ## WebSocket Support
+
+    Real-time updates are available via WebSocket connections:
+    - `ws://host:port/ws/plans/:name` - Updates for a specific plan
+    - `ws://host:port/ws/all` - Aggregate updates for all plans
+
+    See the WebSocket message format documentation for message types.
+  version: 1.0.0
+  contact:
+    name: API Support
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:3100
+    description: Local development server
+
+tags:
+  - name: Plans
+    description: Plan listing and management
+  - name: Orchestrator
+    description: Orchestrator control (start/stop)
+  - name: Logs
+    description: Log streaming and retrieval
+  - name: Worktrees
+    description: Git worktree management
+  - name: Resources
+    description: Resource monitoring and limits
+
+paths:
+  /api/plans:
+    get:
+      tags:
+        - Plans
+      summary: List all plans
+      description: Returns a list of all available plans with their current status and progress.
+      operationId: listPlans
+      parameters:
+        - name: status
+          in: query
+          description: Filter by plan status
+          schema:
+            type: string
+            enum: [pending, in_progress, completed]
+        - name: worktree
+          in: query
+          description: Filter by worktree presence
+          schema:
+            type: string
+            enum: ['true', 'false']
+      responses:
+        '200':
+          description: List of plans
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlansListResponse'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/plans/{name}:
+    get:
+      tags:
+        - Plans
+      summary: Get plan details
+      description: Returns detailed information about a specific plan including phases, tasks, and activity.
+      operationId: getPlan
+      parameters:
+        - $ref: '#/components/parameters/PlanName'
+      responses:
+        '200':
+          description: Plan details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanDetailResponse'
+        '404':
+          $ref: '#/components/responses/PlanNotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/plans/{name}/status:
+    get:
+      tags:
+        - Plans
+      summary: Get plan status
+      description: Returns a lightweight status for a plan (optimized for polling).
+      operationId: getPlanStatus
+      parameters:
+        - $ref: '#/components/parameters/PlanName'
+      responses:
+        '200':
+          description: Plan status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanStatusResponse'
+        '404':
+          $ref: '#/components/responses/PlanNotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/plans/{name}/start:
+    post:
+      tags:
+        - Orchestrator
+      summary: Start orchestrator
+      description: Starts the orchestrator for a plan in batch or continuous mode.
+      operationId: startOrchestrator
+      parameters:
+        - $ref: '#/components/parameters/PlanName'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartOrchestratorRequest'
+      responses:
+        '200':
+          description: Orchestrator started successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StartOrchestratorResponse'
+        '404':
+          $ref: '#/components/responses/PlanNotFound'
+        '409':
+          description: Orchestrator already running
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error: Plan already has running orchestrator
+                code: ORCHESTRATOR_ALREADY_RUNNING
+                details:
+                  existingPid: 12345
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/plans/{name}/stop:
+    post:
+      tags:
+        - Orchestrator
+      summary: Stop orchestrator
+      description: Stops a running orchestrator for a plan.
+      operationId: stopOrchestrator
+      parameters:
+        - $ref: '#/components/parameters/PlanName'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StopOrchestratorRequest'
+      responses:
+        '200':
+          description: Orchestrator stopped successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StopOrchestratorResponse'
+        '404':
+          description: No running orchestrator found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error: No running orchestrator found for plan
+                code: ORCHESTRATOR_NOT_RUNNING
+                details: {}
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/plans/{name}/logs:
+    get:
+      tags:
+        - Logs
+      summary: Get or stream logs
+      description: |
+        Returns orchestrator logs for a plan.
+
+        When `follow=true`, returns a Server-Sent Events stream for real-time log updates.
+        Otherwise, returns the last N lines as JSON.
+      operationId: getPlanLogs
+      parameters:
+        - $ref: '#/components/parameters/PlanName'
+        - name: lines
+          in: query
+          description: Number of lines to return from end of log
+          schema:
+            type: integer
+            default: 100
+            minimum: 1
+            maximum: 10000
+        - name: follow
+          in: query
+          description: Enable real-time log streaming (SSE)
+          schema:
+            type: string
+            enum: ['true', 'false']
+            default: 'false'
+        - name: since
+          in: query
+          description: Only return logs after this timestamp (ISO 8601)
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Log content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogsResponse'
+            text/event-stream:
+              schema:
+                type: string
+                description: Server-Sent Events stream when follow=true
+        '404':
+          description: No logs found for plan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error: 'No logs found for plan: example-plan'
+                code: LOGS_NOT_FOUND
+                details: {}
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/worktrees:
+    get:
+      tags:
+        - Worktrees
+      summary: List worktrees
+      description: Returns a list of all active git worktrees with their status.
+      operationId: listWorktrees
+      responses:
+        '200':
+          description: List of worktrees
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorktreesListResponse'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/resources:
+    get:
+      tags:
+        - Resources
+      summary: Get resource status
+      description: Returns current resource usage and limits (worktrees, disk space).
+      operationId: getResources
+      responses:
+        '200':
+          description: Resource status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourcesResponse'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /health:
+    get:
+      summary: Health check
+      description: Returns server health status.
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  timestamp:
+                    type: string
+                    format: date-time
+
+components:
+  parameters:
+    PlanName:
+      name: name
+      in: path
+      required: true
+      description: Plan name (without .md extension)
+      schema:
+        type: string
+        example: git-workflow-phase5-worktrees
+
+  schemas:
+    Progress:
+      type: object
+      properties:
+        total:
+          type: integer
+          description: Total number of tasks
+          example: 84
+        completed:
+          type: integer
+          description: Number of completed tasks
+          example: 71
+        pending:
+          type: integer
+          description: Number of pending tasks
+          example: 13
+        in_progress:
+          type: integer
+          description: Number of in-progress tasks
+          example: 0
+        failed:
+          type: integer
+          description: Number of failed tasks
+          example: 0
+        skipped:
+          type: integer
+          description: Number of skipped tasks
+          example: 0
+        percentage:
+          type: integer
+          description: Completion percentage (0-100)
+          example: 85
+
+    OrchestratorInfo:
+      type: object
+      nullable: true
+      properties:
+        running:
+          type: boolean
+          description: Whether orchestrator is running
+        pid:
+          type: integer
+          description: Process ID of the orchestrator
+        startedAt:
+          type: string
+          format: date-time
+          description: When the orchestrator was started
+        mode:
+          type: string
+          enum: [batch, continuous]
+          description: Execution mode
+
+    WorktreeInfo:
+      type: object
+      nullable: true
+      properties:
+        active:
+          type: boolean
+          description: Whether worktree is active
+        path:
+          type: string
+          description: Absolute path to worktree
+        branch:
+          type: string
+          description: Branch name
+
+    Phase:
+      type: object
+      properties:
+        number:
+          type: integer
+          description: Phase number
+        name:
+          type: string
+          description: Phase name
+        total:
+          type: integer
+          description: Total tasks in phase
+        completed:
+          type: integer
+          description: Completed tasks in phase
+        percentage:
+          type: integer
+          description: Phase completion percentage
+
+    Activity:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        taskId:
+          type: string
+        action:
+          type: string
+          enum: [started, completed, failed, skipped]
+        description:
+          type: string
+
+    CurrentTask:
+      type: object
+      nullable: true
+      properties:
+        id:
+          type: string
+          description: Task ID
+          example: '12.1'
+        description:
+          type: string
+          description: Task description
+        status:
+          type: string
+          enum: [in_progress]
+        startedAt:
+          type: string
+          format: date-time
+
+    PlanSummary:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Plan name
+        path:
+          type: string
+          description: Path to plan file
+        title:
+          type: string
+          description: Plan title
+        status:
+          type: string
+          enum: [pending, in_progress, completed]
+        progress:
+          $ref: '#/components/schemas/Progress'
+        currentPhase:
+          type: string
+          nullable: true
+        worktree:
+          $ref: '#/components/schemas/WorktreeInfo'
+        orchestrator:
+          $ref: '#/components/schemas/OrchestratorInfo'
+        lastUpdatedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    PlansListResponse:
+      type: object
+      properties:
+        plans:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanSummary'
+        summary:
+          type: object
+          properties:
+            totalPlans:
+              type: integer
+            running:
+              type: integer
+            pending:
+              type: integer
+            completed:
+              type: integer
+
+    PlanDetailResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        path:
+          type: string
+        title:
+          type: string
+        status:
+          type: string
+          enum: [pending, in_progress, completed]
+        progress:
+          $ref: '#/components/schemas/Progress'
+        phases:
+          type: array
+          items:
+            $ref: '#/components/schemas/Phase'
+        currentPhase:
+          type: string
+          nullable: true
+        recentActivity:
+          type: array
+          items:
+            $ref: '#/components/schemas/Activity'
+        worktree:
+          $ref: '#/components/schemas/WorktreeInfo'
+        orchestrator:
+          $ref: '#/components/schemas/OrchestratorInfo'
+        lastUpdatedAt:
+          type: string
+          format: date-time
+
+    PlanStatusResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        status:
+          type: string
+          enum: [pending, in_progress, completed]
+        progress:
+          type: object
+          properties:
+            total:
+              type: integer
+            completed:
+              type: integer
+            percentage:
+              type: integer
+        currentTask:
+          $ref: '#/components/schemas/CurrentTask'
+        orchestrator:
+          $ref: '#/components/schemas/OrchestratorInfo'
+        lastUpdatedAt:
+          type: string
+          format: date-time
+
+    StartOrchestratorRequest:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum: [batch, continuous]
+          default: batch
+          description: Execution mode
+        tasks:
+          type: array
+          items:
+            type: string
+          description: Specific task IDs to run (batch mode only)
+          example: ['12.1', '12.2', '12.3']
+        autonomous:
+          type: boolean
+          default: false
+          description: Skip interactive prompts
+        daemon:
+          type: boolean
+          default: true
+          description: Run in background
+
+    StartOrchestratorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        orchestrator:
+          type: object
+          properties:
+            pid:
+              type: integer
+            logFile:
+              type: string
+            startedAt:
+              type: string
+              format: date-time
+
+    StopOrchestratorRequest:
+      type: object
+      properties:
+        force:
+          type: boolean
+          default: false
+          description: Force stop with SIGKILL
+        timeout:
+          type: integer
+          default: 30
+          description: Seconds to wait before force stop
+
+    StopOrchestratorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        orchestrator:
+          type: object
+          properties:
+            pid:
+              type: integer
+            stoppedAt:
+              type: string
+              format: date-time
+            forced:
+              type: boolean
+
+    LogsResponse:
+      type: object
+      properties:
+        plan:
+          type: string
+        logFile:
+          type: string
+        lineCount:
+          type: integer
+        logs:
+          type: array
+          items:
+            type: string
+
+    WorktreeSummary:
+      type: object
+      properties:
+        name:
+          type: string
+        path:
+          type: string
+        branch:
+          type: string
+        planName:
+          type: string
+        status:
+          type: string
+          enum: [active, stale, abandoned]
+        age:
+          type: object
+          properties:
+            days:
+              type: integer
+            isStale:
+              type: boolean
+
+    WorktreesListResponse:
+      type: object
+      properties:
+        worktrees:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorktreeSummary'
+        summary:
+          type: object
+          properties:
+            total:
+              type: integer
+            active:
+              type: integer
+            stale:
+              type: integer
+            abandoned:
+              type: integer
+
+    ResourcesResponse:
+      type: object
+      properties:
+        limits:
+          type: object
+          properties:
+            concurrentWorktrees:
+              type: object
+              properties:
+                current:
+                  type: integer
+                max:
+                  type: integer
+                canCreate:
+                  type: boolean
+            diskSpace:
+              type: object
+              properties:
+                availableMB:
+                  type: integer
+                requiredMB:
+                  type: integer
+                sufficient:
+                  type: boolean
+        worktrees:
+          type: object
+          properties:
+            total:
+              type: integer
+            stale:
+              type: integer
+            abandoned:
+              type: integer
+        warnings:
+          type: array
+          items:
+            type: string
+        canCreateWorktree:
+          type: boolean
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: string
+          description: Machine-readable error code
+          enum:
+            - PLAN_NOT_FOUND
+            - TASK_NOT_FOUND
+            - ORCHESTRATOR_ALREADY_RUNNING
+            - ORCHESTRATOR_NOT_RUNNING
+            - RESOURCE_EXHAUSTED
+            - WORKTREE_EXISTS
+            - WORKTREE_NOT_FOUND
+            - LOGS_NOT_FOUND
+            - AUTH_REQUIRED
+            - INVALID_REQUEST
+            - INTERNAL_ERROR
+            - NOT_FOUND
+        details:
+          type: object
+          additionalProperties: true
+
+  responses:
+    PlanNotFound:
+      description: Plan not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error: 'Plan not found: example-plan'
+            code: PLAN_NOT_FOUND
+            details: {}
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error: An unexpected error occurred
+            code: INTERNAL_ERROR
+            details: {}

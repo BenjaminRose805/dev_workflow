@@ -384,11 +384,18 @@ Batch Task Selection:
 ☐ 2.2 orchestrator.integration.test.ts
 ```
 
-### 4. Analyze Selection and Build Execution Plan
+### 4. Analyze Selection and Build Execution Plan (Task 7.2)
 
-After user selects tasks:
+After user selects tasks, use DAG-aware analysis to build the execution plan:
 
-**Step 1: Group by phase**
+**Step 1: Load dependency information from status.json**
+```bash
+node scripts/status-cli.js deps --format=json
+```
+
+Each task has `dependencies` and `dependents` arrays that define the DAG.
+
+**Step 2: Group by phase (for display)**
 ```
 Selected tasks by phase:
 - Phase 0: [0.3, 0.4]
@@ -396,15 +403,37 @@ Selected tasks by phase:
 - Phase 2: [2.1, 2.2]
 ```
 
-**Step 2: Detect dependencies**
-- Check if any task explicitly depends on another
-- Check if tasks modify the same files
-- Check for implicit ordering (e.g., "move" before "delete")
+**Step 3: Detect dependencies between selected tasks (CRITICAL)**
+- Check `dependencies` field for each selected task
+- If task B depends on task A, and both are selected: B must wait for A
+- This applies even if they're in the same phase!
 
-**Step 3: Build parallel groups**
-- Tasks in same phase with no conflicts → parallel
-- Tasks with dependencies → sequential
-- Cross-phase tasks → sequential by phase order
+**Example:**
+```
+Selected: [1.1, 1.2, 1.3, 2.1]
+Dependencies from status.json:
+  1.3 depends on: [1.1, 1.2]
+  2.1 depends on: [1.3]
+
+Execution order:
+  Group 1 (parallel): 1.1, 1.2  (no dependencies on selected tasks)
+  Group 2 (waits for Group 1): 1.3  (depends on 1.1, 1.2)
+  Group 3 (waits for Group 2): 2.1  (depends on 1.3)
+```
+
+**Step 4: Detect file conflicts**
+- Check if tasks modify the same files
+- Tasks with file conflicts run sequentially (even if no explicit dependency)
+
+**Step 5: Build parallel groups**
+- Tasks with all dependencies satisfied → parallel group
+- Tasks with pending dependencies → next group
+- Respect `[SEQUENTIAL]` annotations in plan
+
+**Important (Task 7.2):**
+- NEVER batch tasks where one depends on another
+- A task with unmet dependencies waits until its dependencies complete
+- Use `blockedBy` field to show why a task can't run yet
 
 ### 5. Show Execution Preview
 
@@ -678,10 +707,17 @@ See `.claude/templates/output/execution-summary.md` for full template documentat
 
 ## Execution Optimization
 
-**Maximize parallelism:**
-- All independent tasks in same phase run together
+**Maximize parallelism (DAG-aware):**
+- All independent tasks (no dependencies between them) run together
+- Cross-phase parallelism: tasks from different phases can batch if dependencies allow
 - Use up to 5 parallel agents for large batches
 - Balance load across agents (don't give one agent 5 tasks while another gets 1)
+
+**Respect dependencies (Task 7.2):**
+- Check `dependencies` field for each task before batching
+- If task A is in task B's dependencies: A must complete before B starts
+- Use topological sort to determine execution order for dependent tasks
+- Query `node scripts/status-cli.js deps --format=json` for dependency data
 
 **Minimize context switching:**
 - Group related tasks even within parallel execution
@@ -692,10 +728,11 @@ See `.claude/templates/output/execution-summary.md` for full template documentat
 
 - **Agents are read-only** - Agents return content; main conversation writes files
 - **Save progress continuously** - Mark tasks done immediately with `markTaskCompleted()`, not at end
-- **Respect dependencies** - Never run dependent tasks in parallel
+- **Respect dependencies (CRITICAL)** - NEVER run dependent tasks in parallel; check `dependencies` array
 - **Handle interruption** - User can cancel mid-batch; completed work is preserved in status.json
 - **Resource awareness** - Don't spawn too many parallel agents (max 5)
 - **Status tracking is persistent** - All progress is stored in `docs/plan-outputs/<plan-name>/status.json`
+- **Blocked tasks** - If a selected task has unmet dependencies, it waits in later group
 
 ## Structured Progress Output
 

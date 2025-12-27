@@ -28,6 +28,54 @@ Complete a plan by merging it to main with squash merge workflow.
 3. Call `initializePlanStatus(planPath)` to ensure status.json exists
 4. Output directory is derived from plan name: `docs/plan-outputs/{plan-name}/`
 
+### 1.1. Detect Worktree Context
+
+Before proceeding, detect if we're running in a worktree context. This affects the completion workflow.
+
+**Step 1: Check for worktree context**
+```javascript
+const { detectWorktreeContext, getRepoRoot } = require('./scripts/lib/worktree-utils');
+
+const worktreeContext = detectWorktreeContext();
+const IN_WORKTREE = worktreeContext.inWorktree;
+const WORKTREE_PATH = worktreeContext.worktreePath;
+const REPO_ROOT = worktreeContext.repoRoot || getRepoRoot();
+```
+
+**Step 2: Display worktree status**
+```bash
+if [[ "$IN_WORKTREE" == "true" ]]; then
+    echo "Worktree Context: ✓ Running in worktree"
+    echo "  Worktree: $WORKTREE_PATH"
+    echo "  Repo Root: $REPO_ROOT"
+else
+    echo "Worktree Context: Main repository"
+fi
+```
+
+**Step 3: Set completion behavior flags**
+
+When in a worktree, the completion workflow differs:
+
+| Action | Main Repo | Worktree |
+|--------|-----------|----------|
+| Merge to main | From current branch | From worktree to main repo |
+| Remove worktree | N/A | After successful merge |
+| Clean .claude-context/ | N/A | After worktree removal |
+| Update aggregate status | N/A | After cleanup |
+
+**Example output (worktree):**
+```
+Worktree Context: ✓ Running in worktree
+  Worktree: /repo/worktrees/plan-feature-auth
+  Repo Root: /repo
+```
+
+**Example output (main repo):**
+```
+Worktree Context: Main repository
+```
+
 ### 2. Verify All Tasks Completed
 
 Before proceeding with completion, verify that all tasks are completed.
@@ -995,6 +1043,76 @@ Before proceeding to merge:
 - Currently on the correct plan branch (`plan/{plan-name}`)
 - No merge conflicts with main branch
 
+### 6.5. Worktree Merge Preparation (Worktree Context Only)
+
+**Skip this section if not in a worktree context (IN_WORKTREE == false).**
+
+When completing a plan from a worktree, the merge must be performed from the main repository, not from within the worktree. This section prepares for that transition.
+
+**Step 1: Save worktree state**
+```bash
+# Save current directory for later cleanup
+WORKTREE_DIR=$(pwd)
+WORKTREE_PLAN_BRANCH="$PLAN_BRANCH"  # e.g., "plan/feature-auth"
+```
+
+**Step 2: Verify worktree changes are committed**
+```bash
+# Check for uncommitted changes in worktree
+UNCOMMITTED=$(git status --porcelain)
+if [[ -n "$UNCOMMITTED" ]]; then
+    echo "⚠ Uncommitted changes detected in worktree"
+    echo ""
+    echo "Committing final changes before merge..."
+
+    git add -A
+    git commit -m "$(cat <<EOF
+[$PLAN_NAME] Final changes before completion
+
+Committed uncommitted changes from worktree.
+
+🤖 Generated with Claude Code
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+EOF
+)"
+    echo "✓ Committed uncommitted changes"
+fi
+```
+
+**Step 3: Change to main repository**
+```bash
+# Change to main repository for merge operations
+cd "$REPO_ROOT"
+echo "Changed to main repository: $REPO_ROOT"
+```
+
+**Step 4: Verify branch is accessible from main repo**
+```bash
+# The worktree branch should be visible from main repo
+if ! git rev-parse --verify "$WORKTREE_PLAN_BRANCH" >/dev/null 2>&1; then
+    echo "✗ Cannot find worktree branch: $WORKTREE_PLAN_BRANCH"
+    echo "  The branch may not be properly synchronized."
+    cd "$WORKTREE_DIR"  # Return to worktree
+    exit 1
+fi
+
+echo "✓ Branch accessible: $WORKTREE_PLAN_BRANCH"
+```
+
+**Example output (worktree merge preparation):**
+```
+⚠ Uncommitted changes detected in worktree
+
+Committing final changes before merge...
+✓ Committed uncommitted changes
+
+Changed to main repository: /repo
+✓ Branch accessible: plan/feature-auth
+```
+
+**Note:** After this step, all subsequent merge operations (Steps 7-11) run from the main repository context, using `$WORKTREE_PLAN_BRANCH` as the source branch.
+
 ### 7. Switch to Main Branch
 
 After all pre-checks pass and the archive tag is created, switch to the main branch.
@@ -1778,3 +1896,394 @@ fi
 ```
 
 **Note:** Status.json update failure is non-fatal. The merge was successful, and the completion can be verified via git log. The status.json update is for tracking purposes only.
+
+### 13. Remove Worktree (Worktree Context Only)
+
+**Skip this section if not in a worktree context (IN_WORKTREE == false).**
+
+After successful merge and status update, remove the worktree.
+
+**Step 1: Verify merge was successful**
+```bash
+# Only proceed with worktree removal if merge was successful
+if [[ -z "$MERGE_COMMIT" && "$MERGE_STRATEGY" == "squash" ]]; then
+    echo "⚠ Skipping worktree removal - merge may have failed"
+    exit 0
+fi
+```
+
+**Step 2: Remove the worktree using git worktree remove**
+```bash
+# Use the worktree-utils module for proper cleanup
+node -e "
+const { removeWorktree, pruneWorktrees } = require('./scripts/lib/worktree-utils');
+
+const planName = '$PLAN_NAME';
+const result = removeWorktree(planName);
+
+if (result.success) {
+    console.log('✓ Removed worktree: worktrees/plan-' + planName);
+
+    // Prune stale worktree references
+    pruneWorktrees();
+    console.log('  Pruned stale worktree references');
+} else {
+    console.log('⚠ Warning: Could not remove worktree:', result.error);
+    console.log('  Manual removal: git worktree remove worktrees/plan-' + planName);
+}
+"
+```
+
+**Alternative bash approach:**
+```bash
+# Remove the worktree
+WORKTREE_PATH="worktrees/plan-$PLAN_NAME"
+
+if [[ -d "$WORKTREE_PATH" ]]; then
+    git worktree remove "$WORKTREE_PATH"
+    if [[ $? -ne 0 ]]; then
+        echo "⚠ Warning: Failed to remove worktree"
+        echo "  Try with --force: git worktree remove --force $WORKTREE_PATH"
+    else
+        echo "✓ Removed worktree: $WORKTREE_PATH"
+    fi
+
+    # Prune stale references
+    git worktree prune
+else
+    echo "⊘ Worktree already removed or not found"
+fi
+```
+
+**Step 3: Verify worktree was removed**
+```bash
+# Check worktree no longer appears in git worktree list
+if git worktree list | grep -q "worktrees/plan-$PLAN_NAME"; then
+    echo "⚠ Worktree still appears in git worktree list"
+else
+    echo "  Worktree successfully removed from git"
+fi
+```
+
+**Example output (success):**
+```
+✓ Removed worktree: worktrees/plan-feature-auth
+  Pruned stale worktree references
+  Worktree successfully removed from git
+```
+
+**Example output (warning):**
+```
+⚠ Warning: Could not remove worktree: Worktree has uncommitted changes
+  Manual removal: git worktree remove worktrees/plan-feature-auth
+```
+
+### 14. Clean Up .claude-context/ Directory (Worktree Context Only)
+
+**Skip this section if not in a worktree context (IN_WORKTREE == false).**
+
+After worktree removal, ensure the `.claude-context/` directory is cleaned up.
+
+**Note:** The `git worktree remove` command typically removes the entire worktree directory, including `.claude-context/`. This step verifies cleanup and handles edge cases.
+
+**Step 1: Check if .claude-context/ directory remains**
+```bash
+CONTEXT_DIR="$WORKTREE_DIR/.claude-context"
+
+if [[ -d "$CONTEXT_DIR" ]]; then
+    echo "Cleaning up remaining .claude-context/ directory..."
+    rm -rf "$CONTEXT_DIR"
+    if [[ $? -eq 0 ]]; then
+        echo "✓ Removed .claude-context/ directory"
+    else
+        echo "⚠ Warning: Could not remove .claude-context/"
+        echo "  Manual removal: rm -rf $CONTEXT_DIR"
+    fi
+else
+    echo "✓ .claude-context/ already cleaned up"
+fi
+```
+
+**Step 2: Clean up any remaining worktree files**
+```bash
+# If the worktree directory still exists (e.g., removal was partial)
+if [[ -d "$WORKTREE_DIR" ]]; then
+    echo "⚠ Worktree directory still exists: $WORKTREE_DIR"
+    echo "  Attempting cleanup..."
+
+    # Check if directory is empty or only has .git file
+    FILE_COUNT=$(ls -A "$WORKTREE_DIR" | wc -l)
+    if [[ "$FILE_COUNT" -le 1 ]]; then
+        rm -rf "$WORKTREE_DIR"
+        echo "✓ Removed empty worktree directory"
+    else
+        echo "  Directory contains $FILE_COUNT files, skipping removal"
+        echo "  Manual cleanup: rm -rf $WORKTREE_DIR"
+    fi
+fi
+```
+
+**Example output (success):**
+```
+✓ .claude-context/ already cleaned up
+```
+
+**Example output (manual cleanup needed):**
+```
+Cleaning up remaining .claude-context/ directory...
+✓ Removed .claude-context/ directory
+```
+
+### 15. Update Aggregate Status After Removal (Worktree Context Only)
+
+**Skip this section if not in a worktree context (IN_WORKTREE == false).**
+
+After worktree cleanup, update the aggregate status to reflect the completed plan.
+
+**Step 1: Refresh aggregate status**
+```bash
+# Use status-cli.js to refresh aggregate status
+node scripts/status-cli.js all-plans --format=text 2>/dev/null || true
+```
+
+**Step 2: Display completion summary**
+```bash
+echo ""
+echo "═══════════════════════════════════════════════════════════════"
+echo "  Plan Completed Successfully (Worktree)"
+echo "═══════════════════════════════════════════════════════════════"
+echo ""
+echo "  Plan:        $PLAN_NAME"
+echo "  Branch:      $PLAN_BRANCH (merged to $MAIN_BRANCH)"
+echo "  Worktree:    Removed"
+echo "  Archive:     ${ARCHIVE_TAG:-'(not created)'}"
+echo ""
+if [[ -n "$MERGE_COMMIT" ]]; then
+    echo "  Commit:      $(git log -1 --oneline $MERGE_COMMIT)"
+fi
+echo ""
+echo "  View history: git log $MAIN_BRANCH"
+if [[ -n "$ARCHIVE_TAG" ]]; then
+    echo "  View archive: git log $ARCHIVE_TAG"
+fi
+echo ""
+echo "═══════════════════════════════════════════════════════════════"
+```
+
+**Step 3: Check remaining active plans**
+```javascript
+// Show remaining active plans/worktrees
+const { listWorktrees } = require('./scripts/lib/worktree-utils');
+
+const worktrees = listWorktrees().filter(wt =>
+    wt.path.includes('/worktrees/plan-') || (wt.branch && wt.branch.startsWith('plan/'))
+);
+
+if (worktrees.length > 0) {
+    console.log('Remaining active plan worktrees:');
+    worktrees.forEach(wt => {
+        const name = wt.branch ? wt.branch.replace('plan/', '') : 'unknown';
+        console.log(`  - ${name}: ${wt.path}`);
+    });
+} else {
+    console.log('No remaining active plan worktrees.');
+}
+```
+
+**Example output (worktree completion):**
+```
+═══════════════════════════════════════════════════════════════
+  Plan Completed Successfully (Worktree)
+═══════════════════════════════════════════════════════════════
+
+  Plan:        feature-auth
+  Branch:      plan/feature-auth (merged to main)
+  Worktree:    Removed
+  Archive:     archive/plan-feature-auth
+
+  Commit:      abc1234 Complete: feature-auth
+
+  View history: git log main
+  View archive: git log archive/plan-feature-auth
+
+═══════════════════════════════════════════════════════════════
+
+Remaining active plan worktrees:
+  - api-refactor: /repo/worktrees/plan-api-refactor
+  - perf-optimization: /repo/worktrees/plan-perf-optimization
+```
+
+**Example output (no remaining worktrees):**
+```
+═══════════════════════════════════════════════════════════════
+  Plan Completed Successfully (Worktree)
+═══════════════════════════════════════════════════════════════
+
+  Plan:        feature-auth
+  Branch:      plan/feature-auth (merged to main)
+  Worktree:    Removed
+  Archive:     archive/plan-feature-auth
+
+  Commit:      abc1234 Complete: feature-auth
+
+  View history: git log main
+  View archive: git log archive/plan-feature-auth
+
+═══════════════════════════════════════════════════════════════
+
+No remaining active plan worktrees.
+```
+
+### 16. Handle Dependent Worktrees (Worktree Context Only)
+
+**Skip this section if not in a worktree context (IN_WORKTREE == false).**
+
+When completing a plan, other worktrees may depend on changes from this plan. This section detects those dependencies and provides guidance for updating dependent worktrees.
+
+**Step 1: Detect dependent worktrees**
+
+Check if any other worktrees have branches that might conflict with or depend on the changes being merged.
+
+```javascript
+const { listWorktrees, getRepoRoot } = require('./scripts/lib/worktree-utils');
+const { execSync } = require('child_process');
+
+/**
+ * Find worktrees that might be affected by changes from the completed plan
+ */
+function findDependentWorktrees(completedBranch, mergeCommit) {
+  const worktrees = listWorktrees();
+  const repoRoot = getRepoRoot();
+  const dependents = [];
+
+  for (const wt of worktrees) {
+    // Skip the main worktree
+    if (!wt.branch || !wt.branch.startsWith('plan/')) continue;
+
+    // Check if this worktree's branch has diverged from main
+    try {
+      const mergeBase = execSync(
+        `git merge-base main ${wt.branch}`,
+        { encoding: 'utf8', cwd: repoRoot }
+      ).trim();
+
+      // If the merge base is before our merge commit, they might need to rebase
+      const behindCount = parseInt(execSync(
+        `git rev-list --count ${mergeBase}..${mergeCommit}`,
+        { encoding: 'utf8', cwd: repoRoot }
+      ).trim());
+
+      if (behindCount > 0) {
+        dependents.push({
+          path: wt.path,
+          branch: wt.branch,
+          behindMain: behindCount
+        });
+      }
+    } catch (error) {
+      // Skip worktrees we can't analyze
+    }
+  }
+
+  return dependents;
+}
+```
+
+**Step 2: Display dependent worktrees**
+
+If dependent worktrees are found, display them with rebase recommendations:
+
+```bash
+if [[ ${#DEPENDENT_WORKTREES[@]} -gt 0 ]]; then
+    echo ""
+    echo "⚠ Other worktrees may need to rebase on updated main:"
+    echo ""
+    for wt in "${DEPENDENT_WORKTREES[@]}"; do
+        echo "  - ${wt.branch} (${wt.behindMain} commits behind)"
+        echo "    Path: ${wt.path}"
+        echo "    Recommended: cd ${wt.path} && git rebase main"
+    done
+    echo ""
+    echo "  These worktrees were created before this plan was merged."
+    echo "  Rebasing ensures they incorporate the latest changes."
+fi
+```
+
+**Step 3: Offer to rebase dependent worktrees**
+
+Use `AskUserQuestion` to ask if the user wants to rebase dependent worktrees:
+
+```
+question: "Rebase dependent worktrees on updated main?"
+header: "Worktrees"
+options:
+  - label: "Rebase all (Recommended)"
+    description: "Automatically rebase all affected worktrees on main. Stops if conflicts occur."
+  - label: "Skip"
+    description: "Leave worktrees as-is. They can be rebased manually later."
+```
+
+**Step 4: Execute rebase for dependent worktrees**
+
+If the user chooses to rebase:
+
+```bash
+for wt in "${DEPENDENT_WORKTREES[@]}"; do
+    echo "Rebasing ${wt.branch}..."
+
+    cd "${wt.path}"
+    git rebase main
+    REBASE_EXIT=$?
+
+    if [[ $REBASE_EXIT -ne 0 ]]; then
+        echo "✗ Rebase conflict in ${wt.branch}"
+        echo "  Resolve conflicts in: ${wt.path}"
+        echo "  Then run: git rebase --continue"
+        git rebase --abort
+        break
+    fi
+
+    echo "✓ Rebased ${wt.branch}"
+done
+```
+
+**Example output (dependencies found):**
+```
+⚠ Other worktrees may need to rebase on updated main:
+
+  - plan/api-refactor (5 commits behind)
+    Path: /repo/worktrees/plan-api-refactor
+    Recommended: cd /repo/worktrees/plan-api-refactor && git rebase main
+
+  - plan/perf-optimization (3 commits behind)
+    Path: /repo/worktrees/plan-perf-optimization
+    Recommended: cd /repo/worktrees/plan-perf-optimization && git rebase main
+
+  These worktrees were created before this plan was merged.
+  Rebasing ensures they incorporate the latest changes.
+```
+
+**Example output (rebase successful):**
+```
+Rebasing plan/api-refactor...
+Successfully rebased and updated refs/heads/plan/api-refactor.
+✓ Rebased plan/api-refactor
+
+Rebasing plan/perf-optimization...
+Successfully rebased and updated refs/heads/plan/perf-optimization.
+✓ Rebased plan/perf-optimization
+
+All dependent worktrees rebased successfully.
+```
+
+**Example output (rebase conflict):**
+```
+Rebasing plan/api-refactor...
+
+✗ Rebase conflict in plan/api-refactor
+  Resolve conflicts in: /repo/worktrees/plan-api-refactor
+  Then run: git rebase --continue
+
+  Remaining worktrees not rebased:
+  - plan/perf-optimization
+```

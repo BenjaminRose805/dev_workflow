@@ -34,9 +34,28 @@ Set the current working plan file for subsequent `/plan:*` commands.
    - If a plan is currently active, indicate it with "(current)"
 
 3. **After user selection**:
-   - Write the selected plan's relative path to `.claude/current-plan.txt`
+   - **Detect worktree context:**
+     - Check if `.claude-context/` directory exists in current directory
+     - If in worktree: Write to `.claude-context/current-plan.txt`
+     - If in main repo: Write to `.claude/current-plan.txt`
    - Confirm the selection to the user
    - Show a brief summary of the plan's contents (phases/sections and task counts)
+
+**Worktree-aware plan pointer:**
+```bash
+# Detect worktree context
+if [ -d ".claude-context" ]; then
+  # In a worktree - use worktree-specific context
+  PLAN_POINTER=".claude-context/current-plan.txt"
+  echo "Setting plan in worktree context"
+else
+  # In main repo - use standard location
+  PLAN_POINTER=".claude/current-plan.txt"
+fi
+
+# Write the plan path
+echo "$SELECTED_PLAN_PATH" > "$PLAN_POINTER"
+```
 
 ### 3.0.1 Check for Uncommitted Changes (Before Branch Switch)
 

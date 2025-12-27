@@ -1,0 +1,157 @@
+{
+  "description": "Sample WebSocket messages for testing frontend WebSocket handling",
+  "messages": {
+    "status": {
+      "type": "status",
+      "plan": "git-workflow-phase5-worktrees",
+      "status": "in_progress",
+      "progress": {
+        "total": 84,
+        "completed": 76,
+        "pending": 8,
+        "in_progress": 1,
+        "failed": 0,
+        "percentage": 90
+      },
+      "currentTask": {
+        "id": "12.6",
+        "description": "Create mock data for frontend development",
+        "startedAt": "2024-12-26T22:00:00.000Z"
+      },
+      "lastUpdatedAt": "2024-12-26T22:00:00.000Z",
+      "timestamp": "2024-12-26T22:00:01.000Z"
+    },
+    "all-plans": {
+      "type": "all-plans",
+      "plans": [
+        {
+          "name": "git-workflow-phase5-worktrees",
+          "status": "in_progress",
+          "progress": {
+            "total": 84,
+            "completed": 76,
+            "percentage": 90
+          }
+        },
+        {
+          "name": "api-refactor",
+          "status": "in_progress",
+          "progress": {
+            "total": 42,
+            "completed": 28,
+            "percentage": 67
+          }
+        },
+        {
+          "name": "auth-implementation",
+          "status": "pending",
+          "progress": {
+            "total": 35,
+            "completed": 0,
+            "percentage": 0
+          }
+        }
+      ],
+      "aggregate": {
+        "totalPlans": 3,
+        "totalTasks": 161,
+        "completed": 104,
+        "pending": 56,
+        "in_progress": 1,
+        "failed": 0,
+        "percentage": 65
+      },
+      "timestamp": "2024-12-26T22:00:01.000Z"
+    },
+    "task_update": {
+      "type": "task_update",
+      "plan": "git-workflow-phase5-worktrees",
+      "task": {
+        "id": "12.6",
+        "phase": "Phase 12: NextJS Frontend Preparation",
+        "description": "Create mock data for frontend development",
+        "previousStatus": "pending",
+        "status": "in_progress",
+        "startedAt": "2024-12-26T22:00:00.000Z"
+      },
+      "timestamp": "2024-12-26T22:00:01.000Z"
+    },
+    "task_completed": {
+      "type": "task_update",
+      "plan": "git-workflow-phase5-worktrees",
+      "task": {
+        "id": "12.6",
+        "phase": "Phase 12: NextJS Frontend Preparation",
+        "description": "Create mock data for frontend development",
+        "previousStatus": "in_progress",
+        "status": "completed",
+        "completedAt": "2024-12-26T22:05:00.000Z"
+      },
+      "timestamp": "2024-12-26T22:05:01.000Z"
+    },
+    "orchestrator_started": {
+      "type": "orchestrator_update",
+      "plan": "git-workflow-phase5-worktrees",
+      "orchestrator": {
+        "running": true,
+        "pid": 12345,
+        "mode": "batch",
+        "startedAt": "2024-12-26T21:00:00.000Z",
+        "currentTask": "12.6"
+      },
+      "timestamp": "2024-12-26T21:00:01.000Z"
+    },
+    "orchestrator_stopped": {
+      "type": "orchestrator_update",
+      "plan": "git-workflow-phase5-worktrees",
+      "orchestrator": {
+        "running": false,
+        "pid": null,
+        "stoppedAt": "2024-12-26T23:00:00.000Z",
+        "reason": "completed"
+      },
+      "timestamp": "2024-12-26T23:00:01.000Z"
+    },
+    "log_info": {
+      "type": "log",
+      "plan": "git-workflow-phase5-worktrees",
+      "log": {
+        "level": "info",
+        "message": "Task 12.6 completed successfully",
+        "taskId": "12.6",
+        "logTimestamp": "2024-12-26T22:05:00.000Z"
+      },
+      "timestamp": "2024-12-26T22:05:01.000Z"
+    },
+    "log_error": {
+      "type": "log",
+      "plan": "database-migration",
+      "log": {
+        "level": "error",
+        "message": "Migration validation failed: schema mismatch in users table",
+        "taskId": "4.3",
+        "logTimestamp": "2024-12-26T15:45:00.000Z"
+      },
+      "timestamp": "2024-12-26T15:45:01.000Z"
+    },
+    "progress_update": {
+      "type": "progress_update",
+      "plan": "git-workflow-phase5-worktrees",
+      "completed": 77,
+      "total": 84,
+      "percentage": 92,
+      "timestamp": "2024-12-26T22:05:01.000Z"
+    },
+    "error": {
+      "type": "error",
+      "error": "Plan not found: nonexistent-plan",
+      "code": "PLAN_NOT_FOUND",
+      "details": {},
+      "timestamp": "2024-12-26T22:00:01.000Z"
+    },
+    "heartbeat": {
+      "type": "heartbeat",
+      "timestamp": "2024-12-26T22:00:30.000Z"
+    }
+  }
+}
