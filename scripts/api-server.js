@@ -180,7 +180,7 @@ async function handleListPlans(req, res, query) {
     }
 
     sendJSON(res, 200, {
-      plans,
+      data: plans,
       summary: {
         totalPlans: plans.length,
         running: runningCount,
@@ -278,31 +278,33 @@ async function handleGetPlan(req, res, planName) {
     }
 
     sendJSON(res, 200, {
-      name: planName,
-      path: planPath,
-      title: status.planName || planName,
-      status: planStatusStr,
-      progress: {
-        total: summary.totalTasks || 0,
-        completed: summary.completed || 0,
-        pending: summary.pending || 0,
-        in_progress: summary.in_progress || 0,
-        failed: summary.failed || 0,
-        skipped: summary.skipped || 0,
-        percentage: summary.totalTasks > 0
-          ? Math.round((summary.completed / summary.totalTasks) * 100)
-          : 0
-      },
-      phases,
-      currentPhase: status.currentPhase || null,
-      recentActivity,
-      worktree: worktree ? {
-        active: true,
-        path: worktree.path,
-        branch: worktree.branch
-      } : null,
-      orchestrator: orchestratorInfo,
-      lastUpdatedAt: status.lastUpdatedAt
+      data: {
+        name: planName,
+        path: planPath,
+        title: status.planName || planName,
+        status: planStatusStr,
+        progress: {
+          total: summary.totalTasks || 0,
+          completed: summary.completed || 0,
+          pending: summary.pending || 0,
+          in_progress: summary.in_progress || 0,
+          failed: summary.failed || 0,
+          skipped: summary.skipped || 0,
+          percentage: summary.totalTasks > 0
+            ? Math.round((summary.completed / summary.totalTasks) * 100)
+            : 0
+        },
+        phases,
+        currentPhase: status.currentPhase || null,
+        recentActivity,
+        worktree: worktree ? {
+          active: true,
+          path: worktree.path,
+          branch: worktree.branch
+        } : null,
+        orchestrator: orchestratorInfo,
+        lastUpdatedAt: status.lastUpdatedAt
+      }
     });
   } catch (error) {
     sendError(res, 500, error.message, 'INTERNAL_ERROR');
