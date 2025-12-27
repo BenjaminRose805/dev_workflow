@@ -1,0 +1,418 @@
+{
+  "_comment": "This file is the authoritative source of truth for task execution state. The markdown plan file is read-only reference documentation. Use status-cli.js to update task status.",
+  "planPath": "docs/plans/orchestrator-dashboard-nextjs.md",
+  "planName": "Implementation Plan: Orchestrator Dashboard (Next.js)",
+  "createdAt": "2025-12-27T07:57:05.101Z",
+  "lastUpdatedAt": "2025-12-27T19:21:02.790Z",
+  "currentPhase": "Phase 1: Project Setup & Foundation",
+  "dependencyGraph": {
+    "1.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "1.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "1.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "2.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "3.4": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "4.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "4.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "4.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "5.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "5.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "5.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "6.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "6.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "7.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "7.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "8.1": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "8.2": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    },
+    "8.3": {
+      "dependencies": [],
+      "dependents": [],
+      "inDegree": 0
+    }
+  },
+  "tasks": [
+    {
+      "id": "1.1",
+      "phase": "Phase 1: Project Setup & Foundation",
+      "description": "Initialize Next.js project with TypeScript and Tailwind",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T17:54:07.030Z",
+      "completedAt": "2025-12-27T17:56:52.726Z",
+      "duration": 165696,
+      "notes": "Created Next.js 14+ project with TypeScript, Tailwind CSS, shadcn/ui, next-themes for dark mode, zustand, react-query"
+    },
+    {
+      "id": "1.2",
+      "phase": "Phase 1: Project Setup & Foundation",
+      "description": "Create app layout and navigation structure",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T17:57:13.579Z",
+      "completedAt": "2025-12-27T17:59:11.159Z",
+      "duration": 117580,
+      "notes": "Created root layout with sidebar navigation, header with status indicator, loading/error boundaries"
+    },
+    {
+      "id": "1.3",
+      "phase": "Phase 1: Project Setup & Foundation",
+      "description": "Set up API client and TypeScript types",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T17:59:24.810Z",
+      "completedAt": "2025-12-27T18:02:05.182Z",
+      "duration": 160372,
+      "notes": "Created API client with TypeScript types, React Query hooks, and WebSocket connection manager"
+    },
+    {
+      "id": "2.1",
+      "phase": "Phase 2: Dashboard Home & Orchestrator List",
+      "description": "Create dashboard home page with system overview",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T18:02:21.812Z",
+      "completedAt": "2025-12-27T18:03:31.949Z",
+      "duration": 70137,
+      "notes": "Created dashboard home page with summary cards, running orchestrators list, recent activity feed, and quick actions"
+    },
+    {
+      "id": "2.2",
+      "phase": "Phase 2: Dashboard Home & Orchestrator List",
+      "description": "Create orchestrator list view",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T18:03:47.462Z",
+      "completedAt": "2025-12-27T18:05:40.471Z",
+      "duration": 113009,
+      "notes": "Created orchestrator list view with filtering by status, search, orchestrator cards with status badges and control buttons"
+    },
+    {
+      "id": "2.3",
+      "phase": "Phase 2: Dashboard Home & Orchestrator List",
+      "description": "Implement real-time status updates for orchestrator list",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T18:30:00.000Z",
+      "notes": "Added useRealtimeOrchestrators hook with WebSocket integration, live connection indicator, toast notifications"
+    },
+    {
+      "id": "3.1",
+      "phase": "Phase 3: Orchestrator Detail View",
+      "description": "Create orchestrator detail page with tabs",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T18:30:00.000Z",
+      "notes": "Created /orchestrators/[id]/page.tsx with OrchestratorHeader, OverviewTab, tabbed interface"
+    },
+    {
+      "id": "3.2",
+      "phase": "Phase 3: Orchestrator Detail View",
+      "description": "Build task list view with status and actions",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T18:30:00.000Z",
+      "notes": "TasksTab with collapsible phases, TaskRow with skip/retry actions, TaskStatusBadge"
+    },
+    {
+      "id": "3.3",
+      "phase": "Phase 3: Orchestrator Detail View",
+      "description": "Build real-time activity stream panel",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T18:30:00.000Z",
+      "notes": "ActivityTab with WebSocket stream, color-coded tools, expandable details, auto-scroll"
+    },
+    {
+      "id": "3.4",
+      "phase": "Phase 3: Orchestrator Detail View",
+      "description": "Build findings browser",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T18:30:00.000Z",
+      "notes": "FindingsTab with search, markdown viewer with syntax highlighting, grouped by task"
+    },
+    {
+      "id": "4.1",
+      "phase": "Phase 4: Plan Management",
+      "description": "Create plan list and detail pages",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T18:45:00.000Z",
+      "notes": "Created plan list page with search/sort, plan detail page with phases/history, plan-card, phase-progress, run-history-table components"
+    },
+    {
+      "id": "4.2",
+      "phase": "Phase 4: Plan Management",
+      "description": "Implement start orchestrator flow",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T18:45:00.000Z",
+      "notes": "Created StartOrchestratorDialog with config options (maxIterations, batchSize, timeout, autonomous)"
+    },
+    {
+      "id": "4.3",
+      "phase": "Phase 4: Plan Management",
+      "description": "Implement plan status overview",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T18:45:00.000Z",
+      "notes": "Created plan status page with donut chart (StatusChart), phase timeline (PhaseTimeline), JSON export functionality"
+    },
+    {
+      "id": "5.1",
+      "phase": "Phase 5: Command Execution & Task Actions",
+      "description": "Implement task action buttons",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T18:45:00.000Z",
+      "notes": "Created TaskActions component with Explain, Implement, Verify, Skip, Retry buttons and SkipTaskDialog confirmation"
+    },
+    {
+      "id": "5.2",
+      "phase": "Phase 5: Command Execution & Task Actions",
+      "description": "Build command palette modal",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T18:45:00.000Z",
+      "notes": "Created CommandPalette with Cmd+K shortcut, fuzzy search, navigation/plan/orchestrator/task/global commands"
+    },
+    {
+      "id": "5.3",
+      "phase": "Phase 5: Command Execution & Task Actions",
+      "description": "Implement dependency graph visualization",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T18:49:12.254Z",
+      "completedAt": "2025-12-27T18:59:12.816Z",
+      "duration": 600562,
+      "notes": "Created DependencyGraph component with interactive SVG visualization, zoom/pan, critical path highlighting, status colors, and node tooltips. Added to orchestrator detail page as new Dependencies tab."
+    },
+    {
+      "id": "6.1",
+      "phase": "Phase 6: Activity & History",
+      "description": "Create global activity feed page",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T18:59:13.215Z",
+      "completedAt": "2025-12-27T18:59:39.505Z",
+      "duration": 26290,
+      "notes": "Created global activity feed page at /activity with real-time WebSocket updates, filters by orchestrator/event type, search functionality, pagination, and export to JSON."
+    },
+    {
+      "id": "6.2",
+      "phase": "Phase 6: Activity & History",
+      "description": "Build run history view",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T18:59:39.911Z",
+      "completedAt": "2025-12-27T18:59:39.929Z",
+      "duration": 18,
+      "notes": "Created run history page at /plans/[name]/history with sortable history table, trend charts, stats cards, compare runs feature, and run details dialog."
+    },
+    {
+      "id": "7.1",
+      "phase": "Phase 7: Settings & Configuration",
+      "description": "Create settings page",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T18:59:48.143Z",
+      "completedAt": "2025-12-27T18:59:48.160Z",
+      "duration": 17,
+      "notes": "Created settings page at /settings with theme toggle, API URL configuration, refresh interval settings, default orchestrator config, and about section."
+    },
+    {
+      "id": "7.2",
+      "phase": "Phase 7: Settings & Configuration",
+      "description": "Add notification system",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "startedAt": "2025-12-27T18:59:48.563Z",
+      "completedAt": "2025-12-27T18:59:48.580Z",
+      "duration": 17,
+      "notes": "Created NotificationCenter and NotificationProvider with WebSocket event subscriptions, browser notifications, toast notifications, sound alerts, per-event-type settings, and unread badge counter."
+    },
+    {
+      "id": "8.1",
+      "phase": "Phase 8: Polish & Production Readiness",
+      "description": "Responsive design and mobile support",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T19:21:01.978Z",
+      "notes": "Added MobileMenuProvider, mobile sidebar with drawer, hamburger menu, touch-friendly navigation, swipe gestures, responsive breakpoints for layout and components"
+    },
+    {
+      "id": "8.2",
+      "phase": "Phase 8: Polish & Production Readiness",
+      "description": "Performance optimization",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T19:21:02.385Z",
+      "notes": "Added ErrorBoundary, skeleton loaders, VirtualList components with @tanstack/react-virtual, OfflineIndicator, ServiceWorkerRegistration, service worker for caching, offline page"
+    },
+    {
+      "id": "8.3",
+      "phase": "Phase 8: Polish & Production Readiness",
+      "description": "Deployment configuration",
+      "status": "completed",
+      "dependencies": [],
+      "dependents": [],
+      "completedAt": "2025-12-27T19:21:02.790Z",
+      "notes": "Added Dockerfile (multi-stage), docker-compose.yml, docker-compose.dev.yml, .dockerignore, vercel.json, netlify.toml, GitHub Actions CI/CD workflows, health check endpoint, updated next.config.ts for production"
+    }
+  ],
+  "runs": [
+    {
+      "runId": "run-1766858021569",
+      "startedAt": "2025-12-27T17:53:41.569Z",
+      "tasksCompleted": 5,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-27T18:05:58.713Z"
+    },
+    {
+      "runId": "run-1766860073761",
+      "startedAt": "2025-12-27T18:27:53.761Z",
+      "tasksCompleted": 0,
+      "tasksFailed": 0
+    },
+    {
+      "runId": "run-1766861284564",
+      "startedAt": "2025-12-27T18:48:04.564Z",
+      "tasksCompleted": 5,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-27T19:00:35.801Z"
+    },
+    {
+      "runId": "run-1766862116698",
+      "startedAt": "2025-12-27T19:01:56.698Z",
+      "tasksCompleted": 3,
+      "tasksFailed": 0,
+      "completedAt": "2025-12-27T19:21:10.339Z"
+    }
+  ],
+  "summary": {
+    "totalTasks": 23,
+    "completed": 23,
+    "pending": 0,
+    "in_progress": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "completedAt": "2025-12-27T19:25:21.973Z",
+  "mergedAt": "2025-12-27T19:25:21.973Z",
+  "mergeCommit": "5b4610e76bce517e9e9addf28d883b3154a82579",
+  "archiveTag": "archive/plan-orchestrator-dashboard-nextjs"
+}
