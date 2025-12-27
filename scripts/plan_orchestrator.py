@@ -28,6 +28,7 @@ Execution Options:
     --verbose           Enable verbose logging
     --continue          Continue from last run (skip confirmation)
     --no-tui            Disable Rich TUI (use plain text output)
+    --no-auto-complete  Disable auto-complete (don't merge when done)
     --daemon            Run in background (daemon mode)
 
 Management Commands:
@@ -133,6 +134,7 @@ class PlanOrchestrator:
         dry_run: bool = False,
         verbose: bool = False,
         use_tui: bool = True,
+        auto_complete: bool = True,
     ):
         self.plan_path = plan_path
         self.max_iterations = max_iterations
@@ -141,6 +143,7 @@ class PlanOrchestrator:
         self.dry_run = dry_run
         self.verbose = verbose
         self.use_tui = use_tui and RICH_AVAILABLE
+        self.auto_complete = auto_complete
 
         self.iteration = 0
         self.start_time = None
@@ -847,6 +850,12 @@ class PlanOrchestrator:
                         time.sleep(2)
                     else:
                         self.print_completion(status, "complete")
+
+                    # Run auto-complete if enabled
+                    if self.auto_complete:
+                        self._cleanup()  # Clean up TUI first
+                        self._run_auto_complete()
+
                     self._cleanup()
                     return 0
 
@@ -958,6 +967,41 @@ class PlanOrchestrator:
             self.logger.error(f"Orchestration error: {e}")
             self._cleanup()
             raise
+
+    def _run_auto_complete(self) -> bool:
+        """Run /plan:complete via Claude to merge plan to main.
+
+        Returns:
+            True if completion succeeded, False otherwise.
+        """
+        if self.dry_run:
+            self.logger.info("Dry run: would run /plan:complete")
+            return True
+
+        self.logger.info("Running /plan:complete to merge to main...")
+
+        try:
+            # Run Claude with /plan:complete command
+            # Use --dangerously-skip-permissions to avoid prompts
+            result = subprocess.run(
+                ["claude", "-p", "/plan:complete", "--dangerously-skip-permissions"],
+                capture_output=True, text=True, cwd=self.working_dir,
+                timeout=300  # 5 minute timeout for completion
+            )
+
+            if result.returncode == 0:
+                self.logger.info("Plan completed and merged successfully")
+                return True
+            else:
+                self.logger.error(f"/plan:complete failed: {result.stderr or result.stdout}")
+                return False
+
+        except subprocess.TimeoutExpired:
+            self.logger.error("/plan:complete timed out after 5 minutes")
+            return False
+        except Exception as e:
+            self.logger.error(f"Auto-complete failed: {e}")
+            return False
 
     def _cleanup(self):
         """Clean up TUI, monitor resources, and unregister from registry."""
@@ -1278,6 +1322,11 @@ def main():
         action="store_true",
         help="Disable Rich TUI (use plain text output)",
     )
+    parser.add_argument(
+        "--no-auto-complete",
+        action="store_true",
+        help="Disable auto-complete (don't merge to main when plan finishes)",
+    )
 
     # Phase 5: Multi-orchestrator management commands
     parser.add_argument(
@@ -1365,6 +1414,7 @@ def main():
         dry_run=args.dry_run,
         verbose=args.verbose,
         use_tui=use_tui,
+        auto_complete=not args.no_auto_complete,
     )
 
     try:
