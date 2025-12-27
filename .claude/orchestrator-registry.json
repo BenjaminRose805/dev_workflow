@@ -1,4 +1,16 @@
 {
-  "instances": [],
-  "lastCleanup": "2025-12-27T02:43:24.773794Z"
+  "instances": [
+    {
+      "id": "orch-1766815520257",
+      "pid": 2107641,
+      "plan_path": "docs/plans/tui-integration-implementation.md",
+      "worktree_path": null,
+      "started_at": "2025-12-27T06:05:20.257031Z",
+      "last_heartbeat": "2025-12-27T07:21:55.611030Z",
+      "status": "running",
+      "socket_path": "/tmp/orchestrator-orch-1766815520257.sock",
+      "port": null
+    }
+  ],
+  "lastCleanup": "2025-12-27T06:05:20.256832Z"
 }

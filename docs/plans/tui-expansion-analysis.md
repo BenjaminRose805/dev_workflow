@@ -393,13 +393,13 @@
   - Estimate total effort
   - Output: Recommended implementation sequence
 
-- [ ] 11.5 Document architectural considerations
+- [x] 11.5 Document architectural considerations
   - Consider: Performance impact of new panels
   - Consider: Data refresh strategies for parallel state
   - Consider: Terminal size constraints
   - Consider: Real-time event streaming architecture
 
-- [ ] 11.6 Create implementation plan or plan amendment
+- [x] 11.6 Create implementation plan or plan amendment
   - Apply decision from 11.3:
     - **If AMEND:** Add new tasks to existing phases in tui-integration-implementation.md, update task counts
     - **If NEW PLAN:** Create tui-workflow-expansion.md with phases for architectural features
